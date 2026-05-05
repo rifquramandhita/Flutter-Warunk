@@ -1,0 +1,20 @@
+Analyzing warunk...                                             
+
+   info • Unnecessary use of multiple underscores • lib/app/features/auth/presentation/ui/splash/auth_splash_screen.dart:91:26 • unnecessary_underscores
+   info • Unnecessary use of multiple underscores • lib/app/features/auth/presentation/ui/splash/auth_splash_screen.dart:91:30 • unnecessary_underscores
+   info • Unnecessary use of multiple underscores • lib/app/features/auth/presentation/ui/splash/auth_splash_screen.dart:92:44 • unnecessary_underscores
+   info • 'groupValue' is deprecated and shouldn't be used. Use a RadioGroup ancestor to manage group value instead. This feature was deprecated after v3.32.0-0.0.pre • lib/app/features/customer/presentation/checkout/customer_checkout_screen.dart:311:37 • deprecated_member_use
+   info • 'onChanged' is deprecated and shouldn't be used. Use RadioGroup to handle value change instead. This feature was deprecated after v3.32.0-0.0.pre • lib/app/features/customer/presentation/checkout/customer_checkout_screen.dart:312:37 • deprecated_member_use
+   info • Unnecessary use of multiple underscores • lib/app/features/customer/presentation/notification/customer_notification_screen.dart:194:29 • unnecessary_underscores
+   info • 'value' is deprecated and shouldn't be used. Use component accessors like .r or .g, or toARGB32 for an explicit conversion • lib/app/features/customer/presentation/notification/customer_notification_screen.dart:479:36 • deprecated_member_use
+warning • The value of the field '_orderId' isn't used • lib/app/features/customer/presentation/order_success/customer_order_success_screen.dart:40:16 • unused_field
+   info • Unnecessary use of multiple underscores • lib/app/features/customer/presentation/order_success/customer_order_success_screen.dart:115:40 • unnecessary_underscores
+   info • Unnecessary use of multiple underscores • lib/app/features/customer/presentation/order_success/customer_order_success_screen.dart:508:55 • unnecessary_underscores
+   info • 'groupValue' is deprecated and shouldn't be used. Use a RadioGroup ancestor to manage group value instead. This feature was deprecated after v3.32.0-0.0.pre • lib/app/features/customer/presentation/payment/customer_payment_screen.dart:540:27 • deprecated_member_use
+   info • 'onChanged' is deprecated and shouldn't be used. Use RadioGroup to handle value change instead. This feature was deprecated after v3.32.0-0.0.pre • lib/app/features/customer/presentation/payment/customer_payment_screen.dart:541:27 • deprecated_member_use
+   info • Unnecessary use of multiple underscores • lib/app/features/customer/presentation/product/customer_detail_product_screen.dart:227:41 • unnecessary_underscores
+   info • Unnecessary use of multiple underscores • lib/app/features/customer/presentation/transaction/customer_transaction_screen.dart:365:29 • unnecessary_underscores
+   info • 'value' is deprecated and shouldn't be used. Use component accessors like .r or .g, or toARGB32 for an explicit conversion • lib/app/features/customer/presentation/transaction/customer_transaction_screen.dart:693:36 • deprecated_member_use
+   info • Unnecessary use of multiple underscores • lib/app/features/customer/presentation/transaction_detail/bloc/customer_transaction_detail_bloc.dart:11:49 • unnecessary_underscores
+   info • Unnecessary use of multiple underscores • lib/app/features/customer/presentation/transaction_detail/bloc/customer_transaction_detail_bloc.dart:14:54 • unnecessary_underscores
+
