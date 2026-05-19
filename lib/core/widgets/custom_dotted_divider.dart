@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:warunk/core/constants/app_colors.dart';
+import 'package:warunk/theme/app_colors.dart';
 
 class CustomDottedDivider extends StatelessWidget {
   final double height;
@@ -51,11 +51,7 @@ class _DottedLinePainter extends CustomPainter {
 
     double startX = 0;
     while (startX < size.width) {
-      canvas.drawLine(
-        Offset(startX, 0),
-        Offset(startX + dashWidth, 0),
-        paint,
-      );
+      canvas.drawLine(Offset(startX, 0), Offset(startX + dashWidth, 0), paint);
       startX += dashWidth + dashSpace;
     }
   }

@@ -1,15 +1,41 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:warunk/app/features/auth/domain/use_case/auth_login_use_case.dart';
+import 'package:warunk/core/bloc/auth/auth_bloc.dart';
+import 'package:warunk/core/constants/constant.dart';
+import 'package:warunk/core/helper/shared_preferences_helper.dart';
 import 'auth_login_event.dart';
 import 'auth_login_state.dart';
 
 class AuthLoginBloc extends Bloc<AuthLoginEvent, AuthLoginState> {
-  AuthLoginBloc() : super(const AuthLoginState()) {
+  final AuthBloc _authBloc;
+  final AuthLoginUseCase _useCase;
+
+  AuthLoginBloc({required AuthBloc authBloc, required AuthLoginUseCase useCase})
+    : _authBloc = authBloc,
+      _useCase = useCase,
+      super(const AuthLoginState()) {
+    on<AuthEmailChanged>(_onEmailChanged);
+    on<AuthPasswordChanged>(_onPasswordChanged);
     on<AuthObscurePasswordToggled>(_onObscurePasswordToggled);
     on<AuthRoleSelected>(_onRoleSelected);
     on<AuthLoginSubmitted>(_onLoginSubmitted);
   }
 
-  void _onObscurePasswordToggled(AuthObscurePasswordToggled event, Emitter<AuthLoginState> emit) {
+  void _onEmailChanged(AuthEmailChanged event, Emitter<AuthLoginState> emit) {
+    emit(state.copyWith(email: event.email));
+  }
+
+  void _onPasswordChanged(
+    AuthPasswordChanged event,
+    Emitter<AuthLoginState> emit,
+  ) {
+    emit(state.copyWith(password: event.password));
+  }
+
+  void _onObscurePasswordToggled(
+    AuthObscurePasswordToggled event,
+    Emitter<AuthLoginState> emit,
+  ) {
     emit(state.copyWith(obscurePassword: !state.obscurePassword));
   }
 
@@ -17,17 +43,22 @@ class AuthLoginBloc extends Bloc<AuthLoginEvent, AuthLoginState> {
     emit(state.copyWith(selectedRole: event.roleIndex));
   }
 
-  Future<void> _onLoginSubmitted(AuthLoginSubmitted event, Emitter<AuthLoginState> emit) async {
+  Future<void> _onLoginSubmitted(
+    AuthLoginSubmitted event,
+    Emitter<AuthLoginState> emit,
+  ) async {
     emit(state.copyWith(isLoading: true));
 
-    await Future.delayed(const Duration(seconds: 1)); // Simulate network
-
-    if (event.email.isEmpty || event.password.isEmpty) {
-      emit(state.copyWith(isLoading: false, errorMessage: 'Email dan password tidak boleh kosong'));
-      return;
+    final response = await _useCase(
+      email: state.email,
+      password: state.password,
+    );
+    if (response.success) {
+      _authBloc.add(AuthEventCheck());
+    } else {
+      emit(state.copyWith(errorMessage: response.message));
     }
 
-    // Dummy logic: Success!
-    emit(state.copyWith(isLoading: false, isSuccess: true, errorMessage: null));
+    emit(state.copyWith(isLoading: false));
   }
 }

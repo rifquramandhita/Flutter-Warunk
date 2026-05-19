@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:warunk/app/features/merchant/presentation/preview_store/bloc/merchant_preview_store_bloc.dart';
-import 'package:warunk/core/constants/app_colors.dart';
+import 'package:warunk/theme/app_colors.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Entry point
@@ -151,11 +151,13 @@ class _StoreProfileCard extends StatelessWidget {
                 Container(
                   height: 100,
                   width: double.infinity,
-                  decoration: const BoxDecoration(
-                    color: Color(0xFF4B5563),
-                  ),
+                  decoration: const BoxDecoration(color: Color(0xFF4B5563)),
                   child: Center(
-                    child: Icon(Icons.image, color: Colors.white.withValues(alpha: 0.5), size: 40),
+                    child: Icon(
+                      Icons.image,
+                      color: Colors.white.withValues(alpha: 0.5),
+                      size: 40,
+                    ),
                   ),
                 ),
                 // Logo Placeholder
@@ -178,7 +180,11 @@ class _StoreProfileCard extends StatelessWidget {
                       ],
                     ),
                     child: const Center(
-                      child: Icon(Icons.storefront, color: AppColors.primary, size: 32),
+                      child: Icon(
+                        Icons.storefront,
+                        color: AppColors.primary,
+                        size: 32,
+                      ),
                     ),
                   ),
                 ),
@@ -204,14 +210,21 @@ class _StoreProfileCard extends StatelessWidget {
                     ),
                     if (state.isOpen)
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 4,
+                        ),
                         decoration: BoxDecoration(
                           color: const Color(0xFFF0FDF4),
                           borderRadius: BorderRadius.circular(20),
                         ),
                         child: Row(
                           children: const [
-                            Icon(Icons.circle, color: AppColors.primary, size: 8),
+                            Icon(
+                              Icons.circle,
+                              color: AppColors.primary,
+                              size: 8,
+                            ),
                             SizedBox(width: 4),
                             Text(
                               'Buka',
@@ -252,7 +265,11 @@ class _StoreProfileCard extends StatelessWidget {
                 const SizedBox(height: 6),
                 Row(
                   children: [
-                    const Icon(Icons.location_on_outlined, color: AppColors.primary, size: 16),
+                    const Icon(
+                      Icons.location_on_outlined,
+                      color: AppColors.primary,
+                      size: 16,
+                    ),
                     const SizedBox(width: 4),
                     Text(
                       state.location,
@@ -267,14 +284,21 @@ class _StoreProfileCard extends StatelessWidget {
                 Row(
                   children: [
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 4,
+                      ),
                       decoration: BoxDecoration(
                         color: const Color(0xFFF0FDF4),
                         borderRadius: BorderRadius.circular(6),
                       ),
                       child: Row(
                         children: const [
-                          Icon(Icons.restaurant, color: AppColors.primary, size: 14),
+                          Icon(
+                            Icons.restaurant,
+                            color: AppColors.primary,
+                            size: 14,
+                          ),
                           SizedBox(width: 4),
                           Text(
                             'Makanan',
@@ -289,14 +313,21 @@ class _StoreProfileCard extends StatelessWidget {
                     ),
                     const SizedBox(width: 8),
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 4,
+                      ),
                       decoration: BoxDecoration(
                         color: const Color(0xFFEFF6FF),
                         borderRadius: BorderRadius.circular(6),
                       ),
                       child: Row(
                         children: const [
-                          Icon(Icons.local_cafe_outlined, color: Color(0xFF3B82F6), size: 14),
+                          Icon(
+                            Icons.local_cafe_outlined,
+                            color: Color(0xFF3B82F6),
+                            size: 14,
+                          ),
                           SizedBox(width: 4),
                           Text(
                             'Minuman',
@@ -336,9 +367,13 @@ class _CategoryTabs extends StatelessWidget {
         children: List.generate(state.tabs.length, (index) {
           final isSelected = state.selectedTabIndex == index;
           return GestureDetector(
-            onTap: () => context.read<MerchantPreviewStoreBloc>().add(MerchantPreviewStoreTabChanged(index)),
+            onTap: () => context.read<MerchantPreviewStoreBloc>().add(
+              MerchantPreviewStoreTabChanged(index),
+            ),
             child: Container(
-              margin: EdgeInsets.only(right: index == state.tabs.length - 1 ? 0 : 12),
+              margin: EdgeInsets.only(
+                right: index == state.tabs.length - 1 ? 0 : 12,
+              ),
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
               decoration: BoxDecoration(
                 color: isSelected ? const Color(0xFFF0FDF4) : AppColors.white,
@@ -424,7 +459,11 @@ class _ProductCard extends StatelessWidget {
               width: double.infinity,
               color: const Color(0xFFF3F4F6),
               child: const Center(
-                child: Icon(Icons.fastfood, color: AppColors.greyBorder, size: 40),
+                child: Icon(
+                  Icons.fastfood,
+                  color: AppColors.greyBorder,
+                  size: 40,
+                ),
               ),
             ),
           ),
@@ -463,7 +502,11 @@ class _ProductCard extends StatelessWidget {
                         borderRadius: BorderRadius.circular(8),
                         border: Border.all(color: AppColors.primary),
                       ),
-                      child: const Icon(Icons.add, color: AppColors.primary, size: 16),
+                      child: const Icon(
+                        Icons.add,
+                        color: AppColors.primary,
+                        size: 16,
+                      ),
                     ),
                   ],
                 ),
@@ -491,8 +534,14 @@ class _BottomEditButton extends StatelessWidget {
         width: double.infinity,
         height: 48,
         child: ElevatedButton.icon(
-          onPressed: () => Navigator.of(context).pop(), // Pop to go back to info store (edit mode)
-          icon: const Icon(Icons.edit_outlined, color: AppColors.primary, size: 18),
+          onPressed: () => Navigator.of(
+            context,
+          ).pop(), // Pop to go back to info store (edit mode)
+          icon: const Icon(
+            Icons.edit_outlined,
+            color: AppColors.primary,
+            size: 18,
+          ),
           label: const Text(
             'Edit Toko',
             style: TextStyle(

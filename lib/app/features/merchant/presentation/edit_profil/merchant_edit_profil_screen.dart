@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:warunk/app/features/merchant/presentation/edit_profil/bloc/merchant_edit_profil_bloc.dart';
-import 'package:warunk/core/constants/app_colors.dart';
+import 'package:warunk/theme/app_colors.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Entry point — provides BLoC
@@ -136,9 +136,9 @@ class _EditProfilBodyState extends State<_EditProfilBody> {
                 controller: _namaTokoCtrl,
                 hintText: 'Masukkan nama toko',
                 keyboardType: TextInputType.text,
-                onChanged: (v) => context
-                    .read<MerchantEditProfilBloc>()
-                    .add(MerchantEditNamaToko(v)),
+                onChanged: (v) => context.read<MerchantEditProfilBloc>().add(
+                  MerchantEditNamaToko(v),
+                ),
               ),
               const SizedBox(height: 20),
 
@@ -156,9 +156,9 @@ class _EditProfilBodyState extends State<_EditProfilBody> {
                 hintText: 'Masukkan nomor WhatsApp',
                 keyboardType: TextInputType.phone,
                 inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                onChanged: (v) => context
-                    .read<MerchantEditProfilBloc>()
-                    .add(MerchantEditWhatsApp(v)),
+                onChanged: (v) => context.read<MerchantEditProfilBloc>().add(
+                  MerchantEditWhatsApp(v),
+                ),
               ),
               const SizedBox(height: 20),
 
@@ -169,9 +169,9 @@ class _EditProfilBodyState extends State<_EditProfilBody> {
                 controller: _emailCtrl,
                 hintText: 'Masukkan email',
                 keyboardType: TextInputType.emailAddress,
-                onChanged: (v) => context
-                    .read<MerchantEditProfilBloc>()
-                    .add(MerchantEditEmail(v)),
+                onChanged: (v) => context.read<MerchantEditProfilBloc>().add(
+                  MerchantEditEmail(v),
+                ),
               ),
               const SizedBox(height: 32),
 
@@ -192,9 +192,8 @@ class _AvatarPicker extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => context
-          .read<MerchantEditProfilBloc>()
-          .add(MerchantEditFotoTapped()),
+      onTap: () =>
+          context.read<MerchantEditProfilBloc>().add(MerchantEditFotoTapped()),
       child: Stack(
         children: [
           // Avatar circle
@@ -228,10 +227,7 @@ class _AvatarPicker extends StatelessWidget {
               decoration: BoxDecoration(
                 color: AppColors.white,
                 shape: BoxShape.circle,
-                border: Border.all(
-                  color: AppColors.primary,
-                  width: 1.5,
-                ),
+                border: Border.all(color: AppColors.primary, width: 1.5),
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black.withValues(alpha: 0.1),
@@ -303,16 +299,10 @@ class _EditField extends StatelessWidget {
         keyboardType: keyboardType,
         inputFormatters: inputFormatters,
         onChanged: onChanged,
-        style: const TextStyle(
-          fontSize: 14,
-          color: AppColors.textDark,
-        ),
+        style: const TextStyle(fontSize: 14, color: AppColors.textDark),
         decoration: InputDecoration(
           hintText: hintText,
-          hintStyle: const TextStyle(
-            color: AppColors.greyText,
-            fontSize: 14,
-          ),
+          hintStyle: const TextStyle(color: AppColors.greyText, fontSize: 14),
           border: InputBorder.none,
           contentPadding: const EdgeInsets.symmetric(
             horizontal: 16,
@@ -348,18 +338,15 @@ class _KategoriDropdown extends StatelessWidget {
             Icons.keyboard_arrow_down_rounded,
             color: AppColors.greyText,
           ),
-          style: const TextStyle(
-            fontSize: 14,
-            color: AppColors.textDark,
-          ),
+          style: const TextStyle(fontSize: 14, color: AppColors.textDark),
           items: MerchantEditProfilState.kategoriOptions.map((k) {
             return DropdownMenuItem<String>(value: k, child: Text(k));
           }).toList(),
           onChanged: (v) {
             if (v != null) {
-              context
-                  .read<MerchantEditProfilBloc>()
-                  .add(MerchantEditKategoriToko(v));
+              context.read<MerchantEditProfilBloc>().add(
+                MerchantEditKategoriToko(v),
+              );
             }
           },
         ),
@@ -383,9 +370,9 @@ class _SaveButton extends StatelessWidget {
       child: ElevatedButton(
         onPressed: isSaving
             ? null
-            : () => context
-                .read<MerchantEditProfilBloc>()
-                .add(MerchantEditProfilSaved()),
+            : () => context.read<MerchantEditProfilBloc>().add(
+                MerchantEditProfilSaved(),
+              ),
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.primary,
           disabledBackgroundColor: AppColors.primary.withValues(alpha: 0.6),

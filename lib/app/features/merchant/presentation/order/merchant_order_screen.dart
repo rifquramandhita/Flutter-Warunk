@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:warunk/app/features/merchant/presentation/detail_order/merchant_detail_order_screen.dart';
 import 'package:warunk/app/features/merchant/presentation/order/bloc/merchant_order_bloc.dart';
-import 'package:warunk/core/constants/app_colors.dart';
+import 'package:warunk/theme/app_colors.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Entry point — provides BLoC
@@ -58,9 +58,9 @@ class _MerchantOrderView extends StatelessWidget {
       ),
       actions: [
         GestureDetector(
-          onTap: () => context
-              .read<MerchantOrderBloc>()
-              .add(MerchantOrderFilterTapped()),
+          onTap: () => context.read<MerchantOrderBloc>().add(
+            MerchantOrderFilterTapped(),
+          ),
           child: Container(
             margin: const EdgeInsets.only(right: 16),
             width: 38,
@@ -103,9 +103,9 @@ class _TabFilter extends StatelessWidget {
             itemBuilder: (context, index) {
               final isSelected = state.selectedTab == index;
               return GestureDetector(
-                onTap: () => context
-                    .read<MerchantOrderBloc>()
-                    .add(MerchantOrderTabChanged(index)),
+                onTap: () => context.read<MerchantOrderBloc>().add(
+                  MerchantOrderTabChanged(index),
+                ),
                 child: AnimatedContainer(
                   duration: const Duration(milliseconds: 200),
                   padding: const EdgeInsets.symmetric(horizontal: 18),
@@ -184,8 +184,7 @@ class _OrderList extends StatelessWidget {
           padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
           itemCount: orders.length,
           separatorBuilder: (_, _) => const SizedBox(height: 12),
-          itemBuilder: (context, index) =>
-              _OrderCard(order: orders[index]),
+          itemBuilder: (context, index) => _OrderCard(order: orders[index]),
         );
       },
     );
@@ -408,30 +407,24 @@ class _ShoppingBagIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     final (bg, icon) = switch (status) {
       MerchantOrderStatus.baru => (
-          const Color(0xFFFFF3C4),
-          const Color(0xFFF59E0B),
-        ),
+        const Color(0xFFFFF3C4),
+        const Color(0xFFF59E0B),
+      ),
       MerchantOrderStatus.diproses => (
-          const Color(0xFFE8F5F1),
-          AppColors.primary,
-        ),
+        const Color(0xFFE8F5F1),
+        AppColors.primary,
+      ),
       MerchantOrderStatus.selesai => (
-          const Color(0xFFF0FDF4),
-          const Color(0xFF22C55E),
-        ),
-      MerchantOrderStatus.dibatalkan => (
-          const Color(0xFFFEF2F2),
-          Colors.red,
-        ),
+        const Color(0xFFF0FDF4),
+        const Color(0xFF22C55E),
+      ),
+      MerchantOrderStatus.dibatalkan => (const Color(0xFFFEF2F2), Colors.red),
     };
 
     return Container(
       width: 44,
       height: 44,
-      decoration: BoxDecoration(
-        color: bg,
-        shape: BoxShape.circle,
-      ),
+      decoration: BoxDecoration(color: bg, shape: BoxShape.circle),
       child: Icon(Icons.shopping_bag_outlined, color: icon, size: 22),
     );
   }
@@ -448,25 +441,25 @@ class _StatusBadge extends StatelessWidget {
   Widget build(BuildContext context) {
     final (label, bg, text) = switch (status) {
       MerchantOrderStatus.baru => (
-          'BARU',
-          const Color(0xFFFFF3C4),
-          const Color(0xFFF59E0B),
-        ),
+        'BARU',
+        const Color(0xFFFFF3C4),
+        const Color(0xFFF59E0B),
+      ),
       MerchantOrderStatus.diproses => (
-          'DIPROSES',
-          const Color(0xFFE8F5F1),
-          AppColors.primary,
-        ),
+        'DIPROSES',
+        const Color(0xFFE8F5F1),
+        AppColors.primary,
+      ),
       MerchantOrderStatus.selesai => (
-          'SELESAI',
-          const Color(0xFFF0FDF4),
-          const Color(0xFF22C55E),
-        ),
+        'SELESAI',
+        const Color(0xFFF0FDF4),
+        const Color(0xFF22C55E),
+      ),
       MerchantOrderStatus.dibatalkan => (
-          'BATAL',
-          const Color(0xFFFEF2F2),
-          Colors.red,
-        ),
+        'BATAL',
+        const Color(0xFFFEF2F2),
+        Colors.red,
+      ),
     };
 
     return Container(

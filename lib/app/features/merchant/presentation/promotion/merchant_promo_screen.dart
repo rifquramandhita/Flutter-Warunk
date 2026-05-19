@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:warunk/app/features/merchant/presentation/input_promo/merchant_input_promo_screen.dart';
 import 'package:warunk/app/features/merchant/presentation/promotion/bloc/merchant_promo_bloc.dart';
-import 'package:warunk/core/constants/app_colors.dart';
+import 'package:warunk/theme/app_colors.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Entry point — provides BLoC
@@ -55,7 +55,11 @@ class _MerchantPromoView extends StatelessWidget {
             shape: BoxShape.circle,
             border: Border.all(color: AppColors.greyBorder),
           ),
-          child: const Icon(Icons.arrow_back, color: AppColors.textDark, size: 18),
+          child: const Icon(
+            Icons.arrow_back,
+            color: AppColors.textDark,
+            size: 18,
+          ),
         ),
       ),
       title: const Text(
@@ -69,9 +73,7 @@ class _MerchantPromoView extends StatelessWidget {
       actions: [
         GestureDetector(
           onTap: () => Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (_) => const MerchantInputPromoScreen(),
-            ),
+            MaterialPageRoute(builder: (_) => const MerchantInputPromoScreen()),
           ),
           child: Container(
             margin: const EdgeInsets.only(right: 16),
@@ -107,14 +109,19 @@ class _TabFilter extends StatelessWidget {
             children: List.generate(_labels.length, (index) {
               final isSelected = state.selectedTab == index;
               return Padding(
-                padding: EdgeInsets.only(right: index < _labels.length - 1 ? 10 : 0),
+                padding: EdgeInsets.only(
+                  right: index < _labels.length - 1 ? 10 : 0,
+                ),
                 child: GestureDetector(
-                  onTap: () => context
-                      .read<MerchantPromoBloc>()
-                      .add(MerchantPromoTabChanged(index)),
+                  onTap: () => context.read<MerchantPromoBloc>().add(
+                    MerchantPromoTabChanged(index),
+                  ),
                   child: AnimatedContainer(
                     duration: const Duration(milliseconds: 200),
-                    padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 9),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 18,
+                      vertical: 9,
+                    ),
                     decoration: BoxDecoration(
                       color: isSelected
                           ? AppColors.primary.withValues(alpha: 0.13)
@@ -130,8 +137,12 @@ class _TabFilter extends StatelessWidget {
                       _labels[index],
                       style: TextStyle(
                         fontSize: 13,
-                        fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
-                        color: isSelected ? AppColors.primary : AppColors.greyText,
+                        fontWeight: isSelected
+                            ? FontWeight.w700
+                            : FontWeight.w500,
+                        color: isSelected
+                            ? AppColors.primary
+                            : AppColors.greyText,
                       ),
                     ),
                   ),
@@ -325,20 +336,20 @@ class _PromoCard extends StatelessWidget {
   (String, Color, Color) _typeStyle(PromoType type) {
     return switch (type) {
       PromoType.diskon => (
-          'DISKON',
-          const Color(0xFFFFF3C4),
-          const Color(0xFFF59E0B),
-        ),
+        'DISKON',
+        const Color(0xFFFFF3C4),
+        const Color(0xFFF59E0B),
+      ),
       PromoType.potongan => (
-          'POTONGAN',
-          const Color(0xFFDCEEFD),
-          const Color(0xFF2563EB),
-        ),
+        'POTONGAN',
+        const Color(0xFFDCEEFD),
+        const Color(0xFF2563EB),
+      ),
       PromoType.diskonProduk => (
-          'DISKON PRODUK',
-          const Color(0xFFFFF3C4),
-          const Color(0xFFF59E0B),
-        ),
+        'DISKON PRODUK',
+        const Color(0xFFFFF3C4),
+        const Color(0xFFF59E0B),
+      ),
     };
   }
 
@@ -391,9 +402,8 @@ class _PromoToggle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => context
-          .read<MerchantPromoBloc>()
-          .add(MerchantPromoToggled(promo.id)),
+      onTap: () =>
+          context.read<MerchantPromoBloc>().add(MerchantPromoToggled(promo.id)),
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 220),
         width: 48,

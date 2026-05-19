@@ -2,14 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:warunk/app/features/customer/presentation/cart/bloc/customer_cart_bloc.dart';
 import 'package:warunk/app/features/customer/presentation/checkout/customer_checkout_screen.dart';
-import 'package:warunk/core/constants/app_colors.dart';
+import 'package:warunk/theme/app_colors.dart';
 
 class CustomerCartScreen extends StatelessWidget {
   const CustomerCartScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(create: (_) => CustomerCartBloc(), child: const _CartView());
+    return BlocProvider(
+      create: (_) => CustomerCartBloc(),
+      child: const _CartView(),
+    );
   }
 }
 
@@ -157,8 +160,9 @@ class _CartView extends StatelessWidget {
                         border: Border.all(color: AppColors.greyBorder),
                       ),
                       child: TextField(
-                        onChanged: (v) =>
-                            context.read<CustomerCartBloc>().add(CustomerCartNoteChanged(v)),
+                        onChanged: (v) => context.read<CustomerCartBloc>().add(
+                          CustomerCartNoteChanged(v),
+                        ),
                         maxLength: 100,
                         maxLines: 3,
                         style: const TextStyle(
@@ -421,7 +425,11 @@ class _CartView extends StatelessWidget {
     );
   }
 
-  Widget _cartItemCard(BuildContext context, int index, CustomerCartItemEntity item) {
+  Widget _cartItemCard(
+    BuildContext context,
+    int index,
+    CustomerCartItemEntity item,
+  ) {
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
       padding: const EdgeInsets.all(12),
@@ -490,8 +498,9 @@ class _CartView extends StatelessWidget {
                 children: [
                   _qtyBtn(
                     Icons.remove,
-                    () =>
-                        context.read<CustomerCartBloc>().add(CustomerCartQtyChanged(index, -1)),
+                    () => context.read<CustomerCartBloc>().add(
+                      CustomerCartQtyChanged(index, -1),
+                    ),
                   ),
                   SizedBox(
                     width: 34,
@@ -508,15 +517,17 @@ class _CartView extends StatelessWidget {
                   ),
                   _qtyBtn(
                     Icons.add,
-                    () =>
-                        context.read<CustomerCartBloc>().add(CustomerCartQtyChanged(index, 1)),
+                    () => context.read<CustomerCartBloc>().add(
+                      CustomerCartQtyChanged(index, 1),
+                    ),
                   ),
                 ],
               ),
               const SizedBox(height: 6),
               GestureDetector(
-                onTap: () =>
-                    context.read<CustomerCartBloc>().add(CustomerCartItemRemoved(index)),
+                onTap: () => context.read<CustomerCartBloc>().add(
+                  CustomerCartItemRemoved(index),
+                ),
                 child: Container(
                   width: 30,
                   height: 30,

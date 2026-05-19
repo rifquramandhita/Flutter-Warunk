@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:warunk/app/features/customer/presentation/shell/bloc/customer_navigation_bloc.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:warunk/app/features/customer/presentation/shell/customer_shell.dart';
 import 'package:warunk/app/features/merchant/presentation/shell/merchant_shell.dart';
 import 'package:warunk/app/features/auth/presentation/login/bloc/auth_login_bloc.dart';
 import 'package:warunk/app/features/auth/presentation/login/bloc/auth_login_event.dart';
 import 'package:warunk/app/features/auth/presentation/login/bloc/auth_login_state.dart';
 import 'package:warunk/app/features/auth/presentation/register/auth_register_screen.dart';
-import 'package:warunk/core/constants/app_colors.dart';
+import 'package:warunk/core/bloc/auth/auth_bloc.dart';
+import 'package:warunk/core/dependency/dependency.dart';
+import 'package:warunk/core/helper/dialog_helper.dart';
+import 'package:warunk/main.dart';
+import 'package:warunk/theme/app_colors.dart';
+import 'package:warunk/core/widgets/loading_app_widget.dart';
 import 'package:warunk/core/widgets/primary_button.dart';
 
 class AuthLoginScreen extends StatelessWidget {
@@ -16,176 +21,53 @@ class AuthLoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => AuthLoginBloc(),
-      child: const _LoginView(),
-    );
-  }
-}
-
-class _LoginView extends StatefulWidget {
-  const _LoginView();
-
-  @override
-  State<_LoginView> createState() => _LoginViewState();
-}
-
-class _LoginViewState extends State<_LoginView> {
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
-
-  @override
-  void dispose() {
-    _emailController.dispose();
-    _passwordController.dispose();
-    super.dispose();
-  }
-
-  void _onLogin() {
-    context.read<AuthLoginBloc>().add(
-      AuthLoginSubmitted(_emailController.text, _passwordController.text),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.background,
-      body: BlocConsumer<AuthLoginBloc, AuthLoginState>(
+      create: (context) => sl<AuthLoginBloc>(),
+      child: BlocConsumer<AuthLoginBloc, AuthLoginState>(
         listenWhen: (previous, current) =>
-            previous.isSuccess != current.isSuccess ||
             previous.errorMessage != current.errorMessage,
         listener: (context, state) {
           if (state.errorMessage != null) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(state.errorMessage!),
-                backgroundColor: Colors.red,
-              ),
-            );
-          } else if (state.isSuccess) {
-            final isMerchant = state.selectedRole == 1;
-            Navigator.of(context).pushReplacement(
-              MaterialPageRoute(
-                builder: (_) => isMerchant
-                    ? const MerchantShell()
-                    : BlocProvider(
-                        create: (_) => CustomerNavigationBloc(),
-                        child: const CustomerShell(),
-                      ),
-              ),
+            DialogHelper.showErrorSnackBar(
+              context: context,
+              text: state.errorMessage!,
             );
           }
         },
         builder: (context, state) {
-          return SafeArea(
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // ── Header illustration area ──────────────────────────────────
-                  _buildHeader(),
-
-                  // ── Form area ────────────────────────────────────────────────
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const SizedBox(height: 24),
-
-                        // Title
-                        const Text(
-                          'Selamat Datang',
-                          style: TextStyle(
-                            fontSize: 26,
-                            fontWeight: FontWeight.w800,
-                            color: AppColors.textDark,
-                            height: 1.2,
-                          ),
-                        ),
-                        const SizedBox(height: 6),
-                        const Text(
-                          'Masuk untuk belanja atau kelola tokomu',
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: AppColors.greyText,
-                          ),
-                        ),
-                        const SizedBox(height: 24),
-
-                        // Role Selector
-                        _buildRoleSelector(context, state),
-                        const SizedBox(height: 20),
-
-                        // Email / Phone field
-                        _buildTextField(
-                          controller: _emailController,
-                          hintText: 'Email / Nomor HP',
-                          prefixIcon: Icons.mail_outline_rounded,
-                        ),
-                        const SizedBox(height: 14),
-
-                        // Password field
-                        _buildPasswordField(context, state),
-
-                        // Forgot password
-                        Align(
-                          alignment: Alignment.centerRight,
-                          child: TextButton(
-                            onPressed: () {},
-                            style: TextButton.styleFrom(
-                              padding: EdgeInsets.zero,
-                              minimumSize: Size.zero,
-                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                            ),
-                            child: const Text(
-                              'Lupa password?',
-                              style: TextStyle(
-                                color: AppColors.primary,
-                                fontWeight: FontWeight.w600,
-                                fontSize: 13,
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 22),
-
-                        // Login button
-                        _buildLoginButton(context, state),
-                        const SizedBox(height: 20),
-
-                        // Divider "atau"
-                        _buildDivider(),
-                        const SizedBox(height: 16),
-
-                        // Google Sign-In button
-                        _buildGoogleButton(),
-                        const SizedBox(height: 28),
-
-                        // Register link
-                        _buildRegisterLink(),
-                        const SizedBox(height: 24),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          );
+          return Scaffold(body: _bodyBuild(context));
         },
       ),
     );
   }
 
-  // ── Header ────────────────────────────────────────────────────────────────
-  Widget _buildHeader() {
+  Widget _bodyBuild(BuildContext context) {
+    final state = context.watch<AuthLoginBloc>().state;
+    return SafeArea(
+      child: Stack(
+        children: [
+          _bodyLayout(context),
+          (state.isLoading) ? LoadingAppWidget() : SizedBox(),
+        ],
+      ),
+    );
+  }
+
+  Widget _bodyLayout(BuildContext context) {
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [_headerLayout(), _formLayout(context)],
+      ),
+    );
+  }
+
+  Widget _headerLayout() {
     return Container(
       width: double.infinity,
       height: 180,
       decoration: const BoxDecoration(color: AppColors.background),
       child: Stack(
         children: [
-          // Background decorative circles
           Positioned(
             right: -30,
             top: -30,
@@ -211,23 +93,19 @@ class _LoginViewState extends State<_LoginView> {
             ),
           ),
 
-          // Scooter illustration (drawn with widgets)
           Positioned(right: 16, bottom: 10, child: _buildScooterIllustration()),
 
-          // Location pin
           Positioned(
             right: 80,
             top: 20,
             child: Icon(Icons.location_on, color: AppColors.primary, size: 28),
           ),
 
-          // Logo + Brand name
           Positioned(
             left: 24,
             top: 32,
             child: Row(
               children: [
-                // Shop icon badge
                 Container(
                   width: 44,
                   height: 44,
@@ -243,7 +121,7 @@ class _LoginViewState extends State<_LoginView> {
                 ),
                 const SizedBox(width: 10),
                 const Text(
-                  'WARRUNK',
+                  'WARUNK',
                   style: TextStyle(
                     fontSize: 22,
                     fontWeight: FontWeight.w900,
@@ -259,7 +137,81 @@ class _LoginViewState extends State<_LoginView> {
     );
   }
 
-  // Simple scooter illustration using canvas/icons
+  Widget _formLayout(BuildContext context) {
+    final state = context.watch<AuthLoginBloc>().state;
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 24),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SizedBox(height: 24),
+
+          const Text(
+            'Selamat Datang',
+            style: TextStyle(
+              fontSize: 26,
+              fontWeight: FontWeight.w800,
+              color: AppColors.textDark,
+              height: 1.2,
+            ),
+          ),
+          const SizedBox(height: 6),
+          const Text(
+            'Masuk untuk belanja atau kelola tokomu',
+            style: TextStyle(fontSize: 14, color: AppColors.greyText),
+          ),
+          const SizedBox(height: 24),
+
+          _roleLayout(context, state),
+          const SizedBox(height: 20),
+
+          _emailTextFieldLayout(
+            hintText: 'Email / Nomor HP',
+            prefixIcon: Icons.mail_outline_rounded,
+            onChanged: (value) =>
+                context.read<AuthLoginBloc>().add(AuthEmailChanged(value)),
+          ),
+          const SizedBox(height: 14),
+
+          _passwordTextFieldLayout(context, state),
+
+          Align(
+            alignment: Alignment.centerRight,
+            child: TextButton(
+              onPressed: () {},
+              style: TextButton.styleFrom(
+                padding: EdgeInsets.zero,
+                minimumSize: Size.zero,
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              ),
+              child: const Text(
+                'Lupa password?',
+                style: TextStyle(
+                  color: AppColors.primary,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 13,
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 22),
+
+          _loginButtonLayout(context, state),
+          const SizedBox(height: 20),
+
+          _dividerLayout(),
+          const SizedBox(height: 16),
+
+          _googleButtonLayout(),
+          const SizedBox(height: 28),
+
+          _registerLayout(context),
+          const SizedBox(height: 24),
+        ],
+      ),
+    );
+  }
+
   Widget _buildScooterIllustration() {
     return SizedBox(
       width: 130,
@@ -267,7 +219,6 @@ class _LoginViewState extends State<_LoginView> {
       child: Stack(
         alignment: Alignment.center,
         children: [
-          // Body
           Positioned(
             bottom: 18,
             left: 0,
@@ -280,7 +231,6 @@ class _LoginViewState extends State<_LoginView> {
               ),
             ),
           ),
-          // Cargo box
           Positioned(
             bottom: 40,
             right: 0,
@@ -349,8 +299,7 @@ class _LoginViewState extends State<_LoginView> {
     );
   }
 
-  // ── Role Selector ─────────────────────────────────────────────────────────
-  Widget _buildRoleSelector(BuildContext context, AuthLoginState state) {
+  Widget _roleLayout(BuildContext context, AuthLoginState state) {
     return Container(
       decoration: BoxDecoration(
         color: AppColors.white,
@@ -360,14 +309,14 @@ class _LoginViewState extends State<_LoginView> {
       padding: const EdgeInsets.all(4),
       child: Row(
         children: [
-          _buildRoleTab(
+          _itemRoleLayout(
             context: context,
             state: state,
             index: 0,
             label: 'Customer',
             icon: Icons.person_outline_rounded,
           ),
-          _buildRoleTab(
+          _itemRoleLayout(
             context: context,
             state: state,
             index: 1,
@@ -379,7 +328,7 @@ class _LoginViewState extends State<_LoginView> {
     );
   }
 
-  Widget _buildRoleTab({
+  Widget _itemRoleLayout({
     required BuildContext context,
     required AuthLoginState state,
     required int index,
@@ -423,11 +372,10 @@ class _LoginViewState extends State<_LoginView> {
     );
   }
 
-  // ── Text Field ────────────────────────────────────────────────────────────
-  Widget _buildTextField({
-    required TextEditingController controller,
+  Widget _emailTextFieldLayout({
     required String hintText,
     required IconData prefixIcon,
+    required ValueChanged<String> onChanged,
   }) {
     return Container(
       decoration: BoxDecoration(
@@ -436,7 +384,7 @@ class _LoginViewState extends State<_LoginView> {
         border: Border.all(color: AppColors.greyBorder),
       ),
       child: TextField(
-        controller: controller,
+        onChanged: onChanged,
         style: const TextStyle(fontSize: 14, color: AppColors.textDark),
         decoration: InputDecoration(
           hintText: hintText,
@@ -452,8 +400,7 @@ class _LoginViewState extends State<_LoginView> {
     );
   }
 
-  // ── Password Field ────────────────────────────────────────────────────────
-  Widget _buildPasswordField(BuildContext context, AuthLoginState state) {
+  Widget _passwordTextFieldLayout(BuildContext context, AuthLoginState state) {
     return Container(
       decoration: BoxDecoration(
         color: AppColors.white,
@@ -461,7 +408,8 @@ class _LoginViewState extends State<_LoginView> {
         border: Border.all(color: AppColors.greyBorder),
       ),
       child: TextField(
-        controller: _passwordController,
+        onChanged: (value) =>
+            context.read<AuthLoginBloc>().add(AuthPasswordChanged(value)),
         obscureText: state.obscurePassword,
         style: const TextStyle(fontSize: 14, color: AppColors.textDark),
         decoration: InputDecoration(
@@ -493,17 +441,15 @@ class _LoginViewState extends State<_LoginView> {
     );
   }
 
-  // ── Login Button ──────────────────────────────────────────────────────────
-  Widget _buildLoginButton(BuildContext context, AuthLoginState state) {
+  Widget _loginButtonLayout(BuildContext context, AuthLoginState state) {
     return PrimaryButton(
       label: 'Masuk',
       isLoading: state.isLoading,
-      onPressed: _onLogin,
+      onPressed: () => context.read<AuthLoginBloc>().add(AuthLoginSubmitted()),
     );
   }
 
-  // ── Divider ───────────────────────────────────────────────────────────────
-  Widget _buildDivider() {
+  Widget _dividerLayout() {
     return Row(
       children: [
         const Expanded(
@@ -523,8 +469,7 @@ class _LoginViewState extends State<_LoginView> {
     );
   }
 
-  // ── Google Button ─────────────────────────────────────────────────────────
-  Widget _buildGoogleButton() {
+  Widget _googleButtonLayout() {
     return SizedBox(
       width: double.infinity,
       height: 52,
@@ -540,8 +485,7 @@ class _LoginViewState extends State<_LoginView> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // Google "G" logo drawn with colored arcs
-            _buildGoogleLogo(),
+            SvgPicture.asset('assets/images/google.svg', width: 22, height: 22),
             const SizedBox(width: 10),
             const Text(
               'Masuk dengan Google',
@@ -557,16 +501,7 @@ class _LoginViewState extends State<_LoginView> {
     );
   }
 
-  Widget _buildGoogleLogo() {
-    return SizedBox(
-      width: 22,
-      height: 22,
-      child: CustomPaint(painter: _GoogleLogoPainter()),
-    );
-  }
-
-  // ── Register Link ─────────────────────────────────────────────────────────
-  Widget _buildRegisterLink() {
+  Widget _registerLayout(BuildContext context) {
     return Center(
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -594,7 +529,6 @@ class _LoginViewState extends State<_LoginView> {
   }
 }
 
-// ── Google Logo Painter ───────────────────────────────────────────────────────
 class _GoogleLogoPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {

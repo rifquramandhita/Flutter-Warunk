@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:warunk/app/features/merchant/presentation/dashboard/bloc/merchant_dashboard_bloc.dart';
-import 'package:warunk/core/constants/app_colors.dart';
+import 'package:warunk/theme/app_colors.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Entry point — provides BLoC
@@ -83,7 +83,10 @@ class _DashboardHeader extends StatelessWidget {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(14),
                   color: AppColors.primary.withValues(alpha: 0.15),
-                  border: Border.all(color: AppColors.primary.withValues(alpha: 0.3), width: 2),
+                  border: Border.all(
+                    color: AppColors.primary.withValues(alpha: 0.3),
+                    width: 2,
+                  ),
                 ),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(12),
@@ -108,7 +111,10 @@ class _DashboardHeader extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 3,
+                      ),
                       decoration: BoxDecoration(
                         color: AppColors.primary.withValues(alpha: 0.12),
                         borderRadius: BorderRadius.circular(20),
@@ -194,7 +200,11 @@ class _StatsGrid extends StatelessWidget {
   final MerchantDashboardState state;
 
   static final _fmt = NumberFormat.decimalPattern('id');
-  static final _currency = NumberFormat.currency(locale: 'id', symbol: 'Rp', decimalDigits: 0);
+  static final _currency = NumberFormat.currency(
+    locale: 'id',
+    symbol: 'Rp',
+    decimalDigits: 0,
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -351,7 +361,11 @@ class _StatCard extends StatelessWidget {
                 ),
               ),
               if (showArrow)
-                const Icon(Icons.chevron_right, color: AppColors.greyText, size: 16),
+                const Icon(
+                  Icons.chevron_right,
+                  color: AppColors.greyText,
+                  size: 16,
+                ),
             ],
           ),
         ],
@@ -402,7 +416,10 @@ class _SalesChart extends StatelessWidget {
               GestureDetector(
                 onTap: () {},
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 6,
+                  ),
                   decoration: BoxDecoration(
                     color: AppColors.background,
                     borderRadius: BorderRadius.circular(20),
@@ -420,7 +437,11 @@ class _SalesChart extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(width: 4),
-                      const Icon(Icons.keyboard_arrow_down, size: 16, color: AppColors.textDark),
+                      const Icon(
+                        Icons.keyboard_arrow_down,
+                        size: 16,
+                        color: AppColors.textDark,
+                      ),
                     ],
                   ),
                 ),
@@ -430,10 +451,7 @@ class _SalesChart extends StatelessWidget {
           const SizedBox(height: 16),
           SizedBox(
             height: 160,
-            child: _LineChart(
-              data: state.salesData,
-              labels: state.salesLabels,
-            ),
+            child: _LineChart(data: state.salesData, labels: state.salesLabels),
           ),
         ],
       ),
@@ -512,7 +530,9 @@ class _LineChartPainter extends CustomPainter {
     canvas.drawPath(
       areaPath,
       Paint()
-        ..shader = gradient.createShader(Rect.fromLTWH(0, 0, size.width, size.height))
+        ..shader = gradient.createShader(
+          Rect.fromLTWH(0, 0, size.width, size.height),
+        )
         ..style = PaintingStyle.fill,
     );
 
@@ -521,15 +541,26 @@ class _LineChartPainter extends CustomPainter {
     for (var label in ['1.5 jt', '1 jt', '500 rb', '0']) {
       double val;
       switch (label) {
-        case '1.5 jt': val = 1500000; break;
-        case '1 jt': val = 1000000; break;
-        case '500 rb': val = 500000; break;
-        default: val = 0;
+        case '1.5 jt':
+          val = 1500000;
+          break;
+        case '1 jt':
+          val = 1000000;
+          break;
+        case '500 rb':
+          val = 500000;
+          break;
+        default:
+          val = 0;
       }
       final y = size.height - ((val - minVal) / range * size.height);
       if (y < 0 || y > size.height) continue;
       // dashed grid line
-      _drawDashedLine(canvas, Offset(0, y.clamp(0, size.height)), Offset(size.width, y.clamp(0, size.height)));
+      _drawDashedLine(
+        canvas,
+        Offset(0, y.clamp(0, size.height)),
+        Offset(size.width, y.clamp(0, size.height)),
+      );
       textPainter.text = TextSpan(
         text: label,
         style: const TextStyle(color: AppColors.greyText, fontSize: 9),
@@ -548,14 +579,26 @@ class _LineChartPainter extends CustomPainter {
 
     final linePath = Path()..moveTo(points.first.dx, points.first.dy);
     for (int i = 1; i < points.length; i++) {
-      final cp1 = Offset((points[i - 1].dx + points[i].dx) / 2, points[i - 1].dy);
+      final cp1 = Offset(
+        (points[i - 1].dx + points[i].dx) / 2,
+        points[i - 1].dy,
+      );
       final cp2 = Offset((points[i - 1].dx + points[i].dx) / 2, points[i].dy);
-      linePath.cubicTo(cp1.dx, cp1.dy, cp2.dx, cp2.dy, points[i].dx, points[i].dy);
+      linePath.cubicTo(
+        cp1.dx,
+        cp1.dy,
+        cp2.dx,
+        cp2.dy,
+        points[i].dx,
+        points[i].dy,
+      );
     }
     canvas.drawPath(linePath, linePaint);
 
     // Draw dots on each point
-    final dotPaint = Paint()..color = AppColors.white..style = PaintingStyle.fill;
+    final dotPaint = Paint()
+      ..color = AppColors.white
+      ..style = PaintingStyle.fill;
     final dotBorderPaint = Paint()
       ..color = AppColors.primary
       ..style = PaintingStyle.stroke
@@ -601,7 +644,11 @@ class _RecentOrders extends StatelessWidget {
   const _RecentOrders({required this.state});
   final MerchantDashboardState state;
 
-  static final _currency = NumberFormat.currency(locale: 'id', symbol: 'Rp', decimalDigits: 0);
+  static final _currency = NumberFormat.currency(
+    locale: 'id',
+    symbol: 'Rp',
+    decimalDigits: 0,
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -636,7 +683,9 @@ class _RecentOrders extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 12),
-          ...state.recentOrders.map((order) => _OrderItem(order: order, currency: _currency)),
+          ...state.recentOrders.map(
+            (order) => _OrderItem(order: order, currency: _currency),
+          ),
         ],
       ),
     );
@@ -699,7 +748,10 @@ class _OrderItem extends StatelessWidget {
                 const SizedBox(height: 2),
                 Text(
                   order.dateTime,
-                  style: const TextStyle(fontSize: 10, color: AppColors.greyText),
+                  style: const TextStyle(
+                    fontSize: 10,
+                    color: AppColors.greyText,
+                  ),
                 ),
               ],
             ),

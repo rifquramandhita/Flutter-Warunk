@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:warunk/app/features/customer/presentation/transaction/bloc/customer_transaction_bloc.dart';
 import 'package:warunk/app/features/customer/presentation/transaction_detail/bloc/customer_transaction_detail_bloc.dart';
-import 'package:warunk/core/constants/app_colors.dart';
+import 'package:warunk/theme/app_colors.dart';
 
 // ── Item model ─────────────────────────────────────────────────────────────
 class _OrderItem {
@@ -60,7 +60,10 @@ class _DetailView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<CustomerTransactionDetailBloc, CustomerTransactionDetailState>(
+    return BlocBuilder<
+      CustomerTransactionDetailBloc,
+      CustomerTransactionDetailState
+    >(
       builder: (context, state) {
         final tx = state.transaction;
         final steps = _getSteps(tx.status);

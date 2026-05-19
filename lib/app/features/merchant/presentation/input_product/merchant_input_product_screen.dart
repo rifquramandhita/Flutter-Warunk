@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:warunk/app/features/merchant/presentation/input_product/bloc/merchant_input_product_bloc.dart';
-import 'package:warunk/core/constants/app_colors.dart';
+import 'package:warunk/theme/app_colors.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Entry point
@@ -157,8 +157,8 @@ class _FormBodyState extends State<_FormBody> {
                       onChanged: (v) {
                         if (v != null) {
                           context.read<MerchantInputProductBloc>().add(
-                                MerchantInputProductKategoriChanged(v),
-                              );
+                            MerchantInputProductKategoriChanged(v),
+                          );
                         }
                       },
                     ),
@@ -228,8 +228,8 @@ class _FormBodyState extends State<_FormBody> {
                       onChanged: (v) {
                         if (v != null) {
                           context.read<MerchantInputProductBloc>().add(
-                                MerchantInputProductSatuanChanged(v),
-                              );
+                            MerchantInputProductSatuanChanged(v),
+                          );
                         }
                       },
                     ),
@@ -297,9 +297,9 @@ class _FotoUploadArea extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => context
-          .read<MerchantInputProductBloc>()
-          .add(MerchantInputProductFotoTapped()),
+      onTap: () => context.read<MerchantInputProductBloc>().add(
+        MerchantInputProductFotoTapped(),
+      ),
       child: Container(
         width: double.infinity,
         height: 130,
@@ -314,8 +314,11 @@ class _FotoUploadArea extends StatelessWidget {
         ),
         child: hasFoto
             ? const Center(
-                child: Icon(Icons.check_circle,
-                    color: AppColors.primary, size: 40),
+                child: Icon(
+                  Icons.check_circle,
+                  color: AppColors.primary,
+                  size: 40,
+                ),
               )
             : Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -337,10 +340,7 @@ class _FotoUploadArea extends StatelessWidget {
                   const SizedBox(height: 4),
                   const Text(
                     'PNG, JPG maksimal 5MB',
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: AppColors.greyText,
-                    ),
+                    style: TextStyle(fontSize: 12, color: AppColors.greyText),
                   ),
                 ],
               ),
@@ -405,14 +405,14 @@ class _InputField extends StatelessWidget {
         style: const TextStyle(fontSize: 14, color: AppColors.textDark),
         decoration: InputDecoration(
           hintText: hintText,
-          hintStyle:
-              const TextStyle(fontSize: 14, color: AppColors.greyText),
+          hintStyle: const TextStyle(fontSize: 14, color: AppColors.greyText),
           prefixText: prefixText,
-          prefixStyle: const TextStyle(
-              fontSize: 14, color: AppColors.textDark),
+          prefixStyle: const TextStyle(fontSize: 14, color: AppColors.textDark),
           border: InputBorder.none,
-          contentPadding:
-              const EdgeInsets.symmetric(horizontal: 14, vertical: 13),
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 14,
+            vertical: 13,
+          ),
         ),
       ),
     );
@@ -450,18 +450,15 @@ class _DropdownField extends StatelessWidget {
           isExpanded: true,
           hint: Text(
             hintText,
-            style:
-                const TextStyle(fontSize: 14, color: AppColors.greyText),
+            style: const TextStyle(fontSize: 14, color: AppColors.greyText),
           ),
           icon: const Icon(
             Icons.keyboard_arrow_down_rounded,
             color: AppColors.greyText,
           ),
-          style:
-              const TextStyle(fontSize: 14, color: AppColors.textDark),
+          style: const TextStyle(fontSize: 14, color: AppColors.textDark),
           items: items
-              .map((s) =>
-                  DropdownMenuItem<String>(value: s, child: Text(s)))
+              .map((s) => DropdownMenuItem<String>(value: s, child: Text(s)))
               .toList(),
           onChanged: onChanged,
         ),
@@ -500,21 +497,19 @@ class _DeskripsiField extends StatelessWidget {
             controller: controller,
             maxLines: 4,
             maxLength: _maxLength,
-            buildCounter: (_,
-                    {required currentLength,
-                    required isFocused,
-                    maxLength}) =>
-                null,
+            buildCounter:
+                (_, {required currentLength, required isFocused, maxLength}) =>
+                    null,
             onChanged: onChanged,
-            style:
-                const TextStyle(fontSize: 14, color: AppColors.textDark),
+            style: const TextStyle(fontSize: 14, color: AppColors.textDark),
             decoration: const InputDecoration(
               hintText: 'Tulis deskripsi produk (opsional)',
-              hintStyle:
-                  TextStyle(fontSize: 14, color: AppColors.greyText),
+              hintStyle: TextStyle(fontSize: 14, color: AppColors.greyText),
               border: InputBorder.none,
-              contentPadding:
-                  EdgeInsets.symmetric(horizontal: 14, vertical: 13),
+              contentPadding: EdgeInsets.symmetric(
+                horizontal: 14,
+                vertical: 13,
+              ),
             ),
           ),
           Padding(
@@ -523,10 +518,7 @@ class _DeskripsiField extends StatelessWidget {
               alignment: Alignment.centerRight,
               child: Text(
                 '$charCount/$_maxLength',
-                style: const TextStyle(
-                  fontSize: 11,
-                  color: AppColors.greyText,
-                ),
+                style: const TextStyle(fontSize: 11, color: AppColors.greyText),
               ),
             ),
           ),
@@ -562,19 +554,16 @@ class _TampilkanRow extends StatelessWidget {
               const SizedBox(height: 2),
               const Text(
                 'Produk akan tampil di toko Anda',
-                style: TextStyle(
-                  fontSize: 12,
-                  color: AppColors.greyText,
-                ),
+                style: TextStyle(fontSize: 12, color: AppColors.greyText),
               ),
             ],
           ),
         ),
         // Animated toggle
         GestureDetector(
-          onTap: () => context
-              .read<MerchantInputProductBloc>()
-              .add(MerchantInputProductTampilkanToggled()),
+          onTap: () => context.read<MerchantInputProductBloc>().add(
+            MerchantInputProductTampilkanToggled(),
+          ),
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 220),
             width: 48,
@@ -657,10 +646,7 @@ class _OptionalRow extends StatelessWidget {
           Container(
             width: 42,
             height: 42,
-            decoration: BoxDecoration(
-              color: iconBg,
-              shape: BoxShape.circle,
-            ),
+            decoration: BoxDecoration(color: iconBg, shape: BoxShape.circle),
             child: Icon(icon, color: iconColor, size: 20),
           ),
           const SizedBox(width: 12),
@@ -687,11 +673,7 @@ class _OptionalRow extends StatelessWidget {
               ],
             ),
           ),
-          const Icon(
-            Icons.chevron_right,
-            color: AppColors.greyText,
-            size: 20,
-          ),
+          const Icon(Icons.chevron_right, color: AppColors.greyText, size: 20),
         ],
       ),
     );
@@ -725,9 +707,9 @@ class _SimpanButton extends StatelessWidget {
         child: ElevatedButton(
           onPressed: (state.isSaving || !state.isValid)
               ? null
-              : () => context
-                  .read<MerchantInputProductBloc>()
-                  .add(MerchantInputProductSaved()),
+              : () => context.read<MerchantInputProductBloc>().add(
+                  MerchantInputProductSaved(),
+                ),
           style: ElevatedButton.styleFrom(
             backgroundColor: AppColors.primary,
             disabledBackgroundColor: AppColors.primary.withValues(alpha: 0.5),

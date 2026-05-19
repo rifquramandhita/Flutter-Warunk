@@ -1,6 +1,16 @@
 
 abstract class AuthLoginEvent {}
 
+class AuthEmailChanged extends AuthLoginEvent {
+  final String email;
+  AuthEmailChanged(this.email);
+}
+
+class AuthPasswordChanged extends AuthLoginEvent {
+  final String password;
+  AuthPasswordChanged(this.password);
+}
+
 class AuthObscurePasswordToggled extends AuthLoginEvent {}
 
 class AuthRoleSelected extends AuthLoginEvent {
@@ -8,8 +18,4 @@ class AuthRoleSelected extends AuthLoginEvent {
   AuthRoleSelected(this.roleIndex);
 }
 
-class AuthLoginSubmitted extends AuthLoginEvent {
-  final String email;
-  final String password;
-  AuthLoginSubmitted(this.email, this.password);
-}
+class AuthLoginSubmitted extends AuthLoginEvent {}

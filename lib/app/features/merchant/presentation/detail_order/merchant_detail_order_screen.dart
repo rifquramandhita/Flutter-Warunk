@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:warunk/app/features/merchant/presentation/detail_order/bloc/merchant_detail_order_bloc.dart';
-import 'package:warunk/core/constants/app_colors.dart';
+import 'package:warunk/theme/app_colors.dart';
 import 'package:warunk/core/widgets/custom_dotted_divider.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -113,10 +113,7 @@ class _HeaderCard extends StatelessWidget {
         children: [
           const Text(
             'Order ID',
-            style: TextStyle(
-              fontSize: 12,
-              color: AppColors.greyText,
-            ),
+            style: TextStyle(fontSize: 12, color: AppColors.greyText),
           ),
           const SizedBox(height: 4),
           Row(
@@ -132,7 +129,10 @@ class _HeaderCard extends StatelessWidget {
                 ),
               ),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 4,
+                ),
                 decoration: BoxDecoration(
                   color: const Color(0xFFFFF3C4), // yellow bg
                   borderRadius: BorderRadius.circular(8),
@@ -151,10 +151,7 @@ class _HeaderCard extends StatelessWidget {
           const SizedBox(height: 4),
           Text(
             state.dateTime,
-            style: const TextStyle(
-              fontSize: 12,
-              color: AppColors.greyText,
-            ),
+            style: const TextStyle(fontSize: 12, color: AppColors.greyText),
           ),
         ],
       ),
@@ -295,9 +292,9 @@ class _MainCard extends StatelessWidget {
                       ),
                     ),
                     GestureDetector(
-                      onTap: () => context
-                          .read<MerchantDetailOrderBloc>()
-                          .add(MerchantDetailOrderMapsTapped()),
+                      onTap: () => context.read<MerchantDetailOrderBloc>().add(
+                        MerchantDetailOrderMapsTapped(),
+                      ),
                       child: const Text(
                         'Lihat di Maps',
                         style: TextStyle(
@@ -329,54 +326,59 @@ class _MainCard extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 12),
-                ...state.items.map((item) => Padding(
-                      padding: const EdgeInsets.only(bottom: 12),
-                      child: Row(
-                        children: [
-                          Container(
-                            width: 44,
-                            height: 44,
-                            decoration: BoxDecoration(
-                              color: AppColors.primary.withValues(alpha: 0.1),
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: Center(
-                              child: Text(item.emoji, style: const TextStyle(fontSize: 24)),
-                            ),
+                ...state.items.map(
+                  (item) => Padding(
+                    padding: const EdgeInsets.only(bottom: 12),
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 44,
+                          height: 44,
+                          decoration: BoxDecoration(
+                            color: AppColors.primary.withValues(alpha: 0.1),
+                            borderRadius: BorderRadius.circular(8),
                           ),
-                          const SizedBox(width: 12),
-                          Expanded(
+                          child: Center(
                             child: Text(
-                              item.nama,
-                              style: const TextStyle(
-                                fontSize: 13,
-                                fontWeight: FontWeight.bold,
-                                color: AppColors.textDark,
-                              ),
+                              item.emoji,
+                              style: const TextStyle(fontSize: 24),
                             ),
                           ),
-                          Text(
-                            '${item.qty}x',
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Text(
+                            item.nama,
+                            style: const TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.textDark,
+                            ),
+                          ),
+                        ),
+                        Text(
+                          '${item.qty}x',
+                          style: const TextStyle(
+                            fontSize: 13,
+                            color: AppColors.greyText,
+                          ),
+                        ),
+                        const SizedBox(width: 16),
+                        SizedBox(
+                          width: 70,
+                          child: Text(
+                            _currency.format(item.harga),
+                            textAlign: TextAlign.right,
                             style: const TextStyle(
                               fontSize: 13,
                               color: AppColors.greyText,
                             ),
                           ),
-                          const SizedBox(width: 16),
-                          SizedBox(
-                            width: 70,
-                            child: Text(
-                              _currency.format(item.harga),
-                              textAlign: TextAlign.right,
-                              style: const TextStyle(
-                                fontSize: 13,
-                                color: AppColors.greyText,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    )),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
                 const Padding(
                   padding: EdgeInsets.symmetric(vertical: 8),
                   child: CustomDottedDivider(color: AppColors.greyBorder),
@@ -386,10 +388,7 @@ class _MainCard extends StatelessWidget {
                   children: [
                     const Text(
                       'Subtotal',
-                      style: TextStyle(
-                        fontSize: 13,
-                        color: AppColors.greyText,
-                      ),
+                      style: TextStyle(fontSize: 13, color: AppColors.greyText),
                     ),
                     Text(
                       _currency.format(state.subtotal),
@@ -406,10 +405,7 @@ class _MainCard extends StatelessWidget {
                   children: [
                     const Text(
                       'Ongkir (Diantar Toko)',
-                      style: TextStyle(
-                        fontSize: 13,
-                        color: AppColors.greyText,
-                      ),
+                      style: TextStyle(fontSize: 13, color: AppColors.greyText),
                     ),
                     Text(
                       _currency.format(state.ongkir),
@@ -510,10 +506,7 @@ class _PaymentCard extends StatelessWidget {
                   children: [
                     const Text(
                       'Metode',
-                      style: TextStyle(
-                        fontSize: 11,
-                        color: AppColors.greyText,
-                      ),
+                      style: TextStyle(fontSize: 11, color: AppColors.greyText),
                     ),
                     Text(
                       state.paymentMethod,
@@ -527,7 +520,10 @@ class _PaymentCard extends StatelessWidget {
                 ),
               ),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 6,
+                ),
                 decoration: BoxDecoration(
                   color: const Color(0xFFD1FAE5), // light green bg
                   borderRadius: BorderRadius.circular(6),
@@ -587,10 +583,7 @@ class _CatatanCard extends StatelessWidget {
           const SizedBox(height: 8),
           Text(
             state.catatan,
-            style: const TextStyle(
-              fontSize: 13,
-              color: AppColors.greyText,
-            ),
+            style: const TextStyle(fontSize: 13, color: AppColors.greyText),
           ),
         ],
       ),

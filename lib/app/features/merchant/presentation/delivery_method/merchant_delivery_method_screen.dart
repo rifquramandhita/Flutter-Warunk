@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:warunk/app/features/merchant/presentation/delivery_method/bloc/merchant_delivery_method_bloc.dart';
-import 'package:warunk/core/constants/app_colors.dart';
+import 'package:warunk/theme/app_colors.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Entry point
@@ -27,7 +27,10 @@ class _MerchantDeliveryMethodView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<MerchantDeliveryMethodBloc, MerchantDeliveryMethodState>(
+    return BlocListener<
+      MerchantDeliveryMethodBloc,
+      MerchantDeliveryMethodState
+    >(
       listenWhen: (prev, curr) => curr.isSaved && !prev.isSaved,
       listener: (context, _) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -45,58 +48,73 @@ class _MerchantDeliveryMethodView extends StatelessWidget {
       child: Scaffold(
         backgroundColor: AppColors.background,
         appBar: _buildAppBar(context),
-        body: BlocBuilder<MerchantDeliveryMethodBloc, MerchantDeliveryMethodState>(
-          builder: (context, state) {
-            return Column(
-              children: [
-                Expanded(
-                  child: SingleChildScrollView(
-                    padding: const EdgeInsets.fromLTRB(20, 8, 20, 32),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        const Text(
-                          'Pilih metode pengiriman yang Anda sediakan.',
-                          style: TextStyle(
-                            fontSize: 13,
-                            color: AppColors.greyText,
-                          ),
+        body:
+            BlocBuilder<
+              MerchantDeliveryMethodBloc,
+              MerchantDeliveryMethodState
+            >(
+              builder: (context, state) {
+                return Column(
+                  children: [
+                    Expanded(
+                      child: SingleChildScrollView(
+                        padding: const EdgeInsets.fromLTRB(20, 8, 20, 32),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            const Text(
+                              'Pilih metode pengiriman yang Anda sediakan.',
+                              style: TextStyle(
+                                fontSize: 13,
+                                color: AppColors.greyText,
+                              ),
+                            ),
+                            const SizedBox(height: 20),
+
+                            // Methods Card
+                            Container(
+                              decoration: BoxDecoration(
+                                color: AppColors.white,
+                                borderRadius: BorderRadius.circular(16),
+                                border: Border.all(
+                                  color: AppColors.greyBorder.withValues(
+                                    alpha: 0.5,
+                                  ),
+                                ),
+                              ),
+                              child: Column(
+                                children: [
+                                  for (
+                                    var i = 0;
+                                    i < state.methods.length;
+                                    i++
+                                  ) ...[
+                                    _MethodItemRow(item: state.methods[i]),
+                                    if (i < state.methods.length - 1)
+                                      const Divider(
+                                        height: 1,
+                                        color: AppColors.greyBorder,
+                                      ),
+                                  ],
+                                ],
+                              ),
+                            ),
+
+                            const SizedBox(height: 24),
+
+                            // Ongkir Diantar Toko Card
+                            _ShippingFeeCard(state: state),
+                          ],
                         ),
-                        const SizedBox(height: 20),
-                        
-                        // Methods Card
-                        Container(
-                          decoration: BoxDecoration(
-                            color: AppColors.white,
-                            borderRadius: BorderRadius.circular(16),
-                            border: Border.all(color: AppColors.greyBorder.withValues(alpha: 0.5)),
-                          ),
-                          child: Column(
-                            children: [
-                              for (var i = 0; i < state.methods.length; i++) ...[
-                                _MethodItemRow(item: state.methods[i]),
-                                if (i < state.methods.length - 1)
-                                  const Divider(height: 1, color: AppColors.greyBorder),
-                              ],
-                            ],
-                          ),
-                        ),
-                        
-                        const SizedBox(height: 24),
-                        
-                        // Ongkir Diantar Toko Card
-                        _ShippingFeeCard(state: state),
-                      ],
+                      ),
                     ),
-                  ),
-                ),
-                
-                // Bottom Button
-                _BottomActionButtons(state: state),
-              ],
-            );
-          },
-        ),
+
+                    // Bottom Button
+                    _BottomActionButtons(state: state),
+                  ],
+                );
+              },
+            ),
       ),
     );
   }
@@ -211,7 +229,9 @@ class _MethodItemRow extends StatelessWidget {
                   item.isActive ? 'Aktif' : 'Nonaktif',
                   style: TextStyle(
                     fontSize: 12,
-                    color: item.isActive ? AppColors.primary : AppColors.greyText,
+                    color: item.isActive
+                        ? AppColors.primary
+                        : AppColors.greyText,
                   ),
                 ),
               ],
@@ -221,7 +241,9 @@ class _MethodItemRow extends StatelessWidget {
             padding: const EdgeInsets.only(top: 8),
             child: _CustomSwitch(
               isActive: item.isActive,
-              onChanged: () => context.read<MerchantDeliveryMethodBloc>().add(MerchantDeliveryMethodToggled(item.id)),
+              onChanged: () => context.read<MerchantDeliveryMethodBloc>().add(
+                MerchantDeliveryMethodToggled(item.id),
+              ),
             ),
           ),
         ],
@@ -266,10 +288,7 @@ class _ShippingFeeCard extends StatelessWidget {
           const SizedBox(height: 4),
           const Text(
             'Atur ongkir berdasarkan jarak (km)',
-            style: TextStyle(
-              fontSize: 12,
-              color: AppColors.greyText,
-            ),
+            style: TextStyle(fontSize: 12, color: AppColors.greyText),
           ),
           const SizedBox(height: 16),
           for (var i = 0; i < state.feeTiers.length; i++) ...[
@@ -382,18 +401,25 @@ class _BottomActionButtons extends StatelessWidget {
         child: ElevatedButton(
           onPressed: state.isSaving
               ? null
-              : () => context.read<MerchantDeliveryMethodBloc>().add(MerchantDeliveryMethodSaved()),
+              : () => context.read<MerchantDeliveryMethodBloc>().add(
+                  MerchantDeliveryMethodSaved(),
+                ),
           style: ElevatedButton.styleFrom(
             backgroundColor: AppColors.primary,
             disabledBackgroundColor: AppColors.primary.withValues(alpha: 0.5),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
             elevation: 0,
           ),
           child: state.isSaving
               ? const SizedBox(
                   width: 20,
                   height: 20,
-                  child: CircularProgressIndicator(strokeWidth: 2.5, color: Colors.white),
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2.5,
+                    color: Colors.white,
+                  ),
                 )
               : const Text(
                   'Simpan Pengaturan',

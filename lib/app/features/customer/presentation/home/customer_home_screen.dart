@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:warunk/app/features/customer/presentation/home/bloc/customer_home_bloc.dart';
 import 'package:warunk/app/features/customer/presentation/notification/customer_notification_screen.dart';
 import 'package:warunk/app/features/customer/presentation/search/customer_search_screen.dart';
-import 'package:warunk/core/constants/app_colors.dart';
+import 'package:warunk/theme/app_colors.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Home Screen — entry point, menyediakan CustomerHomeBloc
@@ -14,7 +14,10 @@ class CustomerHomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(create: (_) => CustomerHomeBloc(), child: const _HomeView());
+    return BlocProvider(
+      create: (_) => CustomerHomeBloc(),
+      child: const _HomeView(),
+    );
   }
 }
 
@@ -140,9 +143,9 @@ class _NotificationBell extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => Navigator.of(
-        context,
-      ).push(MaterialPageRoute(builder: (_) => const CustomerNotificationScreen())),
+      onTap: () => Navigator.of(context).push(
+        MaterialPageRoute(builder: (_) => const CustomerNotificationScreen()),
+      ),
       child: Stack(
         children: [
           Container(

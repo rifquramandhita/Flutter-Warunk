@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:warunk/app/features/merchant/presentation/payment_method/bloc/merchant_payment_method_bloc.dart';
-import 'package:warunk/core/constants/app_colors.dart';
+import 'package:warunk/theme/app_colors.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Entry point
@@ -38,19 +38,18 @@ class _MerchantPaymentMethodView extends StatelessWidget {
               children: [
                 const Text(
                   'Pilih metode pembayaran yang tersedia di toko Anda.',
-                  style: TextStyle(
-                    fontSize: 13,
-                    color: AppColors.greyText,
-                  ),
+                  style: TextStyle(fontSize: 13, color: AppColors.greyText),
                 ),
                 const SizedBox(height: 20),
-                
+
                 // Methods Card
                 Container(
                   decoration: BoxDecoration(
                     color: AppColors.white,
                     borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: AppColors.greyBorder.withValues(alpha: 0.5)),
+                    border: Border.all(
+                      color: AppColors.greyBorder.withValues(alpha: 0.5),
+                    ),
                   ),
                   child: Column(
                     children: [
@@ -62,23 +61,29 @@ class _MerchantPaymentMethodView extends StatelessWidget {
                     ],
                   ),
                 ),
-                
+
                 const SizedBox(height: 24),
-                
+
                 // Info Card
                 Container(
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
                     color: const Color(0xFFF0F9FF), // very light blue bg
                     borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: const Color(0xFFE0F2FE)), // light blue border
+                    border: Border.all(
+                      color: const Color(0xFFE0F2FE),
+                    ), // light blue border
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(
                         children: const [
-                          Icon(Icons.info_outline, color: Color(0xFF0284C7), size: 18), // blue icon
+                          Icon(
+                            Icons.info_outline,
+                            color: Color(0xFF0284C7),
+                            size: 18,
+                          ), // blue icon
                           SizedBox(width: 8),
                           Text(
                             'Info',
@@ -160,7 +165,10 @@ class _MethodItemRow extends StatelessWidget {
             color: const Color(0xFFFFF7ED),
             borderRadius: BorderRadius.circular(12),
           ),
-          child: const Icon(Icons.account_balance_wallet_outlined, color: Color(0xFFF97316)),
+          child: const Icon(
+            Icons.account_balance_wallet_outlined,
+            color: Color(0xFFF97316),
+          ),
         );
       case 'bank':
         return Container(
@@ -170,7 +178,10 @@ class _MethodItemRow extends StatelessWidget {
             color: const Color(0xFFFEF9C3),
             borderRadius: BorderRadius.circular(12),
           ),
-          child: const Icon(Icons.account_balance_outlined, color: Color(0xFFEAB308)),
+          child: const Icon(
+            Icons.account_balance_outlined,
+            color: Color(0xFFEAB308),
+          ),
         );
       case 'qris':
         return Container(
@@ -190,7 +201,10 @@ class _MethodItemRow extends StatelessWidget {
             color: const Color(0xFFF0F9FF),
             borderRadius: BorderRadius.circular(12),
           ),
-          child: const Icon(Icons.account_balance_wallet, color: Color(0xFF0EA5E9)),
+          child: const Icon(
+            Icons.account_balance_wallet,
+            color: Color(0xFF0EA5E9),
+          ),
         );
       case 'gateway':
       default:
@@ -201,7 +215,10 @@ class _MethodItemRow extends StatelessWidget {
             color: const Color(0xFFF3F4F6),
             borderRadius: BorderRadius.circular(12),
           ),
-          child: const Icon(Icons.receipt_long_outlined, color: Color(0xFF6B7280)),
+          child: const Icon(
+            Icons.receipt_long_outlined,
+            color: Color(0xFF6B7280),
+          ),
         );
     }
   }
@@ -231,7 +248,9 @@ class _MethodItemRow extends StatelessWidget {
                   item.isActive ? 'Aktif' : 'Nonaktif',
                   style: TextStyle(
                     fontSize: 12,
-                    color: item.isActive ? AppColors.primary : AppColors.greyText,
+                    color: item.isActive
+                        ? AppColors.primary
+                        : AppColors.greyText,
                   ),
                 ),
               ],
@@ -239,7 +258,9 @@ class _MethodItemRow extends StatelessWidget {
           ),
           _CustomSwitch(
             isActive: item.isActive,
-            onChanged: () => context.read<MerchantPaymentMethodBloc>().add(MerchantPaymentMethodToggled(item.id)),
+            onChanged: () => context.read<MerchantPaymentMethodBloc>().add(
+              MerchantPaymentMethodToggled(item.id),
+            ),
           ),
         ],
       ),

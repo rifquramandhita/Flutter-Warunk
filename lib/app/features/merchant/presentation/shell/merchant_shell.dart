@@ -6,7 +6,7 @@ import 'package:warunk/app/features/merchant/presentation/product/merchant_produ
 import 'package:warunk/app/features/merchant/presentation/profil/merchant_profil_screen.dart';
 import 'package:warunk/app/features/merchant/presentation/promotion/merchant_promo_screen.dart';
 import 'package:warunk/app/features/merchant/presentation/shell/bloc/merchant_navigation_bloc.dart';
-import 'package:warunk/core/constants/app_colors.dart';
+import 'package:warunk/theme/app_colors.dart';
 
 /// MerchantShell mengelola bottom navigation khusus merchant
 /// dan menampilkan halaman yang sesuai berdasarkan tab yang dipilih.

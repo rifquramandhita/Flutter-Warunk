@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:warunk/app/features/merchant/presentation/operational_hours/bloc/merchant_operational_hours_bloc.dart';
-import 'package:warunk/core/constants/app_colors.dart';
+import 'package:warunk/theme/app_colors.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Entry point
@@ -26,7 +26,10 @@ class _MerchantOperationalHoursView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<MerchantOperationalHoursBloc, MerchantOperationalHoursState>(
+    return BlocListener<
+      MerchantOperationalHoursBloc,
+      MerchantOperationalHoursState
+    >(
       listenWhen: (prev, curr) => curr.isSaved && !prev.isSaved,
       listener: (context, _) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -44,37 +47,41 @@ class _MerchantOperationalHoursView extends StatelessWidget {
       child: Scaffold(
         backgroundColor: AppColors.background,
         appBar: _buildAppBar(context),
-        body: BlocBuilder<MerchantOperationalHoursBloc, MerchantOperationalHoursState>(
-          builder: (context, state) {
-            return Column(
-              children: [
-                Expanded(
-                  child: SingleChildScrollView(
-                    padding: const EdgeInsets.fromLTRB(20, 8, 20, 20),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        // Card 1: Toko Sedang Buka
-                        _MainStatusCard(state: state),
-                        const SizedBox(height: 16),
-                        
-                        // Card 2: Daily Hours List
-                        _DailyHoursCard(state: state),
-                        const SizedBox(height: 16),
-                        
-                        // Card 3: Additional Settings
-                        _AdditionalSettingsCard(state: state),
-                      ],
+        body:
+            BlocBuilder<
+              MerchantOperationalHoursBloc,
+              MerchantOperationalHoursState
+            >(
+              builder: (context, state) {
+                return Column(
+                  children: [
+                    Expanded(
+                      child: SingleChildScrollView(
+                        padding: const EdgeInsets.fromLTRB(20, 8, 20, 20),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            // Card 1: Toko Sedang Buka
+                            _MainStatusCard(state: state),
+                            const SizedBox(height: 16),
+
+                            // Card 2: Daily Hours List
+                            _DailyHoursCard(state: state),
+                            const SizedBox(height: 16),
+
+                            // Card 3: Additional Settings
+                            _AdditionalSettingsCard(state: state),
+                          ],
+                        ),
+                      ),
                     ),
-                  ),
-                ),
-                
-                // Bottom Button
-                _BottomActionButtons(state: state),
-              ],
-            );
-          },
-        ),
+
+                    // Bottom Button
+                    _BottomActionButtons(state: state),
+                  ],
+                );
+              },
+            ),
       ),
     );
   }
@@ -157,10 +164,7 @@ class _MainStatusCard extends StatelessWidget {
                 const SizedBox(height: 4),
                 const Text(
                   'Pelanggan dapat melakukan order',
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: AppColors.greyText,
-                  ),
+                  style: TextStyle(fontSize: 12, color: AppColors.greyText),
                 ),
               ],
             ),
@@ -169,7 +173,9 @@ class _MainStatusCard extends StatelessWidget {
             children: [
               _CustomSwitch(
                 isActive: state.isStoreOpen,
-                onChanged: () => context.read<MerchantOperationalHoursBloc>().add(MerchantOperationalHoursStoreStatusToggled()),
+                onChanged: () => context
+                    .read<MerchantOperationalHoursBloc>()
+                    .add(MerchantOperationalHoursStoreStatusToggled()),
               ),
               const SizedBox(height: 4),
               Text(
@@ -177,7 +183,9 @@ class _MainStatusCard extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 11,
                   fontWeight: FontWeight.bold,
-                  color: state.isStoreOpen ? AppColors.primary : AppColors.greyText,
+                  color: state.isStoreOpen
+                      ? AppColors.primary
+                      : AppColors.greyText,
                 ),
               ),
             ],
@@ -239,27 +247,42 @@ class _DailyRow extends StatelessWidget {
         ),
         _CustomSwitch(
           isActive: day.isOpen,
-          onChanged: () => context.read<MerchantOperationalHoursBloc>().add(MerchantOperationalHoursDayToggled(dayIndex)),
+          onChanged: () => context.read<MerchantOperationalHoursBloc>().add(
+            MerchantOperationalHoursDayToggled(dayIndex),
+          ),
         ),
         const SizedBox(width: 12),
         if (day.isOpen) ...[
-          const Text('Buka', style: TextStyle(fontSize: 12, color: AppColors.greyText)),
+          const Text(
+            'Buka',
+            style: TextStyle(fontSize: 12, color: AppColors.greyText),
+          ),
           const SizedBox(width: 8),
           _TimeDropdown(
             value: day.startTime,
-            onChanged: (v) => context.read<MerchantOperationalHoursBloc>().add(MerchantOperationalHoursStartTimeChanged(dayIndex, v!)),
+            onChanged: (v) => context.read<MerchantOperationalHoursBloc>().add(
+              MerchantOperationalHoursStartTimeChanged(dayIndex, v!),
+            ),
           ),
           const Padding(
             padding: EdgeInsets.symmetric(horizontal: 6),
-            child: Text('-', style: TextStyle(fontSize: 12, color: AppColors.greyText)),
+            child: Text(
+              '-',
+              style: TextStyle(fontSize: 12, color: AppColors.greyText),
+            ),
           ),
           _TimeDropdown(
             value: day.endTime,
-            onChanged: (v) => context.read<MerchantOperationalHoursBloc>().add(MerchantOperationalHoursEndTimeChanged(dayIndex, v!)),
+            onChanged: (v) => context.read<MerchantOperationalHoursBloc>().add(
+              MerchantOperationalHoursEndTimeChanged(dayIndex, v!),
+            ),
           ),
         ] else ...[
           const Expanded(
-            child: Text('Toko Tutup', style: TextStyle(fontSize: 13, color: AppColors.greyText)),
+            child: Text(
+              'Toko Tutup',
+              style: TextStyle(fontSize: 13, color: AppColors.greyText),
+            ),
           ),
         ],
       ],
@@ -285,7 +308,11 @@ class _TimeDropdown extends StatelessWidget {
       child: DropdownButtonHideUnderline(
         child: DropdownButton<String>(
           value: value,
-          icon: const Icon(Icons.keyboard_arrow_down, size: 16, color: AppColors.greyText),
+          icon: const Icon(
+            Icons.keyboard_arrow_down,
+            size: 16,
+            color: AppColors.greyText,
+          ),
           style: const TextStyle(fontSize: 12, color: AppColors.textDark),
           items: MerchantOperationalHoursState.timeOptions
               .map((t) => DropdownMenuItem(value: t, child: Text(t)))
@@ -332,7 +359,11 @@ class _AdditionalSettingsCard extends StatelessWidget {
                   color: AppColors.primary.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(10),
                 ),
-                child: const Icon(Icons.shopping_bag_outlined, color: AppColors.primary, size: 20),
+                child: const Icon(
+                  Icons.shopping_bag_outlined,
+                  color: AppColors.primary,
+                  size: 20,
+                ),
               ),
               const SizedBox(width: 12),
               Expanded(
@@ -350,17 +381,16 @@ class _AdditionalSettingsCard extends StatelessWidget {
                     const SizedBox(height: 2),
                     const Text(
                       'Terima pesanan untuk waktu di luar\njam operasional',
-                      style: TextStyle(
-                        fontSize: 11,
-                        color: AppColors.greyText,
-                      ),
+                      style: TextStyle(fontSize: 11, color: AppColors.greyText),
                     ),
                   ],
                 ),
               ),
               _CustomSwitch(
                 isActive: state.acceptPreorder,
-                onChanged: () => context.read<MerchantOperationalHoursBloc>().add(MerchantOperationalHoursPreorderToggled()),
+                onChanged: () => context
+                    .read<MerchantOperationalHoursBloc>()
+                    .add(MerchantOperationalHoursPreorderToggled()),
               ),
             ],
           ),
@@ -378,7 +408,11 @@ class _AdditionalSettingsCard extends StatelessWidget {
                   color: const Color(0xFFFFF7ED),
                   borderRadius: BorderRadius.circular(10),
                 ),
-                child: const Icon(Icons.access_time, color: Color(0xFFF97316), size: 20),
+                child: const Icon(
+                  Icons.access_time,
+                  color: Color(0xFFF97316),
+                  size: 20,
+                ),
               ),
               const SizedBox(width: 12),
               Expanded(
@@ -396,17 +430,16 @@ class _AdditionalSettingsCard extends StatelessWidget {
                     const SizedBox(height: 2),
                     const Text(
                       'Toko akan otomatis berubah menjadi tutup\ndi luar jam operasional',
-                      style: TextStyle(
-                        fontSize: 11,
-                        color: AppColors.greyText,
-                      ),
+                      style: TextStyle(fontSize: 11, color: AppColors.greyText),
                     ),
                   ],
                 ),
               ),
               _CustomSwitch(
                 isActive: state.autoClose,
-                onChanged: () => context.read<MerchantOperationalHoursBloc>().add(MerchantOperationalHoursAutoCloseToggled()),
+                onChanged: () => context
+                    .read<MerchantOperationalHoursBloc>()
+                    .add(MerchantOperationalHoursAutoCloseToggled()),
               ),
             ],
           ),
@@ -487,18 +520,25 @@ class _BottomActionButtons extends StatelessWidget {
         child: ElevatedButton(
           onPressed: state.isSaving
               ? null
-              : () => context.read<MerchantOperationalHoursBloc>().add(MerchantOperationalHoursSaved()),
+              : () => context.read<MerchantOperationalHoursBloc>().add(
+                  MerchantOperationalHoursSaved(),
+                ),
           style: ElevatedButton.styleFrom(
             backgroundColor: AppColors.primary,
             disabledBackgroundColor: AppColors.primary.withValues(alpha: 0.5),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
             elevation: 0,
           ),
           child: state.isSaving
               ? const SizedBox(
                   width: 20,
                   height: 20,
-                  child: CircularProgressIndicator(strokeWidth: 2.5, color: Colors.white),
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2.5,
+                    color: Colors.white,
+                  ),
                 )
               : const Text(
                   'Simpan Pengaturan',

@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:warunk/app/features/auth/presentation/register/bloc/auth_register_bloc.dart';
 import 'package:warunk/app/features/auth/presentation/register/bloc/auth_register_event.dart';
 import 'package:warunk/app/features/auth/presentation/register/bloc/auth_register_state.dart';
-import 'package:warunk/core/constants/app_colors.dart';
+import 'package:warunk/theme/app_colors.dart';
 import 'package:warunk/core/widgets/primary_button.dart';
 
 class AuthRegisterScreen extends StatelessWidget {

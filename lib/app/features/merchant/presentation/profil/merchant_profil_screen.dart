@@ -7,7 +7,7 @@ import 'package:warunk/app/features/merchant/presentation/information_store/merc
 import 'package:warunk/app/features/merchant/presentation/operational_hours/merchant_operational_hours_screen.dart';
 import 'package:warunk/app/features/merchant/presentation/payment_method/merchant_payment_method_screen.dart';
 import 'package:warunk/app/features/merchant/presentation/profil/bloc/merchant_profil_bloc.dart';
-import 'package:warunk/core/constants/app_colors.dart';
+import 'package:warunk/theme/app_colors.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Entry point — provides BLoC

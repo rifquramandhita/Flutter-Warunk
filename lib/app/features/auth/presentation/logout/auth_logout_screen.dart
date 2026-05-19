@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:warunk/app/features/auth/presentation/login/auth_login_screen.dart';
-import 'package:warunk/core/constants/app_colors.dart';
+import 'package:warunk/theme/app_colors.dart';
 
 class AuthLogoutScreen extends StatelessWidget {
   const AuthLogoutScreen({super.key});

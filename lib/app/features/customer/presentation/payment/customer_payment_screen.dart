@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:warunk/app/features/customer/presentation/order_success/customer_order_success_screen.dart';
 import 'package:warunk/app/features/customer/presentation/payment/bloc/customer_payment_bloc.dart';
 import 'package:warunk/core/widgets/checkout_step_indicator.dart';
-import 'package:warunk/core/constants/app_colors.dart';
+import 'package:warunk/theme/app_colors.dart';
 
 // ── Data ──────────────────────────────────────────────────────────────────────
 class _Method {
@@ -483,8 +483,9 @@ class _PaymentView extends StatelessWidget {
           final selected = state.selectedIndex == idx;
           final isLast = i == methods.length - 1;
           return GestureDetector(
-            onTap: () =>
-                context.read<CustomerPaymentBloc>().add(CustomerPaymentMethodSelected(idx)),
+            onTap: () => context.read<CustomerPaymentBloc>().add(
+              CustomerPaymentMethodSelected(idx),
+            ),
             child: Container(
               color: selected
                   ? AppColors.primary.withValues(alpha: 0.07)
@@ -539,9 +540,9 @@ class _PaymentView extends StatelessWidget {
                         Radio<int>(
                           value: idx,
                           groupValue: state.selectedIndex,
-                          onChanged: (v) => context.read<CustomerPaymentBloc>().add(
-                            CustomerPaymentMethodSelected(v!),
-                          ),
+                          onChanged: (v) => context
+                              .read<CustomerPaymentBloc>()
+                              .add(CustomerPaymentMethodSelected(v!)),
                           activeColor: AppColors.primary,
                           materialTapTargetSize:
                               MaterialTapTargetSize.shrinkWrap,

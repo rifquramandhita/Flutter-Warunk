@@ -5,7 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:warunk/app/features/customer/presentation/order_success/bloc/customer_order_success_bloc.dart';
 import 'package:warunk/app/features/customer/presentation/order_success/bloc/customer_order_success_event.dart';
 import 'package:warunk/app/features/customer/presentation/order_success/bloc/customer_order_success_state.dart';
-import 'package:warunk/core/constants/app_colors.dart';
+import 'package:warunk/theme/app_colors.dart';
 
 class CustomerOrderSuccessScreen extends StatelessWidget {
   final String paymentMethod;
@@ -14,7 +14,8 @@ class CustomerOrderSuccessScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => CustomerOrderSuccessBloc()..add(CustomerLoadOrderSuccessData()),
+      create: (context) =>
+          CustomerOrderSuccessBloc()..add(CustomerLoadOrderSuccessData()),
       child: _OrderSuccessView(paymentMethod: paymentMethod),
     );
   }
@@ -36,8 +37,6 @@ class _OrderSuccessViewState extends State<_OrderSuccessView>
   late final Animation<double> _checkFade;
   late final Animation<double> _contentFade;
   late final Animation<Offset> _contentSlide;
-
-
 
   static const _relatedProducts = [
     (

@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:warunk/app/features/customer/presentation/map/bloc/customer_map_bloc.dart';
 import 'package:warunk/app/features/customer/presentation/map/bloc/customer_map_event.dart';
 import 'package:warunk/app/features/customer/presentation/map/bloc/customer_map_state.dart';
-import 'package:warunk/core/constants/app_colors.dart';
+import 'package:warunk/theme/app_colors.dart';
 
 class CustomerMapScreen extends StatelessWidget {
   const CustomerMapScreen({super.key});
@@ -182,8 +182,9 @@ class _MapViewState extends State<_MapView> {
             children: _filters.map((filter) {
               final isActive = state.activeFilter == filter;
               return GestureDetector(
-                onTap: () =>
-                    context.read<CustomerMapBloc>().add(CustomerMapFilterChanged(filter)),
+                onTap: () => context.read<CustomerMapBloc>().add(
+                  CustomerMapFilterChanged(filter),
+                ),
                 child: Container(
                   margin: const EdgeInsets.only(right: 8),
                   padding: const EdgeInsets.symmetric(

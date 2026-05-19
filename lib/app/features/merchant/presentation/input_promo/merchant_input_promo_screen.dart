@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:warunk/app/features/merchant/presentation/input_promo/bloc/merchant_input_promo_bloc.dart';
-import 'package:warunk/core/constants/app_colors.dart';
+import 'package:warunk/theme/app_colors.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Entry point
@@ -139,9 +139,9 @@ class _FormBodyState extends State<_FormBody> {
                       items: MerchantInputPromoState.tipeOptions,
                       onChanged: (v) {
                         if (v != null) {
-                          context
-                              .read<MerchantInputPromoBloc>()
-                              .add(MerchantInputPromoTipeChanged(v));
+                          context.read<MerchantInputPromoBloc>().add(
+                            MerchantInputPromoTipeChanged(v),
+                          );
                         }
                       },
                     ),
@@ -190,9 +190,7 @@ class _FormBodyState extends State<_FormBody> {
                       controller: _minBeliCtrl,
                       hintText: 'Rp 20.000',
                       keyboardType: TextInputType.number,
-                      inputFormatters: [
-                        FilteringTextInputFormatter.digitsOnly,
-                      ],
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                       prefixText: 'Rp ',
                       onChanged: (v) => context
                           .read<MerchantInputPromoBloc>()
@@ -243,9 +241,7 @@ class _FormBodyState extends State<_FormBody> {
                       controller: _kuotaCtrl,
                       hintText: '100',
                       keyboardType: TextInputType.number,
-                      inputFormatters: [
-                        FilteringTextInputFormatter.digitsOnly,
-                      ],
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                       suffixText: 'kali',
                       onChanged: (v) => context
                           .read<MerchantInputPromoBloc>()
@@ -373,18 +369,21 @@ class _TextField extends StatelessWidget {
           hintText: hintText,
           hintStyle: const TextStyle(fontSize: 14, color: AppColors.greyText),
           prefixText: prefixText,
-          prefixStyle:
-              const TextStyle(fontSize: 14, color: AppColors.textDark),
+          prefixStyle: const TextStyle(fontSize: 14, color: AppColors.textDark),
           suffix: suffixText != null
               ? Text(
                   suffixText!,
                   style: const TextStyle(
-                      fontSize: 14, color: AppColors.greyText),
+                    fontSize: 14,
+                    color: AppColors.greyText,
+                  ),
                 )
               : null,
           border: InputBorder.none,
-          contentPadding:
-              const EdgeInsets.symmetric(horizontal: 14, vertical: 13),
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 14,
+            vertical: 13,
+          ),
         ),
       ),
     );
@@ -456,9 +455,7 @@ class _DatePickerField extends StatelessWidget {
                 Icon(
                   Icons.calendar_month_outlined,
                   size: 18,
-                  color: date != null
-                      ? AppColors.primary
-                      : AppColors.greyText,
+                  color: date != null ? AppColors.primary : AppColors.greyText,
                 ),
                 const SizedBox(width: 8),
                 Expanded(
@@ -510,13 +507,12 @@ class _SimpanButton extends StatelessWidget {
         child: ElevatedButton(
           onPressed: (state.isSaving || !state.isValid)
               ? null
-              : () => context
-                  .read<MerchantInputPromoBloc>()
-                  .add(MerchantInputPromoSaved()),
+              : () => context.read<MerchantInputPromoBloc>().add(
+                  MerchantInputPromoSaved(),
+                ),
           style: ElevatedButton.styleFrom(
             backgroundColor: AppColors.primary,
-            disabledBackgroundColor:
-                AppColors.primary.withValues(alpha: 0.5),
+            disabledBackgroundColor: AppColors.primary.withValues(alpha: 0.5),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(14),
             ),

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:warunk/app/features/merchant/presentation/information_store/bloc/merchant_information_store_bloc.dart';
 import 'package:warunk/app/features/merchant/presentation/preview_store/merchant_preview_store_screen.dart';
-import 'package:warunk/core/constants/app_colors.dart';
+import 'package:warunk/theme/app_colors.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Entry point
@@ -27,7 +27,10 @@ class _MerchantInformationStoreView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<MerchantInformationStoreBloc, MerchantInformationStoreState>(
+    return BlocListener<
+      MerchantInformationStoreBloc,
+      MerchantInformationStoreState
+    >(
       listenWhen: (prev, curr) => curr.isSaved && !prev.isSaved,
       listener: (context, _) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -120,7 +123,10 @@ class _FormBodyState extends State<_FormBody> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<MerchantInformationStoreBloc, MerchantInformationStoreState>(
+    return BlocBuilder<
+      MerchantInformationStoreBloc,
+      MerchantInformationStoreState
+    >(
       builder: (context, state) {
         return Column(
           children: [
@@ -132,10 +138,7 @@ class _FormBodyState extends State<_FormBody> {
                   children: [
                     const Text(
                       'Kelola informasi toko Anda untuk ditampilkan ke pelanggan.',
-                      style: TextStyle(
-                        fontSize: 13,
-                        color: AppColors.greyText,
-                      ),
+                      style: TextStyle(fontSize: 13, color: AppColors.greyText),
                     ),
                     const SizedBox(height: 20),
 
@@ -145,7 +148,9 @@ class _FormBodyState extends State<_FormBody> {
                       decoration: BoxDecoration(
                         color: AppColors.white,
                         borderRadius: BorderRadius.circular(16),
-                        border: Border.all(color: AppColors.greyBorder.withValues(alpha: 0.5)),
+                        border: Border.all(
+                          color: AppColors.greyBorder.withValues(alpha: 0.5),
+                        ),
                       ),
                       child: Column(
                         children: [
@@ -178,13 +183,18 @@ class _FormBodyState extends State<_FormBody> {
                               _ImagePlaceholder(
                                 isCircle: true,
                                 icon: Icons.storefront,
-                                onTap: () => context.read<MerchantInformationStoreBloc>().add(MerchantInformationStoreLogoTapped()),
+                                onTap: () => context
+                                    .read<MerchantInformationStoreBloc>()
+                                    .add(MerchantInformationStoreLogoTapped()),
                               ),
                             ],
                           ),
                           const Padding(
                             padding: EdgeInsets.symmetric(vertical: 16),
-                            child: Divider(height: 1, color: AppColors.greyBorder),
+                            child: Divider(
+                              height: 1,
+                              color: AppColors.greyBorder,
+                            ),
                           ),
                           // Banner
                           Row(
@@ -215,7 +225,11 @@ class _FormBodyState extends State<_FormBody> {
                               _ImagePlaceholder(
                                 isCircle: false,
                                 icon: Icons.image_outlined,
-                                onTap: () => context.read<MerchantInformationStoreBloc>().add(MerchantInformationStoreBannerTapped()),
+                                onTap: () => context
+                                    .read<MerchantInformationStoreBloc>()
+                                    .add(
+                                      MerchantInformationStoreBannerTapped(),
+                                    ),
                               ),
                             ],
                           ),
@@ -230,7 +244,9 @@ class _FormBodyState extends State<_FormBody> {
                       decoration: BoxDecoration(
                         color: AppColors.white,
                         borderRadius: BorderRadius.circular(16),
-                        border: Border.all(color: AppColors.greyBorder.withValues(alpha: 0.5)),
+                        border: Border.all(
+                          color: AppColors.greyBorder.withValues(alpha: 0.5),
+                        ),
                       ),
                       child: Column(
                         children: [
@@ -239,7 +255,9 @@ class _FormBodyState extends State<_FormBody> {
                             child: _InputField(
                               controller: _namaCtrl,
                               hintText: 'Nama Toko',
-                              onChanged: (v) => context.read<MerchantInformationStoreBloc>().add(MerchantInformationStoreNamaChanged(v)),
+                              onChanged: (v) => context
+                                  .read<MerchantInformationStoreBloc>()
+                                  .add(MerchantInformationStoreNamaChanged(v)),
                             ),
                           ),
                           const SizedBox(height: 16),
@@ -248,11 +266,19 @@ class _FormBodyState extends State<_FormBody> {
                             child: _DropdownField(
                               value: state.kategoriToko,
                               hintText: 'Kategori Toko',
-                              items: MerchantInformationStoreState.kategoriOptions,
+                              items:
+                                  MerchantInformationStoreState.kategoriOptions,
                               isGreenBg: true,
                               prefixIcon: Icons.restaurant,
                               onChanged: (v) {
-                                if (v != null) context.read<MerchantInformationStoreBloc>().add(MerchantInformationStoreKategoriChanged(v));
+                                if (v != null)
+                                  context
+                                      .read<MerchantInformationStoreBloc>()
+                                      .add(
+                                        MerchantInformationStoreKategoriChanged(
+                                          v,
+                                        ),
+                                      );
                               },
                             ),
                           ),
@@ -262,7 +288,9 @@ class _FormBodyState extends State<_FormBody> {
                             child: _InputField(
                               controller: _picCtrl,
                               hintText: 'Nama PIC',
-                              onChanged: (v) => context.read<MerchantInformationStoreBloc>().add(MerchantInformationStorePicChanged(v)),
+                              onChanged: (v) => context
+                                  .read<MerchantInformationStoreBloc>()
+                                  .add(MerchantInformationStorePicChanged(v)),
                             ),
                           ),
                           const SizedBox(height: 16),
@@ -272,7 +300,11 @@ class _FormBodyState extends State<_FormBody> {
                               controller: _whatsappCtrl,
                               hintText: 'No. WhatsApp',
                               keyboardType: TextInputType.phone,
-                              onChanged: (v) => context.read<MerchantInformationStoreBloc>().add(MerchantInformationStoreWhatsappChanged(v)),
+                              onChanged: (v) => context
+                                  .read<MerchantInformationStoreBloc>()
+                                  .add(
+                                    MerchantInformationStoreWhatsappChanged(v),
+                                  ),
                             ),
                           ),
                           const SizedBox(height: 16),
@@ -283,7 +315,12 @@ class _FormBodyState extends State<_FormBody> {
                               hintText: 'Kota',
                               items: MerchantInformationStoreState.kotaOptions,
                               onChanged: (v) {
-                                if (v != null) context.read<MerchantInformationStoreBloc>().add(MerchantInformationStoreKotaChanged(v));
+                                if (v != null)
+                                  context
+                                      .read<MerchantInformationStoreBloc>()
+                                      .add(
+                                        MerchantInformationStoreKotaChanged(v),
+                                      );
                               },
                             ),
                           ),
@@ -295,7 +332,11 @@ class _FormBodyState extends State<_FormBody> {
                               controller: _alamatCtrl,
                               hintText: 'Alamat Toko',
                               maxLines: 3,
-                              onChanged: (v) => context.read<MerchantInformationStoreBloc>().add(MerchantInformationStoreAlamatChanged(v)),
+                              onChanged: (v) => context
+                                  .read<MerchantInformationStoreBloc>()
+                                  .add(
+                                    MerchantInformationStoreAlamatChanged(v),
+                                  ),
                             ),
                           ),
                           const SizedBox(height: 16),
@@ -303,7 +344,9 @@ class _FormBodyState extends State<_FormBody> {
                             label: 'Lokasi Toko',
                             alignTop: true,
                             child: _MapPlaceholder(
-                              onTap: () => context.read<MerchantInformationStoreBloc>().add(MerchantInformationStoreLokasiTapped()),
+                              onTap: () => context
+                                  .read<MerchantInformationStoreBloc>()
+                                  .add(MerchantInformationStoreLokasiTapped()),
                             ),
                           ),
                         ],
@@ -313,7 +356,7 @@ class _FormBodyState extends State<_FormBody> {
                 ),
               ),
             ),
-            
+
             // Bottom Buttons
             _BottomActionButtons(state: state),
           ],
@@ -352,7 +395,9 @@ class _ImagePlaceholder extends StatelessWidget {
               color: AppColors.primary.withValues(alpha: 0.1),
               shape: isCircle ? BoxShape.circle : BoxShape.rectangle,
               borderRadius: isCircle ? null : BorderRadius.circular(8),
-              border: Border.all(color: AppColors.primary.withValues(alpha: 0.3)),
+              border: Border.all(
+                color: AppColors.primary.withValues(alpha: 0.3),
+              ),
             ),
             child: Icon(icon, color: AppColors.primary, size: 28),
           ),
@@ -366,7 +411,11 @@ class _ImagePlaceholder extends StatelessWidget {
                 shape: BoxShape.circle,
                 border: Border.all(color: AppColors.greyBorder),
                 boxShadow: const [
-                  BoxShadow(color: Colors.black12, blurRadius: 4, offset: Offset(0, 2)),
+                  BoxShadow(
+                    color: Colors.black12,
+                    blurRadius: 4,
+                    offset: Offset(0, 2),
+                  ),
                 ],
               ),
               child: const Icon(Icons.edit, size: 14, color: AppColors.primary),
@@ -392,7 +441,9 @@ class _FormRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-      crossAxisAlignment: alignTop ? CrossAxisAlignment.start : CrossAxisAlignment.center,
+      crossAxisAlignment: alignTop
+          ? CrossAxisAlignment.start
+          : CrossAxisAlignment.center,
       children: [
         SizedBox(
           width: 100,
@@ -445,7 +496,10 @@ class _InputField extends StatelessWidget {
           hintText: hintText,
           hintStyle: const TextStyle(fontSize: 13, color: AppColors.greyText),
           border: InputBorder.none,
-          contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 12,
+            vertical: 10,
+          ),
           isDense: true,
         ),
       ),
@@ -476,13 +530,19 @@ class _DropdownField extends StatelessWidget {
       decoration: BoxDecoration(
         color: isGreenBg ? const Color(0xFFE8F5E9) : AppColors.white,
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: isGreenBg ? Colors.transparent : AppColors.greyBorder),
+        border: Border.all(
+          color: isGreenBg ? Colors.transparent : AppColors.greyBorder,
+        ),
       ),
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
       child: Row(
         children: [
           if (prefixIcon != null) ...[
-            Icon(prefixIcon, size: 16, color: isGreenBg ? AppColors.primary : AppColors.greyText),
+            Icon(
+              prefixIcon,
+              size: 16,
+              color: isGreenBg ? AppColors.primary : AppColors.greyText,
+            ),
             const SizedBox(width: 8),
           ],
           Expanded(
@@ -492,7 +552,10 @@ class _DropdownField extends StatelessWidget {
                 isExpanded: true,
                 hint: Text(
                   hintText,
-                  style: const TextStyle(fontSize: 13, color: AppColors.greyText),
+                  style: const TextStyle(
+                    fontSize: 13,
+                    color: AppColors.greyText,
+                  ),
                 ),
                 icon: const Icon(
                   Icons.keyboard_arrow_down_rounded,
@@ -500,7 +563,11 @@ class _DropdownField extends StatelessWidget {
                   size: 20,
                 ),
                 style: const TextStyle(fontSize: 13, color: AppColors.textDark),
-                items: items.map((s) => DropdownMenuItem<String>(value: s, child: Text(s))).toList(),
+                items: items
+                    .map(
+                      (s) => DropdownMenuItem<String>(value: s, child: Text(s)),
+                    )
+                    .toList(),
                 onChanged: onChanged,
               ),
             ),
@@ -529,13 +596,13 @@ class _MapPlaceholder extends StatelessWidget {
         child: Stack(
           children: [
             // Fake map lines
-            Positioned.fill(
-              child: CustomPaint(
-                painter: _MapLinesPainter(),
-              ),
-            ),
+            Positioned.fill(child: CustomPaint(painter: _MapLinesPainter())),
             const Center(
-              child: Icon(Icons.location_on, color: AppColors.primary, size: 32),
+              child: Icon(
+                Icons.location_on,
+                color: AppColors.primary,
+                size: 32,
+              ),
             ),
             Positioned(
               bottom: 0,
@@ -549,12 +616,18 @@ class _MapPlaceholder extends StatelessWidget {
                     bottomLeft: Radius.circular(8),
                     bottomRight: Radius.circular(8),
                   ),
-                  border: const Border(top: BorderSide(color: AppColors.greyBorder)),
+                  border: const Border(
+                    top: BorderSide(color: AppColors.greyBorder),
+                  ),
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: const [
-                    Icon(Icons.location_on_outlined, size: 14, color: AppColors.primary),
+                    Icon(
+                      Icons.location_on_outlined,
+                      size: 14,
+                      color: AppColors.primary,
+                    ),
                     SizedBox(width: 4),
                     Text(
                       'Ubah Lokasi',
@@ -582,9 +655,17 @@ class _MapLinesPainter extends CustomPainter {
       ..color = Colors.white
       ..strokeWidth = 6
       ..style = PaintingStyle.stroke;
-    
-    canvas.drawLine(Offset(0, size.height * 0.3), Offset(size.width, size.height * 0.7), paint);
-    canvas.drawLine(Offset(size.width * 0.3, 0), Offset(size.width * 0.7, size.height), paint);
+
+    canvas.drawLine(
+      Offset(0, size.height * 0.3),
+      Offset(size.width, size.height * 0.7),
+      paint,
+    );
+    canvas.drawLine(
+      Offset(size.width * 0.3, 0),
+      Offset(size.width * 0.7, size.height),
+      paint,
+    );
   }
 
   @override
@@ -620,7 +701,9 @@ class _BottomActionButtons extends StatelessWidget {
               height: 48,
               child: OutlinedButton.icon(
                 onPressed: () {
-                  context.read<MerchantInformationStoreBloc>().add(MerchantInformationStorePreviewTapped());
+                  context.read<MerchantInformationStoreBloc>().add(
+                    MerchantInformationStorePreviewTapped(),
+                  );
                   Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (_) => const MerchantPreviewStoreScreen(),
@@ -632,8 +715,13 @@ class _BottomActionButtons extends StatelessWidget {
                 style: OutlinedButton.styleFrom(
                   foregroundColor: AppColors.primary,
                   side: const BorderSide(color: AppColors.primary, width: 1.5),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                  textStyle: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  textStyle: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ),
@@ -646,18 +734,27 @@ class _BottomActionButtons extends StatelessWidget {
               child: ElevatedButton(
                 onPressed: (state.isSaving || !state.isValid)
                     ? null
-                    : () => context.read<MerchantInformationStoreBloc>().add(MerchantInformationStoreSaved()),
+                    : () => context.read<MerchantInformationStoreBloc>().add(
+                        MerchantInformationStoreSaved(),
+                      ),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.primary,
-                  disabledBackgroundColor: AppColors.primary.withValues(alpha: 0.5),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                  disabledBackgroundColor: AppColors.primary.withValues(
+                    alpha: 0.5,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
                   elevation: 0,
                 ),
                 child: state.isSaving
                     ? const SizedBox(
                         width: 20,
                         height: 20,
-                        child: CircularProgressIndicator(strokeWidth: 2.5, color: Colors.white),
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2.5,
+                          color: Colors.white,
+                        ),
                       )
                     : const Text(
                         'Simpan Perubahan',

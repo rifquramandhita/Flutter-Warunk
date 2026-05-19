@@ -2,7 +2,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:warunk/app/features/customer/presentation/notification/bloc/customer_notification_bloc.dart';
-import 'package:warunk/core/constants/app_colors.dart';
+import 'package:warunk/theme/app_colors.dart';
 
 class CustomerNotificationScreen extends StatelessWidget {
   const CustomerNotificationScreen({super.key});
@@ -199,8 +199,9 @@ class _NotificationView extends StatelessWidget {
   // ── Notification card ─────────────────────────────────────────────────────
   Widget _notifCard(BuildContext context, CustomerNotifItemEntity notif) {
     return GestureDetector(
-      onTap: () =>
-          context.read<CustomerNotificationBloc>().add(CustomerNotificationRead(notif.id)),
+      onTap: () => context.read<CustomerNotificationBloc>().add(
+        CustomerNotificationRead(notif.id),
+      ),
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
         padding: const EdgeInsets.all(14),

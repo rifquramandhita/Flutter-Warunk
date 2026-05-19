@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:warunk/app/features/customer/presentation/checkout/bloc/customer_checkout_bloc.dart';
 import 'package:warunk/app/features/customer/presentation/payment/customer_payment_screen.dart';
 import 'package:warunk/core/widgets/checkout_step_indicator.dart';
-import 'package:warunk/core/constants/app_colors.dart';
+import 'package:warunk/theme/app_colors.dart';
 
 class CustomerCheckoutScreen extends StatelessWidget {
   const CustomerCheckoutScreen({super.key});
@@ -300,9 +300,9 @@ class _CheckoutView extends StatelessWidget {
                           final (i, opt) = e;
                           final selected = state.deliveryMethod == i;
                           return GestureDetector(
-                            onTap: () => context.read<CustomerCheckoutBloc>().add(
-                              CustomerCheckoutDeliveryChanged(i),
-                            ),
+                            onTap: () => context
+                                .read<CustomerCheckoutBloc>()
+                                .add(CustomerCheckoutDeliveryChanged(i)),
                             child: Padding(
                               padding: const EdgeInsets.symmetric(vertical: 5),
                               child: Row(
@@ -312,7 +312,9 @@ class _CheckoutView extends StatelessWidget {
                                     groupValue: state.deliveryMethod,
                                     onChanged: (v) => context
                                         .read<CustomerCheckoutBloc>()
-                                        .add(CustomerCheckoutDeliveryChanged(v!)),
+                                        .add(
+                                          CustomerCheckoutDeliveryChanged(v!),
+                                        ),
                                     activeColor: AppColors.primary,
                                     materialTapTargetSize:
                                         MaterialTapTargetSize.shrinkWrap,

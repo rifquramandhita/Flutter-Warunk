@@ -5,7 +5,7 @@ import 'package:warunk/app/features/customer/presentation/product/customer_detai
 import 'package:warunk/app/features/customer/presentation/store/bloc/customer_store_bloc.dart';
 import 'package:warunk/app/features/customer/presentation/store/bloc/customer_store_event.dart';
 import 'package:warunk/app/features/customer/presentation/store/bloc/customer_store_state.dart';
-import 'package:warunk/core/constants/app_colors.dart';
+import 'package:warunk/theme/app_colors.dart';
 import 'package:warunk/core/widgets/primary_button.dart';
 
 class CustomerDetailStoreScreen extends StatelessWidget {
@@ -15,7 +15,8 @@ class CustomerDetailStoreScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => CustomerStoreBloc()..add(CustomerLoadStoreDetails(storeName)),
+      create: (context) =>
+          CustomerStoreBloc()..add(CustomerLoadStoreDetails(storeName)),
       child: _DetailStoreView(),
     );
   }
@@ -694,8 +695,9 @@ class _DetailStoreView extends StatelessWidget {
                         ),
                       ),
                       GestureDetector(
-                        onTap: () =>
-                            context.read<CustomerStoreBloc>().add(CustomerAddToCart(p)),
+                        onTap: () => context.read<CustomerStoreBloc>().add(
+                          CustomerAddToCart(p),
+                        ),
                         child: Container(
                           width: 28,
                           height: 28,

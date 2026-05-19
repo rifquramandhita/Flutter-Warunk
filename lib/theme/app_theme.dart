@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:warunk/core/constants/app_colors.dart';
+import 'package:warunk/theme/app_colors.dart';
 
 abstract final class AppTheme {
   static ThemeData get lightTheme {
@@ -16,23 +16,56 @@ abstract final class AppTheme {
         onSurface: AppColors.textDark,
       ),
       scaffoldBackgroundColor: AppColors.background,
-      
+
       // Typography
       textTheme: const TextTheme(
-        displayLarge: TextStyle(color: AppColors.textDark, fontWeight: FontWeight.w800),
-        displayMedium: TextStyle(color: AppColors.textDark, fontWeight: FontWeight.w800),
-        displaySmall: TextStyle(color: AppColors.textDark, fontWeight: FontWeight.w800),
-        headlineLarge: TextStyle(color: AppColors.textDark, fontWeight: FontWeight.w800),
-        headlineMedium: TextStyle(color: AppColors.textDark, fontWeight: FontWeight.w800),
-        headlineSmall: TextStyle(color: AppColors.textDark, fontWeight: FontWeight.w800),
-        titleLarge: TextStyle(color: AppColors.textDark, fontWeight: FontWeight.w700),
-        titleMedium: TextStyle(color: AppColors.textDark, fontWeight: FontWeight.w700),
-        titleSmall: TextStyle(color: AppColors.textDark, fontWeight: FontWeight.w600),
+        displayLarge: TextStyle(
+          color: AppColors.textDark,
+          fontWeight: FontWeight.w800,
+        ),
+        displayMedium: TextStyle(
+          color: AppColors.textDark,
+          fontWeight: FontWeight.w800,
+        ),
+        displaySmall: TextStyle(
+          color: AppColors.textDark,
+          fontWeight: FontWeight.w800,
+        ),
+        headlineLarge: TextStyle(
+          color: AppColors.textDark,
+          fontWeight: FontWeight.w800,
+        ),
+        headlineMedium: TextStyle(
+          color: AppColors.textDark,
+          fontWeight: FontWeight.w800,
+        ),
+        headlineSmall: TextStyle(
+          color: AppColors.textDark,
+          fontWeight: FontWeight.w800,
+        ),
+        titleLarge: TextStyle(
+          color: AppColors.textDark,
+          fontWeight: FontWeight.w700,
+        ),
+        titleMedium: TextStyle(
+          color: AppColors.textDark,
+          fontWeight: FontWeight.w700,
+        ),
+        titleSmall: TextStyle(
+          color: AppColors.textDark,
+          fontWeight: FontWeight.w600,
+        ),
         bodyLarge: TextStyle(color: AppColors.textDark),
         bodyMedium: TextStyle(color: AppColors.textDark),
         bodySmall: TextStyle(color: AppColors.greyText),
-        labelLarge: TextStyle(color: AppColors.textDark, fontWeight: FontWeight.w600),
-        labelMedium: TextStyle(color: AppColors.textDark, fontWeight: FontWeight.w600),
+        labelLarge: TextStyle(
+          color: AppColors.textDark,
+          fontWeight: FontWeight.w600,
+        ),
+        labelMedium: TextStyle(
+          color: AppColors.textDark,
+          fontWeight: FontWeight.w600,
+        ),
         labelSmall: TextStyle(color: AppColors.greyText),
       ),
 
@@ -60,10 +93,7 @@ abstract final class AppTheme {
             borderRadius: BorderRadius.circular(12),
           ),
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-          textStyle: const TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.w700,
-          ),
+          textStyle: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700),
         ),
       ),
 
@@ -76,10 +106,7 @@ abstract final class AppTheme {
             borderRadius: BorderRadius.circular(12),
           ),
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-          textStyle: const TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.w700,
-          ),
+          textStyle: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700),
         ),
       ),
 
@@ -87,7 +114,10 @@ abstract final class AppTheme {
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         fillColor: AppColors.white,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 14,
+        ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: const BorderSide(color: AppColors.greyBorder),
@@ -109,7 +139,7 @@ abstract final class AppTheme {
         hintStyle: const TextStyle(color: AppColors.greyText, fontSize: 14),
         labelStyle: const TextStyle(color: AppColors.textDark, fontSize: 14),
       ),
-      
+
       // Bottom Navigation Bar Theme
       navigationBarTheme: NavigationBarThemeData(
         backgroundColor: AppColors.white,
@@ -123,9 +153,17 @@ abstract final class AppTheme {
         }),
         labelTextStyle: WidgetStateProperty.resolveWith((states) {
           if (states.contains(WidgetState.selected)) {
-            return const TextStyle(color: AppColors.primary, fontSize: 12, fontWeight: FontWeight.w700);
+            return const TextStyle(
+              color: AppColors.primary,
+              fontSize: 12,
+              fontWeight: FontWeight.w700,
+            );
           }
-          return const TextStyle(color: AppColors.textDark, fontSize: 12, fontWeight: FontWeight.w500);
+          return const TextStyle(
+            color: AppColors.textDark,
+            fontSize: 12,
+            fontWeight: FontWeight.w500,
+          );
         }),
       ),
     );

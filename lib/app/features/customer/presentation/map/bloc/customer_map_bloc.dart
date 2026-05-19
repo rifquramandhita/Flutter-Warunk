@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:warunk/core/constants/app_colors.dart';
+import 'package:warunk/theme/app_colors.dart';
 import 'customer_map_event.dart';
 import 'customer_map_state.dart';
 
@@ -11,9 +11,12 @@ class CustomerMapBloc extends Bloc<CustomerMapEvent, CustomerMapState> {
     on<CustomerMapSearchQueryChanged>(_onMapSearchQueryChanged);
   }
 
-  void _onLoadMapData(CustomerLoadMapData event, Emitter<CustomerMapState> emit) {
+  void _onLoadMapData(
+    CustomerLoadMapData event,
+    Emitter<CustomerMapState> emit,
+  ) {
     emit(state.copyWith(isLoading: true));
-    
+
     // Mock map data
     final mockStores = [
       CustomerMapStore(
@@ -81,11 +84,17 @@ class CustomerMapBloc extends Bloc<CustomerMapEvent, CustomerMapState> {
     emit(state.copyWith(isLoading: false, stores: mockStores));
   }
 
-  void _onMapFilterChanged(CustomerMapFilterChanged event, Emitter<CustomerMapState> emit) {
+  void _onMapFilterChanged(
+    CustomerMapFilterChanged event,
+    Emitter<CustomerMapState> emit,
+  ) {
     emit(state.copyWith(activeFilter: event.filter));
   }
 
-  void _onMapSearchQueryChanged(CustomerMapSearchQueryChanged event, Emitter<CustomerMapState> emit) {
+  void _onMapSearchQueryChanged(
+    CustomerMapSearchQueryChanged event,
+    Emitter<CustomerMapState> emit,
+  ) {
     emit(state.copyWith(searchQuery: event.query));
   }
 }

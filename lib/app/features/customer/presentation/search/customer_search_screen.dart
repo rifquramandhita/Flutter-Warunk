@@ -4,7 +4,7 @@ import 'package:warunk/app/features/customer/presentation/search/bloc/customer_s
 import 'package:warunk/app/features/customer/presentation/search/bloc/customer_search_event.dart';
 import 'package:warunk/app/features/customer/presentation/search/bloc/customer_search_state.dart';
 import 'package:warunk/app/features/customer/presentation/store/customer_detail_store_screen.dart';
-import 'package:warunk/core/constants/app_colors.dart';
+import 'package:warunk/theme/app_colors.dart';
 
 class CustomerSearchScreen extends StatelessWidget {
   const CustomerSearchScreen({super.key});
@@ -35,7 +35,9 @@ class _SearchViewState extends State<_SearchView> {
 
   void _openResults(String city) {
     _ctrl.text = 'Warung $city';
-    context.read<CustomerSearchBloc>().add(CustomerSearchQuerySubmitted('Warung $city'));
+    context.read<CustomerSearchBloc>().add(
+      CustomerSearchQuerySubmitted('Warung $city'),
+    );
   }
 
   void _clearSearch() {
@@ -535,7 +537,9 @@ class _SearchViewState extends State<_SearchView> {
       controller: filled ? _ctrl : null,
       onSubmitted: (v) {
         if (v.isNotEmpty) {
-          context.read<CustomerSearchBloc>().add(CustomerSearchQuerySubmitted(v));
+          context.read<CustomerSearchBloc>().add(
+            CustomerSearchQuerySubmitted(v),
+          );
         }
       },
       style: const TextStyle(fontSize: 14, color: AppColors.textDark),
@@ -584,8 +588,9 @@ class _SearchViewState extends State<_SearchView> {
         size: 13,
         color: isPromo ? const Color(0xFFF59E0B) : AppColors.primary,
       ),
-      onDeleted: () =>
-          context.read<CustomerSearchBloc>().add(CustomerSearchFilterRemoved(label)),
+      onDeleted: () => context.read<CustomerSearchBloc>().add(
+        CustomerSearchFilterRemoved(label),
+      ),
       backgroundColor: isPromo
           ? const Color(0xFFFFF3C4)
           : AppColors.primary.withValues(alpha: 0.1),

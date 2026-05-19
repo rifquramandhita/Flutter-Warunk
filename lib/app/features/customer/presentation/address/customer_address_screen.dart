@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:warunk/app/features/customer/presentation/address/bloc/customer_address_bloc.dart';
 import 'package:warunk/app/features/customer/presentation/address/bloc/customer_address_event.dart';
 import 'package:warunk/app/features/customer/presentation/address/bloc/customer_address_state.dart';
-import 'package:warunk/core/constants/app_colors.dart';
+import 'package:warunk/theme/app_colors.dart';
 import 'package:warunk/core/widgets/custom_dotted_divider.dart';
 import 'package:warunk/core/widgets/outline_button_custom.dart';
 import 'package:warunk/core/widgets/primary_button.dart';
@@ -258,9 +258,9 @@ class _AddressView extends StatelessWidget {
                         height: 40,
                       )
                     : OutlineButtonCustom(
-                        onPressed: () => context.read<CustomerAddressBloc>().add(
-                          CustomerSelectAddress(address.id),
-                        ),
+                        onPressed: () => context
+                            .read<CustomerAddressBloc>()
+                            .add(CustomerSelectAddress(address.id)),
                         icon: Icons.check_circle_outline,
                         label: 'Pilih',
                         height: 40,

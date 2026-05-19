@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:warunk/app/features/merchant/presentation/input_product/merchant_input_product_screen.dart';
 import 'package:warunk/app/features/merchant/presentation/product/bloc/merchant_product_bloc.dart';
-import 'package:warunk/core/constants/app_colors.dart';
+import 'package:warunk/theme/app_colors.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Entry point
@@ -116,9 +116,9 @@ class _SearchBar extends StatelessWidget {
           border: Border.all(color: AppColors.greyBorder),
         ),
         child: TextField(
-          onChanged: (v) => context
-              .read<MerchantProductBloc>()
-              .add(MerchantProductSearchChanged(v)),
+          onChanged: (v) => context.read<MerchantProductBloc>().add(
+            MerchantProductSearchChanged(v),
+          ),
           style: const TextStyle(fontSize: 14, color: AppColors.textDark),
           decoration: const InputDecoration(
             hintText: 'Cari produk...',
@@ -157,9 +157,9 @@ class _CategoryTabs extends StatelessWidget {
             itemBuilder: (context, index) {
               final isSelected = state.selectedTab == index;
               return GestureDetector(
-                onTap: () => context
-                    .read<MerchantProductBloc>()
-                    .add(MerchantProductTabChanged(index)),
+                onTap: () => context.read<MerchantProductBloc>().add(
+                  MerchantProductTabChanged(index),
+                ),
                 child: AnimatedContainer(
                   duration: const Duration(milliseconds: 200),
                   padding: const EdgeInsets.symmetric(horizontal: 18),
@@ -362,9 +362,7 @@ class _ProductImage extends StatelessWidget {
           bottomLeft: Radius.circular(14),
         ),
       ),
-      child: Center(
-        child: Text(emoji, style: const TextStyle(fontSize: 36)),
-      ),
+      child: Center(child: Text(emoji, style: const TextStyle(fontSize: 36))),
     );
   }
 }
@@ -409,27 +407,27 @@ class _CategoryBadge extends StatelessWidget {
   final MerchantProductCategory category;
 
   (String, Color, Color) get _style => switch (category) {
-        MerchantProductCategory.minuman => (
-            'Minuman',
-            const Color(0xFFDCEEFD),
-            const Color(0xFF2563EB),
-          ),
-        MerchantProductCategory.makanan => (
-            'Makanan',
-            const Color(0xFFE8F5F1),
-            AppColors.primary,
-          ),
-        MerchantProductCategory.sembako => (
-            'Sembako',
-            const Color(0xFFFFF3C4),
-            const Color(0xFFF59E0B),
-          ),
-        MerchantProductCategory.semua => (
-            'Semua',
-            AppColors.greyBorder,
-            AppColors.greyText,
-          ),
-      };
+    MerchantProductCategory.minuman => (
+      'Minuman',
+      const Color(0xFFDCEEFD),
+      const Color(0xFF2563EB),
+    ),
+    MerchantProductCategory.makanan => (
+      'Makanan',
+      const Color(0xFFE8F5F1),
+      AppColors.primary,
+    ),
+    MerchantProductCategory.sembako => (
+      'Sembako',
+      const Color(0xFFFFF3C4),
+      const Color(0xFFF59E0B),
+    ),
+    MerchantProductCategory.semua => (
+      'Semua',
+      AppColors.greyBorder,
+      AppColors.greyText,
+    ),
+  };
 
   @override
   Widget build(BuildContext context) {
@@ -462,9 +460,9 @@ class _ProductToggle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => context
-          .read<MerchantProductBloc>()
-          .add(MerchantProductToggled(product.id)),
+      onTap: () => context.read<MerchantProductBloc>().add(
+        MerchantProductToggled(product.id),
+      ),
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 220),
         width: 44,
@@ -511,9 +509,7 @@ class _AddProductFab extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () => Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (_) => const MerchantInputProductScreen(),
-        ),
+        MaterialPageRoute(builder: (_) => const MerchantInputProductScreen()),
       ),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),

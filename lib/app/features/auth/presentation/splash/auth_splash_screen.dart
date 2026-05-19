@@ -2,8 +2,8 @@ import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
-import 'package:warunk/app/features/auth/presentation/login/auth_login_screen.dart';
-import 'package:warunk/core/constants/app_colors.dart';
+import 'package:warunk/main.dart';
+import 'package:warunk/theme/app_colors.dart';
 
 class AuthSplashScreen extends StatefulWidget {
   const AuthSplashScreen({super.key});
@@ -78,23 +78,6 @@ class _SplashScreenState extends State<AuthSplashScreen>
     _dotTimer = Timer.periodic(const Duration(milliseconds: 700), (_) {
       if (mounted) setState(() => _activeDot = (_activeDot + 1) % 3);
     });
-
-    // Navigate after 3 seconds
-    Timer(const Duration(seconds: 3), _navigateToLogin);
-  }
-
-  void _navigateToLogin() {
-    if (!mounted) return;
-    Navigator.of(context).pushReplacement(
-      PageRouteBuilder(
-        transitionDuration: const Duration(milliseconds: 500),
-        pageBuilder: (context, animation, secondaryAnimation) =>
-            const AuthLoginScreen(),
-        transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          return FadeTransition(opacity: animation, child: child);
-        },
-      ),
-    );
   }
 
   @override
@@ -262,6 +245,7 @@ class _SplashScreenState extends State<AuthSplashScreen>
       ),
     );
   }
+
 
   // ── Helpers ──────────────────────────────────────────────────────────────
   Widget _buildBlob({

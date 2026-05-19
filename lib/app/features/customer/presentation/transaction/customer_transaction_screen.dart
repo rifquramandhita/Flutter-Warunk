@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:warunk/app/features/customer/presentation/notification/customer_notification_screen.dart';
 import 'package:warunk/app/features/customer/presentation/transaction/bloc/customer_transaction_bloc.dart';
 import 'package:warunk/app/features/customer/presentation/transaction_detail/customer_transaction_detail_screen.dart';
-import 'package:warunk/core/constants/app_colors.dart';
+import 'package:warunk/theme/app_colors.dart';
 
 class CustomerTransactionScreen extends StatelessWidget {
   const CustomerTransactionScreen({super.key});
@@ -68,7 +68,9 @@ class _TransactionView extends StatelessWidget {
           const Spacer(),
           GestureDetector(
             onTap: () => Navigator.of(context).push(
-              MaterialPageRoute(builder: (_) => const CustomerNotificationScreen()),
+              MaterialPageRoute(
+                builder: (_) => const CustomerNotificationScreen(),
+              ),
             ),
             child: Stack(
               children: [
@@ -505,7 +507,8 @@ class _TransactionView extends StatelessWidget {
                 GestureDetector(
                   onTap: () => Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (_) => CustomerTransactionDetailScreen(transaction: tx),
+                      builder: (_) =>
+                          CustomerTransactionDetailScreen(transaction: tx),
                     ),
                   ),
                   child: Row(

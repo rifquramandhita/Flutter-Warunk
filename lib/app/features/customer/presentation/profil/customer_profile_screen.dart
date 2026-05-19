@@ -6,7 +6,7 @@ import 'package:warunk/app/features/customer/presentation/edit_profil/customer_e
 import 'package:warunk/app/features/customer/presentation/profil/bloc/customer_profil_bloc.dart';
 import 'package:warunk/app/features/customer/presentation/profil/bloc/customer_profil_event.dart';
 import 'package:warunk/app/features/customer/presentation/profil/bloc/customer_profil_state.dart';
-import 'package:warunk/core/constants/app_colors.dart';
+import 'package:warunk/theme/app_colors.dart';
 import 'package:warunk/core/widgets/custom_dotted_divider.dart';
 import 'package:warunk/core/widgets/shadow_card.dart';
 
@@ -83,9 +83,11 @@ class _ProfileView extends StatelessWidget {
         ),
         const Spacer(),
         GestureDetector(
-          onTap: () => Navigator.of(
-            context,
-          ).push(MaterialPageRoute(builder: (_) => const CustomerNotificationScreen())),
+          onTap: () => Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (_) => const CustomerNotificationScreen(),
+            ),
+          ),
           child: Stack(
             children: [
               Container(
@@ -206,7 +208,9 @@ class _ProfileView extends StatelessWidget {
           // Edit Button
           GestureDetector(
             onTap: () => Navigator.of(context).push(
-              MaterialPageRoute(builder: (_) => const CustomerEditProfileScreen()),
+              MaterialPageRoute(
+                builder: (_) => const CustomerEditProfileScreen(),
+              ),
             ),
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
@@ -332,7 +336,9 @@ class _ProfileView extends StatelessWidget {
             'Edit Profil',
             AppColors.primary,
             onTap: () => Navigator.of(context).push(
-              MaterialPageRoute(builder: (_) => const CustomerEditProfileScreen()),
+              MaterialPageRoute(
+                builder: (_) => const CustomerEditProfileScreen(),
+              ),
             ),
           ),
           _divider(),
@@ -340,9 +346,9 @@ class _ProfileView extends StatelessWidget {
             Icons.location_on_outlined,
             'Alamat Saya',
             AppColors.primary,
-            onTap: () => Navigator.of(
-              context,
-            ).push(MaterialPageRoute(builder: (_) => const CustomerAddressScreen())),
+            onTap: () => Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => const CustomerAddressScreen()),
+            ),
           ),
           _divider(),
           _menuItem(
