@@ -5,7 +5,9 @@ import 'package:retrofit/retrofit.dart';
 import 'package:warunk/app/features/auth/data/source/auth_api_service.dart';
 import 'package:warunk/app/features/auth/domain/repository/auth_repository.dart';
 import 'package:warunk/app/features/auth/domain/use_case/auth_login_use_case.dart';
+import 'package:warunk/app/features/auth/domain/use_case/auth_logout_use_case.dart';
 import 'package:warunk/app/features/auth/presentation/login/bloc/auth_login_bloc.dart';
+import 'package:warunk/app/features/auth/presentation/logout/bloc/auth_logout_bloc.dart';
 import 'package:warunk/core/bloc/auth/auth_bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:warunk/core/network/app_interceptor.dart';
@@ -38,8 +40,10 @@ Future<void> initDependency() async {
 
   //usecase
   sl.registerLazySingleton(() => AuthLoginUseCase(repository: sl()));
+  sl.registerLazySingleton(() => AuthLogoutUseCase(repository: sl()));
 
   //bloc
   sl.registerLazySingleton(() => AuthBloc());
-  sl.registerLazySingleton(() => AuthLoginBloc(authBloc: sl(), useCase: sl()));
+  sl.registerFactory(() => AuthLoginBloc(authBloc: sl(), useCase: sl()));
+  sl.registerFactory(() => AuthLogoutBloc(authBloc: sl(), useCase: sl()));
 }

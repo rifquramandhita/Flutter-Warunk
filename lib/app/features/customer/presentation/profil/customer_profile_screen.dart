@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:warunk/app/features/auth/presentation/logout/auth_logout_screen.dart';
 import 'package:warunk/app/features/customer/presentation/address/customer_address_screen.dart';
 import 'package:warunk/app/features/customer/presentation/notification/customer_notification_screen.dart';
 import 'package:warunk/app/features/customer/presentation/edit_profil/customer_edit_profile_screen.dart';
 import 'package:warunk/app/features/customer/presentation/profil/bloc/customer_profil_bloc.dart';
 import 'package:warunk/app/features/customer/presentation/profil/bloc/customer_profil_event.dart';
 import 'package:warunk/app/features/customer/presentation/profil/bloc/customer_profil_state.dart';
+import 'package:warunk/main.dart';
 import 'package:warunk/theme/app_colors.dart';
 import 'package:warunk/core/widgets/custom_dotted_divider.dart';
 import 'package:warunk/core/widgets/shadow_card.dart';
@@ -383,9 +385,9 @@ class _ProfileView extends StatelessWidget {
             Colors.red,
             textColor: Colors.red,
             hideChevron: true,
-            onTap: () {
-              // TODO: Handle logout
-            },
+            onTap: () => navigatorKey.currentState?.push(
+              MaterialPageRoute(builder: (context) => AuthLogoutScreen()),
+            ),
           ),
         ],
       ),
