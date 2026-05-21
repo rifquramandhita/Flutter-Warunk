@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:warunk/app/features/customer/presentation/shell/customer_shell.dart';
-import 'package:warunk/app/features/merchant/presentation/shell/merchant_shell.dart';
+import 'package:warunk/app/features/merchant/presentation/shell/merchant_shell_screen.dart';
 import 'package:warunk/app/features/auth/presentation/login/bloc/auth_login_bloc.dart';
 import 'package:warunk/app/features/auth/presentation/login/bloc/auth_login_event.dart';
 import 'package:warunk/app/features/auth/presentation/login/bloc/auth_login_state.dart';

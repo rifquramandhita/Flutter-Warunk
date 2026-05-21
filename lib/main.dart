@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:warunk/app/features/auth/presentation/login/auth_login_screen.dart';
 import 'package:warunk/app/features/auth/presentation/splash/auth_splash_screen.dart';
 import 'package:warunk/app/features/customer/presentation/shell/customer_shell.dart';
+import 'package:warunk/app/features/merchant/presentation/shell/merchant_shell_screen.dart';
 import 'package:warunk/core/bloc/auth/auth_bloc.dart';
 import 'package:warunk/core/dependency/dependency.dart';
 import 'package:warunk/core/helper/global_helper.dart';
@@ -44,7 +45,7 @@ class WarunkApp extends StatelessWidget {
               builder: (context, state) {
                 if (state.isLoading) return Scaffold(body: LoadingAppWidget());
                 return state.isAuthenticated
-                    ? const CustomerShell()
+                    ? const MerchantShellScreen()
                     : const AuthLoginScreen();
               },
             );
