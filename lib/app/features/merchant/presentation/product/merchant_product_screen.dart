@@ -6,7 +6,9 @@ import 'package:warunk/app/features/merchant/presentation/input_product/merchant
 import 'package:warunk/app/features/merchant/presentation/product/bloc/merchant_product_bloc.dart';
 import 'package:warunk/core/dependency/dependency.dart';
 import 'package:warunk/core/helper/dialog_helper.dart';
+import 'package:warunk/core/helper/global_helper.dart';
 import 'package:warunk/core/widgets/loading_app_widget.dart';
+import 'package:warunk/main.dart';
 import 'package:warunk/theme/app_colors.dart';
 
 class MerchantProductScreen extends StatelessWidget {
@@ -18,8 +20,6 @@ class MerchantProductScreen extends StatelessWidget {
       create: (context) =>
           sl<MerchantProductBloc>()..add(MerchantProductEventGet()),
       child: BlocConsumer<MerchantProductBloc, MerchantProductState>(
-        listenWhen: (previous, current) =>
-            previous.errorMessage != current.errorMessage,
         listener: (context, state) {
           if (state.errorMessage != null) {
             DialogHelper.showErrorSnackBar(
@@ -33,7 +33,7 @@ class MerchantProductScreen extends StatelessWidget {
             backgroundColor: AppColors.background,
             appBar: _buildAppBar(context),
             body: _bodyBuild(context),
-            floatingActionButton: _buildAddProductFab(context),
+            floatingActionButton: _buildFab(context),
           );
         },
       ),
@@ -115,8 +115,8 @@ class MerchantProductScreen extends StatelessWidget {
           final isSelected = state.selectedTab == index;
           return GestureDetector(
             onTap: () => context.read<MerchantProductBloc>().add(
-                  MerchantProductEventTabChanged(index),
-                ),
+              MerchantProductEventTabChanged(index),
+            ),
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 200),
               padding: const EdgeInsets.symmetric(horizontal: 18),
@@ -185,89 +185,86 @@ class MerchantProductScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildProductCard(BuildContext context, MerchantProduct product) {
+  Widget _buildProductCard(
+    BuildContext context,
+    MerchantProductEntity product,
+  ) {
     final currency = NumberFormat.currency(
       locale: 'id',
       symbol: 'Rp',
       decimalDigits: 0,
     );
 
-    return Container(
-      decoration: BoxDecoration(
-        color: AppColors.white,
-        borderRadius: BorderRadius.circular(14),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          _buildProductImage(product),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 12),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        child: Text(
-                          product.name,
-                          style: const TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold,
-                            color: AppColors.textDark,
+    return GestureDetector(
+      onTap: () => _onPressItem(context, product),
+      child: Container(
+        decoration: BoxDecoration(
+          color: AppColors.white,
+          borderRadius: BorderRadius.circular(14),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.05),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            _buildProductImage(product),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 12),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: Text(
+                            product.name,
+                            style: const TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.textDark,
+                            ),
                           ),
                         ),
-                      ),
-                      const SizedBox(width: 6),
-                      _buildStokBadge(product.stock),
-                    ],
-                  ),
-                  const SizedBox(height: 4),
-                  _buildCategoryBadge(product.category),
-                  const SizedBox(height: 6),
-                  Row(
-                    children: [
-                      Text(
-                        currency.format(product.price),
-                        style: const TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w800,
-                          color: AppColors.primary,
+                        const SizedBox(width: 6),
+                        _buildStokBadge(product.stock),
+                      ],
+                    ),
+                    const SizedBox(height: 4),
+                    _buildCategoryBadge(context, product.category),
+                    const SizedBox(height: 6),
+                    Row(
+                      children: [
+                        Text(
+                          currency.format(product.price),
+                          style: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w800,
+                            color: AppColors.primary,
+                          ),
                         ),
-                      ),
-                      const Spacer(),
-                      _buildProductToggle(context, product),
-                      const SizedBox(width: 8),
-                      GestureDetector(
-                        onTap: () {},
-                        child: const Icon(
-                          Icons.chevron_right,
-                          color: AppColors.greyText,
-                          size: 20,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
+                        const Spacer(),
+                        _buildProductToggle(context, product),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-          const SizedBox(width: 12),
-        ],
+            const SizedBox(width: 12),
+          ],
+        ),
       ),
     );
   }
 
-  Widget _buildProductImage(MerchantProduct product) {
+  Widget _buildProductImage(MerchantProductEntity product) {
     final hasImage = product.images.isNotEmpty;
 
     return Container(
@@ -323,26 +320,13 @@ class MerchantProductScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildCategoryBadge(String category) {
+  Widget _buildCategoryBadge(BuildContext context, String category) {
     String label = category;
-    Color bg = AppColors.greyBorder;
-    Color text = AppColors.greyText;
-
-    if (category.toLowerCase() == 'minuman') {
-      bg = const Color(0xFFDCEEFD);
-      text = const Color(0xFF2563EB);
-    } else if (category.toLowerCase() == 'makanan') {
-      bg = const Color(0xFFE8F5F1);
-      text = AppColors.primary;
-    } else if (category.toLowerCase() == 'sembako') {
-      bg = const Color(0xFFFFF3C4);
-      text = const Color(0xFFF59E0B);
-    }
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
       decoration: BoxDecoration(
-        color: bg,
+        color: GlobalHelper.getColorSchema(context).primaryContainer,
         borderRadius: BorderRadius.circular(6),
       ),
       child: Text(
@@ -350,13 +334,16 @@ class MerchantProductScreen extends StatelessWidget {
         style: TextStyle(
           fontSize: 11,
           fontWeight: FontWeight.w600,
-          color: text,
+          color: GlobalHelper.getColorSchema(context).onPrimaryContainer,
         ),
       ),
     );
   }
 
-  Widget _buildProductToggle(BuildContext context, MerchantProduct product) {
+  Widget _buildProductToggle(
+    BuildContext context,
+    MerchantProductEntity product,
+  ) {
     return GestureDetector(
       onTap: () => context.read<MerchantProductBloc>().add(
         MerchantProductEventToggled(product.id),
@@ -398,11 +385,9 @@ class MerchantProductScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildAddProductFab(BuildContext context) {
+  Widget _buildFab(BuildContext context) {
     return GestureDetector(
-      onTap: () => Navigator.of(context).push(
-        MaterialPageRoute(builder: (_) => const MerchantInputProductScreen()),
-      ),
+      onTap: () => _onPressFab(context),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
         decoration: BoxDecoration(
@@ -433,5 +418,23 @@ class MerchantProductScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void _onPressFab(BuildContext context) async {
+    final bloc = context.read<MerchantProductBloc>();
+    await navigatorKey.currentState?.push(
+      MaterialPageRoute(builder: (_) => const MerchantInputProductScreen()),
+    );
+    bloc.add(MerchantProductEventGet());
+  }
+
+  void _onPressItem(BuildContext context, MerchantProductEntity product) async {
+    final bloc = context.read<MerchantProductBloc>();
+    await navigatorKey.currentState?.push(
+      MaterialPageRoute(
+        builder: (_) => MerchantInputProductScreen(id: product.id),
+      ),
+    );
+    bloc.add(MerchantProductEventGet());
   }
 }

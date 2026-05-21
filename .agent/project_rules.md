@@ -26,7 +26,8 @@ This file serves as the main reference for AI agents and developers working on t
 ## 5. Constants & API
 - **URLs & Paths**: All API endpoint paths and static URL configurations must be stored in `lib/core/constants/constant.dart`.
 
-## 6. Repository & API Requests
+## 6. Repository, UseCase & API Requests
+- **Return Type**: Semua method pada UseCase dan Repository **WAJIB** memiliki tipe kembalian `Future<DataState<T>>`.
 - **API Handling**: Every API request inside a repository MUST be wrapped using the `handleResponse` helper function. 
   Contoh format:
   ```dart
@@ -35,6 +36,7 @@ This file serves as the main reference for AI agents and developers working on t
     return SomeEntity.fromJson(responseData);
   });
   ```
+- **Manual DataState**: Jika fungsi pada repository tidak memanggil API (misalnya logika internal atau operasi lokal seperti download file), tetap gunakan `DataState` dengan me-return `SuccessState(data: ...)` untuk sukses, dan `ErrorState(message: ...)` jika terjadi _exception_ atau kegagalan.
 
 ## 7. Presentation Layer & BLoC Naming Convention
 - **Directory Structure**: Setiap screen/halaman dan state management-nya diletakkan dengan struktur: `lib/app/features/[feature_name]/presentation/[action_name]/`.
@@ -95,7 +97,7 @@ This file serves as the main reference for AI agents and developers working on t
   - Untuk memicu event, gunakan: `context.read<NamaBloc>().add(NamaEvent());`.
 - **BLoC (`..._bloc.dart`)**:
   - Gunakan standar dari `flutter_bloc` yaitu `Bloc<Event, State>`.
-  - Daftarkan event pada *constructor* menggunakan pola handler terpisah: `on<NamaEvent>(_onNamaEvent)`.
+  - Daftarkan event pada *constructor* menggunakan pola handler terpisah dengan menghapus prefix BLoC pada nama fungsi handler (contoh: `on<MerchantInputProductStarted>(_onStarted);`, bukan `_onMerchantInputProductStarted` atau menggunakan inline closures/arrow functions).
   - *Inject* UseCase dan BLoC lain melalui *constructor*.
 - **State (`..._state.dart`)**:
   - Wajib *extends* `Equatable`.

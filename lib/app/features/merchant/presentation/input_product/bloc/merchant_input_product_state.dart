@@ -1,77 +1,92 @@
 part of 'merchant_input_product_bloc.dart';
 
 class MerchantInputProductState {
-  final String nama;
-  final String kategori;
-  final String harga;
-  final String stok;
-  final String satuan;
-  final String deskripsi;
-  final bool tampilkan;
-  final bool isSaving;
-  final bool isSaved;
-  final bool hasFoto;
+  final String? id;
+  final String name;
+  final String category;
+  final String price;
+  final String stock;
+  final String minPurchase;
+  final String description;
+  final bool isPublished;
+  final bool isSuccess;
+  final bool isLoading;
+  final String? errorMessage;
+  final List<String> imageUrls;
 
-  static const List<String> kategoriOptions = [
+  final String weight;
+  final String length;
+  final String width;
+  final String height;
+
+  static const List<String> categoryOptions = [
     'Minuman',
     'Makanan',
     'Sembako',
     'Lainnya',
   ];
 
-  static const List<String> satuanOptions = [
-    'porsi',
-    'gelas',
-    'bungkus',
-    'pcs',
-    'kg',
-    'liter',
-    'lusin',
-  ];
-
   const MerchantInputProductState({
-    this.nama = '',
-    this.kategori = '',
-    this.harga = '',
-    this.stok = '',
-    this.satuan = '',
-    this.deskripsi = '',
-    this.tampilkan = true,
-    this.isSaving = false,
-    this.isSaved = false,
-    this.hasFoto = false,
+    this.id,
+    this.name = '',
+    this.category = '',
+    this.price = '',
+    this.stock = '',
+    this.minPurchase = '1',
+    this.description = '',
+    this.isPublished = true,
+    this.isSuccess = false,
+    this.isLoading = false,
+    this.errorMessage,
+    this.imageUrls = const [],
+    this.weight = '',
+    this.length = '',
+    this.width = '',
+    this.height = '',
   });
 
   bool get isValid =>
-      nama.trim().isNotEmpty &&
-      kategori.isNotEmpty &&
-      (int.tryParse(harga) ?? 0) > 0 &&
-      (int.tryParse(stok) ?? 0) >= 0;
+      name.trim().isNotEmpty &&
+      category.isNotEmpty &&
+      (int.tryParse(price) ?? 0) > 0 &&
+      (int.tryParse(stock) ?? 0) >= 0 &&
+      (int.tryParse(minPurchase) ?? 0) > 0;
 
-  int get deskripsiLength => deskripsi.length;
+  int get descriptionLength => description.length;
 
   MerchantInputProductState copyWith({
-    String? nama,
-    String? kategori,
-    String? harga,
-    String? stok,
-    String? satuan,
-    String? deskripsi,
-    bool? tampilkan,
-    bool? isSaving,
-    bool? isSaved,
-    bool? hasFoto,
-  }) =>
-      MerchantInputProductState(
-        nama: nama ?? this.nama,
-        kategori: kategori ?? this.kategori,
-        harga: harga ?? this.harga,
-        stok: stok ?? this.stok,
-        satuan: satuan ?? this.satuan,
-        deskripsi: deskripsi ?? this.deskripsi,
-        tampilkan: tampilkan ?? this.tampilkan,
-        isSaving: isSaving ?? this.isSaving,
-        isSaved: isSaved ?? this.isSaved,
-        hasFoto: hasFoto ?? this.hasFoto,
-      );
+    String? id,
+    String? name,
+    String? category,
+    String? price,
+    String? stock,
+    String? minPurchase,
+    String? description,
+    bool? isPublished,
+    bool? isSuccess,
+    bool? isLoading,
+    String? errorMessage,
+    List<String>? imageUrls,
+    String? weight,
+    String? length,
+    String? width,
+    String? height,
+  }) => MerchantInputProductState(
+    id: id ?? this.id,
+    name: name ?? this.name,
+    category: category ?? this.category,
+    price: price ?? this.price,
+    stock: stock ?? this.stock,
+    minPurchase: minPurchase ?? this.minPurchase,
+    description: description ?? this.description,
+    isPublished: isPublished ?? this.isPublished,
+    isSuccess: isSuccess ?? false,
+    isLoading: isLoading ?? this.isLoading,
+    errorMessage: errorMessage,
+    imageUrls: imageUrls ?? this.imageUrls,
+    weight: weight ?? this.weight,
+    length: length ?? this.length,
+    width: width ?? this.width,
+    height: height ?? this.height,
+  );
 }

@@ -22,6 +22,19 @@ sealed class MerchantProductVariant with _$MerchantProductVariant {
     DateTime? updatedAt,
   }) = MerchantProductVariantEntity;
 
+  @JsonSerializable(fieldRename: FieldRename.snake)
+  const factory MerchantProductVariant.sendParam({
+    required Map<String, dynamic> variantCombination,
+    String? sku,
+    required int price,
+    required int stock,
+    required int minPurchase,
+    int? weight,
+    int? length,
+    int? width,
+    int? height,
+  }) = MerchantProductVariantSendParam;
+
   factory MerchantProductVariant.fromJson(Map<String, dynamic> json) =>
       _$MerchantProductVariantFromJson(json);
 }

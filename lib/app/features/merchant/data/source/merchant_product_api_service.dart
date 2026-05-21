@@ -9,4 +9,13 @@ abstract class MerchantProductApiService {
 
   @GET('/api/seller/products')
   Future<HttpResponse<dynamic>> get();
+
+  @GET('/api/seller/products/{id}')
+  Future<HttpResponse<dynamic>> getById(@Path('id') String id);
+
+  @POST('/api/seller/products')
+  Future<HttpResponse<dynamic>> create(@Body() FormData body);
+
+  @PUT('/api/seller/products/{id}')
+  Future<HttpResponse<dynamic>> update(@Path('id') String id, @Body() FormData body);
 }

@@ -7,7 +7,7 @@ class MerchantProductEventGet extends MerchantProductEvent {
 }
 
 class MerchantProductEventTabChanged extends MerchantProductEvent {
-  final int index; // 0=Semua, 1=Minuman, 2=Makanan, 3=Sembako
+  final int index;
   MerchantProductEventTabChanged(this.index);
 }
 

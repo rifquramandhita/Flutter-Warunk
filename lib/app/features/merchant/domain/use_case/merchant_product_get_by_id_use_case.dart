@@ -2,12 +2,12 @@ import 'package:warunk/app/features/merchant/domain/entity/merchant_product.dart
 import 'package:warunk/app/features/merchant/domain/repository/merchant_product_repository.dart';
 import 'package:warunk/core/network/data_state.dart';
 
-class MerchantProductsGetUseCase {
+class MerchantProductGetByIdUseCase {
   final MerchantProductRepository repository;
 
-  MerchantProductsGetUseCase({required this.repository});
+  MerchantProductGetByIdUseCase({required this.repository});
 
-  Future<DataState<List<MerchantProductEntity>>> call() {
-    return repository.get();
+  Future<DataState<MerchantProductEntity>> call({required String id}) {
+    return repository.getById(id);
   }
 }

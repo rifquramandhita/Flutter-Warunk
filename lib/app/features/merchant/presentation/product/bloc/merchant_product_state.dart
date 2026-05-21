@@ -3,7 +3,7 @@ part of 'merchant_product_bloc.dart';
 class MerchantProductState extends Equatable {
   final int selectedTab;
   final String searchQuery;
-  final List<MerchantProduct> allProducts;
+  final List<MerchantProductEntity> allProducts;
   final bool isLoading;
   final String? errorMessage;
 
@@ -37,7 +37,7 @@ class MerchantProductState extends Equatable {
     ];
   }
 
-  List<MerchantProduct> get filteredProducts {
+  List<MerchantProductEntity> get filteredProducts {
     var list = allProducts;
 
     // filter by category
@@ -58,7 +58,7 @@ class MerchantProductState extends Equatable {
   MerchantProductState copyWith({
     int? selectedTab,
     String? searchQuery,
-    List<MerchantProduct>? allProducts,
+    List<MerchantProductEntity>? allProducts,
     bool? isLoading,
     String? errorMessage,
   }) => MerchantProductState(
@@ -66,7 +66,7 @@ class MerchantProductState extends Equatable {
     searchQuery: searchQuery ?? this.searchQuery,
     allProducts: allProducts ?? this.allProducts,
     isLoading: isLoading ?? this.isLoading,
-    errorMessage: errorMessage ?? this.errorMessage,
+    errorMessage: errorMessage,
   );
 
   @override

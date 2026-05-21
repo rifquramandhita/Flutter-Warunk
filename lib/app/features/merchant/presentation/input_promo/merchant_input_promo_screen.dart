@@ -9,7 +9,8 @@ import 'package:warunk/theme/app_colors.dart';
 // Entry point
 // ─────────────────────────────────────────────────────────────────────────────
 class MerchantInputPromoScreen extends StatelessWidget {
-  const MerchantInputPromoScreen({super.key});
+  final String? id;
+  const MerchantInputPromoScreen({super.key, this.id});
 
   @override
   Widget build(BuildContext context) {

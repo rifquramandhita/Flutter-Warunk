@@ -11,7 +11,11 @@ import 'package:warunk/app/features/auth/presentation/logout/bloc/auth_logout_bl
 import 'package:warunk/app/features/merchant/data/repository/merchant_product_repository_impl.dart';
 import 'package:warunk/app/features/merchant/data/source/merchant_product_api_service.dart';
 import 'package:warunk/app/features/merchant/domain/repository/merchant_product_repository.dart';
+import 'package:warunk/app/features/merchant/domain/use_case/merchant_product_get_by_id_use_case.dart';
+import 'package:warunk/app/features/merchant/domain/use_case/merchant_product_send_use_case.dart';
 import 'package:warunk/app/features/merchant/domain/use_case/merchant_products_get_use_case.dart';
+import 'package:warunk/app/features/merchant/domain/use_case/merchant_product_download_images_use_case.dart';
+import 'package:warunk/app/features/merchant/presentation/input_product/bloc/merchant_input_product_bloc.dart';
 import 'package:warunk/app/features/merchant/presentation/product/bloc/merchant_product_bloc.dart';
 import 'package:warunk/core/bloc/auth/auth_bloc.dart';
 import 'package:dio/dio.dart';
@@ -51,10 +55,17 @@ Future<void> initDependency() async {
   sl.registerLazySingleton(() => AuthLoginUseCase(repository: sl()));
   sl.registerLazySingleton(() => AuthLogoutUseCase(repository: sl()));
   sl.registerLazySingleton(() => MerchantProductsGetUseCase(repository: sl()));
+  sl.registerLazySingleton(
+      () => MerchantProductGetByIdUseCase(repository: sl()));
+  sl.registerLazySingleton(() => MerchantProductSendUseCase(repository: sl()));
+  sl.registerLazySingleton(
+      () => MerchantProductDownloadImagesUseCase(repository: sl()));
 
   //bloc
   sl.registerLazySingleton(() => AuthBloc());
   sl.registerFactory(() => AuthLoginBloc(authBloc: sl(), useCase: sl()));
   sl.registerFactory(() => AuthLogoutBloc(authBloc: sl(), useCase: sl()));
   sl.registerFactory(() => MerchantProductBloc(useCase: sl()));
+  sl.registerFactory(() => MerchantInputProductBloc(
+      useCase: sl(), sendUseCase: sl(), downloadImagesUseCase: sl()));
 }

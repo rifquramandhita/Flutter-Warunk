@@ -1,124 +1,64 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:warunk/app/features/merchant/presentation/input_product/bloc/merchant_input_product_bloc.dart';
+import 'package:warunk/core/dependency/dependency.dart';
+import 'package:warunk/core/helper/dialog_helper.dart';
+import 'package:warunk/core/widgets/loading_app_widget.dart';
+import 'package:warunk/core/widgets/primary_button.dart';
+import 'package:warunk/main.dart';
 import 'package:warunk/theme/app_colors.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Entry point
 // ─────────────────────────────────────────────────────────────────────────────
 class MerchantInputProductScreen extends StatelessWidget {
-  const MerchantInputProductScreen({super.key});
+  final String? id;
+
+  const MerchantInputProductScreen({super.key, this.id});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => MerchantInputProductBloc(),
-      child: const _MerchantInputProductView(),
-    );
-  }
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// Main view
-// ─────────────────────────────────────────────────────────────────────────────
-class _MerchantInputProductView extends StatelessWidget {
-  const _MerchantInputProductView();
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocListener<MerchantInputProductBloc, MerchantInputProductState>(
-      listenWhen: (prev, curr) => curr.isSaved && !prev.isSaved,
-      listener: (context, _) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: const Text('Produk berhasil ditambahkan!'),
-            backgroundColor: AppColors.primary,
-            behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-          ),
-        );
-        Navigator.of(context).pop();
-      },
-      child: Scaffold(
-        backgroundColor: AppColors.background,
-        appBar: _buildAppBar(context),
-        body: const _FormBody(),
+      create: (context) =>
+          sl<MerchantInputProductBloc>()..add(MerchantInputProductGet(id)),
+      child: BlocConsumer<MerchantInputProductBloc, MerchantInputProductState>(
+        listener: (context, state) {
+          if (state.errorMessage != null && state.errorMessage!.isNotEmpty) {
+            DialogHelper.showErrorSnackBar(
+              context: context,
+              text: state.errorMessage!,
+            );
+          }
+          if (state.isSuccess) {
+            navigatorKey.currentState?.pop();
+          }
+        },
+        builder: (context, state) {
+          return Scaffold(
+            backgroundColor: AppColors.background,
+            appBar: _buildAppBar(context),
+            body: _bodyBuild(context),
+          );
+        },
       ),
     );
   }
 
-  AppBar _buildAppBar(BuildContext context) {
-    return AppBar(
-      backgroundColor: AppColors.background,
-      elevation: 0,
-      centerTitle: true,
-      leading: GestureDetector(
-        onTap: () => Navigator.of(context).pop(),
-        child: Container(
-          margin: const EdgeInsets.all(10),
-          decoration: BoxDecoration(
-            color: AppColors.white,
-            shape: BoxShape.circle,
-            border: Border.all(color: AppColors.greyBorder),
-          ),
-          child: const Icon(
-            Icons.arrow_back,
-            color: AppColors.textDark,
-            size: 18,
-          ),
-        ),
-      ),
-      title: const Text(
-        'Tambah Produk',
-        style: TextStyle(
-          fontSize: 16,
-          fontWeight: FontWeight.bold,
-          color: AppColors.textDark,
-        ),
+  Widget _bodyBuild(BuildContext context) {
+    final state = context.watch<MerchantInputProductBloc>().state;
+    return SafeArea(
+      child: Stack(
+        children: [
+          _bodyLayout(context),
+          (state.isLoading) ? const LoadingAppWidget() : const SizedBox(),
+        ],
       ),
     );
   }
-}
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Scrollable form body
-// ─────────────────────────────────────────────────────────────────────────────
-class _FormBody extends StatefulWidget {
-  const _FormBody();
-
-  @override
-  State<_FormBody> createState() => _FormBodyState();
-}
-
-class _FormBodyState extends State<_FormBody> {
-  late final TextEditingController _namaCtrl;
-  late final TextEditingController _hargaCtrl;
-  late final TextEditingController _stokCtrl;
-  late final TextEditingController _deskripsiCtrl;
-
-  @override
-  void initState() {
-    super.initState();
-    _namaCtrl = TextEditingController();
-    _hargaCtrl = TextEditingController();
-    _stokCtrl = TextEditingController();
-    _deskripsiCtrl = TextEditingController();
-  }
-
-  @override
-  void dispose() {
-    _namaCtrl.dispose();
-    _hargaCtrl.dispose();
-    _stokCtrl.dispose();
-    _deskripsiCtrl.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _bodyLayout(BuildContext context) {
     return BlocBuilder<MerchantInputProductBloc, MerchantInputProductState>(
       builder: (context, state) {
         return Column(
@@ -127,66 +67,90 @@ class _FormBodyState extends State<_FormBody> {
               child: SingleChildScrollView(
                 padding: const EdgeInsets.fromLTRB(20, 8, 20, 20),
                 child: Column(
+                  key: ValueKey(
+                    state.isLoading,
+                  ), // Rebuilds the form with fetched data once loading finishes
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // ── Foto Produk ────────────────────────────────────────
-                    _SectionLabel('Foto Produk'),
+                    const _SectionLabel('Foto Produk'),
                     const SizedBox(height: 8),
-                    _FotoUploadArea(hasFoto: state.hasFoto),
+                    _FotoUploadArea(imageUrls: state.imageUrls),
                     const SizedBox(height: 20),
 
                     // ── Nama Produk ────────────────────────────────────────
-                    _SectionLabel('Nama Produk'),
+                    const _SectionLabel('Nama Produk'),
                     const SizedBox(height: 8),
                     _InputField(
-                      controller: _namaCtrl,
+                      initialValue: state.name,
                       hintText: 'Contoh: Nasi Pecel Warunk',
                       onChanged: (v) => context
                           .read<MerchantInputProductBloc>()
-                          .add(MerchantInputProductNamaChanged(v)),
+                          .add(MerchantInputProductNameChanged(v)),
                     ),
                     const SizedBox(height: 20),
 
                     // ── Kategori Produk ────────────────────────────────────
-                    _SectionLabel('Kategori Produk'),
+                    const _SectionLabel('Kategori Produk'),
                     const SizedBox(height: 8),
                     _DropdownField(
-                      value: state.kategori.isEmpty ? null : state.kategori,
+                      value: state.category.isEmpty ? null : state.category,
                       hintText: 'Pilih kategori produk',
-                      items: MerchantInputProductState.kategoriOptions,
+                      items: MerchantInputProductState.categoryOptions,
                       onChanged: (v) {
                         if (v != null) {
                           context.read<MerchantInputProductBloc>().add(
-                            MerchantInputProductKategoriChanged(v),
+                            MerchantInputProductCategoryChanged(v),
                           );
                         }
                       },
                     ),
                     const SizedBox(height: 20),
 
-                    // ── Harga & Stok ───────────────────────────────────────
+                    // ── Harga ──────────────────────────
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const _SectionLabel('Harga'),
+                        const SizedBox(height: 8),
+                        _InputField(
+                          initialValue: state.price,
+                          hintText: '0',
+                          keyboardType: TextInputType.number,
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly,
+                          ],
+                          prefixText: 'Rp ',
+                          onChanged: (v) => context
+                              .read<MerchantInputProductBloc>()
+                              .add(MerchantInputProductPriceChanged(v)),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+
+                    // ── Minimal Pembelian & Stok ───────────────────────────────────────
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Harga
                         Expanded(
-                          flex: 3,
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              _SectionLabel('Harga'),
+                              const _SectionLabel('Minimal Pembelian'),
                               const SizedBox(height: 8),
                               _InputField(
-                                controller: _hargaCtrl,
-                                hintText: 'Rp 0',
+                                initialValue: state.minPurchase,
+                                hintText: '1',
                                 keyboardType: TextInputType.number,
                                 inputFormatters: [
                                   FilteringTextInputFormatter.digitsOnly,
                                 ],
-                                prefixText: 'Rp ',
                                 onChanged: (v) => context
                                     .read<MerchantInputProductBloc>()
-                                    .add(MerchantInputProductHargaChanged(v)),
+                                    .add(
+                                      MerchantInputProductMinPurchaseChanged(v),
+                                    ),
                               ),
                             ],
                           ),
@@ -198,10 +162,10 @@ class _FormBodyState extends State<_FormBody> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              _SectionLabel('Stok'),
+                              const _SectionLabel('Stok'),
                               const SizedBox(height: 8),
                               _InputField(
-                                controller: _stokCtrl,
+                                initialValue: state.stock,
                                 hintText: '0',
                                 keyboardType: TextInputType.number,
                                 inputFormatters: [
@@ -209,7 +173,7 @@ class _FormBodyState extends State<_FormBody> {
                                 ],
                                 onChanged: (v) => context
                                     .read<MerchantInputProductBloc>()
-                                    .add(MerchantInputProductStokChanged(v)),
+                                    .add(MerchantInputProductStockChanged(v)),
                               ),
                             ],
                           ),
@@ -218,44 +182,123 @@ class _FormBodyState extends State<_FormBody> {
                     ),
                     const SizedBox(height: 20),
 
-                    // ── Satuan ─────────────────────────────────────────────
-                    _SectionLabel('Satuan'),
-                    const SizedBox(height: 8),
-                    _DropdownField(
-                      value: state.satuan.isEmpty ? null : state.satuan,
-                      hintText: 'Contoh: porsi, gelas, bungkus',
-                      items: MerchantInputProductState.satuanOptions,
-                      onChanged: (v) {
-                        if (v != null) {
-                          context.read<MerchantInputProductBloc>().add(
-                            MerchantInputProductSatuanChanged(v),
-                          );
-                        }
-                      },
+                    // ── Berat & Dimensi ──────────────────────────────────
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const _SectionLabel('Berat (gram)'),
+                              const SizedBox(height: 8),
+                              _InputField(
+                                initialValue: state.weight,
+                                hintText: '0',
+                                keyboardType: TextInputType.number,
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.digitsOnly,
+                                ],
+                                onChanged: (v) => context
+                                    .read<MerchantInputProductBloc>()
+                                    .add(MerchantInputProductWeightChanged(v)),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const _SectionLabel('Panjang (cm)'),
+                              const SizedBox(height: 8),
+                              _InputField(
+                                initialValue: state.length,
+                                hintText: '0',
+                                keyboardType: TextInputType.number,
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.digitsOnly,
+                                ],
+                                onChanged: (v) => context
+                                    .read<MerchantInputProductBloc>()
+                                    .add(MerchantInputProductLengthChanged(v)),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const _SectionLabel('Lebar (cm)'),
+                              const SizedBox(height: 8),
+                              _InputField(
+                                initialValue: state.width,
+                                hintText: '0',
+                                keyboardType: TextInputType.number,
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.digitsOnly,
+                                ],
+                                onChanged: (v) => context
+                                    .read<MerchantInputProductBloc>()
+                                    .add(MerchantInputProductWidthChanged(v)),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const _SectionLabel('Tinggi (cm)'),
+                              const SizedBox(height: 8),
+                              _InputField(
+                                initialValue: state.height,
+                                hintText: '0',
+                                keyboardType: TextInputType.number,
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.digitsOnly,
+                                ],
+                                onChanged: (v) => context
+                                    .read<MerchantInputProductBloc>()
+                                    .add(MerchantInputProductHeightChanged(v)),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
                     const SizedBox(height: 20),
 
                     // ── Deskripsi ──────────────────────────────────────────
-                    _SectionLabel('Deskripsi'),
+                    const _SectionLabel('Deskripsi'),
                     const SizedBox(height: 8),
                     _DeskripsiField(
-                      controller: _deskripsiCtrl,
-                      charCount: state.deskripsiLength,
+                      initialValue: state.description,
+                      charCount: state.descriptionLength,
                       onChanged: (v) => context
                           .read<MerchantInputProductBloc>()
-                          .add(MerchantInputProductDeskripsiChanged(v)),
+                          .add(MerchantInputProductDescriptionChanged(v)),
                     ),
                     const SizedBox(height: 20),
 
                     // ── Tampilkan Produk ───────────────────────────────────
-                    _TampilkanRow(isOn: state.tampilkan),
+                    _TampilkanRow(isOn: state.isPublished),
                     const SizedBox(height: 16),
                     const _Divider(),
                     const SizedBox(height: 16),
 
                     // ── Varian ─────────────────────────────────────────────
                     _OptionalRow(
-                      iconBg: AppColors.primary.withValues(alpha: 0.12),
+                      iconBg: AppColors.primary.withValues(alpha: 0.1),
                       icon: Icons.local_offer_outlined,
                       iconColor: AppColors.primary,
                       title: 'Varian (Opsional)',
@@ -285,65 +328,117 @@ class _FormBodyState extends State<_FormBody> {
       },
     );
   }
+
+  AppBar _buildAppBar(BuildContext context) {
+    final state = context.watch<MerchantInputProductBloc>().state;
+    final isEdit = state.name.isNotEmpty;
+    return AppBar(title: Text(isEdit ? 'Edit Produk' : 'Tambah Produk'));
+  }
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Foto upload area (dashed border)
 // ─────────────────────────────────────────────────────────────────────────────
 class _FotoUploadArea extends StatelessWidget {
-  const _FotoUploadArea({required this.hasFoto});
-  final bool hasFoto;
+  const _FotoUploadArea({required this.imageUrls});
+  final List<String> imageUrls;
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => context.read<MerchantInputProductBloc>().add(
-        MerchantInputProductFotoTapped(),
-      ),
-      child: Container(
-        width: double.infinity,
-        height: 130,
-        decoration: BoxDecoration(
-          color: AppColors.primary.withValues(alpha: 0.04),
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(
-            color: AppColors.primary.withValues(alpha: 0.4),
-            width: 1.5,
-            strokeAlign: BorderSide.strokeAlignInside,
-          ),
-        ),
-        child: hasFoto
-            ? const Center(
-                child: Icon(
-                  Icons.check_circle,
-                  color: AppColors.primary,
-                  size: 40,
-                ),
-              )
-            : Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.upload_outlined,
-                    size: 34,
-                    color: AppColors.primary,
+    return SizedBox(
+      height: 100,
+      child: ListView.separated(
+        scrollDirection: Axis.horizontal,
+        itemCount: imageUrls.length + 1,
+        separatorBuilder: (context, index) => const SizedBox(width: 12),
+        itemBuilder: (context, index) {
+          if (index == imageUrls.length) {
+            return GestureDetector(
+              onTap: () => context.read<MerchantInputProductBloc>().add(
+                MerchantInputProductPhotoTapped(),
+              ),
+              child: Container(
+                width: 100,
+                height: 100,
+                decoration: BoxDecoration(
+                  color: AppColors.primary.withValues(alpha: 0.04),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color: AppColors.primary.withValues(alpha: 0.4),
+                    width: 1.5,
+                    strokeAlign: BorderSide.strokeAlignInside,
                   ),
-                  const SizedBox(height: 8),
-                  const Text(
-                    'Upload Foto Produk',
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(
+                      Icons.add_photo_alternate_outlined,
+                      size: 28,
                       color: AppColors.primary,
                     ),
-                  ),
-                  const SizedBox(height: 4),
-                  const Text(
-                    'PNG, JPG maksimal 5MB',
-                    style: TextStyle(fontSize: 12, color: AppColors.greyText),
-                  ),
-                ],
+                    const SizedBox(height: 4),
+                    const Text(
+                      'Tambah\nFoto',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.primary,
+                      ),
+                    ),
+                  ],
+                ),
               ),
+            );
+          }
+
+          return SizedBox(
+            width: 100,
+            height: 100,
+            child: Stack(
+              fit: StackFit.expand,
+              children: [
+                Container(
+                  clipBehavior: Clip.hardEdge,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: AppColors.greyBorder),
+                  ),
+                  child: Image.file(File(imageUrls[index]), fit: BoxFit.cover),
+                ),
+                Positioned(
+                  top: 4,
+                  right: 4,
+                  child: GestureDetector(
+                    onTap: () => context.read<MerchantInputProductBloc>().add(
+                      MerchantInputProductPhotoRemoved(index),
+                    ),
+                    child: Container(
+                      padding: const EdgeInsets.all(4),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.1),
+                            blurRadius: 2,
+                            offset: const Offset(0, 1),
+                          ),
+                        ],
+                      ),
+                      child: const Icon(
+                        Icons.close,
+                        size: 14,
+                        color: Colors.red,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
       ),
     );
   }
@@ -374,7 +469,7 @@ class _SectionLabel extends StatelessWidget {
 // ─────────────────────────────────────────────────────────────────────────────
 class _InputField extends StatelessWidget {
   const _InputField({
-    required this.controller,
+    required this.initialValue,
     required this.hintText,
     required this.onChanged,
     this.keyboardType,
@@ -382,7 +477,7 @@ class _InputField extends StatelessWidget {
     this.prefixText,
   });
 
-  final TextEditingController controller;
+  final String initialValue;
   final String hintText;
   final ValueChanged<String> onChanged;
   final TextInputType? keyboardType;
@@ -397,8 +492,8 @@ class _InputField extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: AppColors.greyBorder),
       ),
-      child: TextField(
-        controller: controller,
+      child: TextFormField(
+        initialValue: initialValue,
         keyboardType: keyboardType,
         inputFormatters: inputFormatters,
         onChanged: onChanged,
@@ -437,6 +532,11 @@ class _DropdownField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final List<String> effectiveItems = items.toList();
+    if (value != null && !effectiveItems.contains(value)) {
+      effectiveItems.add(value!);
+    }
+
     return Container(
       decoration: BoxDecoration(
         color: AppColors.white,
@@ -457,7 +557,7 @@ class _DropdownField extends StatelessWidget {
             color: AppColors.greyText,
           ),
           style: const TextStyle(fontSize: 14, color: AppColors.textDark),
-          items: items
+          items: effectiveItems
               .map((s) => DropdownMenuItem<String>(value: s, child: Text(s)))
               .toList(),
           onChanged: onChanged,
@@ -472,12 +572,12 @@ class _DropdownField extends StatelessWidget {
 // ─────────────────────────────────────────────────────────────────────────────
 class _DeskripsiField extends StatelessWidget {
   const _DeskripsiField({
-    required this.controller,
+    required this.initialValue,
     required this.charCount,
     required this.onChanged,
   });
 
-  final TextEditingController controller;
+  final String initialValue;
   final int charCount;
   final ValueChanged<String> onChanged;
 
@@ -493,8 +593,8 @@ class _DeskripsiField extends StatelessWidget {
       ),
       child: Column(
         children: [
-          TextField(
-            controller: controller,
+          TextFormField(
+            initialValue: initialValue,
             maxLines: 4,
             maxLength: _maxLength,
             buildCounter:
@@ -562,7 +662,7 @@ class _TampilkanRow extends StatelessWidget {
         // Animated toggle
         GestureDetector(
           onTap: () => context.read<MerchantInputProductBloc>().add(
-            MerchantInputProductTampilkanToggled(),
+            MerchantInputProductIsPublishedToggled(),
           ),
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 220),
@@ -701,41 +801,15 @@ class _SimpanButton extends StatelessWidget {
           ),
         ],
       ),
-      child: SizedBox(
-        width: double.infinity,
+      child: PrimaryButton(
+        label: 'Simpan Produk',
         height: 52,
-        child: ElevatedButton(
-          onPressed: (state.isSaving || !state.isValid)
-              ? null
-              : () => context.read<MerchantInputProductBloc>().add(
-                  MerchantInputProductSaved(),
-                ),
-          style: ElevatedButton.styleFrom(
-            backgroundColor: AppColors.primary,
-            disabledBackgroundColor: AppColors.primary.withValues(alpha: 0.5),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(14),
-            ),
-            elevation: 0,
-          ),
-          child: state.isSaving
-              ? const SizedBox(
-                  width: 22,
-                  height: 22,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2.5,
-                    color: Colors.white,
-                  ),
-                )
-              : const Text(
-                  'Simpan Produk',
-                  style: TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.white,
-                  ),
-                ),
-        ),
+        isLoading: state.isLoading,
+        onPressed: !state.isValid
+            ? null
+            : () => context.read<MerchantInputProductBloc>().add(
+                MerchantInputProductSaved(),
+              ),
       ),
     );
   }

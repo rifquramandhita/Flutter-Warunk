@@ -16,7 +16,7 @@ MerchantProductEntity _$MerchantProductEntityFromJson(
   productCategoryId: json['product_category_id'] as String,
   category: json['category'] as String,
   branch: json['branch'] as String,
-  description: json['description'] as String,
+  description: json['description'] as String?,
   stock: (json['stock'] as num).toInt(),
   orderCount: (json['order_count'] as num).toInt(),
   minPurchase: (json['min_purchase'] as num).toInt(),
@@ -54,6 +54,7 @@ MerchantProductEntity _$MerchantProductEntityFromJson(
       const [],
   createdAt: DateTime.parse(json['created_at'] as String),
   updatedAt: DateTime.parse(json['updated_at'] as String),
+  $type: json['runtimeType'] as String?,
 );
 
 Map<String, dynamic> _$MerchantProductEntityToJson(
@@ -85,4 +86,64 @@ Map<String, dynamic> _$MerchantProductEntityToJson(
   'images': instance.images,
   'created_at': instance.createdAt.toIso8601String(),
   'updated_at': instance.updatedAt.toIso8601String(),
+  'runtimeType': instance.$type,
+};
+
+MerchantProductSendParam _$MerchantProductSendParamFromJson(
+  Map<String, dynamic> json,
+) => MerchantProductSendParam(
+  sendId: json['send_id'] as String?,
+  name: json['name'] as String,
+  slug: json['slug'] as String,
+  category: json['category'] as String,
+  branch: json['branch'] as String,
+  description: json['description'] as String?,
+  stock: (json['stock'] as num).toInt(),
+  minPurchase: (json['min_purchase'] as num).toInt(),
+  price: (json['price'] as num).toInt(),
+  isPublished: ParseHelper.intToBool((json['is_published'] as num).toInt()),
+  hasVariant: ParseHelper.intToBool((json['has_variant'] as num).toInt()),
+  isSameDimension: ParseHelper.intToBool(
+    (json['is_same_dimension'] as num).toInt(),
+  ),
+  sku: json['sku'] as String?,
+  weight: (json['weight'] as num?)?.toInt(),
+  length: (json['length'] as num?)?.toInt(),
+  width: (json['width'] as num?)?.toInt(),
+  height: (json['height'] as num?)?.toInt(),
+  sendVariants: (json['variants'] as List<dynamic>?)
+      ?.map(
+        (e) =>
+            MerchantProductVariantSendParam.fromJson(e as Map<String, dynamic>),
+      )
+      .toList(),
+  sendImages: (json['images'] as List<dynamic>?)
+      ?.map((e) => e as String)
+      .toList(),
+  $type: json['runtimeType'] as String?,
+);
+
+Map<String, dynamic> _$MerchantProductSendParamToJson(
+  MerchantProductSendParam instance,
+) => <String, dynamic>{
+  'send_id': ?instance.sendId,
+  'name': instance.name,
+  'slug': instance.slug,
+  'category': instance.category,
+  'branch': instance.branch,
+  'description': ?instance.description,
+  'stock': instance.stock,
+  'min_purchase': instance.minPurchase,
+  'price': instance.price,
+  'is_published': ParseHelper.boolToInt(instance.isPublished),
+  'has_variant': ParseHelper.boolToInt(instance.hasVariant),
+  'is_same_dimension': ParseHelper.boolToInt(instance.isSameDimension),
+  'sku': ?instance.sku,
+  'weight': ?instance.weight,
+  'length': ?instance.length,
+  'width': ?instance.width,
+  'height': ?instance.height,
+  'variants': ?instance.sendVariants,
+  'images': ?instance.sendImages,
+  'runtimeType': instance.$type,
 };
