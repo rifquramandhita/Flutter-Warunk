@@ -3,8 +3,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:warunk/app/features/auth/presentation/register/bloc/auth_register_bloc.dart';
 import 'package:warunk/app/features/auth/presentation/register/bloc/auth_register_event.dart';
 import 'package:warunk/app/features/auth/presentation/register/bloc/auth_register_state.dart';
+import 'package:warunk/core/dependency/dependency.dart';
+import 'package:warunk/core/helper/dialog_helper.dart';
+import 'package:warunk/main.dart';
 import 'package:warunk/theme/app_colors.dart';
 import 'package:warunk/core/widgets/primary_button.dart';
+import 'package:warunk/core/widgets/loading_app_widget.dart';
 
 class AuthRegisterScreen extends StatelessWidget {
   const AuthRegisterScreen({super.key});
@@ -12,158 +16,134 @@ class AuthRegisterScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => AuthRegisterBloc(),
-      child: const _RegisterView(),
-    );
-  }
-}
-
-class _RegisterView extends StatefulWidget {
-  const _RegisterView();
-
-  @override
-  State<_RegisterView> createState() => _RegisterViewState();
-}
-
-class _RegisterViewState extends State<_RegisterView> {
-  final _nameController = TextEditingController();
-  final _emailController = TextEditingController();
-  final _phoneController = TextEditingController();
-  final _passwordController = TextEditingController();
-
-  @override
-  void dispose() {
-    _nameController.dispose();
-    _emailController.dispose();
-    _phoneController.dispose();
-    _passwordController.dispose();
-    super.dispose();
-  }
-
-  void _onRegister() {
-    context.read<AuthRegisterBloc>().add(
-      AuthRegisterSubmitted(
-        _nameController.text,
-        _emailController.text,
-        _phoneController.text,
-        _passwordController.text,
+      create: (context) => sl<AuthRegisterBloc>(),
+      child: BlocConsumer<AuthRegisterBloc, AuthRegisterState>(
+        listener: (context, state) {
+          if (state.errorMessage != null) {
+            DialogHelper.showErrorSnackBar(
+              context: context,
+              text: state.errorMessage!,
+            );
+          } else if (state.isSuccess) {
+            navigatorKey.currentState?.pop();
+          }
+        },
+        builder: (context, state) {
+          return Scaffold(
+            backgroundColor: AppColors.background,
+            body: _bodyBuild(context),
+          );
+        },
       ),
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.background,
-      body: BlocConsumer<AuthRegisterBloc, AuthRegisterState>(
-        listenWhen: (previous, current) =>
-            previous.isSuccess != current.isSuccess ||
-            previous.errorMessage != current.errorMessage,
-        listener: (context, state) {
-          if (state.errorMessage != null) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(state.errorMessage!),
-                backgroundColor: Colors.red,
-              ),
-            );
-          } else if (state.isSuccess) {
-            Navigator.of(context).pop(); // back to login after register
-          }
-        },
-        builder: (context, state) {
-          return SafeArea(
-            child: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(height: 24),
+  Widget _bodyBuild(BuildContext context) {
+    final state = context.watch<AuthRegisterBloc>().state;
+    return SafeArea(
+      child: Stack(
+        children: [
+          _bodyLayout(context),
+          (state.isLoading) ? const LoadingAppWidget() : const SizedBox(),
+        ],
+      ),
+    );
+  }
 
-                    // ── Top logo row ────────────────────────────────────────
-                    _buildTopLogo(),
-                    const SizedBox(height: 20),
+  Widget _bodyLayout(BuildContext context) {
+    final state = context.watch<AuthRegisterBloc>().state;
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 24),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(height: 24),
 
-                    // ── Title ───────────────────────────────────────────────
-                    const Center(
-                      child: Text(
-                        'Buat Akun Baru',
-                        style: TextStyle(
-                          fontSize: 26,
-                          fontWeight: FontWeight.w800,
-                          color: AppColors.textDark,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 6),
-                    const Center(
-                      child: Text(
-                        'Daftar sebagai customer atau merchant',
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: AppColors.greyText,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 28),
+            // ── Top logo row ────────────────────────────────────────
+            _buildTopLogo(),
+            const SizedBox(height: 20),
 
-                    // ── Form fields ─────────────────────────────────────────
-                    _buildField(
-                      controller: _nameController,
-                      hint: 'Nama Lengkap',
-                      icon: Icons.person_outline_rounded,
-                    ),
-                    const SizedBox(height: 14),
-                    _buildField(
-                      controller: _emailController,
-                      hint: 'Email',
-                      icon: Icons.mail_outline_rounded,
-                      keyboardType: TextInputType.emailAddress,
-                    ),
-                    const SizedBox(height: 14),
-                    _buildField(
-                      controller: _phoneController,
-                      hint: 'Nomor HP',
-                      icon: Icons.phone_outlined,
-                      keyboardType: TextInputType.phone,
-                    ),
-                    const SizedBox(height: 14),
-                    _buildPasswordField(context, state),
-                    const SizedBox(height: 28),
-
-                    // ── Role section label ──────────────────────────────────
-                    const Text(
-                      'Daftar sebagai',
-                      style: TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w700,
-                        color: AppColors.textDark,
-                      ),
-                    ),
-                    const SizedBox(height: 14),
-
-                    // ── Role cards ──────────────────────────────────────────
-                    _buildRoleCards(context, state),
-                    const SizedBox(height: 22),
-
-                    // ── Terms checkbox ──────────────────────────────────────
-                    _buildTermsRow(context, state),
-                    const SizedBox(height: 24),
-
-                    // ── Register button ─────────────────────────────────────
-                    _buildRegisterButton(context, state),
-                    const SizedBox(height: 20),
-
-                    // ── Login link ──────────────────────────────────────────
-                    _buildLoginLink(),
-                    const SizedBox(height: 32),
-                  ],
+            // ── Title ───────────────────────────────────────────────
+            const Center(
+              child: Text(
+                'Buat Akun Baru',
+                style: TextStyle(
+                  fontSize: 26,
+                  fontWeight: FontWeight.w800,
+                  color: AppColors.textDark,
                 ),
               ),
             ),
-          );
-        },
+            const SizedBox(height: 6),
+            const Center(
+              child: Text(
+                'Daftar sebagai customer atau merchant',
+                style: TextStyle(fontSize: 14, color: AppColors.greyText),
+              ),
+            ),
+            const SizedBox(height: 28),
+
+            // ── Form fields ─────────────────────────────────────────
+            _buildField(
+              hint: 'Nama Lengkap',
+              icon: Icons.person_outline_rounded,
+              onChanged: (v) => context.read<AuthRegisterBloc>().add(
+                AuthRegisterEventNameChanged(v),
+              ),
+            ),
+            const SizedBox(height: 14),
+            _buildField(
+              hint: 'Email',
+              icon: Icons.mail_outline_rounded,
+              keyboardType: TextInputType.emailAddress,
+              onChanged: (v) => context.read<AuthRegisterBloc>().add(
+                AuthRegisterEventEmailChanged(v),
+              ),
+            ),
+            const SizedBox(height: 14),
+            _buildField(
+              hint: 'Nomor HP',
+              icon: Icons.phone_outlined,
+              keyboardType: TextInputType.phone,
+              onChanged: (v) => context.read<AuthRegisterBloc>().add(
+                AuthRegisterEventPhoneChanged(v),
+              ),
+            ),
+            const SizedBox(height: 14),
+            _buildPasswordField(context, state),
+            const SizedBox(height: 14),
+            _buildPasswordConfirmationField(context, state),
+            const SizedBox(height: 28),
+
+            // ── Role section label ──────────────────────────────────
+            const Text(
+              'Daftar sebagai',
+              style: TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.w700,
+                color: AppColors.textDark,
+              ),
+            ),
+            const SizedBox(height: 14),
+
+            // ── Role cards ──────────────────────────────────────────
+            _buildRoleCards(context, state),
+            const SizedBox(height: 22),
+
+            // ── Terms checkbox ──────────────────────────────────────
+            _buildTermsRow(context, state),
+            const SizedBox(height: 24),
+
+            // ── Register button ─────────────────────────────────────
+            _buildRegisterButton(context, state),
+            const SizedBox(height: 20),
+
+            // ── Login link ──────────────────────────────────────────
+            _buildLoginLink(context),
+            const SizedBox(height: 32),
+          ],
+        ),
       ),
     );
   }
@@ -204,10 +184,10 @@ class _RegisterViewState extends State<_RegisterView> {
 
   // ── Generic Text Field ────────────────────────────────────────────────────
   Widget _buildField({
-    required TextEditingController controller,
     required String hint,
     required IconData icon,
     TextInputType keyboardType = TextInputType.text,
+    required ValueChanged<String> onChanged,
   }) {
     return Container(
       decoration: BoxDecoration(
@@ -216,7 +196,7 @@ class _RegisterViewState extends State<_RegisterView> {
         border: Border.all(color: AppColors.greyBorder),
       ),
       child: TextField(
-        controller: controller,
+        onChanged: onChanged,
         keyboardType: keyboardType,
         style: const TextStyle(fontSize: 14, color: AppColors.textDark),
         decoration: InputDecoration(
@@ -242,7 +222,9 @@ class _RegisterViewState extends State<_RegisterView> {
         border: Border.all(color: AppColors.greyBorder),
       ),
       child: TextField(
-        controller: _passwordController,
+        onChanged: (v) => context.read<AuthRegisterBloc>().add(
+          AuthRegisterEventPasswordChanged(v),
+        ),
         obscureText: state.obscurePassword,
         style: const TextStyle(fontSize: 14, color: AppColors.textDark),
         decoration: InputDecoration(
@@ -251,7 +233,50 @@ class _RegisterViewState extends State<_RegisterView> {
           prefixIcon: _iconBadge(Icons.lock_outline_rounded),
           suffixIcon: IconButton(
             onPressed: () => context.read<AuthRegisterBloc>().add(
-              AuthRegisterObscurePasswordToggled(),
+              AuthRegisterEventObscurePasswordToggled(),
+            ),
+            icon: Icon(
+              state.obscurePassword
+                  ? Icons.visibility_off_outlined
+                  : Icons.visibility_outlined,
+              color: AppColors.greyText,
+              size: 20,
+            ),
+          ),
+          border: InputBorder.none,
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: 16,
+          ),
+        ),
+      ),
+    );
+  }
+
+  // ── Password Confirmation Field ───────────────────────────────────────────
+  Widget _buildPasswordConfirmationField(
+    BuildContext context,
+    AuthRegisterState state,
+  ) {
+    return Container(
+      decoration: BoxDecoration(
+        color: AppColors.white,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: AppColors.greyBorder),
+      ),
+      child: TextField(
+        onChanged: (v) => context.read<AuthRegisterBloc>().add(
+          AuthRegisterEventPasswordConfirmationChanged(v),
+        ),
+        obscureText: state.obscurePassword,
+        style: const TextStyle(fontSize: 14, color: AppColors.textDark),
+        decoration: InputDecoration(
+          hintText: 'Konfirmasi Password',
+          hintStyle: const TextStyle(color: AppColors.greyText, fontSize: 14),
+          prefixIcon: _iconBadge(Icons.lock_outline_rounded),
+          suffixIcon: IconButton(
+            onPressed: () => context.read<AuthRegisterBloc>().add(
+              AuthRegisterEventObscurePasswordToggled(),
             ),
             icon: Icon(
               state.obscurePassword
@@ -333,8 +358,9 @@ class _RegisterViewState extends State<_RegisterView> {
     final isSelected = state.selectedRole == index;
 
     return GestureDetector(
-      onTap: () =>
-          context.read<AuthRegisterBloc>().add(AuthRegisterRoleSelected(index)),
+      onTap: () => context.read<AuthRegisterBloc>().add(
+        AuthRegisterEventRoleSelected(index),
+      ),
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
         padding: const EdgeInsets.all(16),
@@ -366,6 +392,7 @@ class _RegisterViewState extends State<_RegisterView> {
 
             // ── Card body ─────────────────────────────────────────
             Column(
+              mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 const SizedBox(height: 4),
@@ -419,7 +446,7 @@ class _RegisterViewState extends State<_RegisterView> {
           child: Checkbox(
             value: state.agreeToTerms,
             onChanged: (v) => context.read<AuthRegisterBloc>().add(
-              AuthRegisterTermsToggled(v ?? false),
+              AuthRegisterEventTermsToggled(v ?? false),
             ),
             activeColor: AppColors.primary,
             shape: RoundedRectangleBorder(
@@ -453,12 +480,14 @@ class _RegisterViewState extends State<_RegisterView> {
     return PrimaryButton(
       label: 'Daftar Sekarang',
       isLoading: state.isLoading,
-      onPressed: state.agreeToTerms ? _onRegister : null,
+      onPressed: state.agreeToTerms
+          ? () => context.read<AuthRegisterBloc>().add(AuthRegisterEventSend())
+          : null,
     );
   }
 
   // ── Login Link ────────────────────────────────────────────────────────────
-  Widget _buildLoginLink() {
+  Widget _buildLoginLink(BuildContext context) {
     return Center(
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -468,7 +497,7 @@ class _RegisterViewState extends State<_RegisterView> {
             style: TextStyle(fontSize: 14, color: AppColors.greyText),
           ),
           GestureDetector(
-            onTap: () => Navigator.of(context).pop(),
+            onTap: () => navigatorKey.currentState?.pop(),
             child: const Text(
               'Masuk',
               style: TextStyle(

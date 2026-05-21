@@ -511,9 +511,7 @@ class AuthLoginScreen extends StatelessWidget {
             style: TextStyle(fontSize: 14, color: AppColors.greyText),
           ),
           GestureDetector(
-            onTap: () => Navigator.of(context).push(
-              MaterialPageRoute(builder: (_) => const AuthRegisterScreen()),
-            ),
+            onTap: () => _onPressRegister(),
             child: const Text(
               'Daftar',
               style: TextStyle(
@@ -525,6 +523,12 @@ class AuthLoginScreen extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+
+  void _onPressRegister() {
+    navigatorKey.currentState?.push(
+      MaterialPageRoute(builder: (_) => const AuthRegisterScreen()),
     );
   }
 }

@@ -67,7 +67,6 @@ This file serves as the main reference for AI agents and developers working on t
       return BlocProvider(
         create: (context) => sl<NamaBloc>(),
         child: BlocConsumer<NamaBloc, NamaState>(
-          listenWhen: (previous, current) => previous.errorMessage != current.errorMessage,
           listener: (context, state) {
             if (state.errorMessage != null) {
               DialogHelper.showErrorSnackBar(context: context, text: state.errorMessage!);
@@ -99,10 +98,28 @@ This file serves as the main reference for AI agents and developers working on t
   - Gunakan standar dari `flutter_bloc` yaitu `Bloc<Event, State>`.
   - Daftarkan event pada *constructor* menggunakan pola handler terpisah dengan menghapus prefix BLoC pada nama fungsi handler (contoh: `on<MerchantInputProductStarted>(_onStarted);`, bukan `_onMerchantInputProductStarted` atau menggunakan inline closures/arrow functions).
   - *Inject* UseCase dan BLoC lain melalui *constructor*.
+  - **Pemanggilan UseCase**: Saat memanggil UseCase, pattern yang digunakan harus mengikuti alur berikut (menyalakan loading, memanggil usecase, menangani hasil, dan mematikan loading):
+    ```dart
+    emit(state.copyWith(isLoading: true));
+    final param = RegisterSendParam(
+      name: state.name,
+      // ... field lainnya
+    );
+
+    final response = await _useCase.call(param: param);
+
+    if (response is SuccessState) { // atau DataSuccess, menyesuaikan tipe return
+      emit(state.copyWith(isSuccess: true));
+    } else {
+      emit(state.copyWith(errorMessage: response.message));
+    }
+    emit(state.copyWith(isLoading: false));
+    ```
 - **State (`..._state.dart`)**:
   - Wajib *extends* `Equatable`.
   - Gunakan properti standar (tanpa package `freezed`), berikan *default values* pada constructor.
   - Wajib menulis *method* `copyWith` untuk *state update*.
+  - Pada `copyWith`, untuk variabel nullable seperti `errorMessage`, **JANGAN** menggunakan fallback `?? this.errorMessage` (misal: tulislah `errorMessage: errorMessage,` alih-alih `errorMessage: errorMessage ?? this.errorMessage`). Hal ini bertujuan agar pesan error bisa di-reset menjadi `null`.
   - Sediakan properti seperti `isLoading` dan `String? errorMessage` untuk melacak proses *loading* dan menangkap pesan kegagalan.
 - **Event (`..._event.dart`)**:
   - Gunakan *abstract class* atau *sealed class* sebagai class dasar (*base*).

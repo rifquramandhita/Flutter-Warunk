@@ -11,4 +11,9 @@ abstract class AuthApiService {
   Future<HttpResponse<dynamic>> login({
     @Body() required Map<String, dynamic> body,
   });
+
+  @POST('/api/seller/auth/register')
+  Future<HttpResponse<dynamic>> register({
+    @Body() required Map<String, dynamic> body,
+  });
 }
