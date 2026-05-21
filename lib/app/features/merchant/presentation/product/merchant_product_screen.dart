@@ -1,111 +1,75 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:warunk/app/features/merchant/domain/entity/merchant_product.dart';
 import 'package:warunk/app/features/merchant/presentation/input_product/merchant_input_product_screen.dart';
 import 'package:warunk/app/features/merchant/presentation/product/bloc/merchant_product_bloc.dart';
+import 'package:warunk/core/dependency/dependency.dart';
+import 'package:warunk/core/helper/dialog_helper.dart';
+import 'package:warunk/core/widgets/loading_app_widget.dart';
 import 'package:warunk/theme/app_colors.dart';
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Entry point
-// ─────────────────────────────────────────────────────────────────────────────
 class MerchantProductScreen extends StatelessWidget {
   const MerchantProductScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => MerchantProductBloc(),
-      child: const _MerchantProductView(),
+      create: (context) =>
+          sl<MerchantProductBloc>()..add(MerchantProductEventGet()),
+      child: BlocConsumer<MerchantProductBloc, MerchantProductState>(
+        listenWhen: (previous, current) =>
+            previous.errorMessage != current.errorMessage,
+        listener: (context, state) {
+          if (state.errorMessage != null) {
+            DialogHelper.showErrorSnackBar(
+              context: context,
+              text: state.errorMessage!,
+            );
+          }
+        },
+        builder: (context, state) {
+          return Scaffold(
+            backgroundColor: AppColors.background,
+            appBar: _buildAppBar(context),
+            body: _bodyBuild(context),
+            floatingActionButton: _buildAddProductFab(context),
+          );
+        },
+      ),
     );
   }
-}
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Main view
-// ─────────────────────────────────────────────────────────────────────────────
-class _MerchantProductView extends StatelessWidget {
-  const _MerchantProductView();
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.background,
-      appBar: _buildAppBar(context),
-      body: const Column(
+  Widget _bodyBuild(BuildContext context) {
+    final state = context.watch<MerchantProductBloc>().state;
+    return SafeArea(
+      child: Stack(
         children: [
-          SizedBox(height: 12),
-          _SearchBar(),
-          SizedBox(height: 12),
-          _CategoryTabs(),
-          SizedBox(height: 8),
-          Expanded(child: _ProductList()),
+          _bodyLayout(context),
+          (state.isLoading) ? const LoadingAppWidget() : const SizedBox(),
         ],
       ),
-      floatingActionButton: _AddProductFab(),
+    );
+  }
+
+  Widget _bodyLayout(BuildContext context) {
+    return Column(
+      children: [
+        const SizedBox(height: 12),
+        _buildSearchBar(context),
+        const SizedBox(height: 12),
+        _buildCategoryTabs(context),
+        const SizedBox(height: 8),
+        Expanded(child: _buildProductList(context)),
+      ],
     );
   }
 
   AppBar _buildAppBar(BuildContext context) {
-    return AppBar(
-      backgroundColor: AppColors.background,
-      elevation: 0,
-      centerTitle: true,
-      automaticallyImplyLeading: false,
-      leading: GestureDetector(
-        onTap: () => Navigator.of(context).maybePop(),
-        child: Container(
-          margin: const EdgeInsets.all(10),
-          decoration: BoxDecoration(
-            color: AppColors.white,
-            shape: BoxShape.circle,
-            border: Border.all(color: AppColors.greyBorder),
-          ),
-          child: const Icon(
-            Icons.arrow_back,
-            color: AppColors.textDark,
-            size: 18,
-          ),
-        ),
-      ),
-      title: const Text(
-        'Produk Saya',
-        style: TextStyle(
-          fontSize: 16,
-          fontWeight: FontWeight.bold,
-          color: AppColors.textDark,
-        ),
-      ),
-      actions: [
-        GestureDetector(
-          onTap: () => Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (_) => const MerchantInputProductScreen(),
-            ),
-          ),
-          child: Container(
-            margin: const EdgeInsets.only(right: 16),
-            width: 38,
-            height: 38,
-            decoration: const BoxDecoration(
-              color: AppColors.primary,
-              shape: BoxShape.circle,
-            ),
-            child: const Icon(Icons.add, color: Colors.white, size: 22),
-          ),
-        ),
-      ],
-    );
+    return AppBar(title: const Text('Produk Saya'));
   }
-}
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Search bar
-// ─────────────────────────────────────────────────────────────────────────────
-class _SearchBar extends StatelessWidget {
-  const _SearchBar();
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _buildSearchBar(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Container(
@@ -117,7 +81,7 @@ class _SearchBar extends StatelessWidget {
         ),
         child: TextField(
           onChanged: (v) => context.read<MerchantProductBloc>().add(
-            MerchantProductSearchChanged(v),
+            MerchantProductEventSearchChanged(v),
           ),
           style: const TextStyle(fontSize: 14, color: AppColors.textDark),
           decoration: const InputDecoration(
@@ -135,132 +99,99 @@ class _SearchBar extends StatelessWidget {
       ),
     );
   }
-}
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Category tabs
-// ─────────────────────────────────────────────────────────────────────────────
-class _CategoryTabs extends StatelessWidget {
-  const _CategoryTabs();
+  Widget _buildCategoryTabs(BuildContext context) {
+    final state = context.watch<MerchantProductBloc>().state;
+    final tabs = state.categories;
 
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<MerchantProductBloc, MerchantProductState>(
-      builder: (context, state) {
-        return SizedBox(
-          height: 36,
-          child: ListView.separated(
-            scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            itemCount: MerchantProductState.tabLabels.length,
-            separatorBuilder: (_, _) => const SizedBox(width: 8),
-            itemBuilder: (context, index) {
-              final isSelected = state.selectedTab == index;
-              return GestureDetector(
-                onTap: () => context.read<MerchantProductBloc>().add(
-                  MerchantProductTabChanged(index),
+    return SizedBox(
+      height: 36,
+      child: ListView.separated(
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        itemCount: tabs.length,
+        separatorBuilder: (_, _) => const SizedBox(width: 8),
+        itemBuilder: (context, index) {
+          final isSelected = state.selectedTab == index;
+          return GestureDetector(
+            onTap: () => context.read<MerchantProductBloc>().add(
+                  MerchantProductEventTabChanged(index),
                 ),
-                child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 200),
-                  padding: const EdgeInsets.symmetric(horizontal: 18),
-                  decoration: BoxDecoration(
-                    color: isSelected
-                        ? AppColors.primary.withValues(alpha: 0.13)
-                        : AppColors.white,
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(
-                      color: isSelected
-                          ? AppColors.primary.withValues(alpha: 0.5)
-                          : AppColors.greyBorder,
-                    ),
-                  ),
-                  child: Center(
-                    child: Text(
-                      MerchantProductState.tabLabels[index],
-                      style: TextStyle(
-                        fontSize: 13,
-                        fontWeight: isSelected
-                            ? FontWeight.w700
-                            : FontWeight.w500,
-                        color: isSelected
-                            ? AppColors.primary
-                            : AppColors.greyText,
-                      ),
-                    ),
-                  ),
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 200),
+              padding: const EdgeInsets.symmetric(horizontal: 18),
+              decoration: BoxDecoration(
+                color: isSelected
+                    ? AppColors.primary.withValues(alpha: 0.13)
+                    : AppColors.white,
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                  color: isSelected
+                      ? AppColors.primary.withValues(alpha: 0.5)
+                      : AppColors.greyBorder,
                 ),
-              );
-            },
-          ),
-        );
-      },
-    );
-  }
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// Product list
-// ─────────────────────────────────────────────────────────────────────────────
-class _ProductList extends StatelessWidget {
-  const _ProductList();
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<MerchantProductBloc, MerchantProductState>(
-      builder: (context, state) {
-        final products = state.filteredProducts;
-
-        if (products.isEmpty) {
-          return Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  Icons.inventory_2_outlined,
-                  size: 60,
-                  color: AppColors.greyText.withValues(alpha: 0.35),
-                ),
-                const SizedBox(height: 14),
-                const Text(
-                  'Produk tidak ditemukan',
+              ),
+              child: Center(
+                child: Text(
+                  tabs[index].name,
                   style: TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.greyText,
+                    fontSize: 13,
+                    fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                    color: isSelected ? AppColors.primary : AppColors.greyText,
                   ),
                 ),
-              ],
+              ),
             ),
           );
-        }
-
-        return ListView.separated(
-          padding: const EdgeInsets.fromLTRB(20, 4, 20, 100),
-          itemCount: products.length,
-          separatorBuilder: (_, _) => const SizedBox(height: 10),
-          itemBuilder: (context, index) =>
-              _ProductCard(product: products[index]),
-        );
-      },
+        },
+      ),
     );
   }
-}
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Product card
-// ─────────────────────────────────────────────────────────────────────────────
-class _ProductCard extends StatelessWidget {
-  const _ProductCard({required this.product});
-  final MerchantProduct product;
+  Widget _buildProductList(BuildContext context) {
+    final state = context.watch<MerchantProductBloc>().state;
+    final products = state.filteredProducts;
 
-  static final _currency = NumberFormat.currency(
-    locale: 'id',
-    symbol: 'Rp',
-    decimalDigits: 0,
-  );
+    if (products.isEmpty) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.inventory_2_outlined,
+              size: 60,
+              color: AppColors.greyText.withValues(alpha: 0.35),
+            ),
+            const SizedBox(height: 14),
+            const Text(
+              'Produk tidak ditemukan',
+              style: TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.w600,
+                color: AppColors.greyText,
+              ),
+            ),
+          ],
+        ),
+      );
+    }
 
-  @override
-  Widget build(BuildContext context) {
+    return ListView.separated(
+      padding: const EdgeInsets.fromLTRB(20, 4, 20, 100),
+      itemCount: products.length,
+      separatorBuilder: (_, _) => const SizedBox(height: 10),
+      itemBuilder: (context, index) =>
+          _buildProductCard(context, products[index]),
+    );
+  }
+
+  Widget _buildProductCard(BuildContext context, MerchantProduct product) {
+    final currency = NumberFormat.currency(
+      locale: 'id',
+      symbol: 'Rp',
+      decimalDigits: 0,
+    );
+
     return Container(
       decoration: BoxDecoration(
         color: AppColors.white,
@@ -275,18 +206,14 @@ class _ProductCard extends StatelessWidget {
       ),
       child: Row(
         children: [
-          // ── Product image ────────────────────────────────────────────────
-          _ProductImage(emoji: product.emoji),
+          _buildProductImage(product),
           const SizedBox(width: 12),
-
-          // ── Info ─────────────────────────────────────────────────────────
           Expanded(
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 12),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Name + Stok badge
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -301,18 +228,16 @@ class _ProductCard extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(width: 6),
-                      _StokBadge(stock: product.stock),
+                      _buildStokBadge(product.stock),
                     ],
                   ),
                   const SizedBox(height: 4),
-                  // Category badge
-                  _CategoryBadge(category: product.category),
+                  _buildCategoryBadge(product.category),
                   const SizedBox(height: 6),
-                  // Price + toggle + arrow
                   Row(
                     children: [
                       Text(
-                        _currency.format(product.price),
+                        currency.format(product.price),
                         style: const TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w800,
@@ -320,7 +245,7 @@ class _ProductCard extends StatelessWidget {
                         ),
                       ),
                       const Spacer(),
-                      _ProductToggle(product: product),
+                      _buildProductToggle(context, product),
                       const SizedBox(width: 8),
                       GestureDetector(
                         onTap: () {},
@@ -341,17 +266,10 @@ class _ProductCard extends StatelessWidget {
       ),
     );
   }
-}
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Product image placeholder
-// ─────────────────────────────────────────────────────────────────────────────
-class _ProductImage extends StatelessWidget {
-  const _ProductImage({required this.emoji});
-  final String emoji;
+  Widget _buildProductImage(MerchantProduct product) {
+    final hasImage = product.images.isNotEmpty;
 
-  @override
-  Widget build(BuildContext context) {
     return Container(
       width: 80,
       height: 80,
@@ -362,29 +280,36 @@ class _ProductImage extends StatelessWidget {
           bottomLeft: Radius.circular(14),
         ),
       ),
-      child: Center(child: Text(emoji, style: const TextStyle(fontSize: 36))),
+      child: hasImage
+          ? ClipRRect(
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(14),
+                bottomLeft: Radius.circular(14),
+              ),
+              child: Image.network(
+                product.images.first.url,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) =>
+                    const Center(child: Icon(Icons.image_not_supported)),
+              ),
+            )
+          : const Center(
+              child: Icon(
+                Icons.inventory_2,
+                color: AppColors.primary,
+                size: 36,
+              ),
+            ),
     );
   }
-}
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Stok badge
-// ─────────────────────────────────────────────────────────────────────────────
-class _StokBadge extends StatelessWidget {
-  const _StokBadge({required this.stock});
-  final int stock;
+  Widget _buildStokBadge(int stock) {
+    final Color color = (stock <= 10) ? Colors.orange : AppColors.primary;
 
-  Color get _color {
-    if (stock <= 10) return Colors.orange;
-    return AppColors.primary;
-  }
-
-  @override
-  Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
       decoration: BoxDecoration(
-        color: _color.withValues(alpha: 0.12),
+        color: color.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(6),
       ),
       child: Text(
@@ -392,46 +317,28 @@ class _StokBadge extends StatelessWidget {
         style: TextStyle(
           fontSize: 11,
           fontWeight: FontWeight.w600,
-          color: _color,
+          color: color,
         ),
       ),
     );
   }
-}
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Category badge
-// ─────────────────────────────────────────────────────────────────────────────
-class _CategoryBadge extends StatelessWidget {
-  const _CategoryBadge({required this.category});
-  final MerchantProductCategory category;
+  Widget _buildCategoryBadge(String category) {
+    String label = category;
+    Color bg = AppColors.greyBorder;
+    Color text = AppColors.greyText;
 
-  (String, Color, Color) get _style => switch (category) {
-    MerchantProductCategory.minuman => (
-      'Minuman',
-      const Color(0xFFDCEEFD),
-      const Color(0xFF2563EB),
-    ),
-    MerchantProductCategory.makanan => (
-      'Makanan',
-      const Color(0xFFE8F5F1),
-      AppColors.primary,
-    ),
-    MerchantProductCategory.sembako => (
-      'Sembako',
-      const Color(0xFFFFF3C4),
-      const Color(0xFFF59E0B),
-    ),
-    MerchantProductCategory.semua => (
-      'Semua',
-      AppColors.greyBorder,
-      AppColors.greyText,
-    ),
-  };
+    if (category.toLowerCase() == 'minuman') {
+      bg = const Color(0xFFDCEEFD);
+      text = const Color(0xFF2563EB);
+    } else if (category.toLowerCase() == 'makanan') {
+      bg = const Color(0xFFE8F5F1);
+      text = AppColors.primary;
+    } else if (category.toLowerCase() == 'sembako') {
+      bg = const Color(0xFFFFF3C4);
+      text = const Color(0xFFF59E0B);
+    }
 
-  @override
-  Widget build(BuildContext context) {
-    final (label, bg, text) = _style;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
       decoration: BoxDecoration(
@@ -448,20 +355,11 @@ class _CategoryBadge extends StatelessWidget {
       ),
     );
   }
-}
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Animated toggle switch
-// ─────────────────────────────────────────────────────────────────────────────
-class _ProductToggle extends StatelessWidget {
-  const _ProductToggle({required this.product});
-  final MerchantProduct product;
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _buildProductToggle(BuildContext context, MerchantProduct product) {
     return GestureDetector(
       onTap: () => context.read<MerchantProductBloc>().add(
-        MerchantProductToggled(product.id),
+        MerchantProductEventToggled(product.id),
       ),
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 220),
@@ -469,14 +367,14 @@ class _ProductToggle extends StatelessWidget {
         height: 26,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(13),
-          color: product.isActive ? AppColors.primary : AppColors.greyBorder,
+          color: product.isPublished ? AppColors.primary : AppColors.greyBorder,
         ),
         child: Stack(
           children: [
             AnimatedPositioned(
               duration: const Duration(milliseconds: 220),
               curve: Curves.easeInOut,
-              left: product.isActive ? 20 : 2,
+              left: product.isPublished ? 20 : 2,
               top: 2,
               child: Container(
                 width: 22,
@@ -499,14 +397,8 @@ class _ProductToggle extends StatelessWidget {
       ),
     );
   }
-}
 
-// ─────────────────────────────────────────────────────────────────────────────
-// FAB — Tambah Produk
-// ─────────────────────────────────────────────────────────────────────────────
-class _AddProductFab extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
+  Widget _buildAddProductFab(BuildContext context) {
     return GestureDetector(
       onTap: () => Navigator.of(context).push(
         MaterialPageRoute(builder: (_) => const MerchantInputProductScreen()),

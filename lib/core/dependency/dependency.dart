@@ -8,6 +8,11 @@ import 'package:warunk/app/features/auth/domain/use_case/auth_login_use_case.dar
 import 'package:warunk/app/features/auth/domain/use_case/auth_logout_use_case.dart';
 import 'package:warunk/app/features/auth/presentation/login/bloc/auth_login_bloc.dart';
 import 'package:warunk/app/features/auth/presentation/logout/bloc/auth_logout_bloc.dart';
+import 'package:warunk/app/features/merchant/data/repository/merchant_product_repository_impl.dart';
+import 'package:warunk/app/features/merchant/data/source/merchant_product_api_service.dart';
+import 'package:warunk/app/features/merchant/domain/repository/merchant_product_repository.dart';
+import 'package:warunk/app/features/merchant/domain/use_case/merchant_products_get_use_case.dart';
+import 'package:warunk/app/features/merchant/presentation/product/bloc/merchant_product_bloc.dart';
 import 'package:warunk/core/bloc/auth/auth_bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:warunk/core/network/app_interceptor.dart';
@@ -34,16 +39,22 @@ Future<void> initDependency() async {
   sl.registerLazySingleton(() => dio);
   //api
   sl.registerLazySingleton(() => AuthApiService(dio));
+  sl.registerLazySingleton(() => MerchantProductApiService(dio));
 
   //repository
   sl.registerLazySingleton(() => AuthRepository(api: sl()));
+  sl.registerLazySingleton<MerchantProductRepository>(
+    () => MerchantProductRepositoryImpl(api: sl()),
+  );
 
   //usecase
   sl.registerLazySingleton(() => AuthLoginUseCase(repository: sl()));
   sl.registerLazySingleton(() => AuthLogoutUseCase(repository: sl()));
+  sl.registerLazySingleton(() => MerchantProductsGetUseCase(repository: sl()));
 
   //bloc
   sl.registerLazySingleton(() => AuthBloc());
   sl.registerFactory(() => AuthLoginBloc(authBloc: sl(), useCase: sl()));
   sl.registerFactory(() => AuthLogoutBloc(authBloc: sl(), useCase: sl()));
+  sl.registerFactory(() => MerchantProductBloc(useCase: sl()));
 }

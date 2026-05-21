@@ -12,7 +12,7 @@ class AuthLoginState extends Equatable {
     this.email = '',
     this.password = '',
     this.obscurePassword = true,
-    this.selectedRole = 0,
+    this.selectedRole = 1,
     this.isLoading = false,
     this.errorMessage,
   });

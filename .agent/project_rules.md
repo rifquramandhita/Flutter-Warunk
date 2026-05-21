@@ -57,8 +57,40 @@ This file serves as the main reference for AI agents and developers working on t
 ## 8. Coding Style & Code Separation (Presentation & BLoC)
 - **Screen (`..._screen.dart`)**:
   - Selalu *extends* `StatelessWidget`.
-  - Pada root `build()`, sediakan `BlocProvider` yang memanggil dependensi dari `get_it` (contoh: `sl<AuthLoginBloc>()`), kemudian gunakan `BlocConsumer` atau `BlocBuilder`.
-  - **Pemisahan Code UI**: Jangan menulis semua kode UI dalam satu fungsi besar. Pecah komponen-komponen antarmuka ke dalam fungsi privat yang mengembalikan `Widget` (contoh: `_bodyBuild`, `_formLayout`, `_emailTextFieldLayout`).
+  - Pada root `build()`, sediakan `BlocProvider` yang memanggil dependensi dari `get_it` (contoh: `sl<AuthLoginBloc>()`), kemudian wajib menggunakan `BlocConsumer` untuk meng-handle `state.errorMessage` (menampilkan snackbar) dan mengembalikan layout utama.
+  - **Struktur Root UI Wajib**:
+    ```dart
+    @override
+    Widget build(BuildContext context) {
+      return BlocProvider(
+        create: (context) => sl<NamaBloc>(),
+        child: BlocConsumer<NamaBloc, NamaState>(
+          listenWhen: (previous, current) => previous.errorMessage != current.errorMessage,
+          listener: (context, state) {
+            if (state.errorMessage != null) {
+              DialogHelper.showErrorSnackBar(context: context, text: state.errorMessage!);
+            }
+          },
+          builder: (context, state) {
+            return Scaffold(body: _bodyBuild(context));
+          },
+        ),
+      );
+    }
+    
+    Widget _bodyBuild(BuildContext context) {
+      final state = context.watch<NamaBloc>().state;
+      return SafeArea(
+        child: Stack(
+          children: [
+            _bodyLayout(context),
+            (state.isLoading) ? const LoadingAppWidget() : const SizedBox(),
+          ],
+        ),
+      );
+    }
+    ```
+  - **Pemisahan Code UI**: Jangan menulis semua kode UI dalam satu fungsi besar. Pecah komponen-komponen antarmuka ke dalam fungsi privat yang mengembalikan `Widget` (mulai dari `_bodyBuild`, `_bodyLayout`, hingga sub-komponen seperti `_emailTextFieldLayout`).
   - Untuk membaca state pada fungsi-fungsi privat tersebut, gunakan: `final state = context.watch<NamaBloc>().state;`.
   - Untuk memicu event, gunakan: `context.read<NamaBloc>().add(NamaEvent());`.
 - **BLoC (`..._bloc.dart`)**:
@@ -71,5 +103,24 @@ This file serves as the main reference for AI agents and developers working on t
   - Wajib menulis *method* `copyWith` untuk *state update*.
   - Sediakan properti seperti `isLoading` dan `String? errorMessage` untuk melacak proses *loading* dan menangkap pesan kegagalan.
 - **Event (`..._event.dart`)**:
-  - Gunakan *abstract class* sebagai class dasar (*base*).
-  - Setiap aksi (seperti input teks, tombol ditekan) direpresentasikan dengan class baru yang mewarisi class dasar tersebut (contoh: `AuthEmailChanged`, `AuthLoginSubmitted`).
+  - Gunakan *abstract class* atau *sealed class* sebagai class dasar (*base*).
+  - Setiap aksi (seperti input teks, tombol ditekan) direpresentasikan dengan class baru yang mewarisi class dasar tersebut, dan **wajib mengandung kata "Event"** di dalam penamaannya (contoh: `AuthEventEmailChanged`, `AuthEventLoginSubmitted`, `MerchantProductEventFetchStarted`).
+
+## 9. Naming Convention (Prefix Modul)
+- **Prefix Modul**: Setiap class dan nama file (termasuk Entity, Service, BLoC, Event, State, Screen, dll) wajib memiliki prefix sesuai dengan nama modulnya (misal: pada modul `merchant`, nama class menjadi `MerchantProduct`, dan nama file menjadi `merchant_product.dart`). Jika class/file tersebut sudah memiliki nama yang sama persis dengan nama modul (misal class `Merchant` pada modul `merchant`), maka tidak perlu ditambahkan prefix yang berulang.
+- **Khusus Entity (@freezed)**: Gunakan *sealed class* dengan *factory* `entity` yang mengembalikan `[Prefix][NamaClass]Entity`.
+- **Contoh**:
+  ```dart
+  @freezed
+  sealed class MerchantProduct with _$MerchantProduct {
+    @JsonSerializable(fieldRename: FieldRename.snake)
+    const factory MerchantProduct.entity({
+      required String id,
+      required String name,
+      // ... field lainnya
+    }) = MerchantProductEntity;
+
+    factory MerchantProduct.fromJson(Map<String, dynamic> json) =>
+        _$MerchantProductFromJson(json);
+  }
+  ```

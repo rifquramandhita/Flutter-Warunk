@@ -2,19 +2,23 @@ part of 'merchant_product_bloc.dart';
 
 sealed class MerchantProductEvent {}
 
-class MerchantProductTabChanged extends MerchantProductEvent {
+class MerchantProductEventGet extends MerchantProductEvent {
+  MerchantProductEventGet();
+}
+
+class MerchantProductEventTabChanged extends MerchantProductEvent {
   final int index; // 0=Semua, 1=Minuman, 2=Makanan, 3=Sembako
-  MerchantProductTabChanged(this.index);
+  MerchantProductEventTabChanged(this.index);
 }
 
-class MerchantProductSearchChanged extends MerchantProductEvent {
+class MerchantProductEventSearchChanged extends MerchantProductEvent {
   final String query;
-  MerchantProductSearchChanged(this.query);
+  MerchantProductEventSearchChanged(this.query);
 }
 
-class MerchantProductToggled extends MerchantProductEvent {
+class MerchantProductEventToggled extends MerchantProductEvent {
   final String productId;
-  MerchantProductToggled(this.productId);
+  MerchantProductEventToggled(this.productId);
 }
 
-class MerchantProductAddTapped extends MerchantProductEvent {}
+class MerchantProductEventAddTapped extends MerchantProductEvent {}
