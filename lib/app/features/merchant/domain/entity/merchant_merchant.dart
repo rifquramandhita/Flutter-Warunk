@@ -1,6 +1,7 @@
+import 'dart:io';
+
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:warunk/app/features/merchant/domain/entity/merchant_account.dart';
-import 'package:warunk/app/features/merchant/domain/entity/merchant_category.dart';
 
 part 'merchant_merchant.freezed.dart';
 part 'merchant_merchant.g.dart';
@@ -14,7 +15,7 @@ sealed class MerchantMerchant with _$MerchantMerchant {
     required String slug,
     int? userId,
     String? merchantCategoryId,
-    MerchantCategoryEntity? merchantCategory,
+    String? merchantCategory,
     String? status,
     int? statusChangedBy,
     @JsonKey(name: 'whatsapp_number') String? phone,
@@ -39,6 +40,14 @@ sealed class MerchantMerchant with _$MerchantMerchant {
     bool? isActive,
     required bool isOpen,
   }) = MerchantMerchantEntity;
+
+  const factory MerchantMerchant.updateParam({
+    @JsonKey(includeFromJson: false, includeToJson: false) File? photo,
+    required String name,
+    required String slug,
+    String? merchantCategoryName,
+    String? whatsappNumber,
+  }) = MerchantMerchantUpdateParam;
 
   factory MerchantMerchant.fromJson(Map<String, dynamic> json) =>
       _$MerchantMerchantFromJson(json);

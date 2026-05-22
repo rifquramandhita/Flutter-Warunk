@@ -14,11 +14,7 @@ MerchantMerchantEntity _$MerchantMerchantEntityFromJson(
   slug: json['slug'] as String,
   userId: (json['user_id'] as num?)?.toInt(),
   merchantCategoryId: json['merchant_category_id'] as String?,
-  merchantCategory: json['merchant_category'] == null
-      ? null
-      : MerchantCategoryEntity.fromJson(
-          json['merchant_category'] as Map<String, dynamic>,
-        ),
+  merchantCategory: json['merchant_category'] as String?,
   status: json['status'] as String?,
   statusChangedBy: (json['status_changed_by'] as num?)?.toInt(),
   phone: json['whatsapp_number'] as String?,
@@ -49,6 +45,7 @@ MerchantMerchantEntity _$MerchantMerchantEntityFromJson(
   balance: (json['balance'] as num?)?.toInt(),
   isActive: json['is_active'] as bool?,
   isOpen: json['is_open'] as bool,
+  $type: json['runtimeType'] as String?,
 );
 
 Map<String, dynamic> _$MerchantMerchantEntityToJson(
@@ -83,4 +80,25 @@ Map<String, dynamic> _$MerchantMerchantEntityToJson(
   'balance': instance.balance,
   'is_active': instance.isActive,
   'is_open': instance.isOpen,
+  'runtimeType': instance.$type,
+};
+
+MerchantMerchantUpdateParam _$MerchantMerchantUpdateParamFromJson(
+  Map<String, dynamic> json,
+) => MerchantMerchantUpdateParam(
+  name: json['name'] as String,
+  slug: json['slug'] as String,
+  merchantCategoryName: json['merchantCategoryName'] as String?,
+  whatsappNumber: json['whatsappNumber'] as String?,
+  $type: json['runtimeType'] as String?,
+);
+
+Map<String, dynamic> _$MerchantMerchantUpdateParamToJson(
+  MerchantMerchantUpdateParam instance,
+) => <String, dynamic>{
+  'name': instance.name,
+  'slug': instance.slug,
+  'merchantCategoryName': instance.merchantCategoryName,
+  'whatsappNumber': instance.whatsappNumber,
+  'runtimeType': instance.$type,
 };
