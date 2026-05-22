@@ -27,8 +27,16 @@ class AuthRepository {
     });
   }
 
-  Future<DataState> register({required RegisterSendParam param}) async {
-    return handleResponse(() => _api.register(body: param.toJson()), (
+  Future<DataState> registerCustomer({required RegisterSendParam param}) async {
+    return handleResponse(() => _api.registerCustomer(body: param.toJson()), (
+      responseData,
+    ) async {
+      return null;
+    });
+  }
+
+  Future<DataState> registerMerchant({required RegisterSendParam param}) async {
+    return handleResponse(() => _api.registerMerchant(body: param.toJson()), (
       responseData,
     ) async {
       return null;

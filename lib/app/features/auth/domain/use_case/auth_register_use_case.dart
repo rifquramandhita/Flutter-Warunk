@@ -8,7 +8,11 @@ class AuthRegisterUseCase {
   AuthRegisterUseCase({required AuthRepository repository})
     : _repository = repository;
 
-  Future<DataState> call({required RegisterSendParam param}) async {
-    return await _repository.register(param: param);
+  Future<DataState> call({required RegisterSendParam param, required bool isCustomer}) async {
+    if (isCustomer) {
+      return await _repository.registerCustomer(param: param);
+    } else {
+      return await _repository.registerMerchant(param: param);
+    }
   }
 }

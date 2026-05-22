@@ -138,7 +138,10 @@ class AuthRegisterBloc extends Bloc<AuthRegisterEvent, AuthRegisterState> {
       passwordConfirmation: state.passwordConfirmation,
     );
 
-    final response = await _useCase.call(param: param);
+    final response = await _useCase.call(
+      param: param,
+      isCustomer: state.selectedRole == 0,
+    );
 
     if (response is SuccessState) {
       emit(state.copyWith(isSuccess: true));
