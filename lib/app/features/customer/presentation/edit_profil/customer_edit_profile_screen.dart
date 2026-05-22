@@ -47,9 +47,6 @@ class _EditProfileView extends StatelessWidget {
         ),
       ),
       body: BlocConsumer<CustomerProfileBloc, CustomerProfileState>(
-        listenWhen: (previous, current) =>
-            previous.isSaving != current.isSaving ||
-            previous.errorMessage != current.errorMessage,
         listener: (context, state) {
           if (state.errorMessage != null) {
             ScaffoldMessenger.of(context).showSnackBar(

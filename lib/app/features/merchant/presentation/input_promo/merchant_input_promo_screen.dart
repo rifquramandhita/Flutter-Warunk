@@ -30,19 +30,20 @@ class _MerchantInputPromoView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocListener<MerchantInputPromoBloc, MerchantInputPromoState>(
-      listenWhen: (prev, curr) => curr.isSaved && !prev.isSaved,
-      listener: (context, _) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: const Text('Promo berhasil ditambahkan!'),
-            backgroundColor: AppColors.primary,
-            behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
+      listener: (context, state) {
+        if (state.isSaved) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: const Text('Promo berhasil ditambahkan!'),
+              backgroundColor: AppColors.primary,
+              behavior: SnackBarBehavior.floating,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
             ),
-          ),
-        );
-        Navigator.of(context).pop();
+          );
+          Navigator.of(context).pop();
+        }
       },
       child: Scaffold(
         backgroundColor: AppColors.background,

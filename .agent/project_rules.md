@@ -12,14 +12,20 @@ This file serves as the main reference for AI agents and developers working on t
 
 ## 2. State Management & Routing
 - **State Management**: BLoC (Business Logic Component).
-- **Routing/Navigation**: Navigation is handled globally using the `navigatorKey` variable located in `lib/main.dart`.
+- **Routing/Navigation**: Navigation is handled globally using the `navigatorKey` variable located in `lib/main.dart`. 
+  - **DILARANG KERAS** menggunakan `Navigator.push(context, ...)`, `Navigator.pop(context)`, atau `Navigator.of(context)`. 
+  - **WAJIB** menggunakan `navigatorKey.currentState?.push(...)` atau `navigatorKey.currentState?.pop()`.
 
 ## 3. Dependency Injection (DI)
 - **Tool**: `get_it`.
 - **Registration**: Every new BLoC, UseCase, Repository, API Service, and other injectable classes MUST be registered in `lib/core/dependency/dependency.dart`.
 
 ## 4. Styling & UI Components
-- **Typography & Colors**: All text styles (typography) and color palettes must be imported and used from `lib/core/helper/global_helper.dart`. Avoid hardcoding colors or styles in UI files.
+- **Typography & Colors**: 
+  - **DILARANG KERAS** melakukan hardcode `TextStyle(...)` secara langsung di UI files atau menggunakan class warna statis (misalnya `AppColors.primary`).
+  - **WAJIB** mengambil *text style* dan warna dari `lib/core/helper/global_helper.dart`:
+    - Untuk **Text Style**: Gunakan `GlobalHelper.getTextTheme(context, appTextStyle: AppTextStyle.XXX)` dengan `XXX` sesuai enum `AppTextStyle`.
+    - Untuk **Warna**: Gunakan `GlobalHelper.getColorSchema(context).XXX` (contoh: `GlobalHelper.getColorSchema(context).primary`).
 - **Reusable Widgets**: Widgets that are frequently used across different screens are stored in the `lib/core/widgets/` directory. Always check this folder before creating a new general-purpose widget.
 - **Dialogs**: Any pop-up dialogs or modals must be displayed using the helper functions provided in `lib/core/helper/dialog_helper.dart`.
 
@@ -60,6 +66,7 @@ This file serves as the main reference for AI agents and developers working on t
 - **Screen (`..._screen.dart`)**:
   - Selalu *extends* `StatelessWidget`.
   - Pada root `build()`, sediakan `BlocProvider` yang memanggil dependensi dari `get_it` (contoh: `sl<AuthLoginBloc>()`), kemudian wajib menggunakan `BlocConsumer` untuk meng-handle `state.errorMessage` (menampilkan snackbar) dan mengembalikan layout utama.
+  - **DILARANG** menggunakan properti `listenWhen` pada `BlocConsumer` maupun `BlocListener`. Biarkan *listener* berjalan untuk semua perubahan state, lalu gunakan *if-condition* di dalam blok `listener` untuk mengeksekusi logika tertentu.
   - **Struktur Root UI Wajib**:
     ```dart
     @override
@@ -116,8 +123,9 @@ This file serves as the main reference for AI agents and developers working on t
     emit(state.copyWith(isLoading: false));
     ```
 - **State (`..._state.dart`)**:
+  - **DILARANG KERAS** menggunakan package `freezed`.
   - Wajib *extends* `Equatable`.
-  - Gunakan properti standar (tanpa package `freezed`), berikan *default values* pada constructor.
+  - Gunakan properti standar, berikan *default values* pada constructor.
   - Wajib menulis *method* `copyWith` untuk *state update*.
   - Pada `copyWith`, untuk variabel nullable seperti `errorMessage`, **JANGAN** menggunakan fallback `?? this.errorMessage` (misal: tulislah `errorMessage: errorMessage,` alih-alih `errorMessage: errorMessage ?? this.errorMessage`). Hal ini bertujuan agar pesan error bisa di-reset menjadi `null`.
   - Sediakan properti seperti `isLoading` dan `String? errorMessage` untuk melacak proses *loading* dan menangkap pesan kegagalan.

@@ -30,19 +30,20 @@ class _MerchantOperationalHoursView extends StatelessWidget {
       MerchantOperationalHoursBloc,
       MerchantOperationalHoursState
     >(
-      listenWhen: (prev, curr) => curr.isSaved && !prev.isSaved,
-      listener: (context, _) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: const Text('Jam operasional berhasil disimpan!'),
-            backgroundColor: AppColors.primary,
-            behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
+      listener: (context, state) {
+        if (state.isSaved) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: const Text('Jam operasional berhasil disimpan!'),
+              backgroundColor: AppColors.primary,
+              behavior: SnackBarBehavior.floating,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
             ),
-          ),
-        );
-        Navigator.of(context).pop();
+          );
+          Navigator.of(context).pop();
+        }
       },
       child: Scaffold(
         backgroundColor: AppColors.background,

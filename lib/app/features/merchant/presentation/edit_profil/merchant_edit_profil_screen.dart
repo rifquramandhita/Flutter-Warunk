@@ -28,19 +28,20 @@ class _MerchantEditProfilView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocListener<MerchantEditProfilBloc, MerchantEditProfilState>(
-      listenWhen: (prev, curr) => curr.isSaved && !prev.isSaved,
       listener: (context, state) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: const Text('Profil berhasil disimpan!'),
-            backgroundColor: AppColors.primary,
-            behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
+        if (state.isSaved) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: const Text('Profil berhasil disimpan!'),
+              backgroundColor: AppColors.primary,
+              behavior: SnackBarBehavior.floating,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
             ),
-          ),
-        );
-        Navigator.of(context).pop();
+          );
+          Navigator.of(context).pop();
+        }
       },
       child: Scaffold(
         backgroundColor: AppColors.background,
