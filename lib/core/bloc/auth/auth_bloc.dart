@@ -8,11 +8,20 @@ part 'auth_state.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   AuthBloc() : super(const AuthState()) {
+    on<AuthEventInitial>(_onInitial);
     on<AuthEventCheck>(_onCheck);
   }
 
-  /// Cek token di SecureStorage — dipanggil saat splash screen
+  Future<void> _onInitial(
+    AuthEventInitial event,
+    Emitter<AuthState> emit,
+  ) async {
+    await Future.delayed(const Duration(seconds: 3));
+    add(AuthEventCheck());
+  }
+
   Future<void> _onCheck(AuthEventCheck event, Emitter<AuthState> emit) async {
+    emit(state.copyWith(isLoading: true));
     final token = await SharedPreferencesHelper.getString(PREF_AUTH);
     if (token != null && token.isNotEmpty) {
       final name = await SharedPreferencesHelper.getString(PREF_NAME) ?? '';

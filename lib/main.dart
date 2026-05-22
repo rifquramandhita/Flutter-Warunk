@@ -28,27 +28,24 @@ class WarunkApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create: (_) => sl<AuthBloc>()..add(AuthEventCheck())),
+        BlocProvider(create: (_) => sl<AuthBloc>()..add(AuthEventInitial())),
       ],
       child: MaterialApp(
         title: 'Warunk',
         debugShowCheckedModeBanner: !isProduction,
         navigatorKey: navigatorKey,
         theme: AppTheme.lightTheme,
-        home: FutureBuilder(
-          future: Future.delayed(const Duration(seconds: 3)),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState != ConnectionState.done) {
+        home: BlocBuilder<AuthBloc, AuthState>(
+          builder: (context, state) {
+            if (state.showSplash) {
               return const AuthSplashScreen();
             }
-            return BlocBuilder<AuthBloc, AuthState>(
-              builder: (context, state) {
-                if (state.isLoading) return Scaffold(body: LoadingAppWidget());
-                return state.isAuthenticated
-                    ? const MerchantShellScreen()
-                    : const AuthLoginScreen();
-              },
-            );
+            if (state.isLoading) {
+              return const Scaffold(body: LoadingAppWidget());
+            }
+            return state.isAuthenticated
+                ? const MerchantShellScreen()
+                : const AuthLoginScreen();
           },
         ),
       ),

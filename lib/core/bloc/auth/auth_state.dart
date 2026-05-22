@@ -4,13 +4,15 @@ class AuthState extends Equatable {
   final String name;
   final String email;
   final bool isAuthenticated;
-  final bool isLoading; // true selama AuthEventCheck belum selesai
+  final bool isLoading;
+  final bool showSplash;
 
   const AuthState({
     this.name = '',
     this.email = '',
     this.isAuthenticated = false,
-    this.isLoading = true, // default true: belum cek storage
+    this.isLoading = false,
+    this.showSplash = true,
   });
 
   AuthState copyWith({
@@ -24,6 +26,7 @@ class AuthState extends Equatable {
       email: email ?? this.email,
       isAuthenticated: isAuthenticated ?? this.isAuthenticated,
       isLoading: isLoading ?? this.isLoading,
+      showSplash: false,
     );
   }
 
