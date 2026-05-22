@@ -153,3 +153,12 @@ This file serves as the main reference for AI agents and developers working on t
         _$MerchantProductFromJson(json);
   }
   ```
+
+## 10. Commit Conventions & AI Generation Rules
+- **Format**: Gunakan format Conventional Commits (misal: `feat`, `fix`, `chore`, `refactor`, dll).
+- **Scope Modul**: Wajib menyertakan nama modul utama yang diubah di dalam tanda kurung sebagai *scope*. Contoh modul: `auth`, `customer`, `merchant`, atau `core`.
+- **Contoh**:
+  - `feat(auth): add reset password screen`
+  - `fix(merchant): resolve null pointer on product list`
+  - `chore(core): update flutter dependencies`
+- **Aturan Generasi AI**: Saat AI diminta untuk men-generate commit message, AI **hanya boleh membaca dan memperhitungkan perubahan pada file yang berstatus "staged" (`git diff --cached`)**. Perubahan pada file yang *unstaged* harus diabaikan sepenuhnya dan tidak boleh dimasukkan ke dalam ringkasan commit.
