@@ -1,45 +1,62 @@
 part of 'merchant_edit_profil_bloc.dart';
 
-class MerchantEditProfilState {
-  final String namaToko;
-  final String kategoriToko;
-  final String whatsapp;
-  final String email;
-  final bool isSaving;
-  final bool isSaved;
-
-  static const List<String> kategoriOptions = [
-    'Warung Makan',
-    'Warung Sembako',
-    'Warung Kelontong',
-    'Kedai Minuman',
-    'Laundry',
-    'Lainnya',
-  ];
+class MerchantEditProfilState extends Equatable {
+  final String name;
+  final String whatsappNumber;
+  final String merchantCategoryId;
+  final File? photoFile;
+  final String? photoUrl;
+  final bool isLoading;
+  final bool isInitialLoaded;
+  final bool isSuccess;
+  final String? errorMessage;
 
   const MerchantEditProfilState({
-    this.namaToko = 'Warunk Bu Siti',
-    this.kategoriToko = 'Warung Makan',
-    this.whatsapp = '0812 3456 7890',
-    this.email = 'warunk.busiti@gmail.com',
-    this.isSaving = false,
-    this.isSaved = false,
+    this.name = '',
+    this.whatsappNumber = '',
+    this.merchantCategoryId = '',
+    this.photoFile,
+    this.photoUrl,
+    this.isLoading = false,
+    this.isInitialLoaded = false,
+    this.isSuccess = false,
+    this.errorMessage,
   });
 
   MerchantEditProfilState copyWith({
-    String? namaToko,
-    String? kategoriToko,
-    String? whatsapp,
-    String? email,
-    bool? isSaving,
-    bool? isSaved,
-  }) =>
-      MerchantEditProfilState(
-        namaToko: namaToko ?? this.namaToko,
-        kategoriToko: kategoriToko ?? this.kategoriToko,
-        whatsapp: whatsapp ?? this.whatsapp,
-        email: email ?? this.email,
-        isSaving: isSaving ?? this.isSaving,
-        isSaved: isSaved ?? this.isSaved,
-      );
+    String? name,
+    String? whatsappNumber,
+    String? merchantCategoryId,
+    File? photoFile,
+    String? photoUrl,
+    bool? isLoading,
+    bool? isInitialLoaded,
+    bool? isSuccess,
+    String? errorMessage,
+  }) {
+    return MerchantEditProfilState(
+      name: name ?? this.name,
+      whatsappNumber: whatsappNumber ?? this.whatsappNumber,
+      merchantCategoryId: merchantCategoryId ?? this.merchantCategoryId,
+      photoFile: photoFile ?? this.photoFile,
+      photoUrl: photoUrl ?? this.photoUrl,
+      isLoading: isLoading ?? this.isLoading,
+      isInitialLoaded: isInitialLoaded ?? this.isInitialLoaded,
+      isSuccess: isSuccess ?? false,
+      errorMessage: errorMessage,
+    );
+  }
+
+  @override
+  List<Object?> get props => [
+    name,
+    whatsappNumber,
+    merchantCategoryId,
+    photoFile,
+    photoUrl,
+    isLoading,
+    isInitialLoaded,
+    isSuccess,
+    errorMessage,
+  ];
 }

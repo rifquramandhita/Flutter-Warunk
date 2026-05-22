@@ -31,9 +31,31 @@ class MerchantProfilScreen extends StatelessWidget {
           }
         },
         builder: (context, state) {
-          return Scaffold(body: _bodyBuild(context));
+          return Scaffold(
+            appBar: _appBarBuild(context),
+            body: _bodyBuild(context),
+          );
         },
       ),
+    );
+  }
+
+  AppBar _appBarBuild(BuildContext context) {
+    return AppBar(
+      backgroundColor: GlobalHelper.getColorSchema(context).primary,
+      title: Text(
+        "Profil",
+        style: TextStyle(color: GlobalHelper.getColorSchema(context).onPrimary),
+      ),
+      actions: [
+        IconButton(
+          onPressed: () => _onPressEditProfil(context),
+          icon: Icon(
+            Icons.edit,
+            color: GlobalHelper.getColorSchema(context).onPrimary,
+          ),
+        ),
+      ],
     );
   }
 
@@ -52,7 +74,7 @@ class MerchantProfilScreen extends StatelessWidget {
   Widget _bodyLayout(BuildContext context, MerchantProfilState state) {
     return CustomScrollView(
       slivers: [
-        _buildSliverAppBar(context, state),
+        SliverToBoxAdapter(child: _profilHeader(context, state)),
         SliverToBoxAdapter(
           child: Column(
             children: [
@@ -67,52 +89,6 @@ class MerchantProfilScreen extends StatelessWidget {
           ),
         ),
       ],
-    );
-  }
-
-  Widget _buildSliverAppBar(BuildContext context, MerchantProfilState state) {
-    final primaryColor = GlobalHelper.getColorSchema(context).primary;
-    final textTheme = GlobalHelper.getTextTheme(
-      context,
-      appTextStyle: AppTextStyle.TITLE_MEDIUM,
-    );
-
-    return SliverAppBar(
-      expandedHeight: 220,
-      pinned: true,
-      backgroundColor: primaryColor,
-      title: Text(
-        'Profil Merchant',
-        style: textTheme?.copyWith(
-          color: Colors.white,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-      centerTitle: true,
-      actions: [
-        GestureDetector(
-          onTap: () => navigatorKey.currentState?.push(
-            MaterialPageRoute(builder: (_) => const MerchantEditProfilScreen()),
-          ),
-          child: Container(
-            margin: const EdgeInsets.only(right: 16),
-            width: 36,
-            height: 36,
-            decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.2),
-              shape: BoxShape.circle,
-            ),
-            child: const Icon(
-              Icons.edit_outlined,
-              color: Colors.white,
-              size: 18,
-            ),
-          ),
-        ),
-      ],
-      flexibleSpace: FlexibleSpaceBar(
-        background: _profilHeader(context, state),
-      ),
     );
   }
 
@@ -144,7 +120,7 @@ class MerchantProfilScreen extends StatelessWidget {
       ),
       child: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(20, 60, 20, 24),
+          padding: const EdgeInsets.fromLTRB(20, 20, 20, 24),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
@@ -210,7 +186,7 @@ class MerchantProfilScreen extends StatelessWidget {
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Text(
-                        state.merchant?.merchantCategory?.name ?? '',
+                        state.merchant?.merchantCategory ?? '',
                         style: labelSmall?.copyWith(
                           fontWeight: FontWeight.w700,
                           color: Colors.white,
@@ -500,5 +476,12 @@ class MerchantProfilScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void _onPressEditProfil(BuildContext context) async {
+    await navigatorKey.currentState?.push(
+      MaterialPageRoute(builder: (_) => const MerchantEditProfilScreen()),
+    );
+    context.read<MerchantProfilBloc>().add(MerchantProfilEventGet());
   }
 }

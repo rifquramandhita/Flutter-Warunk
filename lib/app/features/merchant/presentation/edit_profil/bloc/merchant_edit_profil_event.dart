@@ -2,26 +2,23 @@ part of 'merchant_edit_profil_bloc.dart';
 
 sealed class MerchantEditProfilEvent {}
 
-class MerchantEditNamaToko extends MerchantEditProfilEvent {
+class MerchantEditProfilEventGet extends MerchantEditProfilEvent {}
+
+class MerchantEditProfilEventNameChanged extends MerchantEditProfilEvent {
   final String value;
-  MerchantEditNamaToko(this.value);
+  MerchantEditProfilEventNameChanged(this.value);
 }
 
-class MerchantEditKategoriToko extends MerchantEditProfilEvent {
+class MerchantEditProfilEventWhatsappChanged extends MerchantEditProfilEvent {
   final String value;
-  MerchantEditKategoriToko(this.value);
+  MerchantEditProfilEventWhatsappChanged(this.value);
 }
 
-class MerchantEditWhatsApp extends MerchantEditProfilEvent {
+class MerchantEditProfilEventCategoryChanged extends MerchantEditProfilEvent {
   final String value;
-  MerchantEditWhatsApp(this.value);
+  MerchantEditProfilEventCategoryChanged(this.value);
 }
 
-class MerchantEditEmail extends MerchantEditProfilEvent {
-  final String value;
-  MerchantEditEmail(this.value);
-}
+class MerchantEditProfilEventPhotoPicked extends MerchantEditProfilEvent {}
 
-class MerchantEditProfilSaved extends MerchantEditProfilEvent {}
-
-class MerchantEditFotoTapped extends MerchantEditProfilEvent {}
+class MerchantEditProfilEventSubmit extends MerchantEditProfilEvent {}

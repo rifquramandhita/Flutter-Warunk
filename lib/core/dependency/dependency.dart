@@ -18,6 +18,8 @@ import 'package:warunk/app/features/merchant/data/source/merchant_product_api_se
 import 'package:warunk/app/features/merchant/domain/repository/merchant_merchant_repository.dart';
 import 'package:warunk/app/features/merchant/data/repository/merchant_merchant_repository_impl.dart';
 import 'package:warunk/app/features/merchant/domain/use_case/merchant_merchant_get_use_case.dart';
+import 'package:warunk/app/features/merchant/domain/use_case/merchant_merchant_update_use_case.dart';
+import 'package:warunk/app/features/merchant/presentation/edit_profil/bloc/merchant_edit_profil_bloc.dart';
 import 'package:warunk/app/features/merchant/domain/repository/merchant_product_repository.dart';
 import 'package:warunk/app/features/merchant/domain/use_case/merchant_product_get_by_id_use_case.dart';
 import 'package:warunk/app/features/merchant/domain/use_case/merchant_product_send_use_case.dart';
@@ -72,6 +74,8 @@ Future<void> initDependency() async {
   sl.registerLazySingleton(() => MerchantProductsGetUseCase(repository: sl()));
   sl.registerLazySingleton(() => MerchantMerchantGetUseCase(repository: sl()));
   sl.registerLazySingleton(
+      () => MerchantMerchantUpdateUseCase(repository: sl()));
+  sl.registerLazySingleton(
       () => MerchantProductGetByIdUseCase(repository: sl()));
   sl.registerLazySingleton(() => MerchantProductSendUseCase(repository: sl()));
   sl.registerLazySingleton(
@@ -87,4 +91,6 @@ Future<void> initDependency() async {
   sl.registerFactory(() => MerchantInputProductBloc(
       useCase: sl(), sendUseCase: sl(), downloadImagesUseCase: sl()));
   sl.registerFactory(() => MerchantProfilBloc(useCase: sl()));
+  sl.registerFactory(() =>
+      MerchantEditProfilBloc(getUseCase: sl(), updateUseCase: sl()));
 }

@@ -43,6 +43,59 @@ class _MerchantMerchantApiService implements MerchantMerchantApiService {
     return httpResponse;
   }
 
+  @override
+  Future<HttpResponse<dynamic>> update(
+    File? photo,
+    String name,
+    String slug,
+    String? merchantCategory,
+    String? whatsappNumber,
+  ) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    queryParameters.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{};
+    final _data = FormData();
+    if (photo != null) {
+      _data.files.add(
+        MapEntry(
+          'photo',
+          MultipartFile.fromFileSync(
+            photo.path,
+            filename: photo.path.split(Platform.pathSeparator).last,
+          ),
+        ),
+      );
+    }
+    _data.fields.add(MapEntry('name', name));
+    _data.fields.add(MapEntry('slug', slug));
+    if (merchantCategory != null) {
+      _data.fields.add(MapEntry('merchant_category', merchantCategory));
+    }
+    if (whatsappNumber != null) {
+      _data.fields.add(MapEntry('whatsapp_number', whatsappNumber));
+    }
+    final _options = _setStreamType<HttpResponse<dynamic>>(
+      Options(
+            method: 'PUT',
+            headers: _headers,
+            extra: _extra,
+            contentType: 'multipart/form-data',
+          )
+          .compose(
+            _dio.options,
+            '/api/seller/merchant/information',
+            queryParameters: queryParameters,
+            data: _data,
+          )
+          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
+    );
+    final _result = await _dio.fetch(_options);
+    final _value = _result.data;
+    final httpResponse = HttpResponse(_value, _result);
+    return httpResponse;
+  }
+
   RequestOptions _setStreamType<T>(RequestOptions requestOptions) {
     if (T != dynamic &&
         !(requestOptions.responseType == ResponseType.bytes ||

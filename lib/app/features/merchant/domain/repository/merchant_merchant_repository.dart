@@ -3,4 +3,6 @@ import 'package:warunk/core/network/data_state.dart';
 
 abstract class MerchantMerchantRepository {
   Future<DataState<MerchantMerchantEntity>> get();
+  Future<DataState<dynamic>> update(
+      {required MerchantMerchantUpdateParam param});
 }

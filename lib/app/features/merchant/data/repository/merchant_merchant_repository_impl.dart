@@ -15,4 +15,21 @@ class MerchantMerchantRepositoryImpl implements MerchantMerchantRepository {
       return MerchantMerchantEntity.fromJson(responseData['merchant']);
     });
   }
+
+  @override
+  Future<DataState<dynamic>> update(
+      {required MerchantMerchantUpdateParam param}) async {
+    return handleResponse(
+      () => _api.update(
+        param.photo,
+        param.name,
+        param.slug,
+        param.merchantCategoryName,
+        param.whatsappNumber,
+      ),
+      (responseData) {
+        return responseData;
+      },
+    );
+  }
 }
