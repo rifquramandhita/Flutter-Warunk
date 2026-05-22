@@ -452,7 +452,12 @@ class AuthRegisterScreen extends StatelessWidget {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(5),
             ),
-            side: const BorderSide(color: AppColors.greyBorder, width: 1.5),
+            side: BorderSide(
+              color: state.agreeToTerms
+                  ? AppColors.primary
+                  : AppColors.greyText,
+              width: 1.5,
+            ),
           ),
         ),
         const SizedBox(width: 10),
