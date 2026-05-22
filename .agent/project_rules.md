@@ -34,6 +34,7 @@ This file serves as the main reference for AI agents and developers working on t
 
 ## 6. Repository, UseCase & API Requests
 - **Return Type**: Semua method pada UseCase dan Repository **WAJIB** memiliki tipe kembalian `Future<DataState<T>>`.
+- **API Service Return Type**: Semua response API (Retrofit) wajib memiliki tipe `Future<HttpResponse<dynamic>>` (contoh: `Future<HttpResponse<dynamic>> get();`).
 - **API Handling**: Every API request inside a repository MUST be wrapped using the `handleResponse` helper function. 
   Contoh format:
   ```dart

@@ -7,86 +7,91 @@ import 'package:warunk/app/features/merchant/presentation/information_store/merc
 import 'package:warunk/app/features/merchant/presentation/operational_hours/merchant_operational_hours_screen.dart';
 import 'package:warunk/app/features/merchant/presentation/payment_method/merchant_payment_method_screen.dart';
 import 'package:warunk/app/features/merchant/presentation/profil/bloc/merchant_profil_bloc.dart';
-import 'package:warunk/theme/app_colors.dart';
+import 'package:warunk/core/dependency/dependency.dart';
+import 'package:warunk/core/helper/global_helper.dart';
+import 'package:warunk/core/helper/dialog_helper.dart';
+import 'package:warunk/core/widgets/loading_app_widget.dart';
+import 'package:warunk/main.dart';
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Entry point — provides BLoC
-// ─────────────────────────────────────────────────────────────────────────────
 class MerchantProfilScreen extends StatelessWidget {
   const MerchantProfilScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => MerchantProfilBloc(),
-      child: const _MerchantProfilView(),
+      create: (context) =>
+          sl<MerchantProfilBloc>()..add(MerchantProfilEventGet()),
+      child: BlocConsumer<MerchantProfilBloc, MerchantProfilState>(
+        listener: (context, state) {
+          if (state.errorMessage != null) {
+            DialogHelper.showErrorSnackBar(
+              context: context,
+              text: state.errorMessage!,
+            );
+          }
+        },
+        builder: (context, state) {
+          return Scaffold(body: _bodyBuild(context));
+        },
+      ),
     );
   }
-}
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Main view
-// ─────────────────────────────────────────────────────────────────────────────
-class _MerchantProfilView extends StatelessWidget {
-  const _MerchantProfilView();
+  Widget _bodyBuild(BuildContext context) {
+    final state = context.watch<MerchantProfilBloc>().state;
+    return SafeArea(
+      child: Stack(
+        children: [
+          _bodyLayout(context, state),
+          if (state.isLoading) const LoadingAppWidget(),
+        ],
+      ),
+    );
+  }
 
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<MerchantProfilBloc, MerchantProfilState>(
-      builder: (context, state) {
-        return Scaffold(
-          backgroundColor: AppColors.background,
-          body: CustomScrollView(
-            slivers: [
-              _buildSliverAppBar(context, state),
-              SliverToBoxAdapter(
-                child: Column(
-                  children: [
-                    const SizedBox(height: 20),
-                    _InfoAkunCard(state: state),
-                    const SizedBox(height: 16),
-                    _PengaturanCard(state: state),
-                    const SizedBox(height: 24),
-                    _LogoutButton(state: state),
-                    const SizedBox(height: 32),
-                  ],
-                ),
-              ),
+  Widget _bodyLayout(BuildContext context, MerchantProfilState state) {
+    return CustomScrollView(
+      slivers: [
+        _buildSliverAppBar(context, state),
+        SliverToBoxAdapter(
+          child: Column(
+            children: [
+              const SizedBox(height: 20),
+              _infoAkunCard(context, state),
+              const SizedBox(height: 16),
+              _pengaturanCard(context, state),
+              const SizedBox(height: 24),
+              _logoutButton(context, state),
+              const SizedBox(height: 32),
             ],
           ),
-        );
-      },
+        ),
+      ],
     );
   }
 
   Widget _buildSliverAppBar(BuildContext context, MerchantProfilState state) {
+    final primaryColor = GlobalHelper.getColorSchema(context).primary;
+    final textTheme = GlobalHelper.getTextTheme(
+      context,
+      appTextStyle: AppTextStyle.TITLE_MEDIUM,
+    );
+
     return SliverAppBar(
       expandedHeight: 220,
       pinned: true,
-      backgroundColor: AppColors.primary,
-      leading: GestureDetector(
-        onTap: () => Navigator.of(context).maybePop(),
-        child: Container(
-          margin: const EdgeInsets.all(10),
-          decoration: BoxDecoration(
-            color: Colors.white.withValues(alpha: 0.2),
-            shape: BoxShape.circle,
-          ),
-          child: const Icon(Icons.arrow_back, color: Colors.white, size: 18),
-        ),
-      ),
-      title: const Text(
+      backgroundColor: primaryColor,
+      title: Text(
         'Profil Merchant',
-        style: TextStyle(
+        style: textTheme?.copyWith(
           color: Colors.white,
           fontWeight: FontWeight.bold,
-          fontSize: 16,
         ),
       ),
       centerTitle: true,
       actions: [
         GestureDetector(
-          onTap: () => Navigator.of(context).push(
+          onTap: () => navigatorKey.currentState?.push(
             MaterialPageRoute(builder: (_) => const MerchantEditProfilScreen()),
           ),
           child: Container(
@@ -105,26 +110,36 @@ class _MerchantProfilView extends StatelessWidget {
           ),
         ),
       ],
-      flexibleSpace: FlexibleSpaceBar(background: _ProfilHeader(state: state)),
+      flexibleSpace: FlexibleSpaceBar(
+        background: _profilHeader(context, state),
+      ),
     );
   }
-}
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Header (expanded area)
-// ─────────────────────────────────────────────────────────────────────────────
-class _ProfilHeader extends StatelessWidget {
-  const _ProfilHeader({required this.state});
-  final MerchantProfilState state;
+  Widget _profilHeader(BuildContext context, MerchantProfilState state) {
+    final colorSchema = GlobalHelper.getColorSchema(context);
+    final titleLarge = GlobalHelper.getTextTheme(
+      context,
+      appTextStyle: AppTextStyle.TITLE_LARGE,
+    );
+    final labelSmall = GlobalHelper.getTextTheme(
+      context,
+      appTextStyle: AppTextStyle.LABEL_SMALL,
+    );
+    final bodySmall = GlobalHelper.getTextTheme(
+      context,
+      appTextStyle: AppTextStyle.BODY_SMALL,
+    );
 
-  @override
-  Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
-          colors: [Color(0xFF2D6A4F), Color(0xFF52B788)],
+          colors: [
+            colorSchema.primary,
+            colorSchema.primary.withValues(alpha: 0.8),
+          ],
         ),
       ),
       child: SafeArea(
@@ -133,7 +148,6 @@ class _ProfilHeader extends StatelessWidget {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              // Avatar
               Container(
                 width: 80,
                 height: 80,
@@ -143,51 +157,67 @@ class _ProfilHeader extends StatelessWidget {
                   border: Border.all(color: Colors.white, width: 3),
                 ),
                 child: ClipOval(
-                  child: Container(
-                    color: const Color(0xFF2D6A4F).withValues(alpha: 0.3),
-                    child: const Center(
-                      child: Text('🏪', style: TextStyle(fontSize: 36)),
-                    ),
-                  ),
+                  child:
+                      state.merchant?.photo != null &&
+                          state.merchant!.photo!.isNotEmpty
+                      ? Image.network(
+                          state.merchant!.photo!,
+                          fit: BoxFit.cover,
+                          width: 80,
+                          height: 80,
+                          errorBuilder: (context, error, stackTrace) =>
+                              Container(
+                                color: colorSchema.primary.withValues(
+                                  alpha: 0.3,
+                                ),
+                                child: const Center(
+                                  child: Text(
+                                    '🏪',
+                                    style: TextStyle(fontSize: 36),
+                                  ),
+                                ),
+                              ),
+                        )
+                      : Container(
+                          color: colorSchema.primary.withValues(alpha: 0.3),
+                          child: const Center(
+                            child: Text('🏪', style: TextStyle(fontSize: 36)),
+                          ),
+                        ),
                 ),
               ),
               const SizedBox(width: 16),
-              // Info
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      state.storeName,
-                      style: const TextStyle(
-                        fontSize: 20,
+                      state.merchant?.name ?? '',
+                      style: titleLarge?.copyWith(
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
                       ),
                     ),
                     const SizedBox(height: 6),
-                    // Merchant badge
                     Container(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 12,
                         vertical: 4,
                       ),
                       decoration: BoxDecoration(
-                        color: AppColors.yellowDark,
+                        color: colorSchema.secondary,
                         borderRadius: BorderRadius.circular(20),
                       ),
-                      child: const Text(
-                        'Merchant',
-                        style: TextStyle(
-                          fontSize: 11,
+                      child: Text(
+                        state.merchant?.merchantCategory?.name ?? '',
+                        style: labelSmall?.copyWith(
                           fontWeight: FontWeight.w700,
                           color: Colors.white,
                         ),
                       ),
                     ),
                     const SizedBox(height: 10),
-                    // Phone
                     Row(
                       children: [
                         const Icon(
@@ -197,30 +227,8 @@ class _ProfilHeader extends StatelessWidget {
                         ),
                         const SizedBox(width: 6),
                         Text(
-                          state.whatsapp,
-                          style: const TextStyle(
-                            fontSize: 13,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 4),
-                    // Email
-                    Row(
-                      children: [
-                        const Icon(
-                          Icons.email_outlined,
-                          color: Colors.white70,
-                          size: 14,
-                        ),
-                        const SizedBox(width: 6),
-                        Text(
-                          state.email,
-                          style: const TextStyle(
-                            fontSize: 13,
-                            color: Colors.white,
-                          ),
+                          state.merchant?.phone ?? '',
+                          style: bodySmall?.copyWith(color: Colors.white),
                         ),
                       ],
                     ),
@@ -233,102 +241,88 @@ class _ProfilHeader extends StatelessWidget {
       ),
     );
   }
-}
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Informasi Akun Card
-// ─────────────────────────────────────────────────────────────────────────────
-class _InfoAkunCard extends StatelessWidget {
-  const _InfoAkunCard({required this.state});
-  final MerchantProfilState state;
-
-  @override
-  Widget build(BuildContext context) {
-    return _SectionCard(
+  Widget _infoAkunCard(BuildContext context, MerchantProfilState state) {
+    return _sectionCard(
+      context: context,
       title: 'Informasi Akun',
       children: [
-        _InfoRow(label: 'Nama Pemilik', value: state.ownerName),
-        _Divider(),
-        _InfoRow(label: 'Email', value: state.email),
-        _Divider(),
-        _InfoRow(label: 'No. WhatsApp', value: state.whatsapp),
-        _Divider(),
-        _PasswordRow(),
+        _infoRow(context: context, label: 'Nama Pemilik', value: state.name),
+        _divider(context),
+        _infoRow(context: context, label: 'Email', value: state.email),
+        _divider(context),
+        _infoRow(context: context, label: 'No. WhatsApp', value: state.phone),
+        _divider(context),
+        _passwordRow(context),
       ],
     );
   }
-}
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Pengaturan Card
-// ─────────────────────────────────────────────────────────────────────────────
-class _PengaturanCard extends StatelessWidget {
-  const _PengaturanCard({required this.state});
-  final MerchantProfilState state;
-
-  @override
-  Widget build(BuildContext context) {
-    return _SectionCard(
+  Widget _pengaturanCard(BuildContext context, MerchantProfilState state) {
+    return _sectionCard(
+      context: context,
       title: 'Pengaturan',
       children: [
-        _NavRow(
+        _navRow(
+          context: context,
           label: 'Informasi Toko',
-          onTap: () => Navigator.of(context).push(
+          onTap: () => navigatorKey.currentState?.push(
             MaterialPageRoute(
               builder: (_) => const MerchantInformationStoreScreen(),
             ),
           ),
         ),
-        _Divider(),
-        _NavRow(
+        _divider(context),
+        _navRow(
+          context: context,
           label: 'Metode Pembayaran',
-          onTap: () => Navigator.of(context).push(
+          onTap: () => navigatorKey.currentState?.push(
             MaterialPageRoute(
               builder: (_) => const MerchantPaymentMethodScreen(),
             ),
           ),
         ),
-        _Divider(),
-        _NavRow(
+        _divider(context),
+        _navRow(
+          context: context,
           label: 'Jam Operasional',
-          onTap: () => Navigator.of(context).push(
+          onTap: () => navigatorKey.currentState?.push(
             MaterialPageRoute(
               builder: (_) => const MerchantOperationalHoursScreen(),
             ),
           ),
         ),
-        _Divider(),
-        _NavRow(
+        _divider(context),
+        _navRow(
+          context: context,
           label: 'Metode Pengiriman',
-          onTap: () => Navigator.of(context).push(
+          onTap: () => navigatorKey.currentState?.push(
             MaterialPageRoute(
               builder: (_) => const MerchantDeliveryMethodScreen(),
             ),
           ),
         ),
-        _Divider(),
-        _NavRow(label: 'Keamanan Akun', onTap: () {}),
-        _Divider(),
-        _NavRow(label: 'Bahasa', trailing: state.language, onTap: () {}),
+        _divider(context),
+        _navRow(context: context, label: 'Keamanan Akun', onTap: () {}),
       ],
     );
   }
-}
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Reusable Section Card wrapper
-// ─────────────────────────────────────────────────────────────────────────────
-class _SectionCard extends StatelessWidget {
-  const _SectionCard({required this.title, required this.children});
-  final String title;
-  final List<Widget> children;
+  Widget _sectionCard({
+    required BuildContext context,
+    required String title,
+    required List<Widget> children,
+  }) {
+    final titleStyle = GlobalHelper.getTextTheme(
+      context,
+      appTextStyle: AppTextStyle.TITLE_SMALL,
+    );
+    final colorSchema = GlobalHelper.getColorSchema(context);
 
-  @override
-  Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 20),
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: colorSchema.surface,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
@@ -345,10 +339,9 @@ class _SectionCard extends StatelessWidget {
             padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
             child: Text(
               title,
-              style: const TextStyle(
-                fontSize: 14,
+              style: titleStyle?.copyWith(
                 fontWeight: FontWeight.bold,
-                color: AppColors.textDark,
+                color: colorSchema.onSurface,
               ),
             ),
           ),
@@ -358,66 +351,64 @@ class _SectionCard extends StatelessWidget {
       ),
     );
   }
-}
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Row widgets
-// ─────────────────────────────────────────────────────────────────────────────
-class _InfoRow extends StatelessWidget {
-  const _InfoRow({required this.label, required this.value});
-  final String label;
-  final String value;
+  Widget _infoRow({
+    required BuildContext context,
+    required String label,
+    required String value,
+  }) {
+    final bodyStyle = GlobalHelper.getTextTheme(
+      context,
+      appTextStyle: AppTextStyle.BODY_SMALL,
+    );
+    final colorSchema = GlobalHelper.getColorSchema(context);
 
-  @override
-  Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       child: Row(
         children: [
-          Text(
-            label,
-            style: const TextStyle(fontSize: 13, color: AppColors.textDark),
-          ),
+          Text(label, style: bodyStyle?.copyWith(color: colorSchema.onSurface)),
           const Spacer(),
           Text(
             value,
-            style: const TextStyle(fontSize: 13, color: AppColors.greyText),
+            style: bodyStyle?.copyWith(color: colorSchema.onSurfaceVariant),
           ),
         ],
       ),
     );
   }
-}
 
-class _PasswordRow extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
+  Widget _passwordRow(BuildContext context) {
+    final bodyStyle = GlobalHelper.getTextTheme(
+      context,
+      appTextStyle: AppTextStyle.BODY_SMALL,
+    );
+    final colorSchema = GlobalHelper.getColorSchema(context);
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       child: Row(
         children: [
-          const Text(
+          Text(
             'Password',
-            style: TextStyle(fontSize: 13, color: AppColors.textDark),
+            style: bodyStyle?.copyWith(color: colorSchema.onSurface),
           ),
           const Spacer(),
-          const Text(
+          Text(
             '••••••••',
-            style: TextStyle(
-              fontSize: 13,
-              color: AppColors.greyText,
+            style: bodyStyle?.copyWith(
+              color: colorSchema.onSurfaceVariant,
               letterSpacing: 2,
             ),
           ),
           const SizedBox(width: 10),
           GestureDetector(
             onTap: () {},
-            child: const Text(
+            child: Text(
               'Ubah',
-              style: TextStyle(
-                fontSize: 13,
+              style: bodyStyle?.copyWith(
                 fontWeight: FontWeight.w600,
-                color: AppColors.primary,
+                color: colorSchema.primary,
               ),
             ),
           ),
@@ -425,16 +416,19 @@ class _PasswordRow extends StatelessWidget {
       ),
     );
   }
-}
 
-class _NavRow extends StatelessWidget {
-  const _NavRow({required this.label, required this.onTap, this.trailing});
-  final String label;
-  final String? trailing;
-  final VoidCallback onTap;
+  Widget _navRow({
+    required BuildContext context,
+    required String label,
+    required VoidCallback onTap,
+    String? trailing,
+  }) {
+    final bodyStyle = GlobalHelper.getTextTheme(
+      context,
+      appTextStyle: AppTextStyle.BODY_SMALL,
+    );
+    final colorSchema = GlobalHelper.getColorSchema(context);
 
-  @override
-  Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
       behavior: HitTestBehavior.opaque,
@@ -444,57 +438,51 @@ class _NavRow extends StatelessWidget {
           children: [
             Text(
               label,
-              style: const TextStyle(fontSize: 13, color: AppColors.textDark),
+              style: bodyStyle?.copyWith(color: colorSchema.onSurface),
             ),
             const Spacer(),
             if (trailing != null)
               Text(
-                trailing!,
-                style: const TextStyle(fontSize: 13, color: AppColors.greyText),
+                trailing,
+                style: bodyStyle?.copyWith(color: colorSchema.onSurfaceVariant),
               ),
             const SizedBox(width: 4),
-            const Icon(
+            Icon(
               Icons.chevron_right,
               size: 18,
-              color: AppColors.greyText,
+              color: colorSchema.onSurfaceVariant,
             ),
           ],
         ),
       ),
     );
   }
-}
 
-class _Divider extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return const Divider(
+  Widget _divider(BuildContext context) {
+    final colorSchema = GlobalHelper.getColorSchema(context);
+    return Divider(
       height: 1,
       indent: 16,
       endIndent: 16,
-      color: AppColors.greyBorder,
+      color: colorSchema.outlineVariant,
     );
   }
-}
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Logout Button
-// ─────────────────────────────────────────────────────────────────────────────
-class _LogoutButton extends StatelessWidget {
-  const _LogoutButton({required this.state});
-  final MerchantProfilState state;
+  Widget _logoutButton(BuildContext context, MerchantProfilState state) {
+    final titleStyle = GlobalHelper.getTextTheme(
+      context,
+      appTextStyle: AppTextStyle.TITLE_SMALL,
+    );
 
-  @override
-  Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: SizedBox(
         width: double.infinity,
         height: 52,
         child: OutlinedButton(
-          onPressed: () => Navigator.of(
-            context,
-          ).push(MaterialPageRoute(builder: (_) => const AuthLogoutScreen())),
+          onPressed: () => navigatorKey.currentState?.push(
+            MaterialPageRoute(builder: (_) => const AuthLogoutScreen()),
+          ),
           style: OutlinedButton.styleFrom(
             side: const BorderSide(color: Colors.red, width: 1.5),
             shape: RoundedRectangleBorder(
@@ -502,10 +490,9 @@ class _LogoutButton extends StatelessWidget {
             ),
             foregroundColor: Colors.red,
           ),
-          child: const Text(
+          child: Text(
             'Logout',
-            style: TextStyle(
-              fontSize: 15,
+            style: titleStyle?.copyWith(
               fontWeight: FontWeight.w600,
               color: Colors.red,
             ),

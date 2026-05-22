@@ -2,6 +2,8 @@ part of 'merchant_profil_bloc.dart';
 
 sealed class MerchantProfilEvent {}
 
-class MerchantProfilEditTapped extends MerchantProfilEvent {}
+class MerchantProfilEventGet extends MerchantProfilEvent {}
 
-class MerchantProfilLogoutTapped extends MerchantProfilEvent {}
+class MerchantProfilEventEditTapped extends MerchantProfilEvent {}
+
+class MerchantProfilEventLogoutTapped extends MerchantProfilEvent {}

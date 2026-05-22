@@ -29,9 +29,6 @@ MerchantProductEntity _$MerchantProductEntityFromJson(
   length: (json['length'] as num?)?.toInt(),
   width: (json['width'] as num?)?.toInt(),
   height: (json['height'] as num?)?.toInt(),
-  merchant: MerchantMerchantEntity.fromJson(
-    json['merchant'] as Map<String, dynamic>,
-  ),
   productCategory: MerchantProductCategoryEntity.fromJson(
     json['product_category'] as Map<String, dynamic>,
   ),
@@ -80,7 +77,6 @@ Map<String, dynamic> _$MerchantProductEntityToJson(
   'length': instance.length,
   'width': instance.width,
   'height': instance.height,
-  'merchant': instance.merchant,
   'product_category': instance.productCategory,
   'variants': instance.variants,
   'images': instance.images,

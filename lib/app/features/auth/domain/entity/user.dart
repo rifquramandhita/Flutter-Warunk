@@ -6,8 +6,12 @@ part 'user.g.dart';
 @freezed
 sealed class User with _$User {
   @JsonSerializable(fieldRename: FieldRename.snake)
-  const factory User.entity({required String name, required String email}) =
-      UserEntity;
+  const factory User.entity({
+    required String name,
+    required String email,
+    required String phone,
+    String? profilePhoto,
+  }) = UserEntity;
 
   factory User.fromJson(Map<String, Object?> json) => _$UserFromJson(json);
 }

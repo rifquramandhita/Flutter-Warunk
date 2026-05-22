@@ -33,7 +33,6 @@ sealed class MerchantProduct with _$MerchantProduct {
     int? length,
     int? width,
     int? height,
-    required MerchantMerchantEntity merchant,
     required MerchantProductCategoryEntity productCategory,
     @Default([]) List<MerchantProductVariantEntity> variants,
     @Default([]) List<MerchantProductImageEntity> images,

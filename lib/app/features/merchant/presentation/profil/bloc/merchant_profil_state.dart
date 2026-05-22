@@ -1,28 +1,45 @@
 part of 'merchant_profil_bloc.dart';
 
-class MerchantProfilState {
-  final String storeName;
-  final String ownerName;
+class MerchantProfilState extends Equatable {
+  final String name;
   final String email;
-  final String whatsapp;
-  final String language;
-  final bool isLoggingOut;
+  final String phone;
+  final MerchantMerchantEntity? merchant;
+  final bool isLoading;
+  final String? errorMessage;
 
   const MerchantProfilState({
-    this.storeName = 'Warunk Bu Siti',
-    this.ownerName = 'Siti Aminah',
-    this.email = 'warunk.busiti@gmail.com',
-    this.whatsapp = '0812 3456 7890',
-    this.language = 'Bahasa Indonesia',
-    this.isLoggingOut = false,
+    this.name = '',
+    this.email = '',
+    this.phone = '',
+    this.merchant,
+    this.isLoading = false,
+    this.errorMessage,
   });
 
-  MerchantProfilState copyWith({bool? isLoggingOut}) => MerchantProfilState(
-        storeName: storeName,
-        ownerName: ownerName,
-        email: email,
-        whatsapp: whatsapp,
-        language: language,
-        isLoggingOut: isLoggingOut ?? this.isLoggingOut,
-      );
+  @override
+  List<Object?> get props => [
+    name,
+    email,
+    phone,
+    merchant,
+    isLoading,
+    errorMessage,
+  ];
+
+  MerchantProfilState copyWith({
+    String? name,
+    String? email,
+    String? phone,
+    MerchantMerchantEntity? merchant,
+    bool? isLoading,
+    String? errorMessage,
+  }) => MerchantProfilState(
+    name: name ?? this.name,
+    email: email ?? this.email,
+    phone: phone ?? this.phone,
+    merchant: merchant ?? this.merchant,
+    isLoading: isLoading ?? this.isLoading,
+    errorMessage: errorMessage,
+  );
 }

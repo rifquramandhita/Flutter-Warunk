@@ -13,7 +13,11 @@ import 'package:warunk/app/features/auth/presentation/logout/bloc/auth_logout_bl
 import 'package:warunk/app/features/auth/domain/use_case/auth_forgot_password_use_case.dart';
 import 'package:warunk/app/features/auth/presentation/reset_password/bloc/auth_reset_password_bloc.dart';
 import 'package:warunk/app/features/merchant/data/repository/merchant_product_repository_impl.dart';
+import 'package:warunk/app/features/merchant/data/source/merchant_merchant_api_service.dart';
 import 'package:warunk/app/features/merchant/data/source/merchant_product_api_service.dart';
+import 'package:warunk/app/features/merchant/domain/repository/merchant_merchant_repository.dart';
+import 'package:warunk/app/features/merchant/data/repository/merchant_merchant_repository_impl.dart';
+import 'package:warunk/app/features/merchant/domain/use_case/merchant_merchant_get_use_case.dart';
 import 'package:warunk/app/features/merchant/domain/repository/merchant_product_repository.dart';
 import 'package:warunk/app/features/merchant/domain/use_case/merchant_product_get_by_id_use_case.dart';
 import 'package:warunk/app/features/merchant/domain/use_case/merchant_product_send_use_case.dart';
@@ -21,6 +25,7 @@ import 'package:warunk/app/features/merchant/domain/use_case/merchant_products_g
 import 'package:warunk/app/features/merchant/domain/use_case/merchant_product_download_images_use_case.dart';
 import 'package:warunk/app/features/merchant/presentation/input_product/bloc/merchant_input_product_bloc.dart';
 import 'package:warunk/app/features/merchant/presentation/product/bloc/merchant_product_bloc.dart';
+import 'package:warunk/app/features/merchant/presentation/profil/bloc/merchant_profil_bloc.dart';
 import 'package:warunk/core/bloc/auth/auth_bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:warunk/core/network/app_interceptor.dart';
@@ -48,11 +53,15 @@ Future<void> initDependency() async {
   //api
   sl.registerLazySingleton(() => AuthApiService(dio));
   sl.registerLazySingleton(() => MerchantProductApiService(dio));
+  sl.registerLazySingleton(() => MerchantMerchantApiService(dio));
 
   //repository
   sl.registerLazySingleton(() => AuthRepository(api: sl()));
   sl.registerLazySingleton<MerchantProductRepository>(
     () => MerchantProductRepositoryImpl(api: sl()),
+  );
+  sl.registerLazySingleton<MerchantMerchantRepository>(
+    () => MerchantMerchantRepositoryImpl(api: sl()),
   );
 
   //usecase
@@ -61,6 +70,7 @@ Future<void> initDependency() async {
   sl.registerLazySingleton(() => AuthRegisterUseCase(repository: sl()));
   sl.registerLazySingleton(() => AuthForgotPasswordUseCase(repository: sl()));
   sl.registerLazySingleton(() => MerchantProductsGetUseCase(repository: sl()));
+  sl.registerLazySingleton(() => MerchantMerchantGetUseCase(repository: sl()));
   sl.registerLazySingleton(
       () => MerchantProductGetByIdUseCase(repository: sl()));
   sl.registerLazySingleton(() => MerchantProductSendUseCase(repository: sl()));
@@ -76,4 +86,5 @@ Future<void> initDependency() async {
   sl.registerFactory(() => MerchantProductBloc(useCase: sl()));
   sl.registerFactory(() => MerchantInputProductBloc(
       useCase: sl(), sendUseCase: sl(), downloadImagesUseCase: sl()));
+  sl.registerFactory(() => MerchantProfilBloc(useCase: sl()));
 }

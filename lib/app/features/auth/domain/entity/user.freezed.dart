@@ -22,7 +22,7 @@ User _$UserFromJson(
 /// @nodoc
 mixin _$User {
 
- String get name; String get email;
+ String get name; String get email; String get phone; String? get profilePhoto;
 /// Create a copy of User
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -35,16 +35,16 @@ $UserCopyWith<User> get copyWith => _$UserCopyWithImpl<User>(this as User, _$ide
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is User&&(identical(other.name, name) || other.name == name)&&(identical(other.email, email) || other.email == email));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is User&&(identical(other.name, name) || other.name == name)&&(identical(other.email, email) || other.email == email)&&(identical(other.phone, phone) || other.phone == phone)&&(identical(other.profilePhoto, profilePhoto) || other.profilePhoto == profilePhoto));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,name,email);
+int get hashCode => Object.hash(runtimeType,name,email,phone,profilePhoto);
 
 @override
 String toString() {
-  return 'User(name: $name, email: $email)';
+  return 'User(name: $name, email: $email, phone: $phone, profilePhoto: $profilePhoto)';
 }
 
 
@@ -55,7 +55,7 @@ abstract mixin class $UserCopyWith<$Res>  {
   factory $UserCopyWith(User value, $Res Function(User) _then) = _$UserCopyWithImpl;
 @useResult
 $Res call({
- String name, String email
+ String name, String email, String phone, String? profilePhoto
 });
 
 
@@ -72,11 +72,13 @@ class _$UserCopyWithImpl<$Res>
 
 /// Create a copy of User
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? name = null,Object? email = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? name = null,Object? email = null,Object? phone = null,Object? profilePhoto = freezed,}) {
   return _then(_self.copyWith(
 name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,email: null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
-as String,
+as String,phone: null == phone ? _self.phone : phone // ignore: cast_nullable_to_non_nullable
+as String,profilePhoto: freezed == profilePhoto ? _self.profilePhoto : profilePhoto // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 
@@ -158,10 +160,10 @@ return entity(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String name,  String email)?  entity,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String name,  String email,  String phone,  String? profilePhoto)?  entity,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case UserEntity() when entity != null:
-return entity(_that.name,_that.email);case _:
+return entity(_that.name,_that.email,_that.phone,_that.profilePhoto);case _:
   return orElse();
 
 }
@@ -179,10 +181,10 @@ return entity(_that.name,_that.email);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String name,  String email)  entity,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String name,  String email,  String phone,  String? profilePhoto)  entity,}) {final _that = this;
 switch (_that) {
 case UserEntity():
-return entity(_that.name,_that.email);}
+return entity(_that.name,_that.email,_that.phone,_that.profilePhoto);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -196,10 +198,10 @@ return entity(_that.name,_that.email);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String name,  String email)?  entity,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String name,  String email,  String phone,  String? profilePhoto)?  entity,}) {final _that = this;
 switch (_that) {
 case UserEntity() when entity != null:
-return entity(_that.name,_that.email);case _:
+return entity(_that.name,_that.email,_that.phone,_that.profilePhoto);case _:
   return null;
 
 }
@@ -211,11 +213,13 @@ return entity(_that.name,_that.email);case _:
 
 @JsonSerializable(fieldRename: FieldRename.snake)
 class UserEntity implements User {
-  const UserEntity({required this.name, required this.email});
+  const UserEntity({required this.name, required this.email, required this.phone, this.profilePhoto});
   factory UserEntity.fromJson(Map<String, dynamic> json) => _$UserEntityFromJson(json);
 
 @override final  String name;
 @override final  String email;
+@override final  String phone;
+@override final  String? profilePhoto;
 
 /// Create a copy of User
 /// with the given fields replaced by the non-null parameter values.
@@ -230,16 +234,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is UserEntity&&(identical(other.name, name) || other.name == name)&&(identical(other.email, email) || other.email == email));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is UserEntity&&(identical(other.name, name) || other.name == name)&&(identical(other.email, email) || other.email == email)&&(identical(other.phone, phone) || other.phone == phone)&&(identical(other.profilePhoto, profilePhoto) || other.profilePhoto == profilePhoto));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,name,email);
+int get hashCode => Object.hash(runtimeType,name,email,phone,profilePhoto);
 
 @override
 String toString() {
-  return 'User.entity(name: $name, email: $email)';
+  return 'User.entity(name: $name, email: $email, phone: $phone, profilePhoto: $profilePhoto)';
 }
 
 
@@ -250,7 +254,7 @@ abstract mixin class $UserEntityCopyWith<$Res> implements $UserCopyWith<$Res> {
   factory $UserEntityCopyWith(UserEntity value, $Res Function(UserEntity) _then) = _$UserEntityCopyWithImpl;
 @override @useResult
 $Res call({
- String name, String email
+ String name, String email, String phone, String? profilePhoto
 });
 
 
@@ -267,11 +271,13 @@ class _$UserEntityCopyWithImpl<$Res>
 
 /// Create a copy of User
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? name = null,Object? email = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? name = null,Object? email = null,Object? phone = null,Object? profilePhoto = freezed,}) {
   return _then(UserEntity(
 name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,email: null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
-as String,
+as String,phone: null == phone ? _self.phone : phone // ignore: cast_nullable_to_non_nullable
+as String,profilePhoto: freezed == profilePhoto ? _self.profilePhoto : profilePhoto // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 
