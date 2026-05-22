@@ -7,6 +7,7 @@ import 'package:warunk/app/features/auth/presentation/login/bloc/auth_login_bloc
 import 'package:warunk/app/features/auth/presentation/login/bloc/auth_login_event.dart';
 import 'package:warunk/app/features/auth/presentation/login/bloc/auth_login_state.dart';
 import 'package:warunk/app/features/auth/presentation/register/auth_register_screen.dart';
+import 'package:warunk/app/features/auth/presentation/reset_password/auth_reset_password_screen.dart';
 import 'package:warunk/core/bloc/auth/auth_bloc.dart';
 import 'package:warunk/core/dependency/dependency.dart';
 import 'package:warunk/core/helper/dialog_helper.dart';
@@ -23,8 +24,6 @@ class AuthLoginScreen extends StatelessWidget {
     return BlocProvider(
       create: (context) => sl<AuthLoginBloc>(),
       child: BlocConsumer<AuthLoginBloc, AuthLoginState>(
-        listenWhen: (previous, current) =>
-            previous.errorMessage != current.errorMessage,
         listener: (context, state) {
           if (state.errorMessage != null) {
             DialogHelper.showErrorSnackBar(
@@ -178,7 +177,11 @@ class AuthLoginScreen extends StatelessWidget {
           Align(
             alignment: Alignment.centerRight,
             child: TextButton(
-              onPressed: () {},
+              onPressed: () {
+                navigatorKey.currentState?.push(
+                  MaterialPageRoute(builder: (_) => const AuthResetPasswordScreen()),
+                );
+              },
               style: TextButton.styleFrom(
                 padding: EdgeInsets.zero,
                 minimumSize: Size.zero,

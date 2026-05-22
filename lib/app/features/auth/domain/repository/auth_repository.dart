@@ -2,6 +2,7 @@ import 'package:warunk/app/features/auth/data/source/auth_api_service.dart';
 import 'package:warunk/app/features/auth/domain/entity/auth.dart';
 import 'package:warunk/app/features/auth/domain/entity/login.dart';
 import 'package:warunk/app/features/auth/domain/entity/register.dart';
+import 'package:warunk/app/features/auth/domain/entity/forgot_password.dart';
 import 'package:warunk/core/constants/constant.dart';
 import 'package:warunk/core/helper/shared_preferences_helper.dart';
 import 'package:warunk/core/network/data_state.dart';
@@ -28,6 +29,14 @@ class AuthRepository {
 
   Future<DataState> register({required RegisterSendParam param}) async {
     return handleResponse(() => _api.register(body: param.toJson()), (
+      responseData,
+    ) async {
+      return null;
+    });
+  }
+
+  Future<DataState> forgotPassword({required ForgotPasswordParam param}) async {
+    return handleResponse(() => _api.forgotPassword(body: param.toJson()), (
       responseData,
     ) async {
       return null;
