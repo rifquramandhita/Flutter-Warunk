@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:warunk/app/features/auth/presentation/reset_password/bloc/auth_reset_password_bloc.dart';
-import 'package:warunk/app/features/auth/presentation/reset_password/bloc/auth_reset_password_event.dart';
-import 'package:warunk/app/features/auth/presentation/reset_password/bloc/auth_reset_password_state.dart';
 import 'package:warunk/core/dependency/dependency.dart';
 import 'package:warunk/core/helper/dialog_helper.dart';
-import 'package:warunk/main.dart';
 import 'package:warunk/core/helper/global_helper.dart';
 import 'package:warunk/core/widgets/loading_app_widget.dart';
 import 'package:warunk/core/widgets/primary_button.dart';
+import 'package:warunk/main.dart';
 
 class AuthResetPasswordScreen extends StatelessWidget {
   const AuthResetPasswordScreen({super.key});
@@ -25,153 +23,188 @@ class AuthResetPasswordScreen extends StatelessWidget {
               text: state.errorMessage!,
             );
           }
-          if (state.successMessage != null) {
+          if (state.isSuccess) {
             DialogHelper.showBottomSheetDialog(
               context: context,
-              canDismiss: false,
-              title: "Success",
+              title: 'Berhasil',
               content: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  const Icon(Icons.check_circle, color: Colors.green, size: 48),
-                  const SizedBox(height: 16),
-                  Text(
-                    state.successMessage!,
-                    style:
-                        GlobalHelper.getTextTheme(
-                          context,
-                          appTextStyle: AppTextStyle.BODY_MEDIUM,
-                        )?.copyWith(
-                          color: GlobalHelper.getColorSchema(
-                            context,
-                          ).onSurfaceVariant,
-                        ),
+                  const Text(
+                    'Password Anda telah berhasil diperbarui. Silakan gunakan password baru Anda untuk masuk di kemudian hari.',
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 32),
                   PrimaryButton(
                     label: 'Tutup',
                     onPressed: () {
-                      navigatorKey.currentState?.pop();
                       navigatorKey.currentState?.pop();
                     },
                   ),
                 ],
               ),
-            );
+            ).then((_) {
+              navigatorKey.currentState?.pop();
+            });
           }
         },
         builder: (context, state) {
           return Scaffold(
-            appBar: AppBar(
-              iconTheme: IconThemeData(
-                color: GlobalHelper.getColorSchema(context).onSurface,
-              ),
-            ),
-            body: _bodyBuild(context, state),
+            backgroundColor: GlobalHelper.getColorSchema(context).surface,
+            appBar: _buildAppBar(context),
+            body: _bodyBuild(context),
           );
         },
       ),
     );
   }
 
-  Widget _bodyBuild(BuildContext context, AuthResetPasswordState state) {
+  AppBar _buildAppBar(BuildContext context) {
+    return AppBar(title: Text('Ubah Password'));
+  }
+
+  Widget _bodyBuild(BuildContext context) {
+    final state = context.watch<AuthResetPasswordBloc>().state;
     return SafeArea(
       child: Stack(
         children: [
           _bodyLayout(context),
-          if (state.isLoading) const LoadingAppWidget(),
+          if (state.isLoading) const LoadingAppWidget() else const SizedBox(),
         ],
       ),
     );
   }
 
   Widget _bodyLayout(BuildContext context) {
+    final colorSchema = GlobalHelper.getColorSchema(context);
+    final labelStyle = GlobalHelper.getTextTheme(
+      context,
+      appTextStyle: AppTextStyle.LABEL_MEDIUM,
+    );
+    final hintStyle = GlobalHelper.getTextTheme(
+      context,
+      appTextStyle: AppTextStyle.BODY_SMALL,
+    );
+    final state = context.watch<AuthResetPasswordBloc>().state;
+
     return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: 16),
-            Text(
-              'Lupa Password',
-              style:
-                  GlobalHelper.getTextTheme(
-                    context,
-                    appTextStyle: AppTextStyle.HEADLINE_SMALL,
-                  )?.copyWith(
-                    fontWeight: FontWeight.w800,
-                    color: GlobalHelper.getColorSchema(context).onSurface,
-                  ),
+      padding: const EdgeInsets.all(24),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(
+            'Buat password baru yang kuat agar akun Anda lebih aman.',
+            style: hintStyle?.copyWith(color: colorSchema.onSurfaceVariant),
+          ),
+          const SizedBox(height: 32),
+
+          // Current Password
+          Text('Password Saat Ini', style: labelStyle),
+          const SizedBox(height: 8),
+          _buildTextField(
+            context: context,
+            hint: 'Masukkan password saat ini',
+            obscureText: state.obscureCurrent,
+            onChanged: (value) => context.read<AuthResetPasswordBloc>().add(
+              AuthResetPasswordEventCurrentPasswordChanged(value),
             ),
-            const SizedBox(height: 6),
-            Text(
-              'Masukkan email Anda untuk menerima link reset password',
-              style:
-                  GlobalHelper.getTextTheme(
-                    context,
-                    appTextStyle: AppTextStyle.BODY_MEDIUM,
-                  )?.copyWith(
-                    color: GlobalHelper.getColorSchema(
-                      context,
-                    ).onSurfaceVariant,
-                  ),
+            onToggleObscure: () => context.read<AuthResetPasswordBloc>().add(
+              AuthResetPasswordEventToggleObscureCurrent(),
             ),
-            const SizedBox(height: 32),
-            _emailTextFieldLayout(context),
-            const SizedBox(height: 24),
-            _submitButtonLayout(context),
-          ],
-        ),
+          ),
+          const SizedBox(height: 24),
+
+          // New Password
+          Text('Password Baru', style: labelStyle),
+          const SizedBox(height: 8),
+          _buildTextField(
+            context: context,
+            hint: 'Masukkan password baru',
+            obscureText: state.obscureNew,
+            onChanged: (value) => context.read<AuthResetPasswordBloc>().add(
+              AuthResetPasswordEventNewPasswordChanged(value),
+            ),
+            onToggleObscure: () => context.read<AuthResetPasswordBloc>().add(
+              AuthResetPasswordEventToggleObscureNew(),
+            ),
+          ),
+          const SizedBox(height: 24),
+
+          // Confirm Password
+          Text('Konfirmasi Password Baru', style: labelStyle),
+          const SizedBox(height: 8),
+          _buildTextField(
+            context: context,
+            hint: 'Ulangi password baru',
+            obscureText: state.obscureConfirm,
+            onChanged: (value) => context.read<AuthResetPasswordBloc>().add(
+              AuthResetPasswordEventConfirmPasswordChanged(value),
+            ),
+            onToggleObscure: () => context.read<AuthResetPasswordBloc>().add(
+              AuthResetPasswordEventToggleObscureConfirm(),
+            ),
+          ),
+          const SizedBox(height: 48),
+
+          // Submit Button
+          PrimaryButton(
+            label: 'Simpan Password',
+            onPressed: () {
+              context.read<AuthResetPasswordBloc>().add(
+                AuthResetPasswordEventSubmit(),
+              );
+            },
+          ),
+        ],
       ),
     );
   }
 
-  Widget _emailTextFieldLayout(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: GlobalHelper.getColorSchema(context).surface,
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: GlobalHelper.getColorSchema(context).outline),
-      ),
-      child: TextField(
-        onChanged: (value) => context.read<AuthResetPasswordBloc>().add(
-          AuthResetEmailChanged(value),
+  Widget _buildTextField({
+    required BuildContext context,
+    required String hint,
+    required bool obscureText,
+    required ValueChanged<String> onChanged,
+    required VoidCallback onToggleObscure,
+  }) {
+    final colorSchema = GlobalHelper.getColorSchema(context);
+    final textStyle = GlobalHelper.getTextTheme(
+      context,
+      appTextStyle: AppTextStyle.BODY_MEDIUM,
+    );
+
+    return TextFormField(
+      obscureText: obscureText,
+      onChanged: onChanged,
+      style: textStyle?.copyWith(color: colorSchema.onSurface),
+      decoration: InputDecoration(
+        hintText: hint,
+        hintStyle: textStyle?.copyWith(color: colorSchema.onSurfaceVariant),
+        filled: true,
+        fillColor: colorSchema.surfaceContainerHighest.withValues(alpha: 0.3),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 16,
         ),
-        style: GlobalHelper.getTextTheme(
-          context,
-          appTextStyle: AppTextStyle.BODY_MEDIUM,
-        )?.copyWith(color: GlobalHelper.getColorSchema(context).onSurface),
-        decoration: InputDecoration(
-          hintText: 'Email',
-          hintStyle:
-              GlobalHelper.getTextTheme(
-                context,
-                appTextStyle: AppTextStyle.BODY_MEDIUM,
-              )?.copyWith(
-                color: GlobalHelper.getColorSchema(context).onSurfaceVariant,
-              ),
-          prefixIcon: Icon(
-            Icons.mail_outline_rounded,
-            color: GlobalHelper.getColorSchema(context).onSurfaceVariant,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: colorSchema.outlineVariant),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: colorSchema.outlineVariant),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: colorSchema.primary),
+        ),
+        suffixIcon: IconButton(
+          icon: Icon(
+            obscureText ? Icons.visibility_off : Icons.visibility,
+            color: colorSchema.onSurfaceVariant,
             size: 20,
           ),
-          border: InputBorder.none,
-          contentPadding: const EdgeInsets.symmetric(
-            horizontal: 16,
-            vertical: 16,
-          ),
+          onPressed: onToggleObscure,
         ),
-      ),
-    );
-  }
-
-  Widget _submitButtonLayout(BuildContext context) {
-    final state = context.watch<AuthResetPasswordBloc>().state;
-    return PrimaryButton(
-      label: 'Kirim Link',
-      isLoading: state.isLoading,
-      onPressed: () => context.read<AuthResetPasswordBloc>().add(
-        AuthResetPasswordSubmitted(),
       ),
     );
   }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:warunk/app/features/auth/presentation/logout/auth_logout_screen.dart';
+import 'package:warunk/app/features/auth/presentation/reset_password/auth_reset_password_screen.dart';
 import 'package:warunk/app/features/merchant/presentation/delivery_method/merchant_delivery_method_screen.dart';
 import 'package:warunk/app/features/merchant/presentation/edit_profil/merchant_edit_profil_screen.dart';
 import 'package:warunk/app/features/merchant/presentation/information_store/merchant_information_store_screen.dart';
@@ -379,7 +380,13 @@ class MerchantProfilScreen extends StatelessWidget {
           ),
           const SizedBox(width: 10),
           GestureDetector(
-            onTap: () {},
+            onTap: () {
+              navigatorKey.currentState?.push(
+                MaterialPageRoute(
+                  builder: (_) => const AuthResetPasswordScreen(),
+                ),
+              );
+            },
             child: Text(
               'Ubah',
               style: bodyStyle?.copyWith(

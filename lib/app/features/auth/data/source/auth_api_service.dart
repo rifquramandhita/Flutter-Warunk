@@ -26,4 +26,9 @@ abstract class AuthApiService {
   Future<HttpResponse<dynamic>> forgotPassword({
     @Body() required Map<String, dynamic> body,
   });
+
+  @POST('/api/auth/reset-password')
+  Future<HttpResponse<dynamic>> resetPassword({
+    @Body() required Map<String, dynamic> body,
+  });
 }

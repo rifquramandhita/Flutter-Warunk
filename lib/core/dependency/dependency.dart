@@ -11,6 +11,7 @@ import 'package:warunk/app/features/auth/presentation/login/bloc/auth_login_bloc
 import 'package:warunk/app/features/auth/presentation/register/bloc/auth_register_bloc.dart';
 import 'package:warunk/app/features/auth/presentation/logout/bloc/auth_logout_bloc.dart';
 import 'package:warunk/app/features/auth/domain/use_case/auth_forgot_password_use_case.dart';
+import 'package:warunk/app/features/auth/domain/use_case/auth_reset_password_use_case.dart';
 import 'package:warunk/app/features/auth/presentation/reset_password/bloc/auth_reset_password_bloc.dart';
 import 'package:warunk/app/features/merchant/data/repository/merchant_product_repository_impl.dart';
 import 'package:warunk/app/features/merchant/data/source/merchant_merchant_api_service.dart';
@@ -71,15 +72,19 @@ Future<void> initDependency() async {
   sl.registerLazySingleton(() => AuthLogoutUseCase(repository: sl()));
   sl.registerLazySingleton(() => AuthRegisterUseCase(repository: sl()));
   sl.registerLazySingleton(() => AuthForgotPasswordUseCase(repository: sl()));
+  sl.registerLazySingleton(() => AuthResetPasswordUseCase(repository: sl()));
   sl.registerLazySingleton(() => MerchantProductsGetUseCase(repository: sl()));
   sl.registerLazySingleton(() => MerchantMerchantGetUseCase(repository: sl()));
   sl.registerLazySingleton(
-      () => MerchantMerchantUpdateUseCase(repository: sl()));
+    () => MerchantMerchantUpdateUseCase(repository: sl()),
+  );
   sl.registerLazySingleton(
-      () => MerchantProductGetByIdUseCase(repository: sl()));
+    () => MerchantProductGetByIdUseCase(repository: sl()),
+  );
   sl.registerLazySingleton(() => MerchantProductSendUseCase(repository: sl()));
   sl.registerLazySingleton(
-      () => MerchantProductDownloadImagesUseCase(repository: sl()));
+    () => MerchantProductDownloadImagesUseCase(repository: sl()),
+  );
 
   //bloc
   sl.registerLazySingleton(() => AuthBloc());
@@ -88,9 +93,15 @@ Future<void> initDependency() async {
   sl.registerFactory(() => AuthResetPasswordBloc(useCase: sl()));
   sl.registerFactory(() => AuthLogoutBloc(authBloc: sl(), useCase: sl()));
   sl.registerFactory(() => MerchantProductBloc(useCase: sl()));
-  sl.registerFactory(() => MerchantInputProductBloc(
-      useCase: sl(), sendUseCase: sl(), downloadImagesUseCase: sl()));
+  sl.registerFactory(
+    () => MerchantInputProductBloc(
+      useCase: sl(),
+      sendUseCase: sl(),
+      downloadImagesUseCase: sl(),
+    ),
+  );
   sl.registerFactory(() => MerchantProfilBloc(useCase: sl()));
-  sl.registerFactory(() =>
-      MerchantEditProfilBloc(getUseCase: sl(), updateUseCase: sl()));
+  sl.registerFactory(
+    () => MerchantEditProfilBloc(getUseCase: sl(), updateUseCase: sl()),
+  );
 }

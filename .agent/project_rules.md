@@ -28,6 +28,7 @@ This file serves as the main reference for AI agents and developers working on t
     - Untuk **Warna**: Gunakan `GlobalHelper.getColorSchema(context).XXX` (contoh: `GlobalHelper.getColorSchema(context).primary`).
 - **Reusable Widgets**: Widgets that are frequently used across different screens are stored in the `lib/core/widgets/` directory. Always check this folder before creating a new general-purpose widget.
 - **Dialogs**: Any pop-up dialogs or modals must be displayed using the helper functions provided in `lib/core/helper/dialog_helper.dart`.
+- **AppBar**: Untuk pembuatan `AppBar`, cukup gunakan format sederhana bawaan Flutter tanpa kustomisasi rumit. Contoh: `AppBar(title: Text('Judul'))`.
 
 ## 5. Constants & API
 - **URLs & Paths**: All API endpoint paths and static URL configurations must be stored in `lib/core/constants/constant.dart`.
