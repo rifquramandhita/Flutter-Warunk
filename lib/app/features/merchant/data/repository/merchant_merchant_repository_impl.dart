@@ -1,4 +1,5 @@
 import 'package:warunk/app/features/merchant/data/source/merchant_merchant_api_service.dart';
+import 'package:warunk/app/features/merchant/domain/entity/merchant_account.dart';
 import 'package:warunk/app/features/merchant/domain/entity/merchant_merchant.dart';
 import 'package:warunk/app/features/merchant/domain/repository/merchant_merchant_repository.dart';
 import 'package:warunk/core/network/data_state.dart';
@@ -52,6 +53,26 @@ class MerchantMerchantRepositoryImpl implements MerchantMerchantRepository {
         'postal_code': postalCode,
         'longitude': longitude,
         'latitude': latitude,
+      }),
+      (responseData) {
+        return responseData;
+      },
+    );
+  }
+
+  @override
+  Future<DataState<dynamic>> updateAccount({
+    required List<MerchantAccountUpdateParam> accounts,
+  }) async {
+    return handleResponse(
+      () => _api.updateAccount({
+        'merchant_accounts': accounts
+            .map((e) => {
+                  'bank_name': e.bankName,
+                  'account_name': e.accountName,
+                  'account_number': e.accountNumber,
+                })
+            .toList(),
       }),
       (responseData) {
         return responseData;

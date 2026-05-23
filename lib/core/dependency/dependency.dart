@@ -31,6 +31,8 @@ import 'package:warunk/app/features/merchant/presentation/product/bloc/merchant_
 import 'package:warunk/app/features/merchant/presentation/profil/bloc/merchant_profil_bloc.dart';
 import 'package:warunk/app/features/merchant/domain/use_case/merchant_merchant_update_location_use_case.dart';
 import 'package:warunk/app/features/merchant/presentation/input_address/bloc/merchant_input_address_bloc.dart';
+import 'package:warunk/app/features/merchant/presentation/input_account/bloc/merchant_input_account_bloc.dart';
+import 'package:warunk/app/features/merchant/domain/use_case/merchant_merchant_update_account_use_case.dart';
 import 'package:warunk/app/features/merchant/presentation/profil/bloc/merchant_profil_bloc.dart';
 import 'package:warunk/core/bloc/auth/auth_bloc.dart';
 import 'package:dio/dio.dart';
@@ -89,6 +91,7 @@ Future<void> initDependency() async {
     () => MerchantProductDownloadImagesUseCase(repository: sl()),
   );
   sl.registerLazySingleton(() => MerchantMerchantUpdateLocationUseCase(sl()));
+  sl.registerLazySingleton(() => MerchantMerchantUpdateAccountUseCase(sl()));
 
   //bloc
   sl.registerLazySingleton(() => AuthBloc());
@@ -109,4 +112,5 @@ Future<void> initDependency() async {
     () => MerchantEditProfilBloc(getUseCase: sl(), updateUseCase: sl()),
   );
   sl.registerFactory(() => MerchantInputAddressBloc(sl(), sl()));
+  sl.registerFactory(() => MerchantInputAccountBloc(sl(), sl()));
 }

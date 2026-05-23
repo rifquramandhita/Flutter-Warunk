@@ -13,6 +13,7 @@ MerchantAccountEntity _$MerchantAccountEntityFromJson(
   bankName: json['bank_name'] as String,
   accountName: json['account_name'] as String,
   accountNumber: json['account_number'] as String,
+  $type: json['runtimeType'] as String?,
 );
 
 Map<String, dynamic> _$MerchantAccountEntityToJson(
@@ -22,4 +23,23 @@ Map<String, dynamic> _$MerchantAccountEntityToJson(
   'bank_name': instance.bankName,
   'account_name': instance.accountName,
   'account_number': instance.accountNumber,
+  'runtimeType': instance.$type,
+};
+
+MerchantAccountUpdateParam _$MerchantAccountUpdateParamFromJson(
+  Map<String, dynamic> json,
+) => MerchantAccountUpdateParam(
+  bankName: json['bank_name'] as String,
+  accountName: json['account_name'] as String,
+  accountNumber: json['account_number'] as String,
+  $type: json['runtimeType'] as String?,
+);
+
+Map<String, dynamic> _$MerchantAccountUpdateParamToJson(
+  MerchantAccountUpdateParam instance,
+) => <String, dynamic>{
+  'bank_name': instance.bankName,
+  'account_name': instance.accountName,
+  'account_number': instance.accountNumber,
+  'runtimeType': instance.$type,
 };

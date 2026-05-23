@@ -15,4 +15,11 @@ sealed class MerchantAccount with _$MerchantAccount {
 
   factory MerchantAccount.fromJson(Map<String, dynamic> json) =>
       _$MerchantAccountFromJson(json);
+
+  @JsonSerializable(fieldRename: FieldRename.snake)
+  const factory MerchantAccount.updateParam({
+    required String bankName,
+    required String accountName,
+    required String accountNumber,
+  }) = MerchantAccountUpdateParam;
 }

@@ -1,3 +1,4 @@
+import 'package:warunk/app/features/merchant/domain/entity/merchant_account.dart';
 import 'package:warunk/app/features/merchant/domain/entity/merchant_merchant.dart';
 import 'package:warunk/core/network/data_state.dart';
 
@@ -13,5 +14,8 @@ abstract class MerchantMerchantRepository {
     required String postalCode,
     required double longitude,
     required double latitude,
+  });
+  Future<DataState<dynamic>> updateAccount({
+    required List<MerchantAccountUpdateParam> accounts,
   });
 }

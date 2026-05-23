@@ -5,8 +5,8 @@ import 'package:warunk/app/features/auth/presentation/reset_password/auth_reset_
 import 'package:warunk/app/features/merchant/presentation/delivery_method/merchant_delivery_method_screen.dart';
 import 'package:warunk/app/features/merchant/presentation/edit_profil/merchant_edit_profil_screen.dart';
 import 'package:warunk/app/features/merchant/presentation/input_address/merchant_input_address_screen.dart';
+import 'package:warunk/app/features/merchant/presentation/input_account/merchant_input_account_screen.dart';
 import 'package:warunk/app/features/merchant/presentation/operational_hours/merchant_operational_hours_screen.dart';
-import 'package:warunk/app/features/merchant/presentation/payment_method/merchant_payment_method_screen.dart';
 import 'package:warunk/app/features/merchant/presentation/profil/bloc/merchant_profil_bloc.dart';
 import 'package:warunk/core/dependency/dependency.dart';
 import 'package:warunk/core/helper/global_helper.dart';
@@ -252,10 +252,10 @@ class MerchantProfilScreen extends StatelessWidget {
         _divider(context),
         _navRow(
           context: context,
-          label: 'Metode Pembayaran',
+          label: 'Akun Bank',
           onTap: () => navigatorKey.currentState?.push(
             MaterialPageRoute(
-              builder: (_) => const MerchantPaymentMethodScreen(),
+              builder: (_) => const MerchantInputAccountScreen(),
             ),
           ),
         ),

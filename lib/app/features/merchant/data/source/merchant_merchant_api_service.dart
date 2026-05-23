@@ -28,4 +28,9 @@ abstract class MerchantMerchantApiService {
   Future<HttpResponse<dynamic>> updateLocation(
     @Body() Map<String, dynamic> body,
   );
+
+  @PUT('/api/seller/merchant/accounts')
+  Future<HttpResponse<dynamic>> updateAccount(
+    @Body() Map<String, dynamic> body,
+  );
 }
