@@ -32,4 +32,30 @@ class MerchantMerchantRepositoryImpl implements MerchantMerchantRepository {
       },
     );
   }
+
+  @override
+  Future<DataState<dynamic>> updateLocation({
+    required String address,
+    required String province,
+    required String city,
+    required String district,
+    required String postalCode,
+    required double longitude,
+    required double latitude,
+  }) async {
+    return handleResponse(
+      () => _api.updateLocation({
+        'address': address,
+        'province': province,
+        'city': city,
+        'district': district,
+        'postal_code': postalCode,
+        'longitude': longitude,
+        'latitude': latitude,
+      }),
+      (responseData) {
+        return responseData;
+      },
+    );
+  }
 }

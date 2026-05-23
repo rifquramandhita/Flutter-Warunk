@@ -23,4 +23,9 @@ abstract class MerchantMerchantApiService {
     @Part(name: 'merchant_category') String? merchantCategory,
     @Part(name: 'whatsapp_number') String? whatsappNumber,
   );
+
+  @PUT('/api/seller/merchant/location')
+  Future<HttpResponse<dynamic>> updateLocation(
+    @Body() Map<String, dynamic> body,
+  );
 }

@@ -4,7 +4,7 @@ import 'package:warunk/app/features/auth/presentation/logout/auth_logout_screen.
 import 'package:warunk/app/features/auth/presentation/reset_password/auth_reset_password_screen.dart';
 import 'package:warunk/app/features/merchant/presentation/delivery_method/merchant_delivery_method_screen.dart';
 import 'package:warunk/app/features/merchant/presentation/edit_profil/merchant_edit_profil_screen.dart';
-import 'package:warunk/app/features/merchant/presentation/information_store/merchant_information_store_screen.dart';
+import 'package:warunk/app/features/merchant/presentation/input_address/merchant_input_address_screen.dart';
 import 'package:warunk/app/features/merchant/presentation/operational_hours/merchant_operational_hours_screen.dart';
 import 'package:warunk/app/features/merchant/presentation/payment_method/merchant_payment_method_screen.dart';
 import 'package:warunk/app/features/merchant/presentation/profil/bloc/merchant_profil_bloc.dart';
@@ -242,10 +242,10 @@ class MerchantProfilScreen extends StatelessWidget {
       children: [
         _navRow(
           context: context,
-          label: 'Informasi Toko',
+          label: 'Alamat Toko',
           onTap: () => navigatorKey.currentState?.push(
             MaterialPageRoute(
-              builder: (_) => const MerchantInformationStoreScreen(),
+              builder: (_) => const MerchantInputAddressScreen(),
             ),
           ),
         ),
