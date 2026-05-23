@@ -1,7 +1,6 @@
 import 'package:curl_logger_dio_interceptor/curl_logger_dio_interceptor.dart';
 import 'package:get_it/get_it.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
-import 'package:retrofit/retrofit.dart';
 import 'package:warunk/app/features/auth/data/source/auth_api_service.dart';
 import 'package:warunk/app/features/auth/domain/repository/auth_repository.dart';
 import 'package:warunk/app/features/auth/domain/use_case/auth_login_use_case.dart';
@@ -33,8 +32,10 @@ import 'package:warunk/app/features/merchant/domain/use_case/merchant_merchant_u
 import 'package:warunk/app/features/merchant/presentation/input_address/bloc/merchant_input_address_bloc.dart';
 import 'package:warunk/app/features/merchant/presentation/input_account/bloc/merchant_input_account_bloc.dart';
 import 'package:warunk/app/features/merchant/domain/use_case/merchant_merchant_update_account_use_case.dart';
-import 'package:warunk/app/features/merchant/presentation/profil/bloc/merchant_profil_bloc.dart';
+import 'package:warunk/app/features/merchant/domain/use_case/merchant_merchant_close_use_case.dart';
+import 'package:warunk/app/features/merchant/domain/use_case/merchant_merchant_open_use_case.dart';
 import 'package:warunk/core/bloc/auth/auth_bloc.dart';
+import 'package:warunk/app/features/merchant/presentation/operational_hours/bloc/merchant_operational_hours_bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:warunk/core/network/app_interceptor.dart';
 import 'package:warunk/main.dart';
@@ -92,6 +93,8 @@ Future<void> initDependency() async {
   );
   sl.registerLazySingleton(() => MerchantMerchantUpdateLocationUseCase(sl()));
   sl.registerLazySingleton(() => MerchantMerchantUpdateAccountUseCase(sl()));
+  sl.registerLazySingleton(() => MerchantMerchantOpenUseCase(sl()));
+  sl.registerLazySingleton(() => MerchantMerchantCloseUseCase(sl()));
 
   //bloc
   sl.registerLazySingleton(() => AuthBloc());
@@ -113,4 +116,9 @@ Future<void> initDependency() async {
   );
   sl.registerFactory(() => MerchantInputAddressBloc(sl(), sl()));
   sl.registerFactory(() => MerchantInputAccountBloc(sl(), sl()));
+  sl.registerFactory(() => MerchantOperationalHoursBloc(
+        getUseCase: sl(),
+        openUseCase: sl(),
+        closeUseCase: sl(),
+      ));
 }

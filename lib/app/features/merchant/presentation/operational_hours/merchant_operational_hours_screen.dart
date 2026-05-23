@@ -1,141 +1,91 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:warunk/app/features/merchant/presentation/operational_hours/bloc/merchant_operational_hours_bloc.dart';
-import 'package:warunk/theme/app_colors.dart';
+import 'package:warunk/core/dependency/dependency.dart';
+import 'package:warunk/core/helper/dialog_helper.dart';
+import 'package:warunk/core/helper/global_helper.dart';
+import 'package:warunk/core/widgets/loading_app_widget.dart';
+import 'package:warunk/main.dart';
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Entry point
-// ─────────────────────────────────────────────────────────────────────────────
 class MerchantOperationalHoursScreen extends StatelessWidget {
   const MerchantOperationalHoursScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => MerchantOperationalHoursBloc(),
-      child: const _MerchantOperationalHoursView(),
-    );
-  }
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// Main view
-// ─────────────────────────────────────────────────────────────────────────────
-class _MerchantOperationalHoursView extends StatelessWidget {
-  const _MerchantOperationalHoursView();
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocListener<
-      MerchantOperationalHoursBloc,
-      MerchantOperationalHoursState
-    >(
-      listener: (context, state) {
-        if (state.isSaved) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: const Text('Jam operasional berhasil disimpan!'),
-              backgroundColor: AppColors.primary,
-              behavior: SnackBarBehavior.floating,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-            ),
+      create: (_) => sl<MerchantOperationalHoursBloc>()
+        ..add(MerchantOperationalHoursEventGet()),
+      child: BlocConsumer<MerchantOperationalHoursBloc,
+          MerchantOperationalHoursState>(
+        listener: (context, state) {
+          if (state.errorMessage != null) {
+            DialogHelper.showErrorSnackBar(
+                context: context, text: state.errorMessage!);
+          }
+          if (state.isSaved) {
+            DialogHelper.showSnackBar(
+              context: context,
+              text: 'Jam operasional berhasil disimpan!',
+              color: GlobalHelper.getColorSchema(context).primary,
+            );
+            navigatorKey.currentState?.pop();
+          }
+        },
+        builder: (context, state) {
+          return Scaffold(
+            appBar: AppBar(title: const Text('Jam Operasional')),
+            body: _bodyBuild(context),
           );
-          Navigator.of(context).pop();
-        }
-      },
-      child: Scaffold(
-        backgroundColor: AppColors.background,
-        appBar: _buildAppBar(context),
-        body:
-            BlocBuilder<
-              MerchantOperationalHoursBloc,
-              MerchantOperationalHoursState
-            >(
-              builder: (context, state) {
-                return Column(
-                  children: [
-                    Expanded(
-                      child: SingleChildScrollView(
-                        padding: const EdgeInsets.fromLTRB(20, 8, 20, 20),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            // Card 1: Toko Sedang Buka
-                            _MainStatusCard(state: state),
-                            const SizedBox(height: 16),
+        },
+      ),
+    );
+  }
 
-                            // Card 2: Daily Hours List
-                            _DailyHoursCard(state: state),
-                            const SizedBox(height: 16),
+  Widget _bodyBuild(BuildContext context) {
+    final state = context.watch<MerchantOperationalHoursBloc>().state;
+    return SafeArea(
+      child: Stack(
+        children: [
+          _bodyLayout(context),
+          (state.isLoading) ? const LoadingAppWidget() : const SizedBox(),
+        ],
+      ),
+    );
+  }
 
-                            // Card 3: Additional Settings
-                            _AdditionalSettingsCard(state: state),
-                          ],
-                        ),
-                      ),
-                    ),
-
-                    // Bottom Button
-                    _BottomActionButtons(state: state),
-                  ],
-                );
-              },
+  Widget _bodyLayout(BuildContext context) {
+    final state = context.watch<MerchantOperationalHoursBloc>().state;
+    return Column(
+      children: [
+        Expanded(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.fromLTRB(20, 8, 20, 20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                _mainStatusCard(context, state),
+                const SizedBox(height: 16),
+                _dailyHoursCard(context, state),
+                const SizedBox(height: 16),
+                _additionalSettingsCard(context, state),
+              ],
             ),
-      ),
+          ),
+        ),
+        _bottomActionButtons(context, state),
+      ],
     );
   }
 
-  AppBar _buildAppBar(BuildContext context) {
-    return AppBar(
-      backgroundColor: AppColors.background,
-      elevation: 0,
-      centerTitle: true,
-      leading: GestureDetector(
-        onTap: () => Navigator.of(context).pop(),
-        child: Container(
-          margin: const EdgeInsets.all(10),
-          decoration: BoxDecoration(
-            color: AppColors.white,
-            shape: BoxShape.circle,
-            border: Border.all(color: AppColors.greyBorder),
-          ),
-          child: const Icon(
-            Icons.arrow_back,
-            color: AppColors.textDark,
-            size: 18,
-          ),
-        ),
-      ),
-      title: const Text(
-        'Jam Operasional',
-        style: TextStyle(
-          fontSize: 16,
-          fontWeight: FontWeight.bold,
-          color: AppColors.textDark,
-        ),
-      ),
-    );
-  }
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// Components
-// ─────────────────────────────────────────────────────────────────────────────
-
-class _MainStatusCard extends StatelessWidget {
-  const _MainStatusCard({required this.state});
-  final MerchantOperationalHoursState state;
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _mainStatusCard(
+      BuildContext context, MerchantOperationalHoursState state) {
+    final colorScheme = GlobalHelper.getColorSchema(context);
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: colorScheme.surface,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.greyBorder.withValues(alpha: 0.5)),
+        border: Border.all(color: colorScheme.outline.withValues(alpha: 0.5)),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -144,28 +94,30 @@ class _MainStatusCard extends StatelessWidget {
             width: 44,
             height: 44,
             decoration: BoxDecoration(
-              color: AppColors.primary.withValues(alpha: 0.1),
+              color: colorScheme.primary.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(12),
             ),
-            child: const Icon(Icons.storefront, color: AppColors.primary),
+            child: Icon(Icons.storefront, color: colorScheme.primary),
           ),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
+                Text(
                   'Toko Sedang Buka',
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.textDark,
-                  ),
+                  style: GlobalHelper.getTextTheme(
+                    context,
+                    appTextStyle: AppTextStyle.BODY_MEDIUM,
+                  )?.copyWith(fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 4),
-                const Text(
+                Text(
                   'Pelanggan dapat melakukan order',
-                  style: TextStyle(fontSize: 12, color: AppColors.greyText),
+                  style: GlobalHelper.getTextTheme(
+                    context,
+                    appTextStyle: AppTextStyle.BODY_SMALL,
+                  )?.copyWith(color: colorScheme.onSurfaceVariant),
                 ),
               ],
             ),
@@ -176,17 +128,19 @@ class _MainStatusCard extends StatelessWidget {
                 isActive: state.isStoreOpen,
                 onChanged: () => context
                     .read<MerchantOperationalHoursBloc>()
-                    .add(MerchantOperationalHoursStoreStatusToggled()),
+                    .add(MerchantOperationalHoursEventStoreStatusToggled()),
               ),
               const SizedBox(height: 4),
               Text(
                 state.isStoreOpen ? 'Buka' : 'Tutup',
-                style: TextStyle(
-                  fontSize: 11,
+                style: GlobalHelper.getTextTheme(
+                  context,
+                  appTextStyle: AppTextStyle.LABEL_SMALL,
+                )?.copyWith(
                   fontWeight: FontWeight.bold,
                   color: state.isStoreOpen
-                      ? AppColors.primary
-                      : AppColors.greyText,
+                      ? colorScheme.primary
+                      : colorScheme.onSurfaceVariant,
                 ),
               ),
             ],
@@ -195,126 +149,124 @@ class _MainStatusCard extends StatelessWidget {
       ),
     );
   }
-}
 
-class _DailyHoursCard extends StatelessWidget {
-  const _DailyHoursCard({required this.state});
-  final MerchantOperationalHoursState state;
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _dailyHoursCard(
+      BuildContext context, MerchantOperationalHoursState state) {
+    final colorScheme = GlobalHelper.getColorSchema(context);
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: colorScheme.surface,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.greyBorder.withValues(alpha: 0.5)),
+        border: Border.all(color: colorScheme.outline.withValues(alpha: 0.5)),
       ),
       child: Column(
         children: [
           for (var i = 0; i < state.dailyHours.length; i++) ...[
-            _DailyRow(dayIndex: i, day: state.dailyHours[i]),
+            _dailyRow(context, i, state.dailyHours[i]),
             if (i < state.dailyHours.length - 1)
-              const Padding(
-                padding: EdgeInsets.symmetric(vertical: 12),
-                child: Divider(height: 1, color: AppColors.greyBorder),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 12),
+                child: Divider(height: 1, color: colorScheme.outlineVariant),
               ),
           ],
         ],
       ),
     );
   }
-}
 
-class _DailyRow extends StatelessWidget {
-  const _DailyRow({required this.dayIndex, required this.day});
-  final int dayIndex;
-  final DailyHours day;
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _dailyRow(BuildContext context, int dayIndex, DailyHours day) {
+    final colorScheme = GlobalHelper.getColorSchema(context);
     return Row(
       children: [
         SizedBox(
           width: 65,
           child: Text(
             day.dayName,
-            style: const TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.bold,
-              color: AppColors.textDark,
-            ),
+            style: GlobalHelper.getTextTheme(
+              context,
+              appTextStyle: AppTextStyle.BODY_MEDIUM,
+            )?.copyWith(fontWeight: FontWeight.bold),
           ),
         ),
         _CustomSwitch(
           isActive: day.isOpen,
           onChanged: () => context.read<MerchantOperationalHoursBloc>().add(
-            MerchantOperationalHoursDayToggled(dayIndex),
-          ),
+                MerchantOperationalHoursEventDayToggled(dayIndex),
+              ),
         ),
         const SizedBox(width: 12),
         if (day.isOpen) ...[
-          const Text(
+          Text(
             'Buka',
-            style: TextStyle(fontSize: 12, color: AppColors.greyText),
+            style: GlobalHelper.getTextTheme(
+              context,
+              appTextStyle: AppTextStyle.BODY_SMALL,
+            )?.copyWith(color: colorScheme.onSurfaceVariant),
           ),
           const SizedBox(width: 8),
-          _TimeDropdown(
-            value: day.startTime,
-            onChanged: (v) => context.read<MerchantOperationalHoursBloc>().add(
-              MerchantOperationalHoursStartTimeChanged(dayIndex, v!),
-            ),
+          _timeDropdown(
+            context,
+            day.startTime,
+            (v) => context.read<MerchantOperationalHoursBloc>().add(
+                  MerchantOperationalHoursEventStartTimeChanged(dayIndex, v!),
+                ),
           ),
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 6),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 6),
             child: Text(
               '-',
-              style: TextStyle(fontSize: 12, color: AppColors.greyText),
+              style: GlobalHelper.getTextTheme(
+                context,
+                appTextStyle: AppTextStyle.BODY_SMALL,
+              )?.copyWith(color: colorScheme.onSurfaceVariant),
             ),
           ),
-          _TimeDropdown(
-            value: day.endTime,
-            onChanged: (v) => context.read<MerchantOperationalHoursBloc>().add(
-              MerchantOperationalHoursEndTimeChanged(dayIndex, v!),
-            ),
+          _timeDropdown(
+            context,
+            day.endTime,
+            (v) => context.read<MerchantOperationalHoursBloc>().add(
+                  MerchantOperationalHoursEventEndTimeChanged(dayIndex, v!),
+                ),
           ),
         ] else ...[
-          const Expanded(
+          Expanded(
             child: Text(
               'Toko Tutup',
-              style: TextStyle(fontSize: 13, color: AppColors.greyText),
+              style: GlobalHelper.getTextTheme(
+                context,
+                appTextStyle: AppTextStyle.BODY_SMALL,
+              )?.copyWith(color: colorScheme.onSurfaceVariant),
             ),
           ),
         ],
       ],
     );
   }
-}
 
-class _TimeDropdown extends StatelessWidget {
-  const _TimeDropdown({required this.value, required this.onChanged});
-  final String value;
-  final ValueChanged<String?> onChanged;
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _timeDropdown(
+      BuildContext context, String value, ValueChanged<String?> onChanged) {
+    final colorScheme = GlobalHelper.getColorSchema(context);
     return Container(
       height: 32,
       padding: const EdgeInsets.symmetric(horizontal: 8),
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: colorScheme.surface,
         borderRadius: BorderRadius.circular(6),
-        border: Border.all(color: AppColors.greyBorder),
+        border: Border.all(color: colorScheme.outlineVariant),
       ),
       child: DropdownButtonHideUnderline(
         child: DropdownButton<String>(
           value: value,
-          icon: const Icon(
+          icon: Icon(
             Icons.keyboard_arrow_down,
             size: 16,
-            color: AppColors.greyText,
+            color: colorScheme.onSurfaceVariant,
           ),
-          style: const TextStyle(fontSize: 12, color: AppColors.textDark),
+          style: GlobalHelper.getTextTheme(
+            context,
+            appTextStyle: AppTextStyle.BODY_SMALL,
+          ),
           items: MerchantOperationalHoursState.timeOptions
               .map((t) => DropdownMenuItem(value: t, child: Text(t)))
               .toList(),
@@ -323,46 +275,40 @@ class _TimeDropdown extends StatelessWidget {
       ),
     );
   }
-}
 
-class _AdditionalSettingsCard extends StatelessWidget {
-  const _AdditionalSettingsCard({required this.state});
-  final MerchantOperationalHoursState state;
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _additionalSettingsCard(
+      BuildContext context, MerchantOperationalHoursState state) {
+    final colorScheme = GlobalHelper.getColorSchema(context);
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: colorScheme.surface,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.greyBorder.withValues(alpha: 0.5)),
+        border: Border.all(color: colorScheme.outline.withValues(alpha: 0.5)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             'Pengaturan Tambahan',
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.bold,
-              color: AppColors.textDark,
-            ),
+            style: GlobalHelper.getTextTheme(
+              context,
+              appTextStyle: AppTextStyle.BODY_MEDIUM,
+            )?.copyWith(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 16),
-          // Pre-order
           Row(
             children: [
               Container(
                 width: 40,
                 height: 40,
                 decoration: BoxDecoration(
-                  color: AppColors.primary.withValues(alpha: 0.1),
+                  color: colorScheme.primary.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(10),
                 ),
-                child: const Icon(
+                child: Icon(
                   Icons.shopping_bag_outlined,
-                  color: AppColors.primary,
+                  color: colorScheme.primary,
                   size: 20,
                 ),
               ),
@@ -371,18 +317,20 @@ class _AdditionalSettingsCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
+                    Text(
                       'Terima Pre-order',
-                      style: TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.textDark,
-                      ),
+                      style: GlobalHelper.getTextTheme(
+                        context,
+                        appTextStyle: AppTextStyle.BODY_SMALL,
+                      )?.copyWith(fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 2),
-                    const Text(
+                    Text(
                       'Terima pesanan untuk waktu di luar\njam operasional',
-                      style: TextStyle(fontSize: 11, color: AppColors.greyText),
+                      style: GlobalHelper.getTextTheme(
+                        context,
+                        appTextStyle: AppTextStyle.LABEL_SMALL,
+                      )?.copyWith(color: colorScheme.onSurfaceVariant),
                     ),
                   ],
                 ),
@@ -391,15 +339,14 @@ class _AdditionalSettingsCard extends StatelessWidget {
                 isActive: state.acceptPreorder,
                 onChanged: () => context
                     .read<MerchantOperationalHoursBloc>()
-                    .add(MerchantOperationalHoursPreorderToggled()),
+                    .add(MerchantOperationalHoursEventPreorderToggled()),
               ),
             ],
           ),
-          const Padding(
-            padding: EdgeInsets.symmetric(vertical: 16),
-            child: Divider(height: 1, color: AppColors.greyBorder),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 16),
+            child: Divider(height: 1, color: colorScheme.outlineVariant),
           ),
-          // Auto Close
           Row(
             children: [
               Container(
@@ -420,18 +367,20 @@ class _AdditionalSettingsCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
+                    Text(
                       'Tutup Otomatis saat di luar jam operasional',
-                      style: TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.textDark,
-                      ),
+                      style: GlobalHelper.getTextTheme(
+                        context,
+                        appTextStyle: AppTextStyle.BODY_SMALL,
+                      )?.copyWith(fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 2),
-                    const Text(
+                    Text(
                       'Toko akan otomatis berubah menjadi tutup\ndi luar jam operasional',
-                      style: TextStyle(fontSize: 11, color: AppColors.greyText),
+                      style: GlobalHelper.getTextTheme(
+                        context,
+                        appTextStyle: AppTextStyle.LABEL_SMALL,
+                      )?.copyWith(color: colorScheme.onSurfaceVariant),
                     ),
                   ],
                 ),
@@ -440,11 +389,64 @@ class _AdditionalSettingsCard extends StatelessWidget {
                 isActive: state.autoClose,
                 onChanged: () => context
                     .read<MerchantOperationalHoursBloc>()
-                    .add(MerchantOperationalHoursAutoCloseToggled()),
+                    .add(MerchantOperationalHoursEventAutoCloseToggled()),
               ),
             ],
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _bottomActionButtons(
+      BuildContext context, MerchantOperationalHoursState state) {
+    final colorScheme = GlobalHelper.getColorSchema(context);
+    return Container(
+      padding: const EdgeInsets.fromLTRB(20, 16, 20, 32),
+      decoration: BoxDecoration(
+        color: colorScheme.surface,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 10,
+            offset: const Offset(0, -2),
+          ),
+        ],
+      ),
+      child: SizedBox(
+        width: double.infinity,
+        height: 48,
+        child: ElevatedButton(
+          onPressed: state.isSaving
+              ? null
+              : () => context.read<MerchantOperationalHoursBloc>().add(
+                    MerchantOperationalHoursEventSaved(),
+                  ),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: colorScheme.primary,
+            disabledBackgroundColor: colorScheme.primary.withValues(alpha: 0.5),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+            elevation: 0,
+          ),
+          child: state.isSaving
+              ? const SizedBox(
+                  width: 20,
+                  height: 20,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2.5,
+                    color: Colors.white,
+                  ),
+                )
+              : Text(
+                  'Simpan Pengaturan',
+                  style: GlobalHelper.getTextTheme(
+                    context,
+                    appTextStyle: AppTextStyle.BODY_MEDIUM,
+                  )?.copyWith(fontWeight: FontWeight.bold, color: Colors.white),
+                ),
+        ),
       ),
     );
   }
@@ -457,6 +459,7 @@ class _CustomSwitch extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = GlobalHelper.getColorSchema(context);
     return GestureDetector(
       onTap: onChanged,
       child: AnimatedContainer(
@@ -465,7 +468,7 @@ class _CustomSwitch extends StatelessWidget {
         height: 28,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(14),
-          color: isActive ? AppColors.primary : AppColors.greyBorder,
+          color: isActive ? colorScheme.primary : colorScheme.outlineVariant,
         ),
         child: Stack(
           children: [
@@ -491,64 +494,6 @@ class _CustomSwitch extends StatelessWidget {
               ),
             ),
           ],
-        ),
-      ),
-    );
-  }
-}
-
-class _BottomActionButtons extends StatelessWidget {
-  const _BottomActionButtons({required this.state});
-  final MerchantOperationalHoursState state;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.fromLTRB(20, 16, 20, 32),
-      decoration: BoxDecoration(
-        color: AppColors.white,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, -2),
-          ),
-        ],
-      ),
-      child: SizedBox(
-        width: double.infinity,
-        height: 48,
-        child: ElevatedButton(
-          onPressed: state.isSaving
-              ? null
-              : () => context.read<MerchantOperationalHoursBloc>().add(
-                  MerchantOperationalHoursSaved(),
-                ),
-          style: ElevatedButton.styleFrom(
-            backgroundColor: AppColors.primary,
-            disabledBackgroundColor: AppColors.primary.withValues(alpha: 0.5),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-            elevation: 0,
-          ),
-          child: state.isSaving
-              ? const SizedBox(
-                  width: 20,
-                  height: 20,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2.5,
-                    color: Colors.white,
-                  ),
-                )
-              : const Text(
-                  'Simpan Pengaturan',
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
         ),
       ),
     );

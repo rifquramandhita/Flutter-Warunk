@@ -2,27 +2,29 @@ part of 'merchant_operational_hours_bloc.dart';
 
 sealed class MerchantOperationalHoursEvent {}
 
-class MerchantOperationalHoursStoreStatusToggled extends MerchantOperationalHoursEvent {}
+class MerchantOperationalHoursEventGet extends MerchantOperationalHoursEvent {}
 
-class MerchantOperationalHoursDayToggled extends MerchantOperationalHoursEvent {
+class MerchantOperationalHoursEventStoreStatusToggled extends MerchantOperationalHoursEvent {}
+
+class MerchantOperationalHoursEventDayToggled extends MerchantOperationalHoursEvent {
   final int dayIndex;
-  MerchantOperationalHoursDayToggled(this.dayIndex);
+  MerchantOperationalHoursEventDayToggled(this.dayIndex);
 }
 
-class MerchantOperationalHoursStartTimeChanged extends MerchantOperationalHoursEvent {
-  final int dayIndex;
-  final String time;
-  MerchantOperationalHoursStartTimeChanged(this.dayIndex, this.time);
-}
-
-class MerchantOperationalHoursEndTimeChanged extends MerchantOperationalHoursEvent {
+class MerchantOperationalHoursEventStartTimeChanged extends MerchantOperationalHoursEvent {
   final int dayIndex;
   final String time;
-  MerchantOperationalHoursEndTimeChanged(this.dayIndex, this.time);
+  MerchantOperationalHoursEventStartTimeChanged(this.dayIndex, this.time);
 }
 
-class MerchantOperationalHoursPreorderToggled extends MerchantOperationalHoursEvent {}
+class MerchantOperationalHoursEventEndTimeChanged extends MerchantOperationalHoursEvent {
+  final int dayIndex;
+  final String time;
+  MerchantOperationalHoursEventEndTimeChanged(this.dayIndex, this.time);
+}
 
-class MerchantOperationalHoursAutoCloseToggled extends MerchantOperationalHoursEvent {}
+class MerchantOperationalHoursEventPreorderToggled extends MerchantOperationalHoursEvent {}
 
-class MerchantOperationalHoursSaved extends MerchantOperationalHoursEvent {}
+class MerchantOperationalHoursEventAutoCloseToggled extends MerchantOperationalHoursEvent {}
+
+class MerchantOperationalHoursEventSaved extends MerchantOperationalHoursEvent {}

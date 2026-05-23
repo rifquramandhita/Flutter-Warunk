@@ -79,4 +79,24 @@ class MerchantMerchantRepositoryImpl implements MerchantMerchantRepository {
       },
     );
   }
+
+  @override
+  Future<DataState<dynamic>> open() async {
+    return handleResponse(
+      () => _api.open(),
+      (responseData) {
+        return responseData;
+      },
+    );
+  }
+
+  @override
+  Future<DataState<dynamic>> close() async {
+    return handleResponse(
+      () => _api.close(),
+      (responseData) {
+        return responseData;
+      },
+    );
+  }
 }

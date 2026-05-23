@@ -2,14 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:warunk/app/features/auth/presentation/login/auth_login_screen.dart';
 import 'package:warunk/app/features/auth/presentation/splash/auth_splash_screen.dart';
-import 'package:warunk/app/features/customer/presentation/shell/customer_shell.dart';
 import 'package:warunk/app/features/merchant/presentation/shell/merchant_shell_screen.dart';
 import 'package:warunk/core/bloc/auth/auth_bloc.dart';
 import 'package:warunk/core/dependency/dependency.dart';
 import 'package:warunk/core/helper/global_helper.dart';
 import 'package:warunk/core/widgets/loading_app_widget.dart';
 import 'package:warunk/theme/app_theme.dart';
-import 'package:warunk/main.dart';
 
 bool isProduction = false;
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();

@@ -33,4 +33,9 @@ abstract class MerchantMerchantApiService {
   Future<HttpResponse<dynamic>> updateAccount(
     @Body() Map<String, dynamic> body,
   );
+  @POST('/api/seller/merchant/open')
+  Future<HttpResponse<dynamic>> open();
+
+  @POST('/api/seller/merchant/close')
+  Future<HttpResponse<dynamic>> close();
 }

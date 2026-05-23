@@ -18,4 +18,6 @@ abstract class MerchantMerchantRepository {
   Future<DataState<dynamic>> updateAccount({
     required List<MerchantAccountUpdateParam> accounts,
   });
+  Future<DataState<dynamic>> open();
+  Future<DataState<dynamic>> close();
 }

@@ -1,6 +1,6 @@
 part of 'merchant_operational_hours_bloc.dart';
 
-class DailyHours {
+class DailyHours extends Equatable {
   final String dayName;
   final bool isOpen;
   final String startTime;
@@ -26,15 +26,20 @@ class DailyHours {
       endTime: endTime ?? this.endTime,
     );
   }
+
+  @override
+  List<Object?> get props => [dayName, isOpen, startTime, endTime];
 }
 
-class MerchantOperationalHoursState {
+class MerchantOperationalHoursState extends Equatable {
   final bool isStoreOpen;
   final List<DailyHours> dailyHours;
   final bool acceptPreorder;
   final bool autoClose;
+  final bool isLoading;
   final bool isSaving;
   final bool isSaved;
+  final String? errorMessage;
 
   static const List<String> timeOptions = [
     '06:00', '07:00', '08:00', '09:00', '10:00', '11:00',
@@ -55,8 +60,10 @@ class MerchantOperationalHoursState {
     ],
     this.acceptPreorder = true,
     this.autoClose = true,
+    this.isLoading = false,
     this.isSaving = false,
     this.isSaved = false,
+    this.errorMessage,
   });
 
   MerchantOperationalHoursState copyWith({
@@ -64,16 +71,32 @@ class MerchantOperationalHoursState {
     List<DailyHours>? dailyHours,
     bool? acceptPreorder,
     bool? autoClose,
+    bool? isLoading,
     bool? isSaving,
     bool? isSaved,
+    String? errorMessage,
   }) {
     return MerchantOperationalHoursState(
       isStoreOpen: isStoreOpen ?? this.isStoreOpen,
       dailyHours: dailyHours ?? this.dailyHours,
       acceptPreorder: acceptPreorder ?? this.acceptPreorder,
       autoClose: autoClose ?? this.autoClose,
+      isLoading: isLoading ?? this.isLoading,
       isSaving: isSaving ?? this.isSaving,
       isSaved: isSaved ?? this.isSaved,
+      errorMessage: errorMessage,
     );
   }
+
+  @override
+  List<Object?> get props => [
+        isStoreOpen,
+        dailyHours,
+        acceptPreorder,
+        autoClose,
+        isLoading,
+        isSaving,
+        isSaved,
+        errorMessage,
+      ];
 }
