@@ -2,6 +2,7 @@ import 'package:warunk/app/features/merchant/data/source/merchant_merchant_api_s
 import 'package:warunk/app/features/merchant/domain/entity/merchant_account.dart';
 import 'package:warunk/app/features/merchant/domain/entity/merchant_merchant.dart';
 import 'package:warunk/app/features/merchant/domain/entity/merchant_operational_hour.dart';
+import 'package:warunk/app/features/merchant/domain/entity/merchant_shipping.dart';
 import 'package:warunk/app/features/merchant/domain/repository/merchant_merchant_repository.dart';
 import 'package:warunk/core/network/data_state.dart';
 
@@ -19,8 +20,17 @@ class MerchantMerchantRepositoryImpl implements MerchantMerchantRepository {
   }
 
   @override
-  Future<DataState<dynamic>> update(
-      {required MerchantMerchantUpdateParam param}) async {
+  Future<DataState<List<String>>> getCourier() async {
+    return handleResponse(() => _api.getCourier(), (responseData) {
+      final List<dynamic> courierList = responseData['courier_code_available'];
+      return courierList.map((e) => e.toString()).toList();
+    });
+  }
+
+  @override
+  Future<DataState<dynamic>> update({
+    required MerchantMerchantUpdateParam param,
+  }) async {
     return handleResponse(
       () => _api.update(
         param.photo,
@@ -68,11 +78,13 @@ class MerchantMerchantRepositoryImpl implements MerchantMerchantRepository {
     return handleResponse(
       () => _api.updateAccount({
         'merchant_accounts': accounts
-            .map((e) => {
-                  'bank_name': e.bankName,
-                  'account_name': e.accountName,
-                  'account_number': e.accountNumber,
-                })
+            .map(
+              (e) => {
+                'bank_name': e.bankName,
+                'account_name': e.accountName,
+                'account_number': e.accountNumber,
+              },
+            )
             .toList(),
       }),
       (responseData) {
@@ -82,33 +94,38 @@ class MerchantMerchantRepositoryImpl implements MerchantMerchantRepository {
   }
 
   @override
-  Future<DataState<dynamic>> updateOperationalHours(
-      {required MerchantOperationalHourUpdateParam param}) async {
-    return handleResponse(
-      () => _api.updateOperationalHours(param.toJson()),
-      (responseData) {
-        return responseData;
-      },
-    );
+  Future<DataState<dynamic>> updateOperationalHours({
+    required MerchantOperationalHourUpdateParam param,
+  }) async {
+    return handleResponse(() => _api.updateOperationalHours(param.toJson()), (
+      responseData,
+    ) {
+      return responseData;
+    });
+  }
+
+  @override
+  Future<DataState<dynamic>> updateShipping({
+    required MerchantShippingUpdateParam param,
+  }) async {
+    return handleResponse(() => _api.updateShipping(param.toJson()), (
+      responseData,
+    ) {
+      return responseData;
+    });
   }
 
   @override
   Future<DataState<dynamic>> open() async {
-    return handleResponse(
-      () => _api.open(),
-      (responseData) {
-        return responseData;
-      },
-    );
+    return handleResponse(() => _api.open(), (responseData) {
+      return responseData;
+    });
   }
 
   @override
   Future<DataState<dynamic>> close() async {
-    return handleResponse(
-      () => _api.close(),
-      (responseData) {
-        return responseData;
-      },
-    );
+    return handleResponse(() => _api.close(), (responseData) {
+      return responseData;
+    });
   }
 }

@@ -1,10 +1,12 @@
 import 'package:warunk/app/features/merchant/domain/entity/merchant_account.dart';
 import 'package:warunk/app/features/merchant/domain/entity/merchant_merchant.dart';
 import 'package:warunk/app/features/merchant/domain/entity/merchant_operational_hour.dart';
+import 'package:warunk/app/features/merchant/domain/entity/merchant_shipping.dart';
 import 'package:warunk/core/network/data_state.dart';
 
 abstract class MerchantMerchantRepository {
   Future<DataState<MerchantMerchantEntity>> get();
+  Future<DataState<List<String>>> getCourier();
   Future<DataState<dynamic>> update(
       {required MerchantMerchantUpdateParam param});
   Future<DataState<dynamic>> updateLocation({
@@ -21,6 +23,8 @@ abstract class MerchantMerchantRepository {
   });
   Future<DataState<dynamic>> updateOperationalHours(
       {required MerchantOperationalHourUpdateParam param});
+  Future<DataState<dynamic>> updateShipping(
+      {required MerchantShippingUpdateParam param});
   Future<DataState<dynamic>> open();
   Future<DataState<dynamic>> close();
 }

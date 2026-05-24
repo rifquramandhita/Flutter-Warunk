@@ -35,8 +35,11 @@ import 'package:warunk/app/features/merchant/domain/use_case/merchant_merchant_u
 import 'package:warunk/app/features/merchant/domain/use_case/merchant_merchant_close_use_case.dart';
 import 'package:warunk/app/features/merchant/domain/use_case/merchant_merchant_open_use_case.dart';
 import 'package:warunk/app/features/merchant/domain/use_case/merchant_merchant_update_operational_hour_use_case.dart';
+import 'package:warunk/app/features/merchant/domain/use_case/merchant_merchant_get_courier_use_case.dart';
+import 'package:warunk/app/features/merchant/domain/use_case/merchant_merchant_update_shipping_use_case.dart';
 import 'package:warunk/core/bloc/auth/auth_bloc.dart';
 import 'package:warunk/app/features/merchant/presentation/operational_hours/bloc/merchant_operational_hours_bloc.dart';
+import 'package:warunk/app/features/merchant/presentation/shipping/bloc/merchant_shipping_bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:warunk/core/network/app_interceptor.dart';
 import 'package:warunk/main.dart';
@@ -97,6 +100,8 @@ Future<void> initDependency() async {
   sl.registerLazySingleton(() => MerchantMerchantOpenUseCase(sl()));
   sl.registerLazySingleton(() => MerchantMerchantCloseUseCase(sl()));
   sl.registerLazySingleton(() => MerchantMerchantUpdateOperationalHourUseCase(sl()));
+  sl.registerLazySingleton(() => MerchantMerchantGetCourierUseCase(repository: sl()));
+  sl.registerLazySingleton(() => MerchantMerchantUpdateShippingUseCase(repository: sl()));
 
   //bloc
   sl.registerLazySingleton(() => AuthBloc());
@@ -123,5 +128,10 @@ Future<void> initDependency() async {
         openUseCase: sl(),
         closeUseCase: sl(),
         updateOperationalHourUseCase: sl(),
+      ));
+  sl.registerFactory(() => MerchantShippingBloc(
+        getCourierUseCase: sl(),
+        updateShippingUseCase: sl(),
+        getMerchantUseCase: sl(),
       ));
 }

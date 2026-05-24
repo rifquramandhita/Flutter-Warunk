@@ -14,6 +14,9 @@ abstract class MerchantMerchantApiService {
   @GET('/api/seller/merchant')
   Future<HttpResponse<dynamic>> get();
 
+  @GET('/api/seller/merchant/courier-code-available')
+  Future<HttpResponse<dynamic>> getCourier();
+
   @MultiPart()
   @PUT('/api/seller/merchant/information')
   Future<HttpResponse<dynamic>> update(
@@ -38,6 +41,12 @@ abstract class MerchantMerchantApiService {
   Future<HttpResponse<dynamic>> updateOperationalHours(
     @Body() Map<String, dynamic> body,
   );
+
+  @PUT('/api/seller/merchant/shipping-settings')
+  Future<HttpResponse<dynamic>> updateShipping(
+    @Body() Map<String, dynamic> body,
+  );
+
   @POST('/api/seller/merchant/open')
   Future<HttpResponse<dynamic>> open();
 

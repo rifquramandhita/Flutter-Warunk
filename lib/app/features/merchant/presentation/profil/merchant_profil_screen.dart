@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:warunk/app/features/auth/presentation/logout/auth_logout_screen.dart';
 import 'package:warunk/app/features/auth/presentation/reset_password/auth_reset_password_screen.dart';
-import 'package:warunk/app/features/merchant/presentation/delivery_method/merchant_delivery_method_screen.dart';
+import 'package:warunk/app/features/merchant/presentation/shipping/merchant_shipping_screen.dart';
 import 'package:warunk/app/features/merchant/presentation/edit_profil/merchant_edit_profil_screen.dart';
 import 'package:warunk/app/features/merchant/presentation/input_address/merchant_input_address_screen.dart';
 import 'package:warunk/app/features/merchant/presentation/input_account/merchant_input_account_screen.dart';
@@ -268,11 +268,9 @@ class MerchantProfilScreen extends StatelessWidget {
         _divider(context),
         _navRow(
           context: context,
-          label: 'Metode Pengiriman',
+          label: 'Pengiriman',
           onTap: () => navigatorKey.currentState?.push(
-            MaterialPageRoute(
-              builder: (_) => const MerchantDeliveryMethodScreen(),
-            ),
+            MaterialPageRoute(builder: (_) => const MerchantShippingScreen()),
           ),
         ),
         _divider(context),

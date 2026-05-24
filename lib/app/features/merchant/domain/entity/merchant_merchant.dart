@@ -28,6 +28,7 @@ sealed class MerchantMerchant with _$MerchantMerchant {
     bool? instantCourier,
     bool? pickupAtStore,
     int? maxDistanceInternalCourier,
+    @Default([]) List<String> courierCodeAvailable,
     @Default([]) List<MerchantAccountEntity> merchantAccounts,
     @Default([]) List<MerchantOperationalHourItemEntity> merchantOpens,
     String? address,
