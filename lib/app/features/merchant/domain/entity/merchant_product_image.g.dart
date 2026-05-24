@@ -36,6 +36,6 @@ Map<String, dynamic> _$MerchantProductImageEntityToJson(
   'mime_type': instance.mimeType,
   'alt_text': instance.altText,
   'sort_order': instance.sortOrder,
-  'created_at': instance.createdAt?.toIso8601String(),
-  'updated_at': instance.updatedAt?.toIso8601String(),
+  'created_at': ?instance.createdAt?.toIso8601String(),
+  'updated_at': ?instance.updatedAt?.toIso8601String(),
 };

@@ -238,7 +238,7 @@ return sendParam(_that.variantCombination,_that.sku,_that.price,_that.stock,_tha
 
 /// @nodoc
 
-@JsonSerializable(fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake, includeIfNull: false)
 class MerchantProductVariantEntity implements MerchantProductVariant {
   const MerchantProductVariantEntity({required this.id, required this.productId, required final  Map<String, dynamic> variantCombination, this.sku, required this.price, required this.stock, required this.minPurchase, this.weight, this.length, this.width, this.height, this.createdAt, this.updatedAt, final  String? $type}): _variantCombination = variantCombination,$type = $type ?? 'entity';
   factory MerchantProductVariantEntity.fromJson(Map<String, dynamic> json) => _$MerchantProductVariantEntityFromJson(json);
@@ -341,7 +341,7 @@ as DateTime?,
 
 /// @nodoc
 
-@JsonSerializable(fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake, includeIfNull: false)
 class MerchantProductVariantSendParam implements MerchantProductVariant {
   const MerchantProductVariantSendParam({required final  Map<String, dynamic> variantCombination, this.sku, required this.price, required this.stock, required this.minPurchase, this.weight, this.length, this.width, this.height, final  String? $type}): _variantCombination = variantCombination,$type = $type ?? 'sendParam';
   factory MerchantProductVariantSendParam.fromJson(Map<String, dynamic> json) => _$MerchantProductVariantSendParamFromJson(json);

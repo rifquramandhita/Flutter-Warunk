@@ -210,7 +210,7 @@ return entity(_that.token,_that.tokenType,_that.user);case _:
 
 /// @nodoc
 
-@JsonSerializable(fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake, includeIfNull: false)
 class AuthEntity implements Auth {
   const AuthEntity({required this.token, required this.tokenType, required this.user});
   factory AuthEntity.fromJson(Map<String, dynamic> json) => _$AuthEntityFromJson(json);

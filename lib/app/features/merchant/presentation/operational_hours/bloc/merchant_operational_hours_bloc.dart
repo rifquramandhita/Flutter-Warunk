@@ -16,26 +16,32 @@ class MerchantOperationalHoursBloc
   final MerchantMerchantGetUseCase _getUseCase;
   final MerchantMerchantOpenUseCase _openUseCase;
   final MerchantMerchantCloseUseCase _closeUseCase;
-  final MerchantMerchantUpdateOperationalHourUseCase _updateOperationalHourUseCase;
+  final MerchantMerchantUpdateOperationalHourUseCase
+  _updateOperationalHourUseCase;
 
   MerchantOperationalHoursBloc({
     required MerchantMerchantGetUseCase getUseCase,
     required MerchantMerchantOpenUseCase openUseCase,
     required MerchantMerchantCloseUseCase closeUseCase,
-    required MerchantMerchantUpdateOperationalHourUseCase updateOperationalHourUseCase,
-  })  : _getUseCase = getUseCase,
-        _openUseCase = openUseCase,
-        _closeUseCase = closeUseCase,
-        _updateOperationalHourUseCase = updateOperationalHourUseCase,
-        super(const MerchantOperationalHoursState()) {
+    required MerchantMerchantUpdateOperationalHourUseCase
+    updateOperationalHourUseCase,
+  }) : _getUseCase = getUseCase,
+       _openUseCase = openUseCase,
+       _closeUseCase = closeUseCase,
+       _updateOperationalHourUseCase = updateOperationalHourUseCase,
+       super(const MerchantOperationalHoursState()) {
     on<MerchantOperationalHoursEventGet>(_onGet);
     on<MerchantOperationalHoursEventStoreStatusToggled>(_onStoreStatusToggled);
     on<MerchantOperationalHoursEventDayToggled>(_onDayToggled);
     on<MerchantOperationalHoursEventDay24HoursToggled>(_onDay24HoursToggled);
     on<MerchantOperationalHoursEventStartTimeChanged>(_onStartTimeChanged);
     on<MerchantOperationalHoursEventEndTimeChanged>(_onEndTimeChanged);
-    on<MerchantOperationalHoursEventIsOpenAllDayToggled>(_onIsOpenAllDayToggled);
-    on<MerchantOperationalHoursEventIsOpen24HoursToggled>(_onIsOpen24HoursToggled);
+    on<MerchantOperationalHoursEventIsOpenAllDayToggled>(
+      _onIsOpenAllDayToggled,
+    );
+    on<MerchantOperationalHoursEventIsOpen24HoursToggled>(
+      _onIsOpen24HoursToggled,
+    );
     on<MerchantOperationalHoursEventTimeOpenChanged>(_onTimeOpenChanged);
     on<MerchantOperationalHoursEventTimeCloseChanged>(_onTimeCloseChanged);
     on<MerchantOperationalHoursEventPreorderToggled>(_onPreorderToggled);
@@ -51,24 +57,44 @@ class MerchantOperationalHoursBloc
     final result = await _getUseCase();
     if (result is SuccessState) {
       final merchant = result.data!;
-      
+
       List<DailyHours> updatedDailyHours = List.from(state.dailyHours);
       if (merchant.merchantOpens.isNotEmpty) {
         updatedDailyHours = state.dailyHours.map((day) {
           String dayNameEn = 'monday';
           switch (day.dayName.toLowerCase()) {
-            case 'senin': dayNameEn = 'monday'; break;
-            case 'selasa': dayNameEn = 'tuesday'; break;
-            case 'rabu': dayNameEn = 'wednesday'; break;
-            case 'kamis': dayNameEn = 'thursday'; break;
-            case 'jumat': dayNameEn = 'friday'; break;
-            case 'sabtu': dayNameEn = 'saturday'; break;
-            case 'minggu': dayNameEn = 'sunday'; break;
+            case 'senin':
+              dayNameEn = 'monday';
+              break;
+            case 'selasa':
+              dayNameEn = 'tuesday';
+              break;
+            case 'rabu':
+              dayNameEn = 'wednesday';
+              break;
+            case 'kamis':
+              dayNameEn = 'thursday';
+              break;
+            case 'jumat':
+              dayNameEn = 'friday';
+              break;
+            case 'sabtu':
+              dayNameEn = 'saturday';
+              break;
+            case 'minggu':
+              dayNameEn = 'sunday';
+              break;
           }
           final match = merchant.merchantOpens.firstWhere(
             (element) => element.day.toLowerCase() == dayNameEn,
             orElse: () => const MerchantOperationalHourItemEntity(
-                id: '', day: '', isClosed: true, isOpen24Hours: false, timeOpen: '', timeClose: ''),
+              id: '',
+              day: '',
+              isClosed: true,
+              isOpen24Hours: false,
+              timeOpen: '',
+              timeClose: '',
+            ),
           );
           if (match.day.isNotEmpty) {
             return day.copyWith(
@@ -82,20 +108,19 @@ class MerchantOperationalHoursBloc
         }).toList();
       }
 
-      emit(state.copyWith(
-        isLoading: false,
-        isStoreOpen: merchant.isOpen,
-        isOpenAllDay: merchant.isOpenAllDay ?? false,
-        isOpen24Hours: merchant.isOpen24Hours ?? false,
-        timeOpen: _formatTime(merchant.timeOpen) ?? '08:00',
-        timeClose: _formatTime(merchant.timeClose) ?? '22:00',
-        dailyHours: updatedDailyHours,
-      ));
+      emit(
+        state.copyWith(
+          isLoading: false,
+          isStoreOpen: merchant.isOpen,
+          isOpenAllDay: merchant.isOpenAllDay ?? false,
+          isOpen24Hours: merchant.isOpen24Hours ?? false,
+          timeOpen: _formatTime(merchant.timeOpen) ?? '08:00',
+          timeClose: _formatTime(merchant.timeClose) ?? '22:00',
+          dailyHours: updatedDailyHours,
+        ),
+      );
     } else {
-      emit(state.copyWith(
-        isLoading: false,
-        errorMessage: result.message,
-      ));
+      emit(state.copyWith(isLoading: false, errorMessage: result.message));
     }
   }
 
@@ -193,35 +218,51 @@ class MerchantOperationalHoursBloc
     Emitter<MerchantOperationalHoursState> emit,
   ) async {
     emit(state.copyWith(isSaving: true, errorMessage: null));
-    
+
     // Save operational hours
-    final List<MerchantOperationalHourItemUpdateParam> merchantOpens = 
-      state.dailyHours.map((d) {
-        String dayNameEn = 'monday';
-        switch (d.dayName.toLowerCase()) {
-          case 'senin': dayNameEn = 'monday'; break;
-          case 'selasa': dayNameEn = 'tuesday'; break;
-          case 'rabu': dayNameEn = 'wednesday'; break;
-          case 'kamis': dayNameEn = 'thursday'; break;
-          case 'jumat': dayNameEn = 'friday'; break;
-          case 'sabtu': dayNameEn = 'saturday'; break;
-          case 'minggu': dayNameEn = 'sunday'; break;
-        }
-        return MerchantOperationalHourItemUpdateParam(
-          day: dayNameEn,
-          isClosed: !d.isOpen,
-          isOpen24Hours: d.isOpen24Hours,
-          timeOpen: d.startTime,
-          timeClose: d.endTime,
-        );
-    }).toList();
+    final List<MerchantOperationalHourItemUpdateParam> merchantOpens = state
+        .dailyHours
+        .map((d) {
+          String dayNameEn = 'monday';
+          switch (d.dayName.toLowerCase()) {
+            case 'senin':
+              dayNameEn = 'monday';
+              break;
+            case 'selasa':
+              dayNameEn = 'tuesday';
+              break;
+            case 'rabu':
+              dayNameEn = 'wednesday';
+              break;
+            case 'kamis':
+              dayNameEn = 'thursday';
+              break;
+            case 'jumat':
+              dayNameEn = 'friday';
+              break;
+            case 'sabtu':
+              dayNameEn = 'saturday';
+              break;
+            case 'minggu':
+              dayNameEn = 'sunday';
+              break;
+          }
+          return MerchantOperationalHourItemUpdateParam(
+            day: dayNameEn,
+            isClosed: !d.isOpen,
+            isOpen24Hours: d.isOpen24Hours,
+            timeOpen: (d.isOpen24Hours) ? null : d.startTime,
+            timeClose: (d.isOpen24Hours) ? null : d.endTime,
+          );
+        })
+        .toList();
 
     final param = MerchantOperationalHourUpdateParam(
       isOpenAllDay: state.isOpenAllDay,
       isOpen24Hours: state.isOpen24Hours,
-      timeOpen: state.timeOpen,
-      timeClose: state.timeClose,
-      merchantOpens: merchantOpens,
+      timeOpen: (state.isOpen24Hours) ? null : state.timeOpen,
+      timeClose: (state.isOpen24Hours) ? null : state.timeClose,
+      merchantOpens: (state.isOpenAllDay) ? null : merchantOpens,
     );
 
     final updateResult = await _updateOperationalHourUseCase(param);

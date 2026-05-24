@@ -212,7 +212,7 @@ return entity(_that.id,_that.name,_that.slug,_that.createdAt,_that.updatedAt);ca
 
 /// @nodoc
 
-@JsonSerializable(fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake, includeIfNull: false)
 class MerchantProductCategoryEntity implements MerchantProductCategory {
   const MerchantProductCategoryEntity({required this.id, required this.name, required this.slug, this.createdAt, this.updatedAt});
   factory MerchantProductCategoryEntity.fromJson(Map<String, dynamic> json) => _$MerchantProductCategoryEntityFromJson(json);

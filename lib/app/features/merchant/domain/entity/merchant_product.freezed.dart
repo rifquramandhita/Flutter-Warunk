@@ -245,7 +245,7 @@ return sendParam(_that.sendId,_that.name,_that.slug,_that.category,_that.branch,
 
 /// @nodoc
 
-@JsonSerializable(fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake, includeIfNull: false)
 class MerchantProductEntity implements MerchantProduct {
   const MerchantProductEntity({required this.id, required this.name, required this.slug, required this.merchantId, required this.productCategoryId, required this.category, required this.branch, this.description, required this.stock, required this.orderCount, required this.minPurchase, required this.price, required this.isPublished, required this.hasVariant, required this.isSameDimension, this.sku, this.weight, this.length, this.width, this.height, required this.productCategory, final  List<MerchantProductVariantEntity> variants = const [], final  List<MerchantProductImageEntity> images = const [], required this.createdAt, required this.updatedAt, final  String? $type}): _variants = variants,_images = images,$type = $type ?? 'entity';
   factory MerchantProductEntity.fromJson(Map<String, dynamic> json) => _$MerchantProductEntityFromJson(json);

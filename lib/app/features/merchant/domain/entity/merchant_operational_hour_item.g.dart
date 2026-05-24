@@ -25,8 +25,8 @@ Map<String, dynamic> _$MerchantOperationalHourItemEntityToJson(
   'day': instance.day,
   'is_closed': instance.isClosed,
   'is_open_24_hours': instance.isOpen24Hours,
-  'time_open': instance.timeOpen,
-  'time_close': instance.timeClose,
+  'time_open': ?instance.timeOpen,
+  'time_close': ?instance.timeClose,
   'runtimeType': instance.$type,
 };
 
@@ -35,9 +35,9 @@ _$MerchantOperationalHourItemUpdateParamFromJson(Map<String, dynamic> json) =>
     MerchantOperationalHourItemUpdateParam(
       day: json['day'] as String,
       isClosed: json['is_closed'] as bool,
-      isOpen24Hours: json['is_open24_hours'] as bool,
-      timeOpen: json['time_open'] as String,
-      timeClose: json['time_close'] as String,
+      isOpen24Hours: json['is_open_24_hours'] as bool,
+      timeOpen: json['time_open'] as String?,
+      timeClose: json['time_close'] as String?,
       $type: json['runtimeType'] as String?,
     );
 
@@ -46,8 +46,8 @@ Map<String, dynamic> _$MerchantOperationalHourItemUpdateParamToJson(
 ) => <String, dynamic>{
   'day': instance.day,
   'is_closed': instance.isClosed,
-  'is_open24_hours': instance.isOpen24Hours,
-  'time_open': instance.timeOpen,
-  'time_close': instance.timeClose,
+  'is_open_24_hours': instance.isOpen24Hours,
+  'time_open': ?instance.timeOpen,
+  'time_close': ?instance.timeClose,
   'runtimeType': instance.$type,
 };

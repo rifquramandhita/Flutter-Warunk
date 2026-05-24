@@ -211,8 +211,8 @@ return sendParam(_that.name,_that.email,_that.phone,_that.password,_that.passwor
 }
 
 /// @nodoc
-@JsonSerializable()
 
+@JsonSerializable(includeIfNull: false)
 class RegisterSendParam implements Register {
   const RegisterSendParam({required this.name, required this.email, required this.phone, required this.password, @JsonKey(name: 'password_confirmation') required this.passwordConfirmation});
   factory RegisterSendParam.fromJson(Map<String, dynamic> json) => _$RegisterSendParamFromJson(json);

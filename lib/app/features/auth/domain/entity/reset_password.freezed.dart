@@ -209,8 +209,8 @@ return param(_that.currentPassword,_that.password,_that.passwordConfirmation);ca
 }
 
 /// @nodoc
-@JsonSerializable()
 
+@JsonSerializable(includeIfNull: false)
 class ResetPasswordParam implements ResetPassword {
   const ResetPasswordParam({@JsonKey(name: 'current_password') required this.currentPassword, required this.password, @JsonKey(name: 'password_confirmation') required this.passwordConfirmation});
   factory ResetPasswordParam.fromJson(Map<String, dynamic> json) => _$ResetPasswordParamFromJson(json);

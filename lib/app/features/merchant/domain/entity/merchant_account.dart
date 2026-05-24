@@ -5,7 +5,7 @@ part 'merchant_account.g.dart';
 
 @freezed
 sealed class MerchantAccount with _$MerchantAccount {
-  @JsonSerializable(fieldRename: FieldRename.snake)
+  @JsonSerializable(fieldRename: FieldRename.snake, includeIfNull: false)
   const factory MerchantAccount.entity({
     required String id,
     required String bankName,
@@ -16,7 +16,7 @@ sealed class MerchantAccount with _$MerchantAccount {
   factory MerchantAccount.fromJson(Map<String, dynamic> json) =>
       _$MerchantAccountFromJson(json);
 
-  @JsonSerializable(fieldRename: FieldRename.snake)
+  @JsonSerializable(fieldRename: FieldRename.snake, includeIfNull: false)
   const factory MerchantAccount.updateParam({
     required String bankName,
     required String accountName,

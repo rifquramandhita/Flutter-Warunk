@@ -5,6 +5,7 @@ part 'reset_password.g.dart';
 
 @freezed
 sealed class ResetPassword with _$ResetPassword {
+  @JsonSerializable(includeIfNull: false)
   const factory ResetPassword.param({
     @JsonKey(name: 'current_password') required String currentPassword,
     required String password,

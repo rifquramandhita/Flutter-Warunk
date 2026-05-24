@@ -212,7 +212,7 @@ return updateParam(_that.internalCourier,_that.instantCourier,_that.pickupAtStor
 
 /// @nodoc
 
-@JsonSerializable(fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake, includeIfNull: false)
 class MerchantShippingUpdateParam implements MerchantShipping {
   const MerchantShippingUpdateParam({required this.internalCourier, required this.instantCourier, required this.pickupAtStore, required this.maxDistanceInternalCourier, required final  List<String> courierCodeAvailable}): _courierCodeAvailable = courierCodeAvailable;
   factory MerchantShippingUpdateParam.fromJson(Map<String, dynamic> json) => _$MerchantShippingUpdateParamFromJson(json);

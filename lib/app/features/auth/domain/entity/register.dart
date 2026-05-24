@@ -5,6 +5,7 @@ part 'register.g.dart';
 
 @freezed
 sealed class Register with _$Register {
+  @JsonSerializable(includeIfNull: false)
   const factory Register.sendParam({
     required String name,
     required String email,

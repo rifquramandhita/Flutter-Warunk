@@ -211,7 +211,7 @@ return entity(_that.name,_that.email,_that.phone,_that.profilePhoto);case _:
 
 /// @nodoc
 
-@JsonSerializable(fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake, includeIfNull: false)
 class UserEntity implements User {
   const UserEntity({required this.name, required this.email, required this.phone, this.profilePhoto});
   factory UserEntity.fromJson(Map<String, dynamic> json) => _$UserEntityFromJson(json);

@@ -18,5 +18,5 @@ Map<String, dynamic> _$UserEntityToJson(UserEntity instance) =>
       'name': instance.name,
       'email': instance.email,
       'phone': instance.phone,
-      'profile_photo': instance.profilePhoto,
+      'profile_photo': ?instance.profilePhoto,
     };

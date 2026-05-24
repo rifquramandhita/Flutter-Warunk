@@ -208,8 +208,8 @@ return param(_that.email,_that.password);case _:
 }
 
 /// @nodoc
-@JsonSerializable()
 
+@JsonSerializable(includeIfNull: false)
 class LoginParam implements Login {
   const LoginParam({required this.email, required this.password});
   factory LoginParam.fromJson(Map<String, dynamic> json) => _$LoginParamFromJson(json);

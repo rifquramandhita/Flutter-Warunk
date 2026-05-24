@@ -138,11 +138,12 @@ This file serves as the main reference for AI agents and developers working on t
 ## 9. Naming Convention (Prefix Modul)
 - **Prefix Modul**: Setiap class dan nama file (termasuk Entity, Service, BLoC, Event, State, Screen, dll) wajib memiliki prefix sesuai dengan nama modulnya (misal: pada modul `merchant`, nama class menjadi `MerchantProduct`, dan nama file menjadi `merchant_product.dart`). Jika class/file tersebut sudah memiliki nama yang sama persis dengan nama modul (misal class `Merchant` pada modul `merchant`), maka tidak perlu ditambahkan prefix yang berulang.
 - **Khusus Entity (@freezed)**: Gunakan *sealed class* dengan *factory* `entity` yang mengembalikan `[Prefix][NamaClass]Entity`.
+  - **Anotasi JSON**: Setiap *factory* constructor di dalam class `@freezed` yang menggunakan anotasi `@JsonSerializable` **WAJIB** menyertakan parameter `includeIfNull: false` (kecuali untuk entitas UI lokal yang murni tidak diserialisasi menjadi JSON).
 - **Contoh**:
   ```dart
   @freezed
   sealed class MerchantProduct with _$MerchantProduct {
-    @JsonSerializable(fieldRename: FieldRename.snake)
+    @JsonSerializable(fieldRename: FieldRename.snake, includeIfNull: false)
     const factory MerchantProduct.entity({
       required String id,
       required String name,

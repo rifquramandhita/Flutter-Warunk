@@ -207,8 +207,8 @@ return param(_that.email);case _:
 }
 
 /// @nodoc
-@JsonSerializable()
 
+@JsonSerializable(includeIfNull: false)
 class ForgotPasswordParam implements ForgotPassword {
   const ForgotPasswordParam({required this.email});
   factory ForgotPasswordParam.fromJson(Map<String, dynamic> json) => _$ForgotPasswordParamFromJson(json);

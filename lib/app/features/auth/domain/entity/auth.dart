@@ -6,7 +6,7 @@ part 'auth.g.dart';
 
 @freezed
 sealed class Auth with _$Auth {
-  @JsonSerializable(fieldRename: FieldRename.snake)
+  @JsonSerializable(fieldRename: FieldRename.snake, includeIfNull: false)
   const factory Auth.entity({
     required String token,
     required String tokenType,

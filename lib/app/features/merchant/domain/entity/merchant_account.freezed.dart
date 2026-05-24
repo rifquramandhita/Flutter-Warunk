@@ -232,7 +232,7 @@ return updateParam(_that.bankName,_that.accountName,_that.accountNumber);case _:
 
 /// @nodoc
 
-@JsonSerializable(fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake, includeIfNull: false)
 class MerchantAccountEntity implements MerchantAccount {
   const MerchantAccountEntity({required this.id, required this.bankName, required this.accountName, required this.accountNumber, final  String? $type}): $type = $type ?? 'entity';
   factory MerchantAccountEntity.fromJson(Map<String, dynamic> json) => _$MerchantAccountEntityFromJson(json);
@@ -311,7 +311,7 @@ as String,
 
 /// @nodoc
 
-@JsonSerializable(fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake, includeIfNull: false)
 class MerchantAccountUpdateParam implements MerchantAccount {
   const MerchantAccountUpdateParam({required this.bankName, required this.accountName, required this.accountNumber, final  String? $type}): $type = $type ?? 'updateParam';
   factory MerchantAccountUpdateParam.fromJson(Map<String, dynamic> json) => _$MerchantAccountUpdateParamFromJson(json);

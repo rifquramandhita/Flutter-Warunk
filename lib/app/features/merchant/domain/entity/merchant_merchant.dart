@@ -9,7 +9,7 @@ part 'merchant_merchant.g.dart';
 
 @freezed
 sealed class MerchantMerchant with _$MerchantMerchant {
-  @JsonSerializable(fieldRename: FieldRename.snake)
+  @JsonSerializable(fieldRename: FieldRename.snake, includeIfNull: false)
   const factory MerchantMerchant.entity({
     required String id,
     required String name,
@@ -21,7 +21,7 @@ sealed class MerchantMerchant with _$MerchantMerchant {
     int? statusChangedBy,
     @JsonKey(name: 'whatsapp_number') String? phone,
     bool? isOpenAllDay,
-    bool? isOpen24Hours,
+    @JsonKey(name: 'is_open_24_hours') bool? isOpen24Hours,
     String? timeOpen,
     String? timeClose,
     bool? internalCourier,
@@ -44,6 +44,7 @@ sealed class MerchantMerchant with _$MerchantMerchant {
     required bool isOpen,
   }) = MerchantMerchantEntity;
 
+  @JsonSerializable(includeIfNull: false)
   const factory MerchantMerchant.updateParam({
     @JsonKey(includeFromJson: false, includeToJson: false) File? photo,
     required String name,

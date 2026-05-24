@@ -217,7 +217,7 @@ return entity(_that.id,_that.filePath,_that.url,_that.fileName,_that.fileSize,_t
 
 /// @nodoc
 
-@JsonSerializable(fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake, includeIfNull: false)
 class MerchantProductImageEntity implements MerchantProductImage {
   const MerchantProductImageEntity({required this.id, required this.filePath, required this.url, required this.fileName, required this.fileSize, required this.mimeType, required this.altText, required this.sortOrder, this.createdAt, this.updatedAt});
   factory MerchantProductImageEntity.fromJson(Map<String, dynamic> json) => _$MerchantProductImageEntityFromJson(json);

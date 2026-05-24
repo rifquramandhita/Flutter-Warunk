@@ -26,6 +26,6 @@ Map<String, dynamic> _$MerchantProductCategoryEntityToJson(
   'id': instance.id,
   'name': instance.name,
   'slug': instance.slug,
-  'created_at': instance.createdAt?.toIso8601String(),
-  'updated_at': instance.updatedAt?.toIso8601String(),
+  'created_at': ?instance.createdAt?.toIso8601String(),
+  'updated_at': ?instance.updatedAt?.toIso8601String(),
 };

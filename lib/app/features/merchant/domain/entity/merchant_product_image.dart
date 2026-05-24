@@ -5,7 +5,7 @@ part 'merchant_product_image.g.dart';
 
 @freezed
 sealed class MerchantProductImage with _$MerchantProductImage {
-  @JsonSerializable(fieldRename: FieldRename.snake)
+  @JsonSerializable(fieldRename: FieldRename.snake, includeIfNull: false)
   const factory MerchantProductImage.entity({
     required String id,
     required String filePath,

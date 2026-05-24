@@ -5,7 +5,7 @@ part 'merchant_shipping.g.dart';
 
 @freezed
 sealed class MerchantShipping with _$MerchantShipping {
-  @JsonSerializable(fieldRename: FieldRename.snake)
+  @JsonSerializable(fieldRename: FieldRename.snake, includeIfNull: false)
   const factory MerchantShipping.updateParam({
     required bool internalCourier,
     required bool instantCourier,

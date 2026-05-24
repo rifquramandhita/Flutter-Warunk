@@ -5,6 +5,7 @@ part 'forgot_password.g.dart';
 
 @freezed
 sealed class ForgotPassword with _$ForgotPassword {
+  @JsonSerializable(includeIfNull: false)
   const factory ForgotPassword.param({required String email}) =
       ForgotPasswordParam;
 

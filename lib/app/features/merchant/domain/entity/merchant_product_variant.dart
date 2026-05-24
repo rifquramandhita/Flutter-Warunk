@@ -5,7 +5,7 @@ part 'merchant_product_variant.g.dart';
 
 @freezed
 sealed class MerchantProductVariant with _$MerchantProductVariant {
-  @JsonSerializable(fieldRename: FieldRename.snake)
+  @JsonSerializable(fieldRename: FieldRename.snake, includeIfNull: false)
   const factory MerchantProductVariant.entity({
     required String id,
     required String productId,
@@ -22,7 +22,7 @@ sealed class MerchantProductVariant with _$MerchantProductVariant {
     DateTime? updatedAt,
   }) = MerchantProductVariantEntity;
 
-  @JsonSerializable(fieldRename: FieldRename.snake)
+  @JsonSerializable(fieldRename: FieldRename.snake, includeIfNull: false)
   const factory MerchantProductVariant.sendParam({
     required Map<String, dynamic> variantCombination,
     String? sku,

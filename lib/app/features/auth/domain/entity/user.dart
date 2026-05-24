@@ -5,7 +5,7 @@ part 'user.g.dart';
 
 @freezed
 sealed class User with _$User {
-  @JsonSerializable(fieldRename: FieldRename.snake)
+  @JsonSerializable(fieldRename: FieldRename.snake, includeIfNull: false)
   const factory User.entity({
     required String name,
     required String email,

@@ -11,7 +11,7 @@ part 'merchant_product.g.dart';
 
 @freezed
 sealed class MerchantProduct with _$MerchantProduct {
-  @JsonSerializable(fieldRename: FieldRename.snake)
+  @JsonSerializable(fieldRename: FieldRename.snake, includeIfNull: false)
   const factory MerchantProduct.entity({
     required String id,
     required String name,

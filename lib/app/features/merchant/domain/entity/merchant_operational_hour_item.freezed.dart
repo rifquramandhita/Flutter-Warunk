@@ -71,7 +71,7 @@ abstract mixin class $MerchantOperationalHourItemCopyWith<$Res>  {
   factory $MerchantOperationalHourItemCopyWith(MerchantOperationalHourItem value, $Res Function(MerchantOperationalHourItem) _then) = _$MerchantOperationalHourItemCopyWithImpl;
 @useResult
 $Res call({
- String day, bool isClosed,@JsonKey(name: 'is_open_24_hours') bool isOpen24Hours, String timeOpen, String timeClose
+ String day, bool isClosed,@JsonKey(name: 'is_open_24_hours') bool isOpen24Hours, String? timeOpen, String? timeClose
 });
 
 
@@ -88,14 +88,14 @@ class _$MerchantOperationalHourItemCopyWithImpl<$Res>
 
 /// Create a copy of MerchantOperationalHourItem
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? day = null,Object? isClosed = null,Object? isOpen24Hours = null,Object? timeOpen = null,Object? timeClose = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? day = null,Object? isClosed = null,Object? isOpen24Hours = null,Object? timeOpen = freezed,Object? timeClose = freezed,}) {
   return _then(_self.copyWith(
 day: null == day ? _self.day : day // ignore: cast_nullable_to_non_nullable
 as String,isClosed: null == isClosed ? _self.isClosed : isClosed // ignore: cast_nullable_to_non_nullable
 as bool,isOpen24Hours: null == isOpen24Hours ? _self.isOpen24Hours : isOpen24Hours // ignore: cast_nullable_to_non_nullable
-as bool,timeOpen: null == timeOpen ? _self.timeOpen! : timeOpen // ignore: cast_nullable_to_non_nullable
-as String,timeClose: null == timeClose ? _self.timeClose! : timeClose // ignore: cast_nullable_to_non_nullable
-as String,
+as bool,timeOpen: freezed == timeOpen ? _self.timeOpen : timeOpen // ignore: cast_nullable_to_non_nullable
+as String?,timeClose: freezed == timeClose ? _self.timeClose : timeClose // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 
@@ -180,7 +180,7 @@ return updateParam(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String id,  String day,  bool isClosed, @JsonKey(name: 'is_open_24_hours')  bool isOpen24Hours,  String? timeOpen,  String? timeClose)?  entity,TResult Function( String day,  bool isClosed,  bool isOpen24Hours,  String timeOpen,  String timeClose)?  updateParam,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String id,  String day,  bool isClosed, @JsonKey(name: 'is_open_24_hours')  bool isOpen24Hours,  String? timeOpen,  String? timeClose)?  entity,TResult Function( String day,  bool isClosed, @JsonKey(name: 'is_open_24_hours')  bool isOpen24Hours,  String? timeOpen,  String? timeClose)?  updateParam,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case MerchantOperationalHourItemEntity() when entity != null:
 return entity(_that.id,_that.day,_that.isClosed,_that.isOpen24Hours,_that.timeOpen,_that.timeClose);case MerchantOperationalHourItemUpdateParam() when updateParam != null:
@@ -202,7 +202,7 @@ return updateParam(_that.day,_that.isClosed,_that.isOpen24Hours,_that.timeOpen,_
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String id,  String day,  bool isClosed, @JsonKey(name: 'is_open_24_hours')  bool isOpen24Hours,  String? timeOpen,  String? timeClose)  entity,required TResult Function( String day,  bool isClosed,  bool isOpen24Hours,  String timeOpen,  String timeClose)  updateParam,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String id,  String day,  bool isClosed, @JsonKey(name: 'is_open_24_hours')  bool isOpen24Hours,  String? timeOpen,  String? timeClose)  entity,required TResult Function( String day,  bool isClosed, @JsonKey(name: 'is_open_24_hours')  bool isOpen24Hours,  String? timeOpen,  String? timeClose)  updateParam,}) {final _that = this;
 switch (_that) {
 case MerchantOperationalHourItemEntity():
 return entity(_that.id,_that.day,_that.isClosed,_that.isOpen24Hours,_that.timeOpen,_that.timeClose);case MerchantOperationalHourItemUpdateParam():
@@ -220,7 +220,7 @@ return updateParam(_that.day,_that.isClosed,_that.isOpen24Hours,_that.timeOpen,_
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String id,  String day,  bool isClosed, @JsonKey(name: 'is_open_24_hours')  bool isOpen24Hours,  String? timeOpen,  String? timeClose)?  entity,TResult? Function( String day,  bool isClosed,  bool isOpen24Hours,  String timeOpen,  String timeClose)?  updateParam,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String id,  String day,  bool isClosed, @JsonKey(name: 'is_open_24_hours')  bool isOpen24Hours,  String? timeOpen,  String? timeClose)?  entity,TResult? Function( String day,  bool isClosed, @JsonKey(name: 'is_open_24_hours')  bool isOpen24Hours,  String? timeOpen,  String? timeClose)?  updateParam,}) {final _that = this;
 switch (_that) {
 case MerchantOperationalHourItemEntity() when entity != null:
 return entity(_that.id,_that.day,_that.isClosed,_that.isOpen24Hours,_that.timeOpen,_that.timeClose);case MerchantOperationalHourItemUpdateParam() when updateParam != null:
@@ -234,7 +234,7 @@ return updateParam(_that.day,_that.isClosed,_that.isOpen24Hours,_that.timeOpen,_
 
 /// @nodoc
 
-@JsonSerializable(fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake, includeIfNull: false)
 class MerchantOperationalHourItemEntity implements MerchantOperationalHourItem {
   const MerchantOperationalHourItemEntity({required this.id, required this.day, required this.isClosed, @JsonKey(name: 'is_open_24_hours') required this.isOpen24Hours, this.timeOpen, this.timeClose, final  String? $type}): $type = $type ?? 'entity';
   factory MerchantOperationalHourItemEntity.fromJson(Map<String, dynamic> json) => _$MerchantOperationalHourItemEntityFromJson(json);
@@ -317,16 +317,16 @@ as String?,
 
 /// @nodoc
 
-@JsonSerializable(fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake, includeIfNull: false)
 class MerchantOperationalHourItemUpdateParam implements MerchantOperationalHourItem {
-  const MerchantOperationalHourItemUpdateParam({required this.day, required this.isClosed, required this.isOpen24Hours, required this.timeOpen, required this.timeClose, final  String? $type}): $type = $type ?? 'updateParam';
+  const MerchantOperationalHourItemUpdateParam({required this.day, required this.isClosed, @JsonKey(name: 'is_open_24_hours') required this.isOpen24Hours, this.timeOpen, this.timeClose, final  String? $type}): $type = $type ?? 'updateParam';
   factory MerchantOperationalHourItemUpdateParam.fromJson(Map<String, dynamic> json) => _$MerchantOperationalHourItemUpdateParamFromJson(json);
 
 @override final  String day;
 @override final  bool isClosed;
-@override final  bool isOpen24Hours;
-@override final  String timeOpen;
-@override final  String timeClose;
+@override@JsonKey(name: 'is_open_24_hours') final  bool isOpen24Hours;
+@override final  String? timeOpen;
+@override final  String? timeClose;
 
 @JsonKey(name: 'runtimeType')
 final String $type;
@@ -365,7 +365,7 @@ abstract mixin class $MerchantOperationalHourItemUpdateParamCopyWith<$Res> imple
   factory $MerchantOperationalHourItemUpdateParamCopyWith(MerchantOperationalHourItemUpdateParam value, $Res Function(MerchantOperationalHourItemUpdateParam) _then) = _$MerchantOperationalHourItemUpdateParamCopyWithImpl;
 @override @useResult
 $Res call({
- String day, bool isClosed, bool isOpen24Hours, String timeOpen, String timeClose
+ String day, bool isClosed,@JsonKey(name: 'is_open_24_hours') bool isOpen24Hours, String? timeOpen, String? timeClose
 });
 
 
@@ -382,14 +382,14 @@ class _$MerchantOperationalHourItemUpdateParamCopyWithImpl<$Res>
 
 /// Create a copy of MerchantOperationalHourItem
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? day = null,Object? isClosed = null,Object? isOpen24Hours = null,Object? timeOpen = null,Object? timeClose = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? day = null,Object? isClosed = null,Object? isOpen24Hours = null,Object? timeOpen = freezed,Object? timeClose = freezed,}) {
   return _then(MerchantOperationalHourItemUpdateParam(
 day: null == day ? _self.day : day // ignore: cast_nullable_to_non_nullable
 as String,isClosed: null == isClosed ? _self.isClosed : isClosed // ignore: cast_nullable_to_non_nullable
 as bool,isOpen24Hours: null == isOpen24Hours ? _self.isOpen24Hours : isOpen24Hours // ignore: cast_nullable_to_non_nullable
-as bool,timeOpen: null == timeOpen ? _self.timeOpen : timeOpen // ignore: cast_nullable_to_non_nullable
-as String,timeClose: null == timeClose ? _self.timeClose : timeClose // ignore: cast_nullable_to_non_nullable
-as String,
+as bool,timeOpen: freezed == timeOpen ? _self.timeOpen : timeOpen // ignore: cast_nullable_to_non_nullable
+as String?,timeClose: freezed == timeClose ? _self.timeClose : timeClose // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 
