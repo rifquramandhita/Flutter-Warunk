@@ -3,12 +3,14 @@ part of 'merchant_operational_hours_bloc.dart';
 class DailyHours extends Equatable {
   final String dayName;
   final bool isOpen;
+  final bool isOpen24Hours;
   final String startTime;
   final String endTime;
 
   const DailyHours({
     required this.dayName,
     required this.isOpen,
+    required this.isOpen24Hours,
     required this.startTime,
     required this.endTime,
   });
@@ -16,23 +18,29 @@ class DailyHours extends Equatable {
   DailyHours copyWith({
     String? dayName,
     bool? isOpen,
+    bool? isOpen24Hours,
     String? startTime,
     String? endTime,
   }) {
     return DailyHours(
       dayName: dayName ?? this.dayName,
       isOpen: isOpen ?? this.isOpen,
+      isOpen24Hours: isOpen24Hours ?? this.isOpen24Hours,
       startTime: startTime ?? this.startTime,
       endTime: endTime ?? this.endTime,
     );
   }
 
   @override
-  List<Object?> get props => [dayName, isOpen, startTime, endTime];
+  List<Object?> get props => [dayName, isOpen, isOpen24Hours, startTime, endTime];
 }
 
 class MerchantOperationalHoursState extends Equatable {
   final bool isStoreOpen;
+  final bool isOpenAllDay;
+  final bool isOpen24Hours;
+  final String timeOpen;
+  final String timeClose;
   final List<DailyHours> dailyHours;
   final bool acceptPreorder;
   final bool autoClose;
@@ -49,14 +57,18 @@ class MerchantOperationalHoursState extends Equatable {
 
   const MerchantOperationalHoursState({
     this.isStoreOpen = true,
+    this.isOpenAllDay = false,
+    this.isOpen24Hours = false,
+    this.timeOpen = '08:00',
+    this.timeClose = '22:00',
     this.dailyHours = const [
-      DailyHours(dayName: 'Senin', isOpen: true, startTime: '08:00', endTime: '22:00'),
-      DailyHours(dayName: 'Selasa', isOpen: true, startTime: '08:00', endTime: '22:00'),
-      DailyHours(dayName: 'Rabu', isOpen: true, startTime: '08:00', endTime: '22:00'),
-      DailyHours(dayName: 'Kamis', isOpen: true, startTime: '08:00', endTime: '22:00'),
-      DailyHours(dayName: 'Jumat', isOpen: true, startTime: '08:00', endTime: '23:00'),
-      DailyHours(dayName: 'Sabtu', isOpen: true, startTime: '09:00', endTime: '23:00'),
-      DailyHours(dayName: 'Minggu', isOpen: false, startTime: '09:00', endTime: '22:00'),
+      DailyHours(dayName: 'Senin', isOpen: true, isOpen24Hours: false, startTime: '08:00', endTime: '22:00'),
+      DailyHours(dayName: 'Selasa', isOpen: true, isOpen24Hours: false, startTime: '08:00', endTime: '22:00'),
+      DailyHours(dayName: 'Rabu', isOpen: true, isOpen24Hours: false, startTime: '08:00', endTime: '22:00'),
+      DailyHours(dayName: 'Kamis', isOpen: true, isOpen24Hours: false, startTime: '08:00', endTime: '22:00'),
+      DailyHours(dayName: 'Jumat', isOpen: true, isOpen24Hours: false, startTime: '08:00', endTime: '23:00'),
+      DailyHours(dayName: 'Sabtu', isOpen: true, isOpen24Hours: false, startTime: '09:00', endTime: '23:00'),
+      DailyHours(dayName: 'Minggu', isOpen: false, isOpen24Hours: false, startTime: '09:00', endTime: '22:00'),
     ],
     this.acceptPreorder = true,
     this.autoClose = true,
@@ -68,6 +80,10 @@ class MerchantOperationalHoursState extends Equatable {
 
   MerchantOperationalHoursState copyWith({
     bool? isStoreOpen,
+    bool? isOpenAllDay,
+    bool? isOpen24Hours,
+    String? timeOpen,
+    String? timeClose,
     List<DailyHours>? dailyHours,
     bool? acceptPreorder,
     bool? autoClose,
@@ -78,6 +94,10 @@ class MerchantOperationalHoursState extends Equatable {
   }) {
     return MerchantOperationalHoursState(
       isStoreOpen: isStoreOpen ?? this.isStoreOpen,
+      isOpenAllDay: isOpenAllDay ?? this.isOpenAllDay,
+      isOpen24Hours: isOpen24Hours ?? this.isOpen24Hours,
+      timeOpen: timeOpen ?? this.timeOpen,
+      timeClose: timeClose ?? this.timeClose,
       dailyHours: dailyHours ?? this.dailyHours,
       acceptPreorder: acceptPreorder ?? this.acceptPreorder,
       autoClose: autoClose ?? this.autoClose,
@@ -91,6 +111,10 @@ class MerchantOperationalHoursState extends Equatable {
   @override
   List<Object?> get props => [
         isStoreOpen,
+        isOpenAllDay,
+        isOpen24Hours,
+        timeOpen,
+        timeClose,
         dailyHours,
         acceptPreorder,
         autoClose,

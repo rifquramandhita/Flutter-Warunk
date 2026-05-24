@@ -1,5 +1,6 @@
 import 'package:warunk/app/features/merchant/domain/entity/merchant_account.dart';
 import 'package:warunk/app/features/merchant/domain/entity/merchant_merchant.dart';
+import 'package:warunk/app/features/merchant/domain/entity/merchant_operational_hour.dart';
 import 'package:warunk/core/network/data_state.dart';
 
 abstract class MerchantMerchantRepository {
@@ -18,6 +19,8 @@ abstract class MerchantMerchantRepository {
   Future<DataState<dynamic>> updateAccount({
     required List<MerchantAccountUpdateParam> accounts,
   });
+  Future<DataState<dynamic>> updateOperationalHours(
+      {required MerchantOperationalHourUpdateParam param});
   Future<DataState<dynamic>> open();
   Future<DataState<dynamic>> close();
 }

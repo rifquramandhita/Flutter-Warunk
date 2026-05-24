@@ -11,6 +11,11 @@ class MerchantOperationalHoursEventDayToggled extends MerchantOperationalHoursEv
   MerchantOperationalHoursEventDayToggled(this.dayIndex);
 }
 
+class MerchantOperationalHoursEventDay24HoursToggled extends MerchantOperationalHoursEvent {
+  final int dayIndex;
+  MerchantOperationalHoursEventDay24HoursToggled(this.dayIndex);
+}
+
 class MerchantOperationalHoursEventStartTimeChanged extends MerchantOperationalHoursEvent {
   final int dayIndex;
   final String time;
@@ -21,6 +26,20 @@ class MerchantOperationalHoursEventEndTimeChanged extends MerchantOperationalHou
   final int dayIndex;
   final String time;
   MerchantOperationalHoursEventEndTimeChanged(this.dayIndex, this.time);
+}
+
+class MerchantOperationalHoursEventIsOpenAllDayToggled extends MerchantOperationalHoursEvent {}
+
+class MerchantOperationalHoursEventIsOpen24HoursToggled extends MerchantOperationalHoursEvent {}
+
+class MerchantOperationalHoursEventTimeOpenChanged extends MerchantOperationalHoursEvent {
+  final String time;
+  MerchantOperationalHoursEventTimeOpenChanged(this.time);
+}
+
+class MerchantOperationalHoursEventTimeCloseChanged extends MerchantOperationalHoursEvent {
+  final String time;
+  MerchantOperationalHoursEventTimeCloseChanged(this.time);
 }
 
 class MerchantOperationalHoursEventPreorderToggled extends MerchantOperationalHoursEvent {}

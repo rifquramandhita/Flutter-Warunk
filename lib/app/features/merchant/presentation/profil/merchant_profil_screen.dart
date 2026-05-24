@@ -263,11 +263,7 @@ class MerchantProfilScreen extends StatelessWidget {
         _navRow(
           context: context,
           label: 'Jam Operasional',
-          onTap: () => navigatorKey.currentState?.push(
-            MaterialPageRoute(
-              builder: (_) => const MerchantOperationalHoursScreen(),
-            ),
-          ),
+          onTap: () => _onPressOperationalHour(context),
         ),
         _divider(context),
         _navRow(
@@ -488,6 +484,13 @@ class MerchantProfilScreen extends StatelessWidget {
   void _onPressEditProfil(BuildContext context) async {
     await navigatorKey.currentState?.push(
       MaterialPageRoute(builder: (_) => const MerchantEditProfilScreen()),
+    );
+    context.read<MerchantProfilBloc>().add(MerchantProfilEventGet());
+  }
+
+  void _onPressOperationalHour(BuildContext context) async {
+    await navigatorKey.currentState?.push(
+      MaterialPageRoute(builder: (_) => const MerchantOperationalHoursScreen()),
     );
     context.read<MerchantProfilBloc>().add(MerchantProfilEventGet());
   }

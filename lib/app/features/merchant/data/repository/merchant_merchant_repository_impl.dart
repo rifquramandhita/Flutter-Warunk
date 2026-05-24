@@ -1,6 +1,7 @@
 import 'package:warunk/app/features/merchant/data/source/merchant_merchant_api_service.dart';
 import 'package:warunk/app/features/merchant/domain/entity/merchant_account.dart';
 import 'package:warunk/app/features/merchant/domain/entity/merchant_merchant.dart';
+import 'package:warunk/app/features/merchant/domain/entity/merchant_operational_hour.dart';
 import 'package:warunk/app/features/merchant/domain/repository/merchant_merchant_repository.dart';
 import 'package:warunk/core/network/data_state.dart';
 
@@ -74,6 +75,17 @@ class MerchantMerchantRepositoryImpl implements MerchantMerchantRepository {
                 })
             .toList(),
       }),
+      (responseData) {
+        return responseData;
+      },
+    );
+  }
+
+  @override
+  Future<DataState<dynamic>> updateOperationalHours(
+      {required MerchantOperationalHourUpdateParam param}) async {
+    return handleResponse(
+      () => _api.updateOperationalHours(param.toJson()),
       (responseData) {
         return responseData;
       },

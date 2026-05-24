@@ -34,6 +34,7 @@ import 'package:warunk/app/features/merchant/presentation/input_account/bloc/mer
 import 'package:warunk/app/features/merchant/domain/use_case/merchant_merchant_update_account_use_case.dart';
 import 'package:warunk/app/features/merchant/domain/use_case/merchant_merchant_close_use_case.dart';
 import 'package:warunk/app/features/merchant/domain/use_case/merchant_merchant_open_use_case.dart';
+import 'package:warunk/app/features/merchant/domain/use_case/merchant_merchant_update_operational_hour_use_case.dart';
 import 'package:warunk/core/bloc/auth/auth_bloc.dart';
 import 'package:warunk/app/features/merchant/presentation/operational_hours/bloc/merchant_operational_hours_bloc.dart';
 import 'package:dio/dio.dart';
@@ -95,6 +96,7 @@ Future<void> initDependency() async {
   sl.registerLazySingleton(() => MerchantMerchantUpdateAccountUseCase(sl()));
   sl.registerLazySingleton(() => MerchantMerchantOpenUseCase(sl()));
   sl.registerLazySingleton(() => MerchantMerchantCloseUseCase(sl()));
+  sl.registerLazySingleton(() => MerchantMerchantUpdateOperationalHourUseCase(sl()));
 
   //bloc
   sl.registerLazySingleton(() => AuthBloc());
@@ -120,5 +122,6 @@ Future<void> initDependency() async {
         getUseCase: sl(),
         openUseCase: sl(),
         closeUseCase: sl(),
+        updateOperationalHourUseCase: sl(),
       ));
 }

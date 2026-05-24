@@ -34,6 +34,15 @@ MerchantMerchantEntity _$MerchantMerchantEntityFromJson(
           )
           .toList() ??
       const [],
+  merchantOpens:
+      (json['merchant_opens'] as List<dynamic>?)
+          ?.map(
+            (e) => MerchantOperationalHourItemEntity.fromJson(
+              e as Map<String, dynamic>,
+            ),
+          )
+          .toList() ??
+      const [],
   address: json['address'] as String?,
   province: json['province'] as String?,
   city: json['city'] as String?,
@@ -69,6 +78,7 @@ Map<String, dynamic> _$MerchantMerchantEntityToJson(
   'pickup_at_store': instance.pickupAtStore,
   'max_distance_internal_courier': instance.maxDistanceInternalCourier,
   'merchant_accounts': instance.merchantAccounts,
+  'merchant_opens': instance.merchantOpens,
   'address': instance.address,
   'province': instance.province,
   'city': instance.city,

@@ -33,6 +33,11 @@ abstract class MerchantMerchantApiService {
   Future<HttpResponse<dynamic>> updateAccount(
     @Body() Map<String, dynamic> body,
   );
+
+  @PUT('/api/seller/merchant/operational-hours')
+  Future<HttpResponse<dynamic>> updateOperationalHours(
+    @Body() Map<String, dynamic> body,
+  );
   @POST('/api/seller/merchant/open')
   Future<HttpResponse<dynamic>> open();
 

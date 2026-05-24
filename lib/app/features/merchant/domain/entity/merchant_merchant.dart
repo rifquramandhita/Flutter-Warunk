@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:warunk/app/features/merchant/domain/entity/merchant_account.dart';
+import 'package:warunk/app/features/merchant/domain/entity/merchant_operational_hour_item.dart';
 
 part 'merchant_merchant.freezed.dart';
 part 'merchant_merchant.g.dart';
@@ -28,6 +29,7 @@ sealed class MerchantMerchant with _$MerchantMerchant {
     bool? pickupAtStore,
     int? maxDistanceInternalCourier,
     @Default([]) List<MerchantAccountEntity> merchantAccounts,
+    @Default([]) List<MerchantOperationalHourItemEntity> merchantOpens,
     String? address,
     String? province,
     String? city,
