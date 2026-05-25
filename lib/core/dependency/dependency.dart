@@ -40,6 +40,11 @@ import 'package:warunk/app/features/merchant/domain/use_case/merchant_merchant_u
 import 'package:warunk/core/bloc/auth/auth_bloc.dart';
 import 'package:warunk/app/features/merchant/presentation/operational_hours/bloc/merchant_operational_hours_bloc.dart';
 import 'package:warunk/app/features/merchant/presentation/shipping/bloc/merchant_shipping_bloc.dart';
+import 'package:warunk/app/features/merchant/presentation/order/bloc/merchant_order_bloc.dart';
+import 'package:warunk/app/features/merchant/data/source/merchant_order_api_service.dart';
+import 'package:warunk/app/features/merchant/domain/repository/merchant_order_repository.dart';
+import 'package:warunk/app/features/merchant/data/repository/merchant_order_repository_impl.dart';
+import 'package:warunk/app/features/merchant/domain/use_case/merchant_order_get_use_case.dart';
 import 'package:dio/dio.dart';
 import 'package:warunk/core/network/app_interceptor.dart';
 import 'package:warunk/main.dart';
@@ -67,6 +72,7 @@ Future<void> initDependency() async {
   sl.registerLazySingleton(() => AuthApiService(dio));
   sl.registerLazySingleton(() => MerchantProductApiService(dio));
   sl.registerLazySingleton(() => MerchantMerchantApiService(dio));
+  sl.registerLazySingleton(() => MerchantOrderApiService(dio));
 
   //repository
   sl.registerLazySingleton(() => AuthRepository(api: sl()));
@@ -75,6 +81,9 @@ Future<void> initDependency() async {
   );
   sl.registerLazySingleton<MerchantMerchantRepository>(
     () => MerchantMerchantRepositoryImpl(api: sl()),
+  );
+  sl.registerLazySingleton<MerchantOrderRepository>(
+    () => MerchantOrderRepositoryImpl(apiService: sl()),
   );
 
   //usecase
@@ -102,6 +111,7 @@ Future<void> initDependency() async {
   sl.registerLazySingleton(() => MerchantMerchantUpdateOperationalHourUseCase(sl()));
   sl.registerLazySingleton(() => MerchantMerchantGetCourierUseCase(repository: sl()));
   sl.registerLazySingleton(() => MerchantMerchantUpdateShippingUseCase(repository: sl()));
+  sl.registerLazySingleton(() => MerchantOrderGetUseCase(sl()));
 
   //bloc
   sl.registerLazySingleton(() => AuthBloc());
@@ -134,4 +144,5 @@ Future<void> initDependency() async {
         updateShippingUseCase: sl(),
         getMerchantUseCase: sl(),
       ));
+  sl.registerFactory(() => MerchantOrderBloc(getUseCase: sl()));
 }

@@ -6,3 +6,5 @@ const PREF_NAME = 'pref-name';
 const PREF_EMAIL = 'pref-email';
 const PREF_PHONE = 'pref-phone';
 const PREF_PHOTO = 'pref-photo';
+
+const MERCHANT_ORDERS = '/api/seller/orders';

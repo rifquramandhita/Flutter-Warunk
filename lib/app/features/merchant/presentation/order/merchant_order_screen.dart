@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:warunk/app/features/merchant/domain/entity/merchant_order.dart';
 import 'package:warunk/app/features/merchant/presentation/detail_order/merchant_detail_order_screen.dart';
 import 'package:warunk/app/features/merchant/presentation/order/bloc/merchant_order_bloc.dart';
+import 'package:warunk/core/dependency/dependency.dart';
+import 'package:warunk/core/helper/dialog_helper.dart';
+import 'package:warunk/core/widgets/loading_app_widget.dart';
 import 'package:warunk/theme/app_colors.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -14,8 +18,20 @@ class MerchantOrderScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => MerchantOrderBloc(),
-      child: const _MerchantOrderView(),
+      create: (_) => sl<MerchantOrderBloc>()..add(MerchantOrderEventFetchStarted()),
+      child: BlocConsumer<MerchantOrderBloc, MerchantOrderState>(
+        listener: (context, state) {
+          if (state.errorMessage != null) {
+            DialogHelper.showErrorSnackBar(
+              context: context,
+              text: state.errorMessage!,
+            );
+          }
+        },
+        builder: (context, state) {
+          return const _MerchantOrderView();
+        },
+      ),
     );
   }
 }
@@ -28,15 +44,22 @@ class _MerchantOrderView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final state = context.watch<MerchantOrderBloc>().state;
+    
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: _buildAppBar(context),
-      body: const Column(
+      body: Stack(
         children: [
-          SizedBox(height: 12),
-          _TabFilter(),
-          SizedBox(height: 8),
-          Expanded(child: _OrderList()),
+          const Column(
+            children: [
+              SizedBox(height: 12),
+              _TabFilter(),
+              SizedBox(height: 8),
+              Expanded(child: _OrderList()),
+            ],
+          ),
+          if (state.isLoading) const LoadingAppWidget(),
         ],
       ),
     );
@@ -59,7 +82,7 @@ class _MerchantOrderView extends StatelessWidget {
       actions: [
         GestureDetector(
           onTap: () => context.read<MerchantOrderBloc>().add(
-            MerchantOrderFilterTapped(),
+            MerchantOrderEventFilterTapped(),
           ),
           child: Container(
             margin: const EdgeInsets.only(right: 16),
@@ -104,7 +127,7 @@ class _TabFilter extends StatelessWidget {
               final isSelected = state.selectedTab == index;
               return GestureDetector(
                 onTap: () => context.read<MerchantOrderBloc>().add(
-                  MerchantOrderTabChanged(index),
+                  MerchantOrderEventTabChanged(index),
                 ),
                 child: AnimatedContainer(
                   duration: const Duration(milliseconds: 200),
@@ -157,6 +180,9 @@ class _OrderList extends StatelessWidget {
         final orders = state.filteredOrders;
 
         if (orders.isEmpty) {
+          if (state.isLoading) {
+            return const SizedBox();
+          }
           return Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -184,7 +210,7 @@ class _OrderList extends StatelessWidget {
           padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
           itemCount: orders.length,
           separatorBuilder: (_, _) => const SizedBox(height: 12),
-          itemBuilder: (context, index) => _OrderCard(order: orders[index]),
+          itemBuilder: (context, index) => _OrderCard(order: orders[index], tabStatus: MerchantOrderStatus.values[state.selectedTab]),
         );
       },
     );
@@ -195,8 +221,9 @@ class _OrderList extends StatelessWidget {
 // Order card
 // ─────────────────────────────────────────────────────────────────────────────
 class _OrderCard extends StatelessWidget {
-  const _OrderCard({required this.order});
-  final MerchantOrderItem order;
+  const _OrderCard({required this.order, required this.tabStatus});
+  final MerchantOrderEntity order;
+  final MerchantOrderStatus tabStatus;
 
   static final _currency = NumberFormat.currency(
     locale: 'id',
@@ -206,6 +233,19 @@ class _OrderCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String formattedDate = '';
+    if (order.createdAt != null) {
+      try {
+        final date = DateTime.parse(order.createdAt!).toLocal();
+        formattedDate = DateFormat('dd MMM yyyy • HH:mm', 'id_ID').format(date);
+      } catch (_) {
+        formattedDate = order.createdAt!;
+      }
+    }
+
+    final isPickup = order.shipping?.type?.toLowerCase() != 'biteship' && order.shipping?.isInstant == false; // Usually pick up is different, assuming Biteship implies delivery
+    final pickupLabel = isPickup ? 'Ambil di Tempat' : 'Diantar';
+
     return Container(
       decoration: BoxDecoration(
         color: AppColors.white,
@@ -227,7 +267,7 @@ class _OrderCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // Shopping bag icon
-                _ShoppingBagIcon(status: order.status),
+                _ShoppingBagIcon(status: tabStatus),
                 const SizedBox(width: 12),
                 // Order info
                 Expanded(
@@ -239,26 +279,30 @@ class _OrderCard extends StatelessWidget {
                         children: [
                           Expanded(
                             child: Text(
-                              order.orderId,
+                              order.invoiceNumber ?? order.id,
                               style: const TextStyle(
                                 fontSize: 12,
                                 color: AppColors.greyText,
                                 fontWeight: FontWeight.w500,
                               ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                             ),
                           ),
-                          _StatusBadge(status: order.status),
+                          _StatusBadge(status: tabStatus),
                         ],
                       ),
                       const SizedBox(height: 4),
                       // Customer name
                       Text(
-                        order.customerName,
+                        order.customer?.name ?? order.customerAddress?.recipientName ?? 'Pelanggan',
                         style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
                           color: AppColors.textDark,
                         ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
                       const SizedBox(height: 2),
                       // Date + item count
@@ -266,7 +310,7 @@ class _OrderCard extends StatelessWidget {
                         children: [
                           Expanded(
                             child: Text(
-                              order.dateTime,
+                              formattedDate,
                               style: const TextStyle(
                                 fontSize: 12,
                                 color: AppColors.greyText,
@@ -274,7 +318,7 @@ class _OrderCard extends StatelessWidget {
                             ),
                           ),
                           Text(
-                            '${order.itemCount} item',
+                            '${order.items.length} item',
                             style: const TextStyle(
                               fontSize: 12,
                               color: AppColors.greyText,
@@ -287,7 +331,7 @@ class _OrderCard extends StatelessWidget {
                       Align(
                         alignment: Alignment.centerRight,
                         child: Text(
-                          _currency.format(order.total),
+                          _currency.format(order.total ?? 0),
                           style: const TextStyle(
                             fontSize: 15,
                             fontWeight: FontWeight.w800,
@@ -329,9 +373,7 @@ class _OrderCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        order.pickupType == MerchantPickupType.ambilDiTempat
-                            ? 'Ambil di Tempat'
-                            : 'Diantar',
+                        pickupLabel,
                         style: const TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.w600,
@@ -339,11 +381,13 @@ class _OrderCard extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        order.storeName,
+                        order.shipping?.originAddress?.name ?? 'Toko Anda',
                         style: const TextStyle(
                           fontSize: 11,
                           color: AppColors.greyText,
                         ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ],
                   ),
