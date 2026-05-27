@@ -45,6 +45,7 @@ This file serves as the main reference for AI agents and developers working on t
   });
   ```
 - **Manual DataState**: Jika fungsi pada repository tidak memanggil API (misalnya logika internal atau operasi lokal seperti download file), tetap gunakan `DataState` dengan me-return `SuccessState(data: ...)` untuk sukses, dan `ErrorState(message: ...)` jika terjadi _exception_ atau kegagalan.
+- **UseCase Base Class**: Setiap class UseCase **DILARANG** meng-extends atau implements sebuah _base class_ (seperti `UseCase<Type, Params>`). Buat method (biasanya `call`) secara langsung dengan mengembalikan `Future<DataState<T>>`.
 
 ## 7. Presentation Layer & BLoC Naming Convention
 - **Directory Structure**: Setiap screen/halaman dan state management-nya diletakkan dengan struktur: `lib/app/features/[feature_name]/presentation/[action_name]/`.
@@ -69,38 +70,47 @@ This file serves as the main reference for AI agents and developers working on t
   - Selalu *extends* `StatelessWidget`.
   - Pada root `build()`, sediakan `BlocProvider` yang memanggil dependensi dari `get_it` (contoh: `sl<AuthLoginBloc>()`), kemudian wajib menggunakan `BlocConsumer` untuk meng-handle `state.errorMessage` (menampilkan snackbar) dan mengembalikan layout utama.
   - **DILARANG** menggunakan properti `listenWhen` pada `BlocConsumer` maupun `BlocListener`. Biarkan *listener* berjalan untuk semua perubahan state, lalu gunakan *if-condition* di dalam blok `listener` untuk mengeksekusi logika tertentu.
-  - **Struktur Root UI Wajib**:
+  - **Struktur Root UI Wajib (HANYA BOLEH 1 CLASS)**:
+    - **DILARANG KERAS** memecah body screen ke dalam class baru (misal: membuat class `_NamaView extends StatelessWidget`). Seluruh layout harus berada di dalam satu class screen utama.
     ```dart
-    @override
-    Widget build(BuildContext context) {
-      return BlocProvider(
-        create: (context) => sl<NamaBloc>(),
-        child: BlocConsumer<NamaBloc, NamaState>(
-          listener: (context, state) {
-            if (state.errorMessage != null) {
-              DialogHelper.showErrorSnackBar(context: context, text: state.errorMessage!);
-            }
-          },
-          builder: (context, state) {
-            return Scaffold(body: _bodyBuild(context));
-          },
-        ),
-      );
-    }
-    
-    Widget _bodyBuild(BuildContext context) {
-      final state = context.watch<NamaBloc>().state;
-      return SafeArea(
-        child: Stack(
-          children: [
-            _bodyLayout(context),
-            (state.isLoading) ? const LoadingAppWidget() : const SizedBox(),
-          ],
-        ),
-      );
+    class NamaScreen extends StatelessWidget {
+      const NamaScreen({super.key});
+
+      @override
+      Widget build(BuildContext context) {
+        return BlocProvider(
+          create: (context) => sl<NamaBloc>(),
+          child: BlocConsumer<NamaBloc, NamaState>(
+            listener: (context, state) {
+              if (state.errorMessage != null) {
+                DialogHelper.showErrorSnackBar(context: context, text: state.errorMessage!);
+              }
+            },
+            builder: (context, state) {
+              return Scaffold(body: _bodyBuild(context));
+            },
+          ),
+        );
+      }
+      
+      Widget _bodyBuild(BuildContext context) {
+        final state = context.watch<NamaBloc>().state;
+        return SafeArea(
+          child: Stack(
+            children: [
+              _bodyLayout(context),
+              (state.isLoading) ? const LoadingAppWidget() : const SizedBox(),
+            ],
+          ),
+        );
+      }
+      
+      Widget _bodyLayout(BuildContext context) {
+        return Container();
+      }
     }
     ```
-  - **Pemisahan Code UI**: Jangan menulis semua kode UI dalam satu fungsi besar. Pecah komponen-komponen antarmuka ke dalam fungsi privat yang mengembalikan `Widget` (mulai dari `_bodyBuild`, `_bodyLayout`, hingga sub-komponen seperti `_emailTextFieldLayout`).
+  - **Pemisahan Code UI**: Jangan menulis semua kode UI dalam satu fungsi besar. Pecah komponen-komponen antarmuka ke dalam fungsi privat yang mengembalikan `Widget` (mulai dari `_bodyBuild`, `_bodyLayout`, hingga sub-komponen seperti `_emailTextFieldLayout`). Jangan menggunakan class terpisah untuk memecah UI utama.
   - Untuk membaca state pada fungsi-fungsi privat tersebut, gunakan: `final state = context.watch<NamaBloc>().state;`.
   - Untuk memicu event, gunakan: `context.read<NamaBloc>().add(NamaEvent());`.
 - **BLoC (`..._bloc.dart`)**:

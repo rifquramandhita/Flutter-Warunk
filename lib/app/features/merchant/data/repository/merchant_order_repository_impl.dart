@@ -16,4 +16,44 @@ class MerchantOrderRepositoryImpl implements MerchantOrderRepository {
       return data.map((e) => MerchantOrderEntity.fromJson(e)).toList();
     });
   }
+
+  @override
+  Future<DataState<MerchantOrderEntity>> getOrderById(String id) async {
+    return handleResponse(() => _apiService.getOrderById(id), (responseData) {
+      final data = responseData['order'];
+      return MerchantOrderEntity.fromJson(data);
+    });
+  }
+
+  @override
+  Future<DataState<MerchantOrderEntity>> acceptOrder(String id) async {
+    return handleResponse(() => _apiService.acceptOrder(id), (responseData) {
+      final data = responseData['order'];
+      return MerchantOrderEntity.fromJson(data);
+    });
+  }
+
+  @override
+  Future<DataState<MerchantOrderEntity>> shipOrder(String id, Map<String, dynamic> body) async {
+    return handleResponse(() => _apiService.shipOrder(id, body), (responseData) {
+      final data = responseData['order'];
+      return MerchantOrderEntity.fromJson(data);
+    });
+  }
+
+  @override
+  Future<DataState<MerchantOrderEntity>> receivedOrder(String id) async {
+    return handleResponse(() => _apiService.receivedOrder(id), (responseData) {
+      final data = responseData['order'];
+      return MerchantOrderEntity.fromJson(data);
+    });
+  }
+
+  @override
+  Future<DataState<MerchantOrderEntity>> rejectOrder(String id, Map<String, dynamic> body) async {
+    return handleResponse(() => _apiService.rejectOrder(id, body), (responseData) {
+      final data = responseData['order'];
+      return MerchantOrderEntity.fromJson(data);
+    });
+  }
 }

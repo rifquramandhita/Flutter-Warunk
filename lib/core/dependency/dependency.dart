@@ -27,6 +27,7 @@ import 'package:warunk/app/features/merchant/domain/use_case/merchant_products_g
 import 'package:warunk/app/features/merchant/domain/use_case/merchant_product_download_images_use_case.dart';
 import 'package:warunk/app/features/merchant/presentation/input_product/bloc/merchant_input_product_bloc.dart';
 import 'package:warunk/app/features/merchant/presentation/product/bloc/merchant_product_bloc.dart';
+import 'package:warunk/app/features/merchant/presentation/ship_order/bloc/merchant_ship_order_bloc.dart';
 import 'package:warunk/app/features/merchant/presentation/profil/bloc/merchant_profil_bloc.dart';
 import 'package:warunk/app/features/merchant/domain/use_case/merchant_merchant_update_location_use_case.dart';
 import 'package:warunk/app/features/merchant/presentation/input_address/bloc/merchant_input_address_bloc.dart';
@@ -41,10 +42,16 @@ import 'package:warunk/core/bloc/auth/auth_bloc.dart';
 import 'package:warunk/app/features/merchant/presentation/operational_hours/bloc/merchant_operational_hours_bloc.dart';
 import 'package:warunk/app/features/merchant/presentation/shipping/bloc/merchant_shipping_bloc.dart';
 import 'package:warunk/app/features/merchant/presentation/order/bloc/merchant_order_bloc.dart';
+import 'package:warunk/app/features/merchant/presentation/detail_order/bloc/merchant_detail_order_bloc.dart';
 import 'package:warunk/app/features/merchant/data/source/merchant_order_api_service.dart';
 import 'package:warunk/app/features/merchant/domain/repository/merchant_order_repository.dart';
 import 'package:warunk/app/features/merchant/data/repository/merchant_order_repository_impl.dart';
 import 'package:warunk/app/features/merchant/domain/use_case/merchant_order_get_use_case.dart';
+import 'package:warunk/app/features/merchant/domain/use_case/merchant_order_get_by_id_use_case.dart';
+import 'package:warunk/app/features/merchant/domain/use_case/merchant_order_accept_use_case.dart';
+import 'package:warunk/app/features/merchant/domain/use_case/merchant_order_ship_use_case.dart';
+import 'package:warunk/app/features/merchant/domain/use_case/merchant_order_received_use_case.dart';
+import 'package:warunk/app/features/merchant/domain/use_case/merchant_order_reject_use_case.dart';
 import 'package:dio/dio.dart';
 import 'package:warunk/core/network/app_interceptor.dart';
 import 'package:warunk/main.dart';
@@ -112,6 +119,11 @@ Future<void> initDependency() async {
   sl.registerLazySingleton(() => MerchantMerchantGetCourierUseCase(repository: sl()));
   sl.registerLazySingleton(() => MerchantMerchantUpdateShippingUseCase(repository: sl()));
   sl.registerLazySingleton(() => MerchantOrderGetUseCase(sl()));
+  sl.registerLazySingleton(() => MerchantOrderGetByIdUseCase(sl()));
+  sl.registerLazySingleton(() => MerchantOrderAcceptUseCase(sl()));
+  sl.registerLazySingleton(() => MerchantOrderShipUseCase(sl()));
+  sl.registerLazySingleton(() => MerchantOrderReceivedUseCase(sl()));
+  sl.registerLazySingleton(() => MerchantOrderRejectUseCase(sl()));
 
   //bloc
   sl.registerLazySingleton(() => AuthBloc());
@@ -145,4 +157,18 @@ Future<void> initDependency() async {
         getMerchantUseCase: sl(),
       ));
   sl.registerFactory(() => MerchantOrderBloc(getUseCase: sl()));
+  sl.registerFactory(
+    () => MerchantDetailOrderBloc(
+      getByIdUseCase: sl(),
+      acceptUseCase: sl(),
+      rejectUseCase: sl(),
+      receivedUseCase: sl(),
+    ),
+  );
+  sl.registerFactoryParam<MerchantShipOrderBloc, String, void>(
+    (orderId, _) => MerchantShipOrderBloc(
+      shipUseCase: sl(),
+      orderId: orderId,
+    ),
+  );
 }

@@ -7,13 +7,17 @@ import 'package:warunk/app/features/merchant/presentation/order/bloc/merchant_or
 import 'package:warunk/core/dependency/dependency.dart';
 import 'package:warunk/core/helper/dialog_helper.dart';
 import 'package:warunk/core/widgets/loading_app_widget.dart';
+import 'package:warunk/main.dart';
 import 'package:warunk/theme/app_colors.dart';
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Entry point — provides BLoC
-// ─────────────────────────────────────────────────────────────────────────────
 class MerchantOrderScreen extends StatelessWidget {
   const MerchantOrderScreen({super.key});
+
+  static final _currency = NumberFormat.currency(
+    locale: 'id',
+    symbol: 'Rp',
+    decimalDigits: 0,
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -29,39 +33,31 @@ class MerchantOrderScreen extends StatelessWidget {
           }
         },
         builder: (context, state) {
-          return const _MerchantOrderView();
+          return Scaffold(
+            backgroundColor: AppColors.background,
+            appBar: _buildAppBar(context),
+            body: _bodyBuild(context),
+          );
         },
       ),
     );
   }
-}
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Main view
-// ─────────────────────────────────────────────────────────────────────────────
-class _MerchantOrderView extends StatelessWidget {
-  const _MerchantOrderView();
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _bodyBuild(BuildContext context) {
     final state = context.watch<MerchantOrderBloc>().state;
     
-    return Scaffold(
-      backgroundColor: AppColors.background,
-      appBar: _buildAppBar(context),
-      body: Stack(
-        children: [
-          const Column(
-            children: [
-              SizedBox(height: 12),
-              _TabFilter(),
-              SizedBox(height: 8),
-              Expanded(child: _OrderList()),
-            ],
-          ),
-          if (state.isLoading) const LoadingAppWidget(),
-        ],
-      ),
+    return Stack(
+      children: [
+        Column(
+          children: [
+            const SizedBox(height: 12),
+            _tabFilter(context),
+            const SizedBox(height: 8),
+            Expanded(child: _orderList(context)),
+          ],
+        ),
+        if (state.isLoading) const LoadingAppWidget(),
+      ],
     );
   }
 
@@ -102,137 +98,103 @@ class _MerchantOrderView extends StatelessWidget {
       ],
     );
   }
-}
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Tab filter — Baru / Diproses / Selesai / Dibatalkan
-// ─────────────────────────────────────────────────────────────────────────────
-class _TabFilter extends StatelessWidget {
-  const _TabFilter();
+  Widget _tabFilter(BuildContext context) {
+    final state = context.watch<MerchantOrderBloc>().state;
+    const tabs = ['Baru', 'Diproses', 'Selesai', 'Dibatalkan'];
 
-  static const _tabs = ['Baru', 'Diproses', 'Selesai', 'Dibatalkan'];
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<MerchantOrderBloc, MerchantOrderState>(
-      builder: (context, state) {
-        return SizedBox(
-          height: 38,
-          child: ListView.separated(
-            scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            itemCount: _tabs.length,
-            separatorBuilder: (_, _) => const SizedBox(width: 8),
-            itemBuilder: (context, index) {
-              final isSelected = state.selectedTab == index;
-              return GestureDetector(
-                onTap: () => context.read<MerchantOrderBloc>().add(
-                  MerchantOrderEventTabChanged(index),
+    return SizedBox(
+      height: 38,
+      child: ListView.separated(
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        itemCount: tabs.length,
+        separatorBuilder: (_, _) => const SizedBox(width: 8),
+        itemBuilder: (context, index) {
+          final isSelected = state.selectedTab == index;
+          return GestureDetector(
+            onTap: () => context.read<MerchantOrderBloc>().add(
+              MerchantOrderEventTabChanged(index),
+            ),
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 200),
+              padding: const EdgeInsets.symmetric(horizontal: 18),
+              decoration: BoxDecoration(
+                color: isSelected
+                    ? AppColors.primary.withValues(alpha: 0.13)
+                    : AppColors.white,
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                  color: isSelected
+                      ? AppColors.primary.withValues(alpha: 0.5)
+                      : AppColors.greyBorder,
                 ),
-                child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 200),
-                  padding: const EdgeInsets.symmetric(horizontal: 18),
-                  decoration: BoxDecoration(
-                    color: isSelected
-                        ? AppColors.primary.withValues(alpha: 0.13)
-                        : AppColors.white,
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(
-                      color: isSelected
-                          ? AppColors.primary.withValues(alpha: 0.5)
-                          : AppColors.greyBorder,
-                    ),
-                  ),
-                  child: Center(
-                    child: Text(
-                      _tabs[index],
-                      style: TextStyle(
-                        fontSize: 13,
-                        fontWeight: isSelected
-                            ? FontWeight.w700
-                            : FontWeight.w500,
-                        color: isSelected
-                            ? AppColors.primary
-                            : AppColors.greyText,
-                      ),
-                    ),
-                  ),
-                ),
-              );
-            },
-          ),
-        );
-      },
-    );
-  }
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// Order list
-// ─────────────────────────────────────────────────────────────────────────────
-class _OrderList extends StatelessWidget {
-  const _OrderList();
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<MerchantOrderBloc, MerchantOrderState>(
-      builder: (context, state) {
-        final orders = state.filteredOrders;
-
-        if (orders.isEmpty) {
-          if (state.isLoading) {
-            return const SizedBox();
-          }
-          return Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  Icons.receipt_long_outlined,
-                  size: 64,
-                  color: AppColors.greyText.withValues(alpha: 0.35),
-                ),
-                const SizedBox(height: 16),
-                const Text(
-                  'Belum ada order',
+              ),
+              child: Center(
+                child: Text(
+                  tabs[index],
                   style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.greyText,
+                    fontSize: 13,
+                    fontWeight: isSelected
+                        ? FontWeight.w700
+                        : FontWeight.w500,
+                    color: isSelected
+                        ? AppColors.primary
+                        : AppColors.greyText,
                   ),
                 ),
-              ],
+              ),
             ),
           );
-        }
-
-        return ListView.separated(
-          padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
-          itemCount: orders.length,
-          separatorBuilder: (_, _) => const SizedBox(height: 12),
-          itemBuilder: (context, index) => _OrderCard(order: orders[index], tabStatus: MerchantOrderStatus.values[state.selectedTab]),
-        );
-      },
+        },
+      ),
     );
   }
-}
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Order card
-// ─────────────────────────────────────────────────────────────────────────────
-class _OrderCard extends StatelessWidget {
-  const _OrderCard({required this.order, required this.tabStatus});
-  final MerchantOrderEntity order;
-  final MerchantOrderStatus tabStatus;
+  Widget _orderList(BuildContext context) {
+    final state = context.watch<MerchantOrderBloc>().state;
+    final orders = state.filteredOrders;
 
-  static final _currency = NumberFormat.currency(
-    locale: 'id',
-    symbol: 'Rp',
-    decimalDigits: 0,
-  );
+    if (orders.isEmpty) {
+      if (state.isLoading) {
+        return const SizedBox();
+      }
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.receipt_long_outlined,
+              size: 64,
+              color: AppColors.greyText.withValues(alpha: 0.35),
+            ),
+            const SizedBox(height: 16),
+            const Text(
+              'Belum ada order',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                color: AppColors.greyText,
+              ),
+            ),
+          ],
+        ),
+      );
+    }
 
-  @override
-  Widget build(BuildContext context) {
+    return ListView.separated(
+      padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
+      itemCount: orders.length,
+      separatorBuilder: (_, _) => const SizedBox(height: 12),
+      itemBuilder: (context, index) => _orderCard(
+        context,
+        orders[index],
+        MerchantOrderStatus.values[state.selectedTab],
+      ),
+    );
+  }
+
+  Widget _orderCard(BuildContext context, MerchantOrderEntity order, MerchantOrderStatus tabStatus) {
     String formattedDate = '';
     if (order.createdAt != null) {
       try {
@@ -267,7 +229,7 @@ class _OrderCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // Shopping bag icon
-                _ShoppingBagIcon(status: tabStatus),
+                _shoppingBagIcon(tabStatus),
                 const SizedBox(width: 12),
                 // Order info
                 Expanded(
@@ -289,7 +251,7 @@ class _OrderCard extends StatelessWidget {
                               overflow: TextOverflow.ellipsis,
                             ),
                           ),
-                          _StatusBadge(status: tabStatus),
+                          _statusBadge(tabStatus),
                         ],
                       ),
                       const SizedBox(height: 4),
@@ -394,11 +356,13 @@ class _OrderCard extends StatelessWidget {
                 ),
                 // Lihat Detail button
                 GestureDetector(
-                  onTap: () => Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (_) => const MerchantDetailOrderScreen(),
-                    ),
-                  ),
+                  onTap: () {
+                    navigatorKey.currentState?.push(
+                      MaterialPageRoute(
+                        builder: (_) => MerchantDetailOrderScreen(orderId: order.id),
+                      ),
+                    );
+                  },
                   child: Container(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 14,
@@ -438,17 +402,8 @@ class _OrderCard extends StatelessWidget {
       ),
     );
   }
-}
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Shopping bag icon circle
-// ─────────────────────────────────────────────────────────────────────────────
-class _ShoppingBagIcon extends StatelessWidget {
-  const _ShoppingBagIcon({required this.status});
-  final MerchantOrderStatus status;
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _shoppingBagIcon(MerchantOrderStatus status) {
     final (bg, icon) = switch (status) {
       MerchantOrderStatus.baru => (
         const Color(0xFFFFF3C4),
@@ -472,17 +427,8 @@ class _ShoppingBagIcon extends StatelessWidget {
       child: Icon(Icons.shopping_bag_outlined, color: icon, size: 22),
     );
   }
-}
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Status badge
-// ─────────────────────────────────────────────────────────────────────────────
-class _StatusBadge extends StatelessWidget {
-  const _StatusBadge({required this.status});
-  final MerchantOrderStatus status;
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _statusBadge(MerchantOrderStatus status) {
     final (label, bg, text) = switch (status) {
       MerchantOrderStatus.baru => (
         'BARU',
