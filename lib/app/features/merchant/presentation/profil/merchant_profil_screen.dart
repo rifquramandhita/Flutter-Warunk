@@ -273,8 +273,6 @@ class MerchantProfilScreen extends StatelessWidget {
             MaterialPageRoute(builder: (_) => const MerchantShippingScreen()),
           ),
         ),
-        _divider(context),
-        _navRow(context: context, label: 'Keamanan Akun', onTap: () {}),
       ],
     );
   }
