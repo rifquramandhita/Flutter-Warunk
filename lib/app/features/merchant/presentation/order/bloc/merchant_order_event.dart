@@ -5,8 +5,8 @@ sealed class MerchantOrderEvent {}
 class MerchantOrderEventFetchStarted extends MerchantOrderEvent {}
 
 class MerchantOrderEventTabChanged extends MerchantOrderEvent {
-  final int index; // 0=Baru, 1=Diproses, 2=Selesai, 3=Dibatalkan
-  MerchantOrderEventTabChanged(this.index);
+  final String status;
+  MerchantOrderEventTabChanged(this.status);
 }
 
 class MerchantOrderEventFilterTapped extends MerchantOrderEvent {}

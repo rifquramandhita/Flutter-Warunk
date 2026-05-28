@@ -1,18 +1,16 @@
 part of 'merchant_order_bloc.dart';
 
-enum MerchantOrderStatus { baru, diproses, selesai, dibatalkan }
-
-enum MerchantPickupType { ambilDiTempat, diantar }
-
 class MerchantOrderState extends Equatable {
-  final int selectedTab;
+  final String selectedTab;
+  final List<String> availableTabs;
   final List<MerchantOrderEntity> allOrders;
   final bool isLoading;
   final bool isSuccess;
   final String? errorMessage;
 
   const MerchantOrderState({
-    this.selectedTab = 0,
+    this.selectedTab = '',
+    this.availableTabs = const [],
     this.allOrders = const [],
     this.isLoading = false,
     this.isSuccess = false,
@@ -20,29 +18,15 @@ class MerchantOrderState extends Equatable {
   });
 
   List<MerchantOrderEntity> get filteredOrders {
-    final tabStatus = MerchantOrderStatus.values[selectedTab];
+    if (selectedTab.isEmpty) return allOrders;
     return allOrders.where((order) {
-      final String status = order.status ?? '';
-      final MerchantOrderStatus mappedStatus;
-
-      // Map API statuses to UI tabs
-      if (status == 'completed' || status == 'delivered') {
-        mappedStatus = MerchantOrderStatus.selesai;
-      } else if (status == 'cancelled' || status == 'rejected') {
-        mappedStatus = MerchantOrderStatus.dibatalkan;
-      } else if (status == 'processing' || status == 'on_delivery') {
-        mappedStatus = MerchantOrderStatus.diproses;
-      } else {
-        // Default to 'baru' for 'waiting_payment_confirmation', 'new', etc.
-        mappedStatus = MerchantOrderStatus.baru;
-      }
-
-      return mappedStatus == tabStatus;
+      return order.status == selectedTab;
     }).toList();
   }
 
   MerchantOrderState copyWith({
-    int? selectedTab,
+    String? selectedTab,
+    List<String>? availableTabs,
     List<MerchantOrderEntity>? allOrders,
     bool? isLoading,
     bool? isSuccess,
@@ -50,6 +34,7 @@ class MerchantOrderState extends Equatable {
   }) {
     return MerchantOrderState(
       selectedTab: selectedTab ?? this.selectedTab,
+      availableTabs: availableTabs ?? this.availableTabs,
       allOrders: allOrders ?? this.allOrders,
       isLoading: isLoading ?? this.isLoading,
       isSuccess: isSuccess ?? this.isSuccess,
@@ -60,6 +45,7 @@ class MerchantOrderState extends Equatable {
   @override
   List<Object?> get props => [
         selectedTab,
+        availableTabs,
         allOrders,
         isLoading,
         isSuccess,

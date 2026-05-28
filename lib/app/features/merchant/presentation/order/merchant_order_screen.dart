@@ -8,7 +8,7 @@ import 'package:warunk/core/dependency/dependency.dart';
 import 'package:warunk/core/helper/dialog_helper.dart';
 import 'package:warunk/core/widgets/loading_app_widget.dart';
 import 'package:warunk/main.dart';
-import 'package:warunk/theme/app_colors.dart';
+import 'package:warunk/core/helper/global_helper.dart';
 
 class MerchantOrderScreen extends StatelessWidget {
   const MerchantOrderScreen({super.key});
@@ -22,7 +22,8 @@ class MerchantOrderScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => sl<MerchantOrderBloc>()..add(MerchantOrderEventFetchStarted()),
+      create: (_) =>
+          sl<MerchantOrderBloc>()..add(MerchantOrderEventFetchStarted()),
       child: BlocConsumer<MerchantOrderBloc, MerchantOrderState>(
         listener: (context, state) {
           if (state.errorMessage != null) {
@@ -34,7 +35,6 @@ class MerchantOrderScreen extends StatelessWidget {
         },
         builder: (context, state) {
           return Scaffold(
-            backgroundColor: AppColors.background,
             appBar: _buildAppBar(context),
             body: _bodyBuild(context),
           );
@@ -45,63 +45,39 @@ class MerchantOrderScreen extends StatelessWidget {
 
   Widget _bodyBuild(BuildContext context) {
     final state = context.watch<MerchantOrderBloc>().state;
-    
-    return Stack(
+
+    return SafeArea(
+      child: Stack(
+        children: [
+          _bodyLayout(context),
+          (state.isLoading) ? const LoadingAppWidget() : const SizedBox(),
+        ],
+      ),
+    );
+  }
+
+  Widget _bodyLayout(BuildContext context) {
+    return Column(
       children: [
-        Column(
-          children: [
-            const SizedBox(height: 12),
-            _tabFilter(context),
-            const SizedBox(height: 8),
-            Expanded(child: _orderList(context)),
-          ],
-        ),
-        if (state.isLoading) const LoadingAppWidget(),
+        const SizedBox(height: 12),
+        _tabFilter(context),
+        const SizedBox(height: 8),
+        Expanded(child: _orderList(context)),
       ],
     );
   }
 
   AppBar _buildAppBar(BuildContext context) {
     return AppBar(
-      backgroundColor: AppColors.background,
-      elevation: 0,
-      centerTitle: true,
-      automaticallyImplyLeading: false,
-      title: const Text(
-        'Order Masuk',
-        style: TextStyle(
-          fontSize: 16,
-          fontWeight: FontWeight.bold,
-          color: AppColors.textDark,
-        ),
-      ),
-      actions: [
-        GestureDetector(
-          onTap: () => context.read<MerchantOrderBloc>().add(
-            MerchantOrderEventFilterTapped(),
-          ),
-          child: Container(
-            margin: const EdgeInsets.only(right: 16),
-            width: 38,
-            height: 38,
-            decoration: BoxDecoration(
-              color: AppColors.primary.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: const Icon(
-              Icons.filter_alt_outlined,
-              color: AppColors.primary,
-              size: 20,
-            ),
-          ),
-        ),
-      ],
+      title: const Text('Order Masuk'),
     );
   }
 
   Widget _tabFilter(BuildContext context) {
     final state = context.watch<MerchantOrderBloc>().state;
-    const tabs = ['Baru', 'Diproses', 'Selesai', 'Dibatalkan'];
+    final tabs = state.availableTabs;
+
+    if (tabs.isEmpty) return const SizedBox();
 
     return SizedBox(
       height: 38,
@@ -111,36 +87,44 @@ class MerchantOrderScreen extends StatelessWidget {
         itemCount: tabs.length,
         separatorBuilder: (_, _) => const SizedBox(width: 8),
         itemBuilder: (context, index) {
-          final isSelected = state.selectedTab == index;
+          final tabStatus = tabs[index];
+          final isSelected = state.selectedTab == tabStatus;
+
+          final orderForLabel = state.allOrders.firstWhere(
+            (o) => o.status == tabStatus,
+            orElse: () => const MerchantOrderEntity(id: ''),
+          );
+          final tabLabel = tabStatus.isEmpty ? 'Semua' : (orderForLabel.statusLabel ?? tabStatus);
+
           return GestureDetector(
             onTap: () => context.read<MerchantOrderBloc>().add(
-              MerchantOrderEventTabChanged(index),
+              MerchantOrderEventTabChanged(tabStatus),
             ),
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 200),
               padding: const EdgeInsets.symmetric(horizontal: 18),
               decoration: BoxDecoration(
                 color: isSelected
-                    ? AppColors.primary.withValues(alpha: 0.13)
-                    : AppColors.white,
+                    ? GlobalHelper.getColorSchema(context).primary.withValues(alpha: 0.13)
+                    : GlobalHelper.getColorSchema(context).surface,
                 borderRadius: BorderRadius.circular(20),
                 border: Border.all(
                   color: isSelected
-                      ? AppColors.primary.withValues(alpha: 0.5)
-                      : AppColors.greyBorder,
+                      ? GlobalHelper.getColorSchema(context).primary.withValues(alpha: 0.5)
+                      : GlobalHelper.getColorSchema(context).outlineVariant,
                 ),
               ),
               child: Center(
                 child: Text(
-                  tabs[index],
-                  style: TextStyle(
-                    fontSize: 13,
-                    fontWeight: isSelected
-                        ? FontWeight.w700
-                        : FontWeight.w500,
+                  tabLabel,
+                  style: GlobalHelper.getTextTheme(
+                    context,
+                    appTextStyle: AppTextStyle.BODY_SMALL,
+                  )?.copyWith(
+                    fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
                     color: isSelected
-                        ? AppColors.primary
-                        : AppColors.greyText,
+                        ? GlobalHelper.getColorSchema(context).primary
+                        : GlobalHelper.getColorSchema(context).onSurfaceVariant,
                   ),
                 ),
               ),
@@ -166,15 +150,17 @@ class MerchantOrderScreen extends StatelessWidget {
             Icon(
               Icons.receipt_long_outlined,
               size: 64,
-              color: AppColors.greyText.withValues(alpha: 0.35),
+              color: GlobalHelper.getColorSchema(context).onSurfaceVariant.withValues(alpha: 0.35),
             ),
             const SizedBox(height: 16),
-            const Text(
+            Text(
               'Belum ada order',
-              style: TextStyle(
-                fontSize: 16,
+              style: GlobalHelper.getTextTheme(
+                context,
+                appTextStyle: AppTextStyle.BODY_LARGE,
+              )?.copyWith(
                 fontWeight: FontWeight.w600,
-                color: AppColors.greyText,
+                color: GlobalHelper.getColorSchema(context).onSurfaceVariant,
               ),
             ),
           ],
@@ -189,12 +175,18 @@ class MerchantOrderScreen extends StatelessWidget {
       itemBuilder: (context, index) => _orderCard(
         context,
         orders[index],
-        MerchantOrderStatus.values[state.selectedTab],
+        orders[index].status ?? '',
+        orders[index].statusLabel,
       ),
     );
   }
 
-  Widget _orderCard(BuildContext context, MerchantOrderEntity order, MerchantOrderStatus tabStatus) {
+  Widget _orderCard(
+    BuildContext context,
+    MerchantOrderEntity order,
+    String tabStatus,
+    String? statusLabel,
+  ) {
     String formattedDate = '';
     if (order.createdAt != null) {
       try {
@@ -205,12 +197,15 @@ class MerchantOrderScreen extends StatelessWidget {
       }
     }
 
-    final isPickup = order.shipping?.type?.toLowerCase() != 'biteship' && order.shipping?.isInstant == false; // Usually pick up is different, assuming Biteship implies delivery
+    final isPickup =
+        order.shipping?.type?.toLowerCase() != 'biteship' &&
+        order.shipping?.isInstant ==
+            false; // Usually pick up is different, assuming Biteship implies delivery
     final pickupLabel = isPickup ? 'Ambil di Tempat' : 'Diantar';
 
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: GlobalHelper.getColorSchema(context).surface,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
@@ -229,7 +224,7 @@ class MerchantOrderScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // Shopping bag icon
-                _shoppingBagIcon(tabStatus),
+                _shoppingBagIcon(context, tabStatus),
                 const SizedBox(width: 12),
                 // Order info
                 Expanded(
@@ -242,26 +237,32 @@ class MerchantOrderScreen extends StatelessWidget {
                           Expanded(
                             child: Text(
                               order.invoiceNumber ?? order.id,
-                              style: const TextStyle(
-                                fontSize: 12,
-                                color: AppColors.greyText,
+                              style: GlobalHelper.getTextTheme(
+                                context,
+                                appTextStyle: AppTextStyle.BODY_SMALL,
+                              )?.copyWith(
+                                color: GlobalHelper.getColorSchema(context).onSurfaceVariant,
                                 fontWeight: FontWeight.w500,
                               ),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                             ),
                           ),
-                          _statusBadge(tabStatus),
+                          _statusBadge(context, tabStatus, statusLabel),
                         ],
                       ),
                       const SizedBox(height: 4),
                       // Customer name
                       Text(
-                        order.customer?.name ?? order.customerAddress?.recipientName ?? 'Pelanggan',
-                        style: const TextStyle(
-                          fontSize: 16,
+                        order.customer?.name ??
+                            order.customerAddress?.recipientName ??
+                            'Pelanggan',
+                        style: GlobalHelper.getTextTheme(
+                          context,
+                          appTextStyle: AppTextStyle.TITLE_MEDIUM,
+                        )?.copyWith(
                           fontWeight: FontWeight.bold,
-                          color: AppColors.textDark,
+                          color: GlobalHelper.getColorSchema(context).onSurface,
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -273,17 +274,21 @@ class MerchantOrderScreen extends StatelessWidget {
                           Expanded(
                             child: Text(
                               formattedDate,
-                              style: const TextStyle(
-                                fontSize: 12,
-                                color: AppColors.greyText,
+                              style: GlobalHelper.getTextTheme(
+                                context,
+                                appTextStyle: AppTextStyle.BODY_SMALL,
+                              )?.copyWith(
+                                color: GlobalHelper.getColorSchema(context).onSurfaceVariant,
                               ),
                             ),
                           ),
                           Text(
                             '${order.items.length} item',
-                            style: const TextStyle(
-                              fontSize: 12,
-                              color: AppColors.greyText,
+                            style: GlobalHelper.getTextTheme(
+                              context,
+                              appTextStyle: AppTextStyle.BODY_SMALL,
+                            )?.copyWith(
+                              color: GlobalHelper.getColorSchema(context).onSurfaceVariant,
                             ),
                           ),
                         ],
@@ -294,10 +299,12 @@ class MerchantOrderScreen extends StatelessWidget {
                         alignment: Alignment.centerRight,
                         child: Text(
                           _currency.format(order.total ?? 0),
-                          style: const TextStyle(
-                            fontSize: 15,
+                          style: GlobalHelper.getTextTheme(
+                            context,
+                            appTextStyle: AppTextStyle.TITLE_SMALL,
+                          )?.copyWith(
                             fontWeight: FontWeight.w800,
-                            color: AppColors.primary,
+                            color: GlobalHelper.getColorSchema(context).primary,
                           ),
                         ),
                       ),
@@ -308,7 +315,10 @@ class MerchantOrderScreen extends StatelessWidget {
             ),
           ),
           // ── Divider ──────────────────────────────────────────────────────
-          const Divider(height: 1, color: AppColors.greyBorder),
+          Divider(
+            height: 1,
+            color: GlobalHelper.getColorSchema(context).outlineVariant,
+          ),
           // ── Bottom section ────────────────────────────────────────────────
           Padding(
             padding: const EdgeInsets.fromLTRB(14, 10, 14, 12),
@@ -319,12 +329,12 @@ class MerchantOrderScreen extends StatelessWidget {
                   width: 30,
                   height: 30,
                   decoration: BoxDecoration(
-                    color: AppColors.primary.withValues(alpha: 0.1),
+                    color: GlobalHelper.getColorSchema(context).primary.withValues(alpha: 0.1),
                     shape: BoxShape.circle,
                   ),
-                  child: const Icon(
+                  child: Icon(
                     Icons.location_on_outlined,
-                    color: AppColors.primary,
+                    color: GlobalHelper.getColorSchema(context).primary,
                     size: 16,
                   ),
                 ),
@@ -336,17 +346,21 @@ class MerchantOrderScreen extends StatelessWidget {
                     children: [
                       Text(
                         pickupLabel,
-                        style: const TextStyle(
-                          fontSize: 12,
+                        style: GlobalHelper.getTextTheme(
+                          context,
+                          appTextStyle: AppTextStyle.BODY_SMALL,
+                        )?.copyWith(
                           fontWeight: FontWeight.w600,
-                          color: AppColors.textDark,
+                          color: GlobalHelper.getColorSchema(context).onSurface,
                         ),
                       ),
                       Text(
                         order.shipping?.originAddress?.name ?? 'Toko Anda',
-                        style: const TextStyle(
-                          fontSize: 11,
-                          color: AppColors.greyText,
+                        style: GlobalHelper.getTextTheme(
+                          context,
+                          appTextStyle: AppTextStyle.LABEL_SMALL,
+                        )?.copyWith(
+                          color: GlobalHelper.getColorSchema(context).onSurfaceVariant,
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -359,7 +373,8 @@ class MerchantOrderScreen extends StatelessWidget {
                   onTap: () {
                     navigatorKey.currentState?.push(
                       MaterialPageRoute(
-                        builder: (_) => MerchantDetailOrderScreen(orderId: order.id),
+                        builder: (_) =>
+                            MerchantDetailOrderScreen(orderId: order.id),
                       ),
                     );
                   },
@@ -370,25 +385,27 @@ class MerchantOrderScreen extends StatelessWidget {
                     ),
                     decoration: BoxDecoration(
                       border: Border.all(
-                        color: AppColors.primary.withValues(alpha: 0.6),
+                        color: GlobalHelper.getColorSchema(context).primary.withValues(alpha: 0.6),
                       ),
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const Text(
+                        Text(
                           'Lihat Detail',
-                          style: TextStyle(
-                            fontSize: 12,
+                          style: GlobalHelper.getTextTheme(
+                            context,
+                            appTextStyle: AppTextStyle.BODY_SMALL,
+                          )?.copyWith(
                             fontWeight: FontWeight.w600,
-                            color: AppColors.primary,
+                            color: GlobalHelper.getColorSchema(context).primary,
                           ),
                         ),
                         const SizedBox(width: 2),
-                        const Icon(
+                        Icon(
                           Icons.chevron_right,
-                          color: AppColors.primary,
+                          color: GlobalHelper.getColorSchema(context).primary,
                           size: 16,
                         ),
                       ],
@@ -403,22 +420,23 @@ class MerchantOrderScreen extends StatelessWidget {
     );
   }
 
-  Widget _shoppingBagIcon(MerchantOrderStatus status) {
-    final (bg, icon) = switch (status) {
-      MerchantOrderStatus.baru => (
-        const Color(0xFFFFF3C4),
-        const Color(0xFFF59E0B),
-      ),
-      MerchantOrderStatus.diproses => (
-        const Color(0xFFE8F5F1),
-        AppColors.primary,
-      ),
-      MerchantOrderStatus.selesai => (
-        const Color(0xFFF0FDF4),
-        const Color(0xFF22C55E),
-      ),
-      MerchantOrderStatus.dibatalkan => (const Color(0xFFFEF2F2), Colors.red),
-    };
+  Widget _shoppingBagIcon(BuildContext context, String status) {
+    Color bg;
+    Color icon;
+
+    if (status == 'completed' || status == 'delivered') {
+      bg = const Color(0xFFF0FDF4);
+      icon = const Color(0xFF22C55E);
+    } else if (status == 'cancelled' || status == 'rejected') {
+      bg = const Color(0xFFFEF2F2);
+      icon = Colors.red;
+    } else if (status == 'processing' || status == 'on_delivery') {
+      bg = const Color(0xFFE8F5F1);
+      icon = GlobalHelper.getColorSchema(context).primary;
+    } else {
+      bg = const Color(0xFFFFF3C4);
+      icon = const Color(0xFFF59E0B);
+    }
 
     return Container(
       width: 44,
@@ -428,29 +446,23 @@ class MerchantOrderScreen extends StatelessWidget {
     );
   }
 
-  Widget _statusBadge(MerchantOrderStatus status) {
-    final (label, bg, text) = switch (status) {
-      MerchantOrderStatus.baru => (
-        'BARU',
-        const Color(0xFFFFF3C4),
-        const Color(0xFFF59E0B),
-      ),
-      MerchantOrderStatus.diproses => (
-        'DIPROSES',
-        const Color(0xFFE8F5F1),
-        AppColors.primary,
-      ),
-      MerchantOrderStatus.selesai => (
-        'SELESAI',
-        const Color(0xFFF0FDF4),
-        const Color(0xFF22C55E),
-      ),
-      MerchantOrderStatus.dibatalkan => (
-        'BATAL',
-        const Color(0xFFFEF2F2),
-        Colors.red,
-      ),
-    };
+  Widget _statusBadge(BuildContext context, String status, String? label) {
+    Color bg;
+    Color text;
+
+    if (status == 'completed' || status == 'delivered') {
+      bg = const Color(0xFFF0FDF4);
+      text = const Color(0xFF22C55E);
+    } else if (status == 'cancelled' || status == 'rejected') {
+      bg = const Color(0xFFFEF2F2);
+      text = Colors.red;
+    } else if (status == 'processing' || status == 'on_delivery') {
+      bg = const Color(0xFFE8F5F1);
+      text = GlobalHelper.getColorSchema(context).primary;
+    } else {
+      bg = const Color(0xFFFFF3C4);
+      text = const Color(0xFFF59E0B);
+    }
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
@@ -459,9 +471,11 @@ class MerchantOrderScreen extends StatelessWidget {
         borderRadius: BorderRadius.circular(6),
       ),
       child: Text(
-        label,
-        style: TextStyle(
-          fontSize: 10,
+        (label ?? status).toUpperCase(),
+        style: GlobalHelper.getTextTheme(
+          context,
+          appTextStyle: AppTextStyle.LABEL_SMALL,
+        )?.copyWith(
           fontWeight: FontWeight.w700,
           color: text,
           letterSpacing: 0.3,

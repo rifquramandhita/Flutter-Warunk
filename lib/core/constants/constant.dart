@@ -8,3 +8,8 @@ const PREF_PHONE = 'pref-phone';
 const PREF_PHOTO = 'pref-photo';
 
 const MERCHANT_ORDERS = '/api/seller/orders';
+
+const STATUS_WAITING_PAYMENT_CONFIRMATION = 'waiting_payment_confirmation';
+const STATUS_PROCESSING = 'processing';
+const STATUS_SHIPPED = 'shipped';
+const STATUS_COMPLATED = 'completed';

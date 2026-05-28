@@ -27,9 +27,19 @@ class MerchantOrderBloc extends Bloc<MerchantOrderEvent, MerchantOrderState> {
     final response = await _getUseCase.call();
 
     if (response is SuccessState) {
+      final orders = response.data ?? [];
+      final tabs = orders.map((e) => e.status ?? '').where((s) => s.isNotEmpty).toSet().toList();
+      tabs.insert(0, ''); // Add 'Semua' tab
+      String selected = state.selectedTab;
+      if (!tabs.contains(selected) && tabs.isNotEmpty) {
+        selected = tabs.first;
+      }
+
       emit(state.copyWith(
         isSuccess: true,
-        allOrders: response.data,
+        allOrders: orders,
+        availableTabs: tabs,
+        selectedTab: selected,
       ));
     } else {
       emit(state.copyWith(errorMessage: response.message));
@@ -42,7 +52,7 @@ class MerchantOrderBloc extends Bloc<MerchantOrderEvent, MerchantOrderState> {
     MerchantOrderEventTabChanged event,
     Emitter<MerchantOrderState> emit,
   ) {
-    emit(state.copyWith(selectedTab: event.index));
+    emit(state.copyWith(selectedTab: event.status));
   }
 
   void _onFilterTapped(
