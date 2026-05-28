@@ -77,7 +77,6 @@ class MerchantOperationalHoursScreen extends StatelessWidget {
                   _dailyHoursCard(context, state),
                   const SizedBox(height: 16),
                 ],
-                _additionalSettingsCard(context, state),
               ],
             ),
           ),
@@ -410,130 +409,6 @@ class MerchantOperationalHoursScreen extends StatelessWidget {
               .toList(),
           onChanged: onChanged,
         ),
-      ),
-    );
-  }
-
-  Widget _additionalSettingsCard(
-    BuildContext context,
-    MerchantOperationalHoursState state,
-  ) {
-    final colorScheme = GlobalHelper.getColorSchema(context);
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: colorScheme.surface,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: colorScheme.outline.withValues(alpha: 0.5)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Pengaturan Tambahan',
-            style: GlobalHelper.getTextTheme(
-              context,
-              appTextStyle: AppTextStyle.BODY_MEDIUM,
-            )?.copyWith(fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 16),
-          Row(
-            children: [
-              Container(
-                width: 40,
-                height: 40,
-                decoration: BoxDecoration(
-                  color: colorScheme.primary.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Icon(
-                  Icons.shopping_bag_outlined,
-                  color: colorScheme.primary,
-                  size: 20,
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Terima Pre-order',
-                      style: GlobalHelper.getTextTheme(
-                        context,
-                        appTextStyle: AppTextStyle.BODY_SMALL,
-                      )?.copyWith(fontWeight: FontWeight.bold),
-                    ),
-                    const SizedBox(height: 2),
-                    Text(
-                      'Terima pesanan untuk waktu di luar\njam operasional',
-                      style: GlobalHelper.getTextTheme(
-                        context,
-                        appTextStyle: AppTextStyle.LABEL_SMALL,
-                      )?.copyWith(color: colorScheme.onSurfaceVariant),
-                    ),
-                  ],
-                ),
-              ),
-              _CustomSwitch(
-                isActive: state.acceptPreorder,
-                onChanged: () => context
-                    .read<MerchantOperationalHoursBloc>()
-                    .add(MerchantOperationalHoursEventPreorderToggled()),
-              ),
-            ],
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 16),
-            child: Divider(height: 1, color: colorScheme.outlineVariant),
-          ),
-          Row(
-            children: [
-              Container(
-                width: 40,
-                height: 40,
-                decoration: BoxDecoration(
-                  color: const Color(0xFFFFF7ED),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: const Icon(
-                  Icons.access_time,
-                  color: Color(0xFFF97316),
-                  size: 20,
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Tutup Otomatis saat di luar jam operasional',
-                      style: GlobalHelper.getTextTheme(
-                        context,
-                        appTextStyle: AppTextStyle.BODY_SMALL,
-                      )?.copyWith(fontWeight: FontWeight.bold),
-                    ),
-                    const SizedBox(height: 2),
-                    Text(
-                      'Toko akan otomatis berubah menjadi tutup\ndi luar jam operasional',
-                      style: GlobalHelper.getTextTheme(
-                        context,
-                        appTextStyle: AppTextStyle.LABEL_SMALL,
-                      )?.copyWith(color: colorScheme.onSurfaceVariant),
-                    ),
-                  ],
-                ),
-              ),
-              _CustomSwitch(
-                isActive: state.autoClose,
-                onChanged: () => context
-                    .read<MerchantOperationalHoursBloc>()
-                    .add(MerchantOperationalHoursEventAutoCloseToggled()),
-              ),
-            ],
-          ),
-        ],
       ),
     );
   }
