@@ -8,7 +8,7 @@ import 'package:warunk/app/features/merchant/presentation/ship_order/merchant_sh
 import 'package:warunk/core/dependency/dependency.dart';
 import 'package:warunk/core/helper/dialog_helper.dart';
 import 'package:warunk/core/widgets/loading_app_widget.dart';
-import 'package:warunk/theme/app_colors.dart';
+import 'package:warunk/core/helper/global_helper.dart';
 import 'package:warunk/core/widgets/custom_dotted_divider.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -35,51 +35,50 @@ class MerchantDetailOrderScreen extends StatelessWidget {
           }
         },
         builder: (context, state) {
-          return const _MerchantDetailOrderView();
+          return Scaffold(
+            appBar: _buildAppBar(context),
+            body: _bodyBuild(context),
+            bottomNavigationBar: (state.order != null && !state.isLoading)
+                ? _buildBottomActions(context, state.order!)
+                : null,
+          );
         },
       ),
     );
   }
-}
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Main view
-// ─────────────────────────────────────────────────────────────────────────────
-class _MerchantDetailOrderView extends StatelessWidget {
-  const _MerchantDetailOrderView();
+  Widget _bodyBuild(BuildContext context) {
+    final state = context.watch<MerchantDetailOrderBloc>().state;
+    return SafeArea(
+      child: Stack(
+        children: [
+          _bodyLayout(context),
+          (state.isLoading) ? const LoadingAppWidget() : const SizedBox(),
+        ],
+      ),
+    );
+  }
 
-  @override
-  Widget build(BuildContext context) {
+  Widget _bodyLayout(BuildContext context) {
     final state = context.watch<MerchantDetailOrderBloc>().state;
     final order = state.order;
 
-    return Scaffold(
-      backgroundColor: AppColors.background,
-      appBar: _buildAppBar(context),
-      body: Stack(
+    if (order == null) return const SizedBox();
+
+    return SingleChildScrollView(
+      padding: const EdgeInsets.fromLTRB(20, 8, 20, 32),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          if (order != null)
-            SingleChildScrollView(
-              padding: const EdgeInsets.fromLTRB(20, 8, 20, 32),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  _HeaderCard(order: order),
-                  const SizedBox(height: 16),
-                  _MainCard(order: order),
-                  const SizedBox(height: 16),
-                  _PaymentCard(order: order),
-                  const SizedBox(height: 16),
-                  _CatatanCard(order: order),
-                ],
-              ),
-            ),
-          if (state.isLoading) const LoadingAppWidget(),
+          _headerCard(context, order),
+          const SizedBox(height: 16),
+          _mainCard(context, order),
+          const SizedBox(height: 16),
+          _paymentCard(context, order),
+          const SizedBox(height: 16),
+          _catatanCard(context, order),
         ],
       ),
-      bottomNavigationBar: (order != null && !state.isLoading)
-          ? _buildBottomActions(context, order)
-          : null,
     );
   }
 
@@ -98,7 +97,7 @@ class _MerchantDetailOrderView extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: GlobalHelper.getColorSchema(context).surface,
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.05),
@@ -114,17 +113,19 @@ class _MerchantDetailOrderView extends StatelessWidget {
               onPressed: () => _showRejectDialog(context),
               style: OutlinedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(vertical: 14),
-                side: const BorderSide(color: Colors.red),
+                side: BorderSide(color: GlobalHelper.getColorSchema(context).error),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
               ),
-              child: const Text(
+              child: Text(
                 'Tolak',
-                style: TextStyle(
-                  fontSize: 14,
+                style: GlobalHelper.getTextTheme(
+                  context,
+                  appTextStyle: AppTextStyle.BODY_SMALL,
+                )?.copyWith(
                   fontWeight: FontWeight.bold,
-                  color: Colors.red,
+                  color: GlobalHelper.getColorSchema(context).error,
                 ),
               ),
             ),
@@ -139,17 +140,19 @@ class _MerchantDetailOrderView extends StatelessWidget {
               },
               style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(vertical: 14),
-                backgroundColor: AppColors.primary,
+                backgroundColor: GlobalHelper.getColorSchema(context).primary,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
               ),
-              child: const Text(
+              child: Text(
                 'Terima',
-                style: TextStyle(
-                  fontSize: 14,
+                style: GlobalHelper.getTextTheme(
+                  context,
+                  appTextStyle: AppTextStyle.BODY_SMALL,
+                )?.copyWith(
                   fontWeight: FontWeight.bold,
-                  color: AppColors.white,
+                  color: GlobalHelper.getColorSchema(context).onPrimary,
                 ),
               ),
             ),
@@ -163,7 +166,7 @@ class _MerchantDetailOrderView extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: GlobalHelper.getColorSchema(context).surface,
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.05),
@@ -176,26 +179,28 @@ class _MerchantDetailOrderView extends StatelessWidget {
         onPressed: () async {
           final result = await navigatorKey.currentState?.push(
             MaterialPageRoute(
-              builder: (context) => MerchantShipOrderScreen(orderId: order.id!),
+              builder: (context) => MerchantShipOrderScreen(orderId: order.id),
             ),
           );
           if (result == true && context.mounted) {
-            context.read<MerchantDetailOrderBloc>().add(MerchantDetailOrderEventFetchStarted(order.id!));
+            context.read<MerchantDetailOrderBloc>().add(MerchantDetailOrderEventFetchStarted(order.id));
           }
         },
         style: ElevatedButton.styleFrom(
           padding: const EdgeInsets.symmetric(vertical: 14),
-          backgroundColor: AppColors.primary,
+          backgroundColor: GlobalHelper.getColorSchema(context).primary,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
           ),
         ),
-        child: const Text(
+        child: Text(
           'Kirim Pesanan',
-          style: TextStyle(
-            fontSize: 14,
+          style: GlobalHelper.getTextTheme(
+            context,
+            appTextStyle: AppTextStyle.BODY_SMALL,
+          )?.copyWith(
             fontWeight: FontWeight.bold,
-            color: AppColors.white,
+            color: GlobalHelper.getColorSchema(context).onPrimary,
           ),
         ),
       ),
@@ -206,7 +211,7 @@ class _MerchantDetailOrderView extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: GlobalHelper.getColorSchema(context).surface,
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.05),
@@ -223,17 +228,19 @@ class _MerchantDetailOrderView extends StatelessWidget {
         },
         style: ElevatedButton.styleFrom(
           padding: const EdgeInsets.symmetric(vertical: 14),
-          backgroundColor: AppColors.primary,
+          backgroundColor: GlobalHelper.getColorSchema(context).primary,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
           ),
         ),
-        child: const Text(
+        child: Text(
           'Pesanan Diterima',
-          style: TextStyle(
-            fontSize: 14,
+          style: GlobalHelper.getTextTheme(
+            context,
+            appTextStyle: AppTextStyle.BODY_SMALL,
+          )?.copyWith(
             fontWeight: FontWeight.bold,
-            color: AppColors.white,
+            color: GlobalHelper.getColorSchema(context).onPrimary,
           ),
         ),
       ),
@@ -270,8 +277,8 @@ class _MerchantDetailOrderView extends StatelessWidget {
                   );
                 }
               },
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-              child: const Text('Tolak', style: TextStyle(color: Colors.white)),
+              style: ElevatedButton.styleFrom(backgroundColor: GlobalHelper.getColorSchema(context).error),
+              child: Text('Tolak', style: TextStyle(color: GlobalHelper.getColorSchema(context).onError)),
             ),
           ],
         );
@@ -279,49 +286,13 @@ class _MerchantDetailOrderView extends StatelessWidget {
     );
   }
 
-}
+  AppBar _buildAppBar(BuildContext context) {
+    return AppBar(
+      title: const Text('Detail Order'),
+    );
+  }
 
-AppBar _buildAppBar(BuildContext context) {
-  return AppBar(
-    backgroundColor: AppColors.background,
-    elevation: 0,
-    centerTitle: true,
-    leading: GestureDetector(
-      onTap: () => navigatorKey.currentState?.pop(),
-      child: Container(
-        margin: const EdgeInsets.all(10),
-        decoration: BoxDecoration(
-          color: AppColors.white,
-          shape: BoxShape.circle,
-          border: Border.all(color: AppColors.greyBorder),
-        ),
-        child: const Icon(
-          Icons.arrow_back,
-          color: AppColors.textDark,
-          size: 18,
-        ),
-      ),
-    ),
-    title: const Text(
-      'Detail Order',
-      style: TextStyle(
-        fontSize: 16,
-        fontWeight: FontWeight.bold,
-        color: AppColors.textDark,
-      ),
-    ),
-  );
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// Header Card
-// ─────────────────────────────────────────────────────────────────────────────
-class _HeaderCard extends StatelessWidget {
-  const _HeaderCard({required this.order});
-  final MerchantOrderEntity order;
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _headerCard(BuildContext context, MerchantOrderEntity order) {
     String formattedDate = '';
     if (order.createdAt != null) {
       try {
@@ -335,7 +306,7 @@ class _HeaderCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: GlobalHelper.getColorSchema(context).surface,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
@@ -348,9 +319,14 @@ class _HeaderCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             'Order ID',
-            style: TextStyle(fontSize: 12, color: AppColors.greyText),
+            style: GlobalHelper.getTextTheme(
+              context,
+              appTextStyle: AppTextStyle.BODY_SMALL,
+            )?.copyWith(
+              color: GlobalHelper.getColorSchema(context).onSurfaceVariant,
+            ),
           ),
           const SizedBox(height: 4),
           Row(
@@ -358,10 +334,12 @@ class _HeaderCard extends StatelessWidget {
               Expanded(
                 child: Text(
                   order.invoiceNumber ?? order.id,
-                  style: const TextStyle(
-                    fontSize: 16,
+                  style: GlobalHelper.getTextTheme(
+                    context,
+                    appTextStyle: AppTextStyle.TITLE_MEDIUM,
+                  )?.copyWith(
                     fontWeight: FontWeight.bold,
-                    color: AppColors.textDark,
+                    color: GlobalHelper.getColorSchema(context).onSurface,
                   ),
                 ),
               ),
@@ -376,10 +354,12 @@ class _HeaderCard extends StatelessWidget {
                 ),
                 child: Text(
                   order.statusLabel ?? order.status ?? 'Baru',
-                  style: const TextStyle(
-                    fontSize: 12,
+                  style: GlobalHelper.getTextTheme(
+                    context,
+                    appTextStyle: AppTextStyle.LABEL_SMALL,
+                  )?.copyWith(
                     fontWeight: FontWeight.w700,
-                    color: Color(0xFFF59E0B), // yellow text
+                    color: const Color(0xFFF59E0B), // yellow text
                   ),
                 ),
               ),
@@ -388,32 +368,28 @@ class _HeaderCard extends StatelessWidget {
           const SizedBox(height: 4),
           Text(
             formattedDate,
-            style: const TextStyle(fontSize: 12, color: AppColors.greyText),
+            style: GlobalHelper.getTextTheme(
+              context,
+              appTextStyle: AppTextStyle.BODY_SMALL,
+            )?.copyWith(
+              color: GlobalHelper.getColorSchema(context).onSurfaceVariant,
+            ),
           ),
         ],
       ),
     );
   }
-}
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Main Card (Customer, Address, Products, Total)
-// ─────────────────────────────────────────────────────────────────────────────
-class _MainCard extends StatelessWidget {
-  const _MainCard({required this.order});
-  final MerchantOrderEntity order;
+  Widget _mainCard(BuildContext context, MerchantOrderEntity order) {
+    final currency = NumberFormat.currency(
+      locale: 'id',
+      symbol: 'Rp',
+      decimalDigits: 0,
+    );
 
-  static final _currency = NumberFormat.currency(
-    locale: 'id',
-    symbol: 'Rp',
-    decimalDigits: 0,
-  );
-
-  @override
-  Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: GlobalHelper.getColorSchema(context).surface,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
@@ -432,12 +408,14 @@ class _MainCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
+                Text(
                   'Customer',
-                  style: TextStyle(
-                    fontSize: 14,
+                  style: GlobalHelper.getTextTheme(
+                    context,
+                    appTextStyle: AppTextStyle.BODY_MEDIUM,
+                  )?.copyWith(
                     fontWeight: FontWeight.bold,
-                    color: AppColors.textDark,
+                    color: GlobalHelper.getColorSchema(context).onSurface,
                   ),
                 ),
                 const SizedBox(height: 12),
@@ -447,12 +425,12 @@ class _MainCard extends StatelessWidget {
                       width: 40,
                       height: 40,
                       decoration: BoxDecoration(
-                        color: AppColors.primary.withValues(alpha: 0.1),
+                        color: GlobalHelper.getColorSchema(context).primary.withValues(alpha: 0.1),
                         shape: BoxShape.circle,
                       ),
-                      child: const Icon(
+                      child: Icon(
                         Icons.person_outline,
-                        color: AppColors.primary,
+                        color: GlobalHelper.getColorSchema(context).primary,
                         size: 20,
                       ),
                     ),
@@ -465,19 +443,23 @@ class _MainCard extends StatelessWidget {
                             order.customer?.name ??
                                 order.customerAddress?.recipientName ??
                                 'Pelanggan',
-                            style: const TextStyle(
-                              fontSize: 14,
+                            style: GlobalHelper.getTextTheme(
+                              context,
+                              appTextStyle: AppTextStyle.BODY_MEDIUM,
+                            )?.copyWith(
                               fontWeight: FontWeight.bold,
-                              color: AppColors.textDark,
+                              color: GlobalHelper.getColorSchema(context).onSurface,
                             ),
                           ),
                           Text(
                             order.customer?.phone ??
                                 order.customerAddress?.phone ??
                                 '-',
-                            style: const TextStyle(
-                              fontSize: 12,
-                              color: AppColors.greyText,
+                            style: GlobalHelper.getTextTheme(
+                              context,
+                              appTextStyle: AppTextStyle.BODY_SMALL,
+                            )?.copyWith(
+                              color: GlobalHelper.getColorSchema(context).onSurfaceVariant,
                             ),
                           ),
                         ],
@@ -488,7 +470,7 @@ class _MainCard extends StatelessWidget {
               ],
             ),
           ),
-          const Divider(height: 1, color: AppColors.greyBorder),
+          Divider(height: 1, color: GlobalHelper.getColorSchema(context).outlineVariant),
 
           // Alamat Pengiriman Section
           Padding(
@@ -496,12 +478,14 @@ class _MainCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
+                Text(
                   'Alamat Pengiriman',
-                  style: TextStyle(
-                    fontSize: 14,
+                  style: GlobalHelper.getTextTheme(
+                    context,
+                    appTextStyle: AppTextStyle.BODY_MEDIUM,
+                  )?.copyWith(
                     fontWeight: FontWeight.bold,
-                    color: AppColors.textDark,
+                    color: GlobalHelper.getColorSchema(context).onSurface,
                   ),
                 ),
                 const SizedBox(height: 12),
@@ -512,12 +496,12 @@ class _MainCard extends StatelessWidget {
                       width: 40,
                       height: 40,
                       decoration: BoxDecoration(
-                        color: AppColors.primary.withValues(alpha: 0.1),
+                        color: GlobalHelper.getColorSchema(context).primary.withValues(alpha: 0.1),
                         shape: BoxShape.circle,
                       ),
-                      child: const Icon(
+                      child: Icon(
                         Icons.location_on_outlined,
-                        color: AppColors.primary,
+                        color: GlobalHelper.getColorSchema(context).primary,
                         size: 20,
                       ),
                     ),
@@ -525,9 +509,11 @@ class _MainCard extends StatelessWidget {
                     Expanded(
                       child: Text(
                         order.customerAddress?.address ?? '-',
-                        style: const TextStyle(
-                          fontSize: 12,
-                          color: AppColors.greyText,
+                        style: GlobalHelper.getTextTheme(
+                          context,
+                          appTextStyle: AppTextStyle.BODY_SMALL,
+                        )?.copyWith(
+                          color: GlobalHelper.getColorSchema(context).onSurfaceVariant,
                           height: 1.4,
                         ),
                       ),
@@ -536,12 +522,14 @@ class _MainCard extends StatelessWidget {
                       onTap: () => context.read<MerchantDetailOrderBloc>().add(
                         MerchantDetailOrderEventMapsTapped(),
                       ),
-                      child: const Text(
+                      child: Text(
                         'Lihat di Maps',
-                        style: TextStyle(
-                          fontSize: 12,
+                        style: GlobalHelper.getTextTheme(
+                          context,
+                          appTextStyle: AppTextStyle.BODY_SMALL,
+                        )?.copyWith(
                           fontWeight: FontWeight.bold,
-                          color: AppColors.primary,
+                          color: GlobalHelper.getColorSchema(context).primary,
                         ),
                       ),
                     ),
@@ -550,7 +538,7 @@ class _MainCard extends StatelessWidget {
               ],
             ),
           ),
-          const Divider(height: 1, color: AppColors.greyBorder),
+          Divider(height: 1, color: GlobalHelper.getColorSchema(context).outlineVariant),
 
           // Produk Section
           Padding(
@@ -558,12 +546,14 @@ class _MainCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
+                Text(
                   'Produk',
-                  style: TextStyle(
-                    fontSize: 14,
+                  style: GlobalHelper.getTextTheme(
+                    context,
+                    appTextStyle: AppTextStyle.BODY_MEDIUM,
+                  )?.copyWith(
                     fontWeight: FontWeight.bold,
-                    color: AppColors.textDark,
+                    color: GlobalHelper.getColorSchema(context).onSurface,
                   ),
                 ),
                 const SizedBox(height: 12),
@@ -576,7 +566,7 @@ class _MainCard extends StatelessWidget {
                           width: 44,
                           height: 44,
                           decoration: BoxDecoration(
-                            color: AppColors.primary.withValues(alpha: 0.1),
+                            color: GlobalHelper.getColorSchema(context).primary.withValues(alpha: 0.1),
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: const Center(
@@ -587,29 +577,35 @@ class _MainCard extends StatelessWidget {
                         Expanded(
                           child: Text(
                             item.productName ?? '-',
-                            style: const TextStyle(
-                              fontSize: 13,
+                            style: GlobalHelper.getTextTheme(
+                              context,
+                              appTextStyle: AppTextStyle.BODY_SMALL,
+                            )?.copyWith(
                               fontWeight: FontWeight.bold,
-                              color: AppColors.textDark,
+                              color: GlobalHelper.getColorSchema(context).onSurface,
                             ),
                           ),
                         ),
                         Text(
                           '${item.quantity ?? 1}x',
-                          style: const TextStyle(
-                            fontSize: 13,
-                            color: AppColors.greyText,
+                          style: GlobalHelper.getTextTheme(
+                            context,
+                            appTextStyle: AppTextStyle.BODY_SMALL,
+                          )?.copyWith(
+                            color: GlobalHelper.getColorSchema(context).onSurfaceVariant,
                           ),
                         ),
                         const SizedBox(width: 16),
                         SizedBox(
                           width: 70,
                           child: Text(
-                            _currency.format(item.total ?? 0),
+                            currency.format(item.total ?? 0),
                             textAlign: TextAlign.right,
-                            style: const TextStyle(
-                              fontSize: 13,
-                              color: AppColors.greyText,
+                            style: GlobalHelper.getTextTheme(
+                              context,
+                              appTextStyle: AppTextStyle.BODY_SMALL,
+                            )?.copyWith(
+                              color: GlobalHelper.getColorSchema(context).onSurfaceVariant,
                             ),
                           ),
                         ),
@@ -617,23 +613,26 @@ class _MainCard extends StatelessWidget {
                     ),
                   ),
                 ),
-                const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 8),
-                  child: CustomDottedDivider(color: AppColors.greyBorder),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  child: CustomDottedDivider(color: GlobalHelper.getColorSchema(context).outlineVariant),
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text(
+                    Text(
                       'Subtotal',
-                      style: TextStyle(fontSize: 13, color: AppColors.greyText),
+                      style: GlobalHelper.getTextTheme(
+                        context,
+                        appTextStyle: AppTextStyle.BODY_SMALL,
+                      )?.copyWith(color: GlobalHelper.getColorSchema(context).onSurfaceVariant),
                     ),
                     Text(
-                      _currency.format(order.subtotal ?? 0),
-                      style: const TextStyle(
-                        fontSize: 13,
-                        color: AppColors.greyText,
-                      ),
+                      currency.format(order.subtotal ?? 0),
+                      style: GlobalHelper.getTextTheme(
+                        context,
+                        appTextStyle: AppTextStyle.BODY_SMALL,
+                      )?.copyWith(color: GlobalHelper.getColorSchema(context).onSurfaceVariant),
                     ),
                   ],
                 ),
@@ -643,17 +642,17 @@ class _MainCard extends StatelessWidget {
                   children: [
                     Text(
                       'Ongkir (${order.shipping?.courier ?? order.shipping?.type ?? 'Toko'})',
-                      style: const TextStyle(
-                        fontSize: 13,
-                        color: AppColors.greyText,
-                      ),
+                      style: GlobalHelper.getTextTheme(
+                        context,
+                        appTextStyle: AppTextStyle.BODY_SMALL,
+                      )?.copyWith(color: GlobalHelper.getColorSchema(context).onSurfaceVariant),
                     ),
                     Text(
-                      _currency.format(order.shippingCost ?? 0),
-                      style: const TextStyle(
-                        fontSize: 13,
-                        color: AppColors.greyText,
-                      ),
+                      currency.format(order.shippingCost ?? 0),
+                      style: GlobalHelper.getTextTheme(
+                        context,
+                        appTextStyle: AppTextStyle.BODY_SMALL,
+                      )?.copyWith(color: GlobalHelper.getColorSchema(context).onSurfaceVariant),
                     ),
                   ],
                 ),
@@ -662,44 +661,48 @@ class _MainCard extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text(
+                      Text(
                         'Biaya Layanan',
-                        style: TextStyle(
-                          fontSize: 13,
-                          color: AppColors.greyText,
-                        ),
+                        style: GlobalHelper.getTextTheme(
+                          context,
+                          appTextStyle: AppTextStyle.BODY_SMALL,
+                        )?.copyWith(color: GlobalHelper.getColorSchema(context).onSurfaceVariant),
                       ),
                       Text(
-                        _currency.format(order.serviceFee ?? 0),
-                        style: const TextStyle(
-                          fontSize: 13,
-                          color: AppColors.greyText,
-                        ),
+                        currency.format(order.serviceFee ?? 0),
+                        style: GlobalHelper.getTextTheme(
+                          context,
+                          appTextStyle: AppTextStyle.BODY_SMALL,
+                        )?.copyWith(color: GlobalHelper.getColorSchema(context).onSurfaceVariant),
                       ),
                     ],
                   ),
                 ],
-                const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 12),
-                  child: CustomDottedDivider(color: AppColors.greyBorder),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  child: CustomDottedDivider(color: GlobalHelper.getColorSchema(context).outlineVariant),
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text(
+                    Text(
                       'Total',
-                      style: TextStyle(
-                        fontSize: 14,
+                      style: GlobalHelper.getTextTheme(
+                        context,
+                        appTextStyle: AppTextStyle.BODY_MEDIUM,
+                      )?.copyWith(
                         fontWeight: FontWeight.bold,
-                        color: AppColors.textDark,
+                        color: GlobalHelper.getColorSchema(context).onSurface,
                       ),
                     ),
                     Text(
-                      _currency.format(order.total ?? 0),
-                      style: const TextStyle(
-                        fontSize: 16,
+                      currency.format(order.total ?? 0),
+                      style: GlobalHelper.getTextTheme(
+                        context,
+                        appTextStyle: AppTextStyle.TITLE_MEDIUM,
+                      )?.copyWith(
                         fontWeight: FontWeight.bold,
-                        color: AppColors.primary,
+                        color: GlobalHelper.getColorSchema(context).primary,
                       ),
                     ),
                   ],
@@ -711,21 +714,12 @@ class _MainCard extends StatelessWidget {
       ),
     );
   }
-}
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Payment Card
-// ─────────────────────────────────────────────────────────────────────────────
-class _PaymentCard extends StatelessWidget {
-  const _PaymentCard({required this.order});
-  final MerchantOrderEntity order;
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _paymentCard(BuildContext context, MerchantOrderEntity order) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: GlobalHelper.getColorSchema(context).surface,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
@@ -738,12 +732,14 @@ class _PaymentCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             'Pembayaran',
-            style: TextStyle(
-              fontSize: 14,
+            style: GlobalHelper.getTextTheme(
+              context,
+              appTextStyle: AppTextStyle.BODY_MEDIUM,
+            )?.copyWith(
               fontWeight: FontWeight.bold,
-              color: AppColors.textDark,
+              color: GlobalHelper.getColorSchema(context).onSurface,
             ),
           ),
           const SizedBox(height: 12),
@@ -753,12 +749,12 @@ class _PaymentCard extends StatelessWidget {
                 width: 40,
                 height: 40,
                 decoration: BoxDecoration(
-                  color: AppColors.primary.withValues(alpha: 0.1),
+                  color: GlobalHelper.getColorSchema(context).primary.withValues(alpha: 0.1),
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(
+                child: Icon(
                   Icons.account_balance_outlined,
-                  color: AppColors.primary,
+                  color: GlobalHelper.getColorSchema(context).primary,
                   size: 20,
                 ),
               ),
@@ -767,16 +763,21 @@ class _PaymentCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
+                    Text(
                       'Metode',
-                      style: TextStyle(fontSize: 11, color: AppColors.greyText),
+                      style: GlobalHelper.getTextTheme(
+                        context,
+                        appTextStyle: AppTextStyle.LABEL_SMALL,
+                      )?.copyWith(color: GlobalHelper.getColorSchema(context).onSurfaceVariant),
                     ),
                     Text(
                       order.merchantAccount?.bankName ?? 'Transfer Bank',
-                      style: const TextStyle(
-                        fontSize: 13,
+                      style: GlobalHelper.getTextTheme(
+                        context,
+                        appTextStyle: AppTextStyle.BODY_SMALL,
+                      )?.copyWith(
                         fontWeight: FontWeight.bold,
-                        color: AppColors.textDark,
+                        color: GlobalHelper.getColorSchema(context).onSurface,
                       ),
                     ),
                   ],
@@ -790,24 +791,26 @@ class _PaymentCard extends StatelessWidget {
                 decoration: BoxDecoration(
                   color:
                       order.paidAt != null ||
-                          order.paidAmount != null && order.paidAmount! > 0
+                          (order.paidAmount != null && order.paidAmount! > 0)
                       ? const Color(0xFFD1FAE5) // light green bg
                       : const Color(0xFFFEF2F2), // light red bg
                   borderRadius: BorderRadius.circular(6),
                 ),
                 child: Text(
                   order.paidAt != null ||
-                          order.paidAmount != null && order.paidAmount! > 0
+                          (order.paidAmount != null && order.paidAmount! > 0)
                       ? 'Sudah Dibayar'
                       : 'Belum Dibayar',
-                  style: TextStyle(
-                    fontSize: 12,
+                  style: GlobalHelper.getTextTheme(
+                    context,
+                    appTextStyle: AppTextStyle.LABEL_SMALL,
+                  )?.copyWith(
                     fontWeight: FontWeight.w600,
                     color:
                         order.paidAt != null ||
-                            order.paidAmount != null && order.paidAmount! > 0
-                        ? AppColors.primary
-                        : Colors.red,
+                            (order.paidAmount != null && order.paidAmount! > 0)
+                        ? GlobalHelper.getColorSchema(context).primary
+                        : GlobalHelper.getColorSchema(context).error,
                   ),
                 ),
               ),
@@ -817,24 +820,16 @@ class _PaymentCard extends StatelessWidget {
       ),
     );
   }
-}
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Catatan Card
-// ─────────────────────────────────────────────────────────────────────────────
-class _CatatanCard extends StatelessWidget {
-  const _CatatanCard({required this.order});
-  final MerchantOrderEntity order;
-
-  @override
-  Widget build(BuildContext context) {
-    if (order.notes == null || order.notes!.isEmpty)
+  Widget _catatanCard(BuildContext context, MerchantOrderEntity order) {
+    if (order.notes == null || order.notes!.isEmpty) {
       return const SizedBox.shrink();
+    }
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: GlobalHelper.getColorSchema(context).surface,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
@@ -847,21 +842,27 @@ class _CatatanCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             'Catatan Customer',
-            style: TextStyle(
-              fontSize: 14,
+            style: GlobalHelper.getTextTheme(
+              context,
+              appTextStyle: AppTextStyle.BODY_MEDIUM,
+            )?.copyWith(
               fontWeight: FontWeight.bold,
-              color: AppColors.textDark,
+              color: GlobalHelper.getColorSchema(context).onSurface,
             ),
           ),
           const SizedBox(height: 8),
           Text(
             order.notes!,
-            style: const TextStyle(fontSize: 13, color: AppColors.greyText),
+            style: GlobalHelper.getTextTheme(
+              context,
+              appTextStyle: AppTextStyle.BODY_SMALL,
+            )?.copyWith(color: GlobalHelper.getColorSchema(context).onSurfaceVariant),
           ),
         ],
       ),
     );
   }
 }
+
