@@ -8,6 +8,7 @@ const PREF_PHONE = 'pref-phone';
 const PREF_PHOTO = 'pref-photo';
 
 const MERCHANT_ORDERS = '/api/seller/orders';
+const MERCHANT_PROMOTIONS = '/api/seller/promotions';
 
 const STATUS_WAITING_PAYMENT_CONFIRMATION = 'waiting_payment_confirmation';
 const STATUS_PROCESSING = 'processing';

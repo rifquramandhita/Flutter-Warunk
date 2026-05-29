@@ -15,6 +15,7 @@ This file serves as the main reference for AI agents and developers working on t
 - **Routing/Navigation**: Navigation is handled globally using the `navigatorKey` variable located in `lib/main.dart`. 
   - **DILARANG KERAS** menggunakan `Navigator.push(context, ...)`, `Navigator.pop(context)`, atau `Navigator.of(context)`. 
   - **WAJIB** menggunakan `navigatorKey.currentState?.push(...)` atau `navigatorKey.currentState?.pop()`.
+  - **PENGECUALIAN**: Navigasi kembali dari tombol back bawaan `AppBar` diperbolehkan berjalan secara otomatis (secara internal Flutter memanggil `Navigator.maybePop()`), sehingga Anda **TIDAK PERLU** membuat *custom leading widget* hanya untuk memanggil `navigatorKey.currentState?.pop()`.
 
 ## 3. Dependency Injection (DI)
 - **Tool**: `get_it`.
@@ -29,6 +30,7 @@ This file serves as the main reference for AI agents and developers working on t
 - **Reusable Widgets**: Widgets that are frequently used across different screens are stored in the `lib/core/widgets/` directory. Always check this folder before creating a new general-purpose widget.
 - **Dialogs**: Any pop-up dialogs or modals must be displayed using the helper functions provided in `lib/core/helper/dialog_helper.dart`.
 - **AppBar**: Untuk pembuatan `AppBar`, cukup gunakan format sederhana bawaan Flutter tanpa kustomisasi rumit. Contoh: `AppBar(title: Text('Judul'))`.
+  - **DILARANG KERAS** melakukan *override* pada properti `leading` dengan widget kustom (seperti `GestureDetector` dan `Icon(Icons.arrow_back)`) hanya untuk memberikan tombol *back*. Biarkan Flutter memunculkan tombol *back* secara otomatis (default).
 
 ## 5. Constants & API
 - **URLs & Paths**: All API endpoint paths and static URL configurations must be stored in `lib/core/constants/constant.dart`.

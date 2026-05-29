@@ -43,6 +43,7 @@ import 'package:warunk/app/features/merchant/presentation/operational_hours/bloc
 import 'package:warunk/app/features/merchant/presentation/shipping/bloc/merchant_shipping_bloc.dart';
 import 'package:warunk/app/features/merchant/presentation/order/bloc/merchant_order_bloc.dart';
 import 'package:warunk/app/features/merchant/presentation/detail_order/bloc/merchant_detail_order_bloc.dart';
+import 'package:warunk/app/features/merchant/presentation/promotion/bloc/merchant_promo_bloc.dart';
 import 'package:warunk/app/features/merchant/data/source/merchant_order_api_service.dart';
 import 'package:warunk/app/features/merchant/domain/repository/merchant_order_repository.dart';
 import 'package:warunk/app/features/merchant/data/repository/merchant_order_repository_impl.dart';
@@ -52,6 +53,10 @@ import 'package:warunk/app/features/merchant/domain/use_case/merchant_order_acce
 import 'package:warunk/app/features/merchant/domain/use_case/merchant_order_ship_use_case.dart';
 import 'package:warunk/app/features/merchant/domain/use_case/merchant_order_received_use_case.dart';
 import 'package:warunk/app/features/merchant/domain/use_case/merchant_order_reject_use_case.dart';
+import 'package:warunk/app/features/merchant/data/source/merchant_promotion_api_service.dart';
+import 'package:warunk/app/features/merchant/domain/repository/merchant_promotion_repository.dart';
+import 'package:warunk/app/features/merchant/data/repository/merchant_promotion_repository_impl.dart';
+import 'package:warunk/app/features/merchant/domain/use_case/merchant_promotion_add_use_case.dart';
 import 'package:dio/dio.dart';
 import 'package:warunk/core/network/app_interceptor.dart';
 import 'package:warunk/main.dart';
@@ -80,6 +85,7 @@ Future<void> initDependency() async {
   sl.registerLazySingleton(() => MerchantProductApiService(dio));
   sl.registerLazySingleton(() => MerchantMerchantApiService(dio));
   sl.registerLazySingleton(() => MerchantOrderApiService(dio));
+  sl.registerLazySingleton(() => MerchantPromotionApiService(dio));
 
   //repository
   sl.registerLazySingleton(() => AuthRepository(api: sl()));
@@ -91,6 +97,9 @@ Future<void> initDependency() async {
   );
   sl.registerLazySingleton<MerchantOrderRepository>(
     () => MerchantOrderRepositoryImpl(apiService: sl()),
+  );
+  sl.registerLazySingleton<MerchantPromotionRepository>(
+    () => MerchantPromotionRepositoryImpl(apiService: sl()),
   );
 
   //usecase
@@ -124,6 +133,7 @@ Future<void> initDependency() async {
   sl.registerLazySingleton(() => MerchantOrderShipUseCase(sl()));
   sl.registerLazySingleton(() => MerchantOrderReceivedUseCase(sl()));
   sl.registerLazySingleton(() => MerchantOrderRejectUseCase(sl()));
+  sl.registerLazySingleton(() => MerchantPromotionAddUseCase(repository: sl()));
 
   //bloc
   sl.registerLazySingleton(() => AuthBloc());
@@ -165,6 +175,7 @@ Future<void> initDependency() async {
       receivedUseCase: sl(),
     ),
   );
+  sl.registerFactory(() => MerchantPromoBloc(useCase: sl()));
   sl.registerFactoryParam<MerchantShipOrderBloc, String, void>(
     (orderId, _) => MerchantShipOrderBloc(
       shipUseCase: sl(),

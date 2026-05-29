@@ -1,231 +1,194 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
+import 'package:warunk/app/features/merchant/domain/entity/merchant_promotion.dart';
 import 'package:warunk/app/features/merchant/presentation/input_promo/merchant_input_promo_screen.dart';
 import 'package:warunk/app/features/merchant/presentation/promotion/bloc/merchant_promo_bloc.dart';
-import 'package:warunk/theme/app_colors.dart';
+import 'package:warunk/core/dependency/dependency.dart';
+import 'package:warunk/core/helper/global_helper.dart';
+import 'package:warunk/core/helper/dialog_helper.dart';
+import 'package:warunk/core/widgets/loading_app_widget.dart';
+import 'package:warunk/main.dart';
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Entry point — provides BLoC
-// ─────────────────────────────────────────────────────────────────────────────
 class MerchantPromoScreen extends StatelessWidget {
   const MerchantPromoScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => MerchantPromoBloc(),
-      child: const _MerchantPromoView(),
+      create: (context) => sl<MerchantPromoBloc>()..add(MerchantPromoEventFetched()),
+      child: BlocConsumer<MerchantPromoBloc, MerchantPromoState>(
+        listener: (context, state) {
+          if (state.errorMessage != null) {
+            DialogHelper.showErrorSnackBar(
+              context: context,
+              text: state.errorMessage!,
+            );
+          }
+        },
+        builder: (context, state) {
+          return Scaffold(
+            backgroundColor: GlobalHelper.getColorSchema(context).surface,
+            appBar: _buildAppBar(context),
+            body: _bodyBuild(context),
+            floatingActionButton: _buildFab(context),
+          );
+        },
+      ),
     );
   }
-}
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Main view
-// ─────────────────────────────────────────────────────────────────────────────
-class _MerchantPromoView extends StatelessWidget {
-  const _MerchantPromoView();
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.background,
-      appBar: _buildAppBar(context),
-      body: const Column(
+  Widget _bodyBuild(BuildContext context) {
+    final state = context.watch<MerchantPromoBloc>().state;
+    return SafeArea(
+      child: Stack(
         children: [
-          SizedBox(height: 12),
-          _TabFilter(),
-          SizedBox(height: 12),
-          Expanded(child: _PromoList()),
+          _bodyLayout(context),
+          if (state.isLoading) const LoadingAppWidget(),
         ],
       ),
     );
   }
 
-  AppBar _buildAppBar(BuildContext context) {
-    return AppBar(
-      backgroundColor: AppColors.background,
-      elevation: 0,
-      centerTitle: true,
-      leading: GestureDetector(
-        onTap: () => Navigator.of(context).maybePop(),
-        child: Container(
-          margin: const EdgeInsets.all(10),
-          decoration: BoxDecoration(
-            color: AppColors.white,
-            shape: BoxShape.circle,
-            border: Border.all(color: AppColors.greyBorder),
-          ),
-          child: const Icon(
-            Icons.arrow_back,
-            color: AppColors.textDark,
-            size: 18,
-          ),
-        ),
-      ),
-      title: const Text(
-        'Promo Saya',
-        style: TextStyle(
-          fontSize: 16,
-          fontWeight: FontWeight.bold,
-          color: AppColors.textDark,
-        ),
-      ),
-      actions: [
-        GestureDetector(
-          onTap: () => Navigator.of(context).push(
-            MaterialPageRoute(builder: (_) => const MerchantInputPromoScreen()),
-          ),
-          child: Container(
-            margin: const EdgeInsets.only(right: 16),
-            width: 38,
-            height: 38,
-            decoration: const BoxDecoration(
-              color: AppColors.primary,
-              shape: BoxShape.circle,
-            ),
-            child: const Icon(Icons.add, color: AppColors.white, size: 22),
-          ),
-        ),
+  Widget _bodyLayout(BuildContext context) {
+    return Column(
+      children: [
+        const SizedBox(height: 12),
+        _buildTabFilter(context),
+        const SizedBox(height: 12),
+        Expanded(child: _buildPromoList(context)),
       ],
     );
   }
-}
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Tab Filter
-// ─────────────────────────────────────────────────────────────────────────────
-class _TabFilter extends StatelessWidget {
-  const _TabFilter();
+  PreferredSizeWidget _buildAppBar(BuildContext context) {
+    final colors = GlobalHelper.getColorSchema(context);
+    final textTheme = GlobalHelper.getTextTheme(context, appTextStyle: AppTextStyle.TITLE_MEDIUM);
 
-  static const _labels = ['Aktif', 'Akan Datang', 'Selesai'];
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<MerchantPromoBloc, MerchantPromoState>(
-      builder: (context, state) {
-        return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: Row(
-            children: List.generate(_labels.length, (index) {
-              final isSelected = state.selectedTab == index;
-              return Padding(
-                padding: EdgeInsets.only(
-                  right: index < _labels.length - 1 ? 10 : 0,
-                ),
-                child: GestureDetector(
-                  onTap: () => context.read<MerchantPromoBloc>().add(
-                    MerchantPromoTabChanged(index),
-                  ),
-                  child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 200),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 18,
-                      vertical: 9,
-                    ),
-                    decoration: BoxDecoration(
-                      color: isSelected
-                          ? AppColors.primary.withValues(alpha: 0.13)
-                          : AppColors.white,
-                      borderRadius: BorderRadius.circular(24),
-                      border: Border.all(
-                        color: isSelected
-                            ? AppColors.primary.withValues(alpha: 0.4)
-                            : AppColors.greyBorder,
-                      ),
-                    ),
-                    child: Text(
-                      _labels[index],
-                      style: TextStyle(
-                        fontSize: 13,
-                        fontWeight: isSelected
-                            ? FontWeight.w700
-                            : FontWeight.w500,
-                        color: isSelected
-                            ? AppColors.primary
-                            : AppColors.greyText,
-                      ),
-                    ),
-                  ),
-                ),
-              );
-            }),
-          ),
-        );
-      },
+    return AppBar(
+      backgroundColor: colors.surface,
+      elevation: 0,
+      centerTitle: true,
+      title: Text(
+        'Promo Saya',
+        style: textTheme?.copyWith(fontWeight: FontWeight.bold),
+      ),
     );
   }
-}
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Promo List
-// ─────────────────────────────────────────────────────────────────────────────
-class _PromoList extends StatelessWidget {
-  const _PromoList();
+  Widget _buildTabFilter(BuildContext context) {
+    final state = context.watch<MerchantPromoBloc>().state;
+    final labels = ['Semua', 'Aktif', 'Akan Datang', 'Selesai'];
 
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<MerchantPromoBloc, MerchantPromoState>(
-      builder: (context, state) {
-        final promos = state.filteredPromos;
-
-        if (promos.isEmpty) {
-          return Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  Icons.local_offer_outlined,
-                  size: 64,
-                  color: AppColors.greyText.withValues(alpha: 0.4),
+    return SizedBox(
+      height: 38,
+      child: ListView.separated(
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        itemCount: labels.length,
+        separatorBuilder: (_, _) => const SizedBox(width: 8),
+        itemBuilder: (context, index) {
+          final isSelected = state.selectedTab == index;
+          return GestureDetector(
+            onTap: () => context.read<MerchantPromoBloc>().add(
+              MerchantPromoEventTabChanged(index),
+            ),
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 200),
+              padding: const EdgeInsets.symmetric(horizontal: 18),
+              decoration: BoxDecoration(
+                color: isSelected
+                    ? GlobalHelper.getColorSchema(context).primary.withValues(alpha: 0.13)
+                    : GlobalHelper.getColorSchema(context).surface,
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                  color: isSelected
+                      ? GlobalHelper.getColorSchema(context).primary.withValues(alpha: 0.5)
+                      : GlobalHelper.getColorSchema(context).outlineVariant,
                 ),
-                const SizedBox(height: 16),
-                const Text(
-                  'Belum ada promo',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.greyText,
+              ),
+              child: Center(
+                child: Text(
+                  labels[index],
+                  style: GlobalHelper.getTextTheme(
+                    context,
+                    appTextStyle: AppTextStyle.BODY_SMALL,
+                  )?.copyWith(
+                    fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                    color: isSelected
+                        ? GlobalHelper.getColorSchema(context).primary
+                        : GlobalHelper.getColorSchema(context).onSurfaceVariant,
                   ),
                 ),
-                const SizedBox(height: 6),
-                const Text(
-                  'Tambah promo baru dengan tombol + di atas',
-                  style: TextStyle(fontSize: 13, color: AppColors.greyText),
-                ),
-              ],
+              ),
             ),
           );
-        }
+        },
+      ),
+    );
+  }
 
-        return ListView.separated(
-          padding: const EdgeInsets.fromLTRB(20, 4, 20, 24),
-          itemCount: promos.length,
-          separatorBuilder: (_, _) => const SizedBox(height: 12),
-          itemBuilder: (context, index) {
-            return _PromoCard(promo: promos[index]);
-          },
-        );
+  Widget _buildPromoList(BuildContext context) {
+    final state = context.watch<MerchantPromoBloc>().state;
+    final promos = state.filteredPromos;
+    final colors = GlobalHelper.getColorSchema(context);
+    final textThemeTitle = GlobalHelper.getTextTheme(context, appTextStyle: AppTextStyle.TITLE_MEDIUM);
+    final textThemeBody = GlobalHelper.getTextTheme(context, appTextStyle: AppTextStyle.BODY_SMALL);
+
+    if (promos.isEmpty && !state.isLoading) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.local_offer_outlined,
+              size: 64,
+              color: colors.onSurfaceVariant.withValues(alpha: 0.4),
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'Belum ada promo',
+              style: textThemeTitle?.copyWith(
+                fontWeight: FontWeight.w600,
+                color: colors.onSurfaceVariant,
+              ),
+            ),
+            const SizedBox(height: 6),
+            Text(
+              'Tambah promo baru dengan tombol + di atas',
+              style: textThemeBody?.copyWith(color: colors.onSurfaceVariant),
+            ),
+          ],
+        ),
+      );
+    }
+
+    return ListView.separated(
+      padding: const EdgeInsets.fromLTRB(20, 4, 20, 24),
+      itemCount: promos.length,
+      separatorBuilder: (_, _) => const SizedBox(height: 12),
+      itemBuilder: (context, index) {
+        return _buildPromoCard(context, promos[index]);
       },
     );
   }
-}
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Promo Card
-// ─────────────────────────────────────────────────────────────────────────────
-class _PromoCard extends StatelessWidget {
-  const _PromoCard({required this.promo});
-  final PromoItem promo;
+  Widget _buildPromoCard(BuildContext context, MerchantPromotionEntity promo) {
+    final colors = GlobalHelper.getColorSchema(context);
+    final textThemeTitle = GlobalHelper.getTextTheme(context, appTextStyle: AppTextStyle.TITLE_SMALL);
+    final textThemeValue = GlobalHelper.getTextTheme(context, appTextStyle: AppTextStyle.HEADLINE_MEDIUM);
+    final textThemeMeta = GlobalHelper.getTextTheme(context, appTextStyle: AppTextStyle.LABEL_SMALL);
 
-  @override
-  Widget build(BuildContext context) {
     final (typeLabel, typeBg, typeText) = _typeStyle(promo.type);
-    final valueColor = _valueColor(promo.type);
-    final isPercentage = promo.value.contains('%');
+    final valueColor = _valueColor(promo.type, colors.primary);
+
+    final minPurchaseStr = 'Min. Pembelian Rp${promo.minPurchase}';
+    final dateRangeStr = '${DateFormat('d MMM').format(promo.datetimeStart)} - ${DateFormat('d MMM yyyy').format(promo.datetimeEnd)}';
+    final usedCount = promo.maxUse ?? 0;
 
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: colors.surface,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
@@ -238,67 +201,54 @@ class _PromoCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // ── Top section ──────────────────────────────────────────────────
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 16, 16, 12),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Type badge + title
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    _TypeBadge(label: typeLabel, bg: typeBg, text: typeText),
+                    _buildTypeBadge(context, typeLabel, typeBg, typeText),
                     const SizedBox(width: 10),
                     Expanded(
                       child: Text(
                         promo.title,
-                        style: const TextStyle(
-                          fontSize: 14,
+                        style: textThemeTitle?.copyWith(
                           fontWeight: FontWeight.bold,
-                          color: AppColors.textDark,
+                          color: colors.onSurface,
                         ),
                       ),
                     ),
                   ],
                 ),
                 const SizedBox(height: 12),
-                // Value + meta
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Value (big)
                     Text(
-                      promo.value,
-                      style: TextStyle(
-                        fontSize: isPercentage ? 32 : 26,
+                      promo.discountLabel,
+                      style: textThemeValue?.copyWith(
                         fontWeight: FontWeight.w800,
                         color: valueColor,
                         height: 1.1,
                       ),
                     ),
                     const SizedBox(width: 16),
-                    // Meta info
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          if (promo.minPurchase.isNotEmpty) ...[
+                          if (minPurchaseStr.isNotEmpty) ...[
                             Text(
-                              promo.minPurchase,
-                              style: const TextStyle(
-                                fontSize: 12,
-                                color: AppColors.greyText,
-                              ),
+                              minPurchaseStr,
+                              style: textThemeMeta?.copyWith(color: colors.onSurfaceVariant),
                             ),
                             const SizedBox(height: 2),
                           ],
                           Text(
-                            promo.dateRange,
-                            style: const TextStyle(
-                              fontSize: 12,
-                              color: AppColors.greyText,
-                            ),
+                            dateRangeStr,
+                            style: textThemeMeta?.copyWith(color: colors.onSurfaceVariant),
                           ),
                         ],
                       ),
@@ -308,23 +258,20 @@ class _PromoCard extends StatelessWidget {
               ],
             ),
           ),
-          // ── Divider ──────────────────────────────────────────────────────
-          const Divider(height: 1, color: AppColors.greyBorder),
-          // ── Bottom section: usage + toggle ───────────────────────────────
+          Divider(height: 1, color: colors.outlineVariant),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             child: Row(
               children: [
                 Text(
-                  '${promo.usedCount} digunakan',
-                  style: const TextStyle(
-                    fontSize: 13,
-                    color: AppColors.greyText,
+                  '$usedCount digunakan',
+                  style: textThemeMeta?.copyWith(
                     fontWeight: FontWeight.w500,
+                    color: colors.onSurfaceVariant,
                   ),
                 ),
                 const Spacer(),
-                _PromoToggle(promo: promo),
+                _buildPromoToggle(context, promo),
               ],
             ),
           ),
@@ -333,46 +280,8 @@ class _PromoCard extends StatelessWidget {
     );
   }
 
-  (String, Color, Color) _typeStyle(PromoType type) {
-    return switch (type) {
-      PromoType.diskon => (
-        'DISKON',
-        const Color(0xFFFFF3C4),
-        const Color(0xFFF59E0B),
-      ),
-      PromoType.potongan => (
-        'POTONGAN',
-        const Color(0xFFDCEEFD),
-        const Color(0xFF2563EB),
-      ),
-      PromoType.diskonProduk => (
-        'DISKON PRODUK',
-        const Color(0xFFFFF3C4),
-        const Color(0xFFF59E0B),
-      ),
-    };
-  }
-
-  Color _valueColor(PromoType type) {
-    return switch (type) {
-      PromoType.diskon => const Color(0xFFF59E0B),
-      PromoType.potongan => const Color(0xFF2563EB),
-      PromoType.diskonProduk => const Color(0xFFF59E0B),
-    };
-  }
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// Type Badge
-// ─────────────────────────────────────────────────────────────────────────────
-class _TypeBadge extends StatelessWidget {
-  const _TypeBadge({required this.label, required this.bg, required this.text});
-  final String label;
-  final Color bg;
-  final Color text;
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _buildTypeBadge(BuildContext context, String label, Color bg, Color text) {
+    final textTheme = GlobalHelper.getTextTheme(context, appTextStyle: AppTextStyle.LABEL_SMALL);
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
@@ -381,8 +290,7 @@ class _TypeBadge extends StatelessWidget {
       ),
       child: Text(
         label,
-        style: TextStyle(
-          fontSize: 11,
+        style: textTheme?.copyWith(
           fontWeight: FontWeight.w700,
           color: text,
           letterSpacing: 0.3,
@@ -390,42 +298,34 @@ class _TypeBadge extends StatelessWidget {
       ),
     );
   }
-}
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Animated Toggle Switch
-// ─────────────────────────────────────────────────────────────────────────────
-class _PromoToggle extends StatelessWidget {
-  const _PromoToggle({required this.promo});
-  final PromoItem promo;
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _buildPromoToggle(BuildContext context, MerchantPromotionEntity promo) {
+    final colors = GlobalHelper.getColorSchema(context);
     return GestureDetector(
       onTap: () =>
-          context.read<MerchantPromoBloc>().add(MerchantPromoToggled(promo.id)),
+          context.read<MerchantPromoBloc>().add(MerchantPromoEventToggled(promo.id)),
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 220),
         width: 48,
         height: 28,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(14),
-          color: promo.isActive ? AppColors.primary : AppColors.greyBorder,
+          color: promo.isShow ? colors.primary : colors.outlineVariant,
         ),
         child: Stack(
           children: [
             AnimatedPositioned(
               duration: const Duration(milliseconds: 220),
               curve: Curves.easeInOut,
-              left: promo.isActive ? 22 : 2,
+              left: promo.isShow ? 22 : 2,
               top: 2,
               child: Container(
                 width: 24,
                 height: 24,
-                decoration: const BoxDecoration(
-                  color: AppColors.white,
+                decoration: BoxDecoration(
+                  color: colors.surface,
                   shape: BoxShape.circle,
-                  boxShadow: [
+                  boxShadow: const [
                     BoxShadow(
                       color: Colors.black26,
                       blurRadius: 4,
@@ -439,5 +339,74 @@ class _PromoToggle extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  (String, Color, Color) _typeStyle(String type) {
+    if (type == 'order') {
+      return (
+        'DISKON',
+        const Color(0xFFFFF3C4),
+        const Color(0xFFF59E0B),
+      );
+    } else {
+      return (
+        'POTONGAN',
+        const Color(0xFFDCEEFD),
+        const Color(0xFF2563EB),
+      );
+    }
+  }
+
+  Color _valueColor(String type, Color primaryColor) {
+    if (type == 'order') {
+      return const Color(0xFFF59E0B);
+    } else {
+      return const Color(0xFF2563EB);
+    }
+  }
+
+  Widget _buildFab(BuildContext context) {
+    final colors = GlobalHelper.getColorSchema(context);
+    final textTheme = GlobalHelper.getTextTheme(context, appTextStyle: AppTextStyle.TITLE_SMALL);
+
+    return GestureDetector(
+      onTap: () => _onPressFab(context),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+        decoration: BoxDecoration(
+          color: colors.primary,
+          borderRadius: BorderRadius.circular(30),
+          boxShadow: [
+            BoxShadow(
+              color: colors.primary.withValues(alpha: 0.35),
+              blurRadius: 12,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(Icons.add, color: colors.onPrimary, size: 20),
+            const SizedBox(width: 6),
+            Text(
+              'Tambah Promo',
+              style: textTheme?.copyWith(
+                color: colors.onPrimary,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _onPressFab(BuildContext context) async {
+    final bloc = context.read<MerchantPromoBloc>();
+    await navigatorKey.currentState?.push(
+      MaterialPageRoute(builder: (_) => const MerchantInputPromoScreen()),
+    );
+    bloc.add(MerchantPromoEventFetched());
   }
 }
