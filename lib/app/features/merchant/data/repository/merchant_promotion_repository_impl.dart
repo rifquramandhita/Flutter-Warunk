@@ -6,8 +6,9 @@ import 'package:warunk/core/network/data_state.dart';
 class MerchantPromotionRepositoryImpl implements MerchantPromotionRepository {
   final MerchantPromotionApiService _apiService;
 
-  MerchantPromotionRepositoryImpl({required MerchantPromotionApiService apiService})
-      : _apiService = apiService;
+  MerchantPromotionRepositoryImpl({
+    required MerchantPromotionApiService apiService,
+  }) : _apiService = apiService;
 
   @override
   Future<DataState<List<MerchantPromotionEntity>>> getPromotions() async {
@@ -15,5 +16,40 @@ class MerchantPromotionRepositoryImpl implements MerchantPromotionRepository {
       final data = responseData['promotions'] as List;
       return data.map((e) => MerchantPromotionEntity.fromJson(e)).toList();
     });
+  }
+  @override
+  Future<DataState<MerchantPromotionEntity>> getPromotionById(String id) async {
+    return handleResponse(() => _apiService.getPromotionById(id), (responseData) {
+      return MerchantPromotionEntity.fromJson(responseData['promotion']);
+    });
+  }
+
+  @override
+  Future<DataState<bool>> createPromotion({
+    required MerchantPromotionSendParam request,
+  }) async {
+    return handleResponse(
+      () => _apiService.createPromotion(request.toJson()),
+      (responseData) => true,
+    );
+  }
+
+  @override
+  Future<DataState<bool>> updatePromotion({
+    required String id,
+    required MerchantPromotionSendParam request,
+  }) async {
+    return handleResponse(
+      () => _apiService.updatePromotion(id, request.toJson()),
+      (responseData) => true,
+    );
+  }
+
+  @override
+  Future<DataState> deletePromotion(String id) async {
+    return handleResponse(
+      () => _apiService.deletePromotion(id),
+      (responseData) => true,
+    );
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:warunk/app/features/auth/presentation/login/auth_login_screen.dart';
 import 'package:warunk/app/features/auth/presentation/splash/auth_splash_screen.dart';
@@ -14,6 +15,7 @@ final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await initializeDateFormatting('id', null);
   await initDependency();
   isProduction = await GlobalHelper.isProduction();
   runApp(const WarunkApp());

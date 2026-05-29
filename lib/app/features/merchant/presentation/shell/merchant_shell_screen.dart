@@ -4,7 +4,7 @@ import 'package:warunk/app/features/merchant/presentation/dashboard/merchant_das
 import 'package:warunk/app/features/merchant/presentation/order/merchant_order_screen.dart';
 import 'package:warunk/app/features/merchant/presentation/product/merchant_product_screen.dart';
 import 'package:warunk/app/features/merchant/presentation/profil/merchant_profil_screen.dart';
-import 'package:warunk/app/features/merchant/presentation/promotion/merchant_promo_screen.dart';
+import 'package:warunk/app/features/merchant/presentation/promotion/merchant_promotion_screen.dart';
 import 'package:warunk/app/features/merchant/presentation/shell/bloc/merchant_shell_bloc.dart';
 import 'package:warunk/theme/app_colors.dart';
 
@@ -17,7 +17,7 @@ class MerchantShellScreen extends StatelessWidget {
     const MerchantDashboardScreen(),
     const MerchantProductScreen(),
     const MerchantOrderScreen(),
-    const MerchantPromoScreen(),
+    const MerchantPromotionScreen(),
     const MerchantProfilScreen(),
   ];
 
