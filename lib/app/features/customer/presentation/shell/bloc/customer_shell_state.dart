@@ -1,22 +1,22 @@
-part of 'customer_navigation_bloc.dart';
+part of 'customer_shell_bloc.dart';
 
-final class CustomerNavigationState extends Equatable {
+final class CustomerShellState extends Equatable {
   final bool isLoading;
   final String? errorMessage;
   final int currentIndex;
 
-  const CustomerNavigationState({
+  const CustomerShellState({
     this.isLoading = false,
     this.errorMessage,
     this.currentIndex = 0,
   });
 
-  CustomerNavigationState copyWith({
+  CustomerShellState copyWith({
     bool? isLoading,
     String? errorMessage,
     int? currentIndex,
   }) {
-    return CustomerNavigationState(
+    return CustomerShellState(
       isLoading: isLoading ?? this.isLoading,
       errorMessage: errorMessage,
       currentIndex: currentIndex ?? this.currentIndex,

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:warunk/app/features/customer/presentation/shell/bloc/customer_navigation_bloc.dart';
+import 'package:warunk/app/features/customer/presentation/shell/bloc/customer_shell_bloc.dart';
 import 'package:warunk/app/features/customer/presentation/home/customer_home_screen.dart';
 import 'package:warunk/app/features/customer/presentation/map/customer_map_screen.dart';
 import 'package:warunk/app/features/customer/presentation/notification/customer_notification_screen.dart';
@@ -8,10 +8,10 @@ import 'package:warunk/app/features/customer/presentation/profil/customer_profil
 import 'package:warunk/app/features/customer/presentation/transaction/customer_transaction_screen.dart';
 import 'package:warunk/theme/app_colors.dart';
 
-/// CustomerShell mengelola bottom navigation dan menampilkan
+/// CustomerShellScreen mengelola bottom navigation dan menampilkan
 /// halaman yang sesuai berdasarkan tab yang dipilih.
-class CustomerShell extends StatelessWidget {
-  const CustomerShell({super.key});
+class CustomerShellScreen extends StatelessWidget {
+  const CustomerShellScreen({super.key});
 
   static const List<Widget> _pages = [
     CustomerHomeScreen(),
@@ -24,8 +24,8 @@ class CustomerShell extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => CustomerNavigationBloc(),
-      child: BlocBuilder<CustomerNavigationBloc, CustomerNavigationState>(
+      create: (_) => CustomerShellBloc(),
+      child: BlocBuilder<CustomerShellBloc, CustomerShellState>(
         builder: (context, state) {
           return Scaffold(
             body: IndexedStack(index: state.currentIndex, children: _pages),
@@ -35,8 +35,8 @@ class CustomerShell extends StatelessWidget {
               indicatorColor: AppColors.primary.withValues(alpha: 0.15),
               labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
               onDestinationSelected: (index) {
-                context.read<CustomerNavigationBloc>().add(
-                  CustomerNavigationTabChanged(index),
+                context.read<CustomerShellBloc>().add(
+                  CustomerShellTabChanged(index),
                 );
               },
               destinations: const [
