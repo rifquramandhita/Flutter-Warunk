@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:warunk/app/features/customer/domain/entity/customer_address.dart';
 import 'package:warunk/app/features/customer/presentation/address/bloc/customer_address_bloc.dart';
 import 'package:warunk/app/features/customer/presentation/address/bloc/customer_address_event.dart';
 import 'package:warunk/app/features/customer/presentation/address/bloc/customer_address_state.dart';
-import 'package:warunk/theme/app_colors.dart';
+import 'package:warunk/core/dependency/dependency.dart';
+import 'package:warunk/core/helper/dialog_helper.dart';
+import 'package:warunk/core/helper/global_helper.dart';
 import 'package:warunk/core/widgets/custom_dotted_divider.dart';
 import 'package:warunk/core/widgets/outline_button_custom.dart';
 import 'package:warunk/core/widgets/primary_button.dart';
 import 'package:warunk/core/widgets/shadow_card.dart';
 import 'package:warunk/core/widgets/sticky_bottom_bar.dart';
+import 'package:warunk/main.dart';
 
 class CustomerAddressScreen extends StatelessWidget {
   const CustomerAddressScreen({super.key});
@@ -16,119 +20,99 @@ class CustomerAddressScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => CustomerAddressBloc()..add(CustomerLoadAddresses()),
-      child: const _AddressView(),
+      create: (context) =>
+          sl<CustomerAddressBloc>()..add(CustomerAddressEventLoadAddresses()),
+      child: BlocConsumer<CustomerAddressBloc, CustomerAddressState>(
+        listener: (context, state) {
+          if (state.errorMessage != null) {
+            DialogHelper.showErrorSnackBar(
+              context: context,
+              text: state.errorMessage!,
+            );
+          }
+        },
+        builder: (context, state) {
+          return Scaffold(
+            appBar: AppBar(title: const Text('Alamat Saya')),
+            body: _bodyBuild(context),
+            floatingActionButton: _fabBuild(context),
+          );
+        },
+      ),
     );
   }
-}
 
-class _AddressView extends StatelessWidget {
-  const _AddressView();
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.background,
-      appBar: AppBar(
-        backgroundColor: AppColors.background,
-        elevation: 0,
-        surfaceTintColor: Colors.transparent,
-        centerTitle: true,
-        leading: Padding(
-          padding: const EdgeInsets.only(left: 16.0, top: 8.0, bottom: 8.0),
-          child: GestureDetector(
-            onTap: () => Navigator.of(context).pop(),
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                shape: BoxShape.circle,
-                border: Border.all(color: AppColors.greyBorder),
-              ),
-              child: const Icon(
-                Icons.arrow_back_rounded,
-                color: AppColors.primary,
-                size: 20,
-              ),
-            ),
-          ),
-        ),
-        title: const Text(
-          'Alamat Saya',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w800,
-            color: AppColors.primary,
-          ),
-        ),
-      ),
-      body: Stack(
+  Widget _bodyBuild(BuildContext context) {
+    final state = context.watch<CustomerAddressBloc>().state;
+    return SafeArea(
+      child: Stack(
         children: [
-          BlocBuilder<CustomerAddressBloc, CustomerAddressState>(
-            builder: (context, state) {
-              if (state.isLoading) {
-                return const Center(
-                  child: CircularProgressIndicator(color: AppColors.primary),
-                );
-              }
-
-              return SingleChildScrollView(
-                padding: const EdgeInsets.fromLTRB(
-                  20,
-                  16,
-                  20,
-                  100,
-                ), // Bottom padding for fixed button
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      'Kelola alamat pengiriman untuk memudahkan\ntransaksi belanja Anda.',
-                      style: TextStyle(
-                        fontSize: 13,
-                        color: AppColors.greyText,
-                        height: 1.5,
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-
-                    // ── Address Cards ──────────────────────────────────────────
-                    ...state.addresses.map((address) {
-                      final isSelected = state.selectedAddressId == address.id;
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 16.0),
-                        child: _buildAddressCard(context, address, isSelected),
-                      );
-                    }),
-                  ],
-                ),
-              );
-            },
-          ),
-
-          // ── Fixed Bottom Button ──────────────────────────────────────────
-          StickyBottomBar(
-            child: PrimaryButton(
-              onPressed: () {
-                // TODO: Tambah Alamat Baru
-              },
-              icon: Icons.add_circle_outline,
-              label: 'Tambah Alamat Baru',
+          _bodyLayout(context, state),
+          if (state.isLoading)
+            Center(
+              child: CircularProgressIndicator(
+                color: GlobalHelper.getColorSchema(context).primary,
+              ),
             ),
-          ),
         ],
       ),
     );
   }
 
+  Widget _fabBuild(BuildContext context) {
+    return FloatingActionButton(
+      onPressed: () => _onPressAdd(context),
+      child: const Icon(Icons.add),
+    );
+  }
+
+  Widget _bodyLayout(BuildContext context, CustomerAddressState state) {
+    return Stack(
+      children: [
+        SingleChildScrollView(
+          padding: const EdgeInsets.fromLTRB(
+            20,
+            16,
+            20,
+            100,
+          ), // Bottom padding for fixed button
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // ── Address Cards ──────────────────────────────────────────
+              ...state.addresses.map((address) {
+                final isSelected = state.selectedAddressId == address.id;
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 16.0),
+                  child: _buildAddressCard(context, address, isSelected),
+                );
+              }),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  IconData _getIconForAddress(String label) {
+    final lowerLabel = label.toLowerCase();
+    if (lowerLabel.contains('rumah')) return Icons.home_outlined;
+    if (lowerLabel.contains('kantor')) return Icons.business_outlined;
+    return Icons.location_on_outlined;
+  }
+
   Widget _buildAddressCard(
     BuildContext context,
-    CustomerAddressItem address,
+    CustomerAddress address,
     bool isSelected,
   ) {
+    final iconData = _getIconForAddress(address.label);
+    final colorSchema = GlobalHelper.getColorSchema(context);
+
     return ShadowCard(
       backgroundColor: isSelected
-          ? AppColors.primary.withValues(alpha: 0.02)
-          : Colors.white,
+          ? colorSchema.primary.withValues(alpha: 0.02)
+          : colorSchema.surface,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -140,10 +124,10 @@ class _AddressView extends StatelessWidget {
                 width: 48,
                 height: 48,
                 decoration: BoxDecoration(
-                  color: AppColors.primary.withValues(alpha: 0.1),
+                  color: colorSchema.primary.withValues(alpha: 0.1),
                   shape: BoxShape.circle,
                 ),
-                child: Icon(address.icon, color: AppColors.primary, size: 24),
+                child: Icon(iconData, color: colorSchema.primary, size: 24),
               ),
               const SizedBox(width: 16),
               // Detail
@@ -154,31 +138,33 @@ class _AddressView extends StatelessWidget {
                     Row(
                       children: [
                         Text(
-                          address.name,
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w800,
-                            color: AppColors.textDark,
-                          ),
+                          address.recipientName,
+                          style: GlobalHelper.getTextTheme(
+                            context,
+                            appTextStyle: AppTextStyle.TITLE_MEDIUM,
+                          )?.copyWith(fontWeight: FontWeight.w800),
                         ),
                         const Spacer(),
-                        if (address.isPrimary)
+                        if (address.isDefault)
                           Container(
                             padding: const EdgeInsets.symmetric(
                               horizontal: 10,
                               vertical: 4,
                             ),
                             decoration: BoxDecoration(
-                              color: AppColors.primary.withValues(alpha: 0.1),
+                              color: colorSchema.primary.withValues(alpha: 0.1),
                               borderRadius: BorderRadius.circular(20),
                             ),
-                            child: const Text(
+                            child: Text(
                               'Utama',
-                              style: TextStyle(
-                                fontSize: 11,
-                                fontWeight: FontWeight.w700,
-                                color: AppColors.primary,
-                              ),
+                              style:
+                                  GlobalHelper.getTextTheme(
+                                    context,
+                                    appTextStyle: AppTextStyle.LABEL_SMALL,
+                                  )?.copyWith(
+                                    fontWeight: FontWeight.w700,
+                                    color: colorSchema.primary,
+                                  ),
                             ),
                           ),
                       ],
@@ -186,17 +172,17 @@ class _AddressView extends StatelessWidget {
                     const SizedBox(height: 8),
                     Row(
                       children: [
-                        const Icon(
+                        Icon(
                           Icons.phone_outlined,
                           size: 14,
-                          color: AppColors.primary,
+                          color: colorSchema.primary,
                         ),
                         const SizedBox(width: 8),
                         Text(
                           address.phone,
-                          style: const TextStyle(
-                            fontSize: 13,
-                            color: AppColors.textDark,
+                          style: GlobalHelper.getTextTheme(
+                            context,
+                            appTextStyle: AppTextStyle.BODY_SMALL,
                           ),
                         ),
                       ],
@@ -205,23 +191,22 @@ class _AddressView extends StatelessWidget {
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Padding(
-                          padding: EdgeInsets.only(top: 2),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 2),
                           child: Icon(
                             Icons.location_on_outlined,
                             size: 14,
-                            color: AppColors.primary,
+                            color: colorSchema.primary,
                           ),
                         ),
                         const SizedBox(width: 8),
                         Expanded(
                           child: Text(
-                            address.address,
-                            style: const TextStyle(
-                              fontSize: 13,
-                              color: AppColors.textDark,
-                              height: 1.4,
-                            ),
+                            address.fullAddress,
+                            style: GlobalHelper.getTextTheme(
+                              context,
+                              appTextStyle: AppTextStyle.BODY_SMALL,
+                            )?.copyWith(height: 1.4),
                           ),
                         ),
                       ],
@@ -260,7 +245,7 @@ class _AddressView extends StatelessWidget {
                     : OutlineButtonCustom(
                         onPressed: () => context
                             .read<CustomerAddressBloc>()
-                            .add(CustomerSelectAddress(address.id)),
+                            .add(CustomerAddressEventSelectAddress(address.id)),
                         icon: Icons.check_circle_outline,
                         label: 'Pilih',
                         height: 40,
@@ -272,4 +257,8 @@ class _AddressView extends StatelessWidget {
       ),
     );
   }
+
+  void _onPressItem(BuildContext context, CustomerAddressEntity item) {}
+
+  void _onPressAdd(BuildContext context) {}
 }

@@ -1,38 +1,10 @@
 import 'package:equatable/equatable.dart';
-import 'package:flutter/material.dart';
-
-class CustomerAddressItem extends Equatable {
-  final String id;
-  final String name;
-  final String phone;
-  final String address;
-  final bool isPrimary;
-  final IconData icon;
-
-  const CustomerAddressItem({
-    required this.id,
-    required this.name,
-    required this.phone,
-    required this.address,
-    this.isPrimary = false,
-    required this.icon,
-  });
-
-  @override
-  List<Object?> get props => [
-    id,
-    name,
-    phone,
-    address,
-    isPrimary,
-    icon,
-  ];
-}
+import 'package:warunk/app/features/customer/domain/entity/customer_address.dart';
 
 class CustomerAddressState extends Equatable {
   final bool isLoading;
   final String? errorMessage;
-  final List<CustomerAddressItem> addresses;
+  final List<CustomerAddress> addresses;
   final String? selectedAddressId;
 
   const CustomerAddressState({
@@ -45,7 +17,7 @@ class CustomerAddressState extends Equatable {
   CustomerAddressState copyWith({
     bool? isLoading,
     String? errorMessage,
-    List<CustomerAddressItem>? addresses,
+    List<CustomerAddress>? addresses,
     String? selectedAddressId,
   }) {
     return CustomerAddressState(
