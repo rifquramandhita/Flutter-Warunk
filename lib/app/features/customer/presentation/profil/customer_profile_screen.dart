@@ -8,9 +8,11 @@ import 'package:warunk/app/features/customer/presentation/profil/bloc/customer_p
 import 'package:warunk/app/features/customer/presentation/profil/bloc/customer_profil_event.dart';
 import 'package:warunk/app/features/customer/presentation/profil/bloc/customer_profil_state.dart';
 import 'package:warunk/main.dart';
-import 'package:warunk/theme/app_colors.dart';
 import 'package:warunk/core/widgets/custom_dotted_divider.dart';
 import 'package:warunk/core/widgets/shadow_card.dart';
+import 'package:warunk/core/dependency/dependency.dart';
+import 'package:warunk/core/helper/global_helper.dart';
+import 'package:warunk/core/helper/dialog_helper.dart';
 
 class CustomerProfileScreen extends StatelessWidget {
   const CustomerProfileScreen({super.key});
@@ -18,223 +20,169 @@ class CustomerProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => CustomerProfilBloc()..add(CustomerLoadProfilData()),
-      child: const _ProfileView(),
-    );
-  }
-}
-
-class _ProfileView extends StatelessWidget {
-  const _ProfileView();
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.background,
-      body: SafeArea(
-        child: BlocBuilder<CustomerProfilBloc, CustomerProfilState>(
-          builder: (context, state) {
-            if (state.isLoading) {
-              return const Center(
-                child: CircularProgressIndicator(color: AppColors.primary),
-              );
-            }
-            return SingleChildScrollView(
-              padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // ── Header ──────────────────────────────────────────────────
-                  _buildHeader(context, state),
-                  const SizedBox(height: 20),
-
-                  // ── User Info Card ──────────────────────────────────────────
-                  _buildUserCard(context, state),
-                  const SizedBox(height: 16),
-
-                  // ── Stats Card ──────────────────────────────────────────────
-                  _buildStatsCard(state),
-                  const SizedBox(height: 16),
-
-                  // ── Menu List ───────────────────────────────────────────────
-                  _buildMenuList(context),
-                  const SizedBox(height: 16),
-
-                  // ── Promo Banner ────────────────────────────────────────────
-                  _buildPromoBanner(),
-                ],
-              ),
+      create: (context) =>
+          sl<CustomerProfilBloc>()..add(CustomerLoadProfilData()),
+      child: BlocConsumer<CustomerProfilBloc, CustomerProfilState>(
+        listener: (context, state) {
+          if (state.errorMessage != null) {
+            DialogHelper.showErrorSnackBar(
+              context: context,
+              text: state.errorMessage!,
             );
-          },
-        ),
+          }
+        },
+        builder: (context, state) {
+          return Scaffold(
+            appBar: _appBarBuild(context),
+            body: _bodyBuild(context),
+          );
+        },
       ),
     );
   }
 
-  // ── Header ────────────────────────────────────────────────────────────────
-  Widget _buildHeader(BuildContext context, CustomerProfilState state) {
-    return Row(
-      children: [
-        const Text(
-          'Profil',
-          style: TextStyle(
-            fontSize: 22,
-            fontWeight: FontWeight.w900,
-            color: AppColors.textDark,
-          ),
-        ),
-        const Spacer(),
-        GestureDetector(
-          onTap: () => Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (_) => const CustomerNotificationScreen(),
-            ),
-          ),
-          child: Stack(
-            children: [
-              Container(
-                width: 42,
-                height: 42,
-                decoration: BoxDecoration(
-                  color: AppColors.white,
-                  shape: BoxShape.circle,
-                  border: Border.all(color: AppColors.greyBorder),
-                ),
-                child: const Icon(
-                  Icons.notifications_outlined,
-                  color: AppColors.textDark,
-                  size: 22,
-                ),
+  AppBar _appBarBuild(BuildContext context) {
+    final state = context.watch<CustomerProfilBloc>().state;
+    return AppBar(
+      title: const Text('Profil'),
+      actions: [
+        Padding(
+          padding: const EdgeInsets.only(right: 16.0),
+          child: GestureDetector(
+            onTap: () => navigatorKey.currentState?.push(
+              MaterialPageRoute(
+                builder: (_) => const CustomerNotificationScreen(),
               ),
-              if (state.unreadNotifications > 0)
-                Positioned(
-                  top: 0,
-                  right: 0,
-                  child: Container(
-                    width: 18,
-                    height: 18,
-                    decoration: const BoxDecoration(
-                      color: Colors.red,
-                      shape: BoxShape.circle,
-                    ),
-                    child: Center(
+            ),
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                Icon(
+                  Icons.notifications_outlined,
+                  color: GlobalHelper.getColorSchema(context).onSurface,
+                  size: 26,
+                ),
+                if (state.unreadNotifications > 0)
+                  Positioned(
+                    top: 8,
+                    right: 0,
+                    child: Container(
+                      padding: const EdgeInsets.all(2),
+                      decoration: const BoxDecoration(
+                        color: Colors.red,
+                        shape: BoxShape.circle,
+                      ),
+                      constraints: const BoxConstraints(
+                        minWidth: 14,
+                        minHeight: 14,
+                      ),
                       child: Text(
                         '${state.unreadNotifications}',
                         style: const TextStyle(
                           color: Colors.white,
-                          fontSize: 10,
+                          fontSize: 8,
                           fontWeight: FontWeight.w700,
                         ),
+                        textAlign: TextAlign.center,
                       ),
                     ),
                   ),
-                ),
-            ],
+              ],
+            ),
           ),
         ),
       ],
     );
   }
 
-  // ── User Info Card ────────────────────────────────────────────────────────
-  Widget _buildUserCard(BuildContext context, CustomerProfilState state) {
+  Widget _bodyBuild(BuildContext context) {
+    final state = context.watch<CustomerProfilBloc>().state;
+    return SafeArea(
+      child: Stack(
+        children: [
+          _bodyLayout(context),
+          if (state.isLoading)
+            Center(
+              child: CircularProgressIndicator(
+                color: GlobalHelper.getColorSchema(context).primary,
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
+  Widget _bodyLayout(BuildContext context) {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildUserCard(context),
+          const SizedBox(height: 16),
+          _buildStatsCard(context),
+          const SizedBox(height: 16),
+          _buildMenuList(context),
+          const SizedBox(height: 16),
+          _buildPromoBanner(context),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildUserCard(BuildContext context) {
+    final state = context.watch<CustomerProfilBloc>().state;
     return ShadowCard(
       child: Row(
         children: [
-          // Avatar
           Container(
             width: 70,
             height: 70,
             decoration: BoxDecoration(
-              color: const Color(0xFFB9E4C9), // Light green bg for avatar
+              color: const Color(0xFFB9E4C9),
               shape: BoxShape.circle,
-              border: Border.all(color: AppColors.white, width: 2),
+              border: Border.all(color: Colors.white, width: 2),
             ),
             child: const Center(
               child: Text('👨🏻', style: TextStyle(fontSize: 40)),
             ),
           ),
           const SizedBox(width: 16),
-          // Info
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   state.name,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w800,
-                    color: AppColors.textDark,
-                  ),
+                  style: GlobalHelper.getTextTheme(
+                    context,
+                    appTextStyle: AppTextStyle.BODY_LARGE,
+                  )?.copyWith(fontWeight: FontWeight.w800),
                 ),
                 const SizedBox(height: 6),
                 Row(
                   children: [
-                    const Icon(
+                    Icon(
                       Icons.phone_outlined,
                       size: 14,
-                      color: AppColors.primary,
+                      color: GlobalHelper.getColorSchema(context).primary,
                     ),
                     const SizedBox(width: 6),
                     Text(
                       state.phone,
-                      style: const TextStyle(
-                        fontSize: 12,
-                        color: AppColors.greyText,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 4),
-                Row(
-                  children: [
-                    const Icon(
-                      Icons.location_on_outlined,
-                      size: 14,
-                      color: AppColors.primary,
-                    ),
-                    const SizedBox(width: 6),
-                    Text(
-                      state.location,
-                      style: const TextStyle(
-                        fontSize: 12,
-                        color: AppColors.greyText,
-                      ),
+                      style:
+                          GlobalHelper.getTextTheme(
+                            context,
+                            appTextStyle: AppTextStyle.LABEL_SMALL,
+                          )?.copyWith(
+                            color: GlobalHelper.getColorSchema(
+                              context,
+                            ).onSurfaceVariant,
+                          ),
                     ),
                   ],
                 ),
               ],
-            ),
-          ),
-          // Edit Button
-          GestureDetector(
-            onTap: () => Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (_) => const CustomerEditProfileScreen(),
-              ),
-            ),
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-              decoration: BoxDecoration(
-                color: AppColors.white,
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: AppColors.primary),
-              ),
-              child: Row(
-                children: const [
-                  Icon(Icons.edit_outlined, size: 14, color: AppColors.primary),
-                  SizedBox(width: 4),
-                  Text(
-                    'Edit',
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w700,
-                      color: AppColors.primary,
-                    ),
-                  ),
-                ],
-              ),
             ),
           ),
         ],
@@ -242,29 +190,34 @@ class _ProfileView extends StatelessWidget {
     );
   }
 
-  // ── Stats Card ────────────────────────────────────────────────────────────
-  Widget _buildStatsCard(CustomerProfilState state) {
+  Widget _buildStatsCard(BuildContext context) {
+    final state = context.watch<CustomerProfilBloc>().state;
     return ShadowCard(
       padding: const EdgeInsets.symmetric(vertical: 16),
       child: Row(
         children: [
           _statItem(
+            context: context,
             icon: Icons.shopping_bag_outlined,
-            iconColor: AppColors.primary,
-            iconBgColor: AppColors.primary.withValues(alpha: 0.1),
+            iconColor: GlobalHelper.getColorSchema(context).primary,
+            iconBgColor: GlobalHelper.getColorSchema(
+              context,
+            ).primary.withValues(alpha: 0.1),
             label: 'Transaksi',
             value: '${state.transactionCount}',
           ),
-          _verticalDivider(),
+          _verticalDivider(context),
           _statItem(
+            context: context,
             icon: Icons.confirmation_number_outlined,
             iconColor: const Color(0xFFF59E0B),
             iconBgColor: const Color(0xFFFFF3E0),
             label: 'Voucher',
             value: '${state.voucherCount}',
           ),
-          _verticalDivider(),
+          _verticalDivider(context),
           _statItem(
+            context: context,
             icon: Icons.favorite_border_rounded,
             iconColor: const Color(0xFF3B82F6),
             iconBgColor: const Color(0xFFEFF6FF),
@@ -277,6 +230,7 @@ class _ProfileView extends StatelessWidget {
   }
 
   Widget _statItem({
+    required BuildContext context,
     required IconData icon,
     required Color iconColor,
     required Color iconBgColor,
@@ -301,16 +255,23 @@ class _ProfileView extends StatelessWidget {
             children: [
               Text(
                 label,
-                style: const TextStyle(fontSize: 11, color: AppColors.greyText),
+                style:
+                    GlobalHelper.getTextTheme(
+                      context,
+                      appTextStyle: AppTextStyle.LABEL_SMALL,
+                    )?.copyWith(
+                      color: GlobalHelper.getColorSchema(
+                        context,
+                      ).onSurfaceVariant,
+                    ),
               ),
               const SizedBox(height: 2),
               Text(
                 value,
-                style: const TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.w800,
-                  color: AppColors.textDark,
-                ),
+                style: GlobalHelper.getTextTheme(
+                  context,
+                  appTextStyle: AppTextStyle.BODY_MEDIUM,
+                )?.copyWith(fontWeight: FontWeight.w800),
               ),
             ],
           ),
@@ -319,70 +280,79 @@ class _ProfileView extends StatelessWidget {
     );
   }
 
-  Widget _verticalDivider() {
+  Widget _verticalDivider(BuildContext context) {
     return Container(
       width: 1,
       height: 30,
-      color: AppColors.greyBorder.withValues(alpha: 0.5),
+      color: GlobalHelper.getColorSchema(
+        context,
+      ).outline.withValues(alpha: 0.5),
     );
   }
 
-  // ── Menu List ─────────────────────────────────────────────────────────────
   Widget _buildMenuList(BuildContext context) {
     return ShadowCard(
       padding: EdgeInsets.zero,
       child: Column(
         children: [
           _menuItem(
-            Icons.person_outline,
-            'Edit Profil',
-            AppColors.primary,
-            onTap: () => Navigator.of(context).push(
+            context: context,
+            icon: Icons.person_outline,
+            label: 'Edit Profil',
+            iconColor: GlobalHelper.getColorSchema(context).primary,
+            onTap: () => navigatorKey.currentState?.push(
               MaterialPageRoute(
                 builder: (_) => const CustomerEditProfileScreen(),
               ),
             ),
           ),
-          _divider(),
+          _divider(context),
           _menuItem(
-            Icons.location_on_outlined,
-            'Alamat Saya',
-            AppColors.primary,
-            onTap: () => Navigator.of(context).push(
+            context: context,
+            icon: Icons.location_on_outlined,
+            label: 'Alamat Saya',
+            iconColor: GlobalHelper.getColorSchema(context).primary,
+            onTap: () => navigatorKey.currentState?.push(
               MaterialPageRoute(builder: (_) => const CustomerAddressScreen()),
             ),
           ),
-          _divider(),
+          _divider(context),
           _menuItem(
-            Icons.credit_card_outlined,
-            'Metode Pembayaran',
-            AppColors.primary,
+            context: context,
+            icon: Icons.credit_card_outlined,
+            label: 'Metode Pembayaran',
+            iconColor: GlobalHelper.getColorSchema(context).primary,
           ),
-          _divider(),
+          _divider(context),
           _menuItem(
-            Icons.confirmation_number_outlined,
-            'Voucher Saya',
-            AppColors.primary,
+            context: context,
+            icon: Icons.confirmation_number_outlined,
+            label: 'Voucher Saya',
+            iconColor: GlobalHelper.getColorSchema(context).primary,
           ),
-
-          // Dotted divider
           const Padding(
             padding: EdgeInsets.symmetric(horizontal: 16),
             child: CustomDottedDivider(),
           ),
-
-          _menuItem(Icons.help_outline_rounded, 'Bantuan', AppColors.primary),
-          _divider(),
           _menuItem(
-            Icons.description_outlined,
-            'Syarat & Ketentuan',
-            AppColors.primary,
+            context: context,
+            icon: Icons.help_outline_rounded,
+            label: 'Bantuan',
+            iconColor: GlobalHelper.getColorSchema(context).primary,
           ),
-          _divider(),
+          _divider(context),
           _menuItem(
-            Icons.logout_rounded,
-            'Keluar',
-            Colors.red,
+            context: context,
+            icon: Icons.description_outlined,
+            label: 'Syarat & Ketentuan',
+            iconColor: GlobalHelper.getColorSchema(context).primary,
+          ),
+          _divider(context),
+          _menuItem(
+            context: context,
+            icon: Icons.logout_rounded,
+            label: 'Keluar',
+            iconColor: Colors.red,
             textColor: Colors.red,
             hideChevron: true,
             onTap: () => navigatorKey.currentState?.push(
@@ -394,11 +364,12 @@ class _ProfileView extends StatelessWidget {
     );
   }
 
-  Widget _menuItem(
-    IconData icon,
-    String label,
-    Color iconColor, {
-    Color textColor = AppColors.textDark,
+  Widget _menuItem({
+    required BuildContext context,
+    required IconData icon,
+    required String label,
+    required Color iconColor,
+    Color? textColor,
     bool hideChevron = false,
     VoidCallback? onTap,
   }) {
@@ -421,17 +392,22 @@ class _ProfileView extends StatelessWidget {
             Expanded(
               child: Text(
                 label,
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                  color: textColor,
-                ),
+                style:
+                    GlobalHelper.getTextTheme(
+                      context,
+                      appTextStyle: AppTextStyle.BODY_SMALL,
+                    )?.copyWith(
+                      fontWeight: FontWeight.w600,
+                      color:
+                          textColor ??
+                          GlobalHelper.getColorSchema(context).onSurface,
+                    ),
               ),
             ),
             if (!hideChevron)
-              const Icon(
+              Icon(
                 Icons.chevron_right_rounded,
-                color: AppColors.primary,
+                color: GlobalHelper.getColorSchema(context).primary,
                 size: 22,
               ),
           ],
@@ -440,67 +416,79 @@ class _ProfileView extends StatelessWidget {
     );
   }
 
-  Widget _divider() {
-    return const Padding(
-      padding: EdgeInsets.only(left: 56, right: 16),
-      child: Divider(height: 1, color: AppColors.greyBorder),
+  Widget _divider(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 56, right: 16),
+      child: Divider(
+        height: 1,
+        color: GlobalHelper.getColorSchema(context).outline,
+      ),
     );
   }
 
-  // ── Promo Banner ──────────────────────────────────────────────────────────
-  Widget _buildPromoBanner() {
+  Widget _buildPromoBanner(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: const Color(0xFFF0FDF4), // Light green bg
+        color: const Color(0xFFF0FDF4),
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: AppColors.primary.withValues(alpha: 0.2)),
+        border: Border.all(
+          color: GlobalHelper.getColorSchema(
+            context,
+          ).primary.withValues(alpha: 0.2),
+        ),
       ),
       child: Row(
         children: [
-          // Gift Icon (using a large text emoji since we don't have assets)
           const Text('🎁', style: TextStyle(fontSize: 48)),
           const SizedBox(width: 16),
-          // Text content
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
+                Text(
                   'Ajak teman,\ndapat voucher gratis ongkir',
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w800,
-                    color: AppColors.textDark,
-                  ),
+                  style: GlobalHelper.getTextTheme(
+                    context,
+                    appTextStyle: AppTextStyle.BODY_SMALL,
+                  )?.copyWith(fontWeight: FontWeight.w800),
                 ),
                 const SizedBox(height: 4),
-                const Text(
+                Text(
                   'Semakin banyak teman, semakin banyak\nvoucher yang kamu dapatkan!',
-                  style: TextStyle(
-                    fontSize: 10,
-                    color: AppColors.greyText,
-                    height: 1.4,
-                  ),
+                  style:
+                      GlobalHelper.getTextTheme(
+                        context,
+                        appTextStyle: AppTextStyle.LABEL_SMALL,
+                      )?.copyWith(
+                        color: GlobalHelper.getColorSchema(
+                          context,
+                        ).onSurfaceVariant,
+                        height: 1.4,
+                      ),
                 ),
                 const SizedBox(height: 10),
-                // Button
                 Container(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 12,
                     vertical: 6,
                   ),
                   decoration: BoxDecoration(
-                    color: AppColors.primary.withValues(alpha: 0.15),
+                    color: GlobalHelper.getColorSchema(
+                      context,
+                    ).primary.withValues(alpha: 0.15),
                     borderRadius: BorderRadius.circular(20),
                   ),
-                  child: const Text(
+                  child: Text(
                     'Ajak Sekarang',
-                    style: TextStyle(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w700,
-                      color: AppColors.primary,
-                    ),
+                    style:
+                        GlobalHelper.getTextTheme(
+                          context,
+                          appTextStyle: AppTextStyle.LABEL_SMALL,
+                        )?.copyWith(
+                          fontWeight: FontWeight.w700,
+                          color: GlobalHelper.getColorSchema(context).primary,
+                        ),
                   ),
                 ),
               ],

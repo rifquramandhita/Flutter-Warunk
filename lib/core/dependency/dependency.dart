@@ -12,6 +12,7 @@ import 'package:warunk/app/features/auth/presentation/logout/bloc/auth_logout_bl
 import 'package:warunk/app/features/auth/domain/use_case/auth_forgot_password_use_case.dart';
 import 'package:warunk/app/features/auth/domain/use_case/auth_reset_password_use_case.dart';
 import 'package:warunk/app/features/auth/presentation/reset_password/bloc/auth_reset_password_bloc.dart';
+import 'package:warunk/app/features/customer/presentation/profil/bloc/customer_profil_bloc.dart';
 import 'package:warunk/app/features/merchant/data/repository/merchant_product_repository_impl.dart';
 import 'package:warunk/app/features/merchant/data/source/merchant_merchant_api_service.dart';
 import 'package:warunk/app/features/merchant/data/source/merchant_product_api_service.dart';
@@ -149,13 +150,13 @@ Future<void> initDependency() async {
   sl.registerFactory(() => AuthResetPasswordBloc(useCase: sl()));
   sl.registerFactory(() => AuthLogoutBloc(authBloc: sl(), useCase: sl()));
   sl.registerFactory(() => MerchantProductBloc(useCase: sl()));
-  sl.registerFactory(
-    () => MerchantInputProductBloc(
+  sl.registerFactory(() => MerchantInputProductBloc(
       useCase: sl(),
       sendUseCase: sl(),
       downloadImagesUseCase: sl(),
     ),
   );
+  sl.registerFactory(() => CustomerProfilBloc());
   sl.registerFactory(() => MerchantProfilBloc(useCase: sl()));
   sl.registerFactory(
     () => MerchantEditProfilBloc(getUseCase: sl(), updateUseCase: sl()),

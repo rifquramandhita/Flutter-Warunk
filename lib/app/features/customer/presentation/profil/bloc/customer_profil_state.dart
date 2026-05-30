@@ -5,7 +5,6 @@ class CustomerProfilState extends Equatable {
   final String? errorMessage;
   final String name;
   final String phone;
-  final String location;
   final int transactionCount;
   final int voucherCount;
   final int favoriteCount;
@@ -16,7 +15,6 @@ class CustomerProfilState extends Equatable {
     this.errorMessage,
     this.name = '',
     this.phone = '',
-    this.location = '',
     this.transactionCount = 0,
     this.voucherCount = 0,
     this.favoriteCount = 0,
@@ -28,7 +26,6 @@ class CustomerProfilState extends Equatable {
     String? errorMessage,
     String? name,
     String? phone,
-    String? location,
     int? transactionCount,
     int? voucherCount,
     int? favoriteCount,
@@ -39,7 +36,6 @@ class CustomerProfilState extends Equatable {
       errorMessage: errorMessage,
       name: name ?? this.name,
       phone: phone ?? this.phone,
-      location: location ?? this.location,
       transactionCount: transactionCount ?? this.transactionCount,
       voucherCount: voucherCount ?? this.voucherCount,
       favoriteCount: favoriteCount ?? this.favoriteCount,
@@ -53,7 +49,6 @@ class CustomerProfilState extends Equatable {
     errorMessage,
     name,
     phone,
-    location,
     transactionCount,
     voucherCount,
     favoriteCount,
