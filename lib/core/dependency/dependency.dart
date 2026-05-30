@@ -6,13 +6,14 @@ import 'package:warunk/app/features/auth/domain/repository/auth_repository.dart'
 import 'package:warunk/app/features/auth/domain/use_case/auth_login_use_case.dart';
 import 'package:warunk/app/features/auth/domain/use_case/auth_logout_use_case.dart';
 import 'package:warunk/app/features/auth/domain/use_case/auth_register_use_case.dart';
+import 'package:warunk/app/features/customer/presentation/profil/bloc/customer_profil_bloc.dart';
+import 'package:warunk/app/features/customer/presentation/edit_profil/bloc/customer_edit_profil_bloc.dart';
 import 'package:warunk/app/features/auth/presentation/login/bloc/auth_login_bloc.dart';
 import 'package:warunk/app/features/auth/presentation/register/bloc/auth_register_bloc.dart';
 import 'package:warunk/app/features/auth/presentation/logout/bloc/auth_logout_bloc.dart';
 import 'package:warunk/app/features/auth/domain/use_case/auth_forgot_password_use_case.dart';
 import 'package:warunk/app/features/auth/domain/use_case/auth_reset_password_use_case.dart';
 import 'package:warunk/app/features/auth/presentation/reset_password/bloc/auth_reset_password_bloc.dart';
-import 'package:warunk/app/features/customer/presentation/profil/bloc/customer_profil_bloc.dart';
 import 'package:warunk/app/features/merchant/data/repository/merchant_product_repository_impl.dart';
 import 'package:warunk/app/features/merchant/data/source/merchant_merchant_api_service.dart';
 import 'package:warunk/app/features/merchant/data/source/merchant_product_api_service.dart';
@@ -62,6 +63,10 @@ import 'package:warunk/app/features/merchant/domain/use_case/merchant_order_reje
 import 'package:warunk/app/features/merchant/data/source/merchant_promotion_api_service.dart';
 import 'package:warunk/app/features/merchant/domain/repository/merchant_promotion_repository.dart';
 import 'package:warunk/app/features/merchant/data/repository/merchant_promotion_repository_impl.dart';
+import 'package:warunk/app/features/customer/data/source/customer_profil_api_service.dart';
+import 'package:warunk/app/features/customer/domain/repository/customer_profil_repository.dart';
+import 'package:warunk/app/features/customer/data/repository/customer_profil_repository_impl.dart';
+import 'package:warunk/app/features/customer/domain/use_case/customer_profil_update_use_case.dart';
 import 'package:dio/dio.dart';
 import 'package:warunk/core/network/app_interceptor.dart';
 import 'package:warunk/main.dart';
@@ -91,6 +96,7 @@ Future<void> initDependency() async {
   sl.registerLazySingleton(() => MerchantMerchantApiService(dio));
   sl.registerLazySingleton(() => MerchantOrderApiService(dio));
   sl.registerLazySingleton(() => MerchantPromotionApiService(dio));
+  sl.registerLazySingleton(() => CustomerProfilApiService(dio));
 
   //repository
   sl.registerLazySingleton(() => AuthRepository(api: sl()));
@@ -105,6 +111,9 @@ Future<void> initDependency() async {
   );
   sl.registerLazySingleton<MerchantPromotionRepository>(
     () => MerchantPromotionRepositoryImpl(apiService: sl()),
+  );
+  sl.registerLazySingleton<CustomerProfilRepository>(
+    () => CustomerProfilRepositoryImpl(apiService: sl()),
   );
 
   //usecase
@@ -129,9 +138,15 @@ Future<void> initDependency() async {
   sl.registerLazySingleton(() => MerchantMerchantUpdateAccountUseCase(sl()));
   sl.registerLazySingleton(() => MerchantMerchantOpenUseCase(sl()));
   sl.registerLazySingleton(() => MerchantMerchantCloseUseCase(sl()));
-  sl.registerLazySingleton(() => MerchantMerchantUpdateOperationalHourUseCase(sl()));
-  sl.registerLazySingleton(() => MerchantMerchantGetCourierUseCase(repository: sl()));
-  sl.registerLazySingleton(() => MerchantMerchantUpdateShippingUseCase(repository: sl()));
+  sl.registerLazySingleton(
+    () => MerchantMerchantUpdateOperationalHourUseCase(sl()),
+  );
+  sl.registerLazySingleton(
+    () => MerchantMerchantGetCourierUseCase(repository: sl()),
+  );
+  sl.registerLazySingleton(
+    () => MerchantMerchantUpdateShippingUseCase(repository: sl()),
+  );
   sl.registerLazySingleton(() => MerchantOrderGetUseCase(sl()));
   sl.registerLazySingleton(() => MerchantOrderGetByIdUseCase(sl()));
   sl.registerLazySingleton(() => MerchantOrderAcceptUseCase(sl()));
@@ -142,6 +157,7 @@ Future<void> initDependency() async {
   sl.registerLazySingleton(() => MerchantPromotionSendUseCase(sl()));
   sl.registerLazySingleton(() => MerchantPromotionGetByIdUseCase(sl()));
   sl.registerLazySingleton(() => MerchantPromotionDeleteUseCase(sl()));
+  sl.registerLazySingleton(() => CustomerProfilUpdateUseCase(repository: sl()));
 
   //bloc
   sl.registerLazySingleton(() => AuthBloc());
@@ -150,30 +166,36 @@ Future<void> initDependency() async {
   sl.registerFactory(() => AuthResetPasswordBloc(useCase: sl()));
   sl.registerFactory(() => AuthLogoutBloc(authBloc: sl(), useCase: sl()));
   sl.registerFactory(() => MerchantProductBloc(useCase: sl()));
-  sl.registerFactory(() => MerchantInputProductBloc(
+  sl.registerFactory(
+    () => MerchantInputProductBloc(
       useCase: sl(),
       sendUseCase: sl(),
       downloadImagesUseCase: sl(),
     ),
   );
   sl.registerFactory(() => CustomerProfilBloc());
+  sl.registerFactory(() => CustomerEditProfilBloc(updateUseCase: sl()));
   sl.registerFactory(() => MerchantProfilBloc(useCase: sl()));
   sl.registerFactory(
     () => MerchantEditProfilBloc(getUseCase: sl(), updateUseCase: sl()),
   );
   sl.registerFactory(() => MerchantInputAddressBloc(sl(), sl()));
   sl.registerFactory(() => MerchantInputAccountBloc(sl(), sl()));
-  sl.registerFactory(() => MerchantOperationalHoursBloc(
-        getUseCase: sl(),
-        openUseCase: sl(),
-        closeUseCase: sl(),
-        updateOperationalHourUseCase: sl(),
-      ));
-  sl.registerFactory(() => MerchantShippingBloc(
-        getCourierUseCase: sl(),
-        updateShippingUseCase: sl(),
-        getMerchantUseCase: sl(),
-      ));
+  sl.registerFactory(
+    () => MerchantOperationalHoursBloc(
+      getUseCase: sl(),
+      openUseCase: sl(),
+      closeUseCase: sl(),
+      updateOperationalHourUseCase: sl(),
+    ),
+  );
+  sl.registerFactory(
+    () => MerchantShippingBloc(
+      getCourierUseCase: sl(),
+      updateShippingUseCase: sl(),
+      getMerchantUseCase: sl(),
+    ),
+  );
   sl.registerFactory(() => MerchantOrderBloc(getUseCase: sl()));
   sl.registerFactory(
     () => MerchantDetailOrderBloc(
@@ -183,12 +205,11 @@ Future<void> initDependency() async {
       receivedUseCase: sl(),
     ),
   );
-  sl.registerFactory(() => MerchantPromotionBloc(useCase: sl(), deleteUseCase: sl()));
+  sl.registerFactory(
+    () => MerchantPromotionBloc(useCase: sl(), deleteUseCase: sl()),
+  );
   sl.registerFactory(() => MerchantInputPromotionBloc(sl(), sl(), sl()));
   sl.registerFactoryParam<MerchantShipOrderBloc, String, void>(
-    (orderId, _) => MerchantShipOrderBloc(
-      shipUseCase: sl(),
-      orderId: orderId,
-    ),
+    (orderId, _) => MerchantShipOrderBloc(shipUseCase: sl(), orderId: orderId),
   );
 }

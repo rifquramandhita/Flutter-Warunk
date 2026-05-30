@@ -13,6 +13,7 @@ import 'package:warunk/core/widgets/shadow_card.dart';
 import 'package:warunk/core/dependency/dependency.dart';
 import 'package:warunk/core/helper/global_helper.dart';
 import 'package:warunk/core/helper/dialog_helper.dart';
+import 'package:warunk/core/bloc/auth/auth_bloc.dart';
 
 class CustomerProfileScreen extends StatelessWidget {
   const CustomerProfileScreen({super.key});
@@ -131,7 +132,7 @@ class CustomerProfileScreen extends StatelessWidget {
   }
 
   Widget _buildUserCard(BuildContext context) {
-    final state = context.watch<CustomerProfilBloc>().state;
+    final authState = context.watch<AuthBloc>().state;
     return ShadowCard(
       child: Row(
         children: [
@@ -153,7 +154,7 @@ class CustomerProfileScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  state.name,
+                  authState.name,
                   style: GlobalHelper.getTextTheme(
                     context,
                     appTextStyle: AppTextStyle.BODY_LARGE,
@@ -163,13 +164,13 @@ class CustomerProfileScreen extends StatelessWidget {
                 Row(
                   children: [
                     Icon(
-                      Icons.phone_outlined,
+                      Icons.email_outlined,
                       size: 14,
                       color: GlobalHelper.getColorSchema(context).primary,
                     ),
                     const SizedBox(width: 6),
                     Text(
-                      state.phone,
+                      authState.email,
                       style:
                           GlobalHelper.getTextTheme(
                             context,
@@ -300,11 +301,7 @@ class CustomerProfileScreen extends StatelessWidget {
             icon: Icons.person_outline,
             label: 'Edit Profil',
             iconColor: GlobalHelper.getColorSchema(context).primary,
-            onTap: () => navigatorKey.currentState?.push(
-              MaterialPageRoute(
-                builder: (_) => const CustomerEditProfileScreen(),
-              ),
-            ),
+            onTap: () => _onPressEditProfil(context),
           ),
           _divider(context),
           _menuItem(
@@ -497,5 +494,13 @@ class CustomerProfileScreen extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  void _onPressEditProfil(BuildContext context) async {
+    final bloc = context.read<AuthBloc>();
+    final isSuccess = await navigatorKey.currentState?.push(
+      MaterialPageRoute(builder: (_) => CustomerEditProfileScreen()),
+    );
+    if (isSuccess == true) bloc.add(AuthEventCheck());
   }
 }

@@ -1,49 +1,50 @@
+import 'dart:io';
 import 'package:equatable/equatable.dart';
 
-class CustomerProfileState extends Equatable {
+class CustomerEditProfilState extends Equatable {
   final bool isLoading;
   final bool isSaving;
+  final bool isSuccess;
   final String name;
   final String email;
   final String phone;
-  final String city;
-  final String birthDate;
-  final String gender;
   final String? errorMessage;
+  final File? photoFile;
+  final String? photoUrl;
 
-  const CustomerProfileState({
+  const CustomerEditProfilState({
     this.isLoading = false,
     this.isSaving = false,
+    this.isSuccess = false,
     this.name = '',
     this.email = '',
     this.phone = '',
-    this.city = '',
-    this.birthDate = '',
-    this.gender = 'Laki-laki',
     this.errorMessage,
+    this.photoFile,
+    this.photoUrl,
   });
 
-  CustomerProfileState copyWith({
+  CustomerEditProfilState copyWith({
     bool? isLoading,
     bool? isSaving,
+    bool? isSuccess,
     String? name,
     String? email,
     String? phone,
-    String? city,
-    String? birthDate,
-    String? gender,
     String? errorMessage,
+    File? photoFile,
+    String? photoUrl,
   }) {
-    return CustomerProfileState(
+    return CustomerEditProfilState(
       isLoading: isLoading ?? this.isLoading,
       isSaving: isSaving ?? this.isSaving,
+      isSuccess: isSuccess ?? this.isSuccess,
       name: name ?? this.name,
       email: email ?? this.email,
       phone: phone ?? this.phone,
-      city: city ?? this.city,
-      birthDate: birthDate ?? this.birthDate,
-      gender: gender ?? this.gender,
-      errorMessage: errorMessage, // deliberately allowing null
+      errorMessage: errorMessage,
+      photoFile: photoFile ?? this.photoFile,
+      photoUrl: photoUrl ?? this.photoUrl,
     );
   }
 
@@ -51,12 +52,12 @@ class CustomerProfileState extends Equatable {
   List<Object?> get props => [
     isLoading,
     isSaving,
+    isSuccess,
     name,
     email,
     phone,
-    city,
-    birthDate,
-    gender,
     errorMessage,
+    photoFile,
+    photoUrl,
   ];
 }

@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:warunk/app/features/customer/presentation/edit_profil/bloc/customer_profile_bloc.dart';
-import 'package:warunk/app/features/customer/presentation/edit_profil/bloc/customer_profile_event.dart';
-import 'package:warunk/app/features/customer/presentation/edit_profil/bloc/customer_profile_state.dart';
-import 'package:warunk/theme/app_colors.dart';
+import 'package:warunk/app/features/customer/presentation/edit_profil/bloc/customer_edit_profil_bloc.dart';
+import 'package:warunk/app/features/customer/presentation/edit_profil/bloc/customer_edit_profil_event.dart';
+import 'package:warunk/app/features/customer/presentation/edit_profil/bloc/customer_edit_profil_state.dart';
 import 'package:warunk/core/widgets/custom_text_field.dart';
 import 'package:warunk/core/widgets/primary_button.dart';
 import 'package:warunk/core/widgets/shadow_card.dart';
 import 'package:warunk/core/widgets/sticky_bottom_bar.dart';
+import 'package:warunk/core/dependency/dependency.dart';
+import 'package:warunk/core/helper/global_helper.dart';
+import 'package:warunk/core/helper/dialog_helper.dart';
+import 'package:warunk/main.dart';
 
 class CustomerEditProfileScreen extends StatelessWidget {
   const CustomerEditProfileScreen({super.key});
@@ -15,186 +18,177 @@ class CustomerEditProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => CustomerProfileBloc()..add(CustomerLoadProfile()),
-      child: const _EditProfileView(),
-    );
-  }
-}
-
-class _EditProfileView extends StatelessWidget {
-  const _EditProfileView();
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.background,
-      appBar: AppBar(
-        backgroundColor: AppColors.background,
-        elevation: 0,
-        surfaceTintColor: Colors.transparent,
-        centerTitle: true,
-        leading: GestureDetector(
-          onTap: () => Navigator.of(context).pop(),
-          child: const Icon(Icons.arrow_back_rounded, color: AppColors.primary),
-        ),
-        title: const Text(
-          'Edit Profil',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w800,
-            color: AppColors.primary, // Green text for app bar title
-          ),
-        ),
-      ),
-      body: BlocConsumer<CustomerProfileBloc, CustomerProfileState>(
+      create: (context) =>
+          sl<CustomerEditProfilBloc>()..add(CustomerEditProfilEventLoad()),
+      child: BlocConsumer<CustomerEditProfilBloc, CustomerEditProfilState>(
         listener: (context, state) {
           if (state.errorMessage != null) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(state.errorMessage!),
-                backgroundColor: Colors.red,
-              ),
+            DialogHelper.showErrorSnackBar(
+              context: context,
+              text: state.errorMessage!,
             );
-          } else if (state.isSaving == false &&
-              state.errorMessage == null &&
-              ModalRoute.of(context)?.isCurrent == true) {
-            // Optional: pop or show success message after save complete.
-            // Since there's no success flag explicitly, if it was saving and now it's not, and no error, maybe it succeeded.
-            // But let's keep it simple.
+          } else if (state.isSuccess) {
+            DialogHelper.showSnackBar(
+              context: context,
+              text: 'Profil berhasil diperbarui',
+              color: GlobalHelper.getColorSchema(context).primary,
+            );
+            navigatorKey.currentState?.pop(true);
           }
         },
         builder: (context, state) {
-          if (state.isLoading) {
-            return const Center(
-              child: CircularProgressIndicator(color: AppColors.primary),
-            );
-          }
-
-          return SingleChildScrollView(
-            padding: const EdgeInsets.fromLTRB(
-              20,
-              20,
-              20,
-              100,
-            ), // Padding bottom for floating button
-            child: Column(
-              children: [
-                // ── Avatar Section ───────────────────────────────────────────
-                _buildAvatarSection(),
-                const SizedBox(height: 32),
-
-                // ── Form Section ─────────────────────────────────────────────
-                _buildFormSection(context, state),
-              ],
-            ),
-          );
-        },
-      ),
-      // ── Fixed Bottom Button ──────────────────────────────────────────
-      bottomSheet: BlocBuilder<CustomerProfileBloc, CustomerProfileState>(
-        builder: (context, state) {
-          return StickyBottomBar(
-            child: PrimaryButton(
-              label: 'Simpan Perubahan',
-              isLoading: state.isSaving,
-              onPressed: () {
-                context.read<CustomerProfileBloc>().add(CustomerSaveProfile());
-              },
-            ),
+          return Scaffold(
+            backgroundColor: GlobalHelper.getColorSchema(context).surface,
+            appBar: AppBar(title: const Text('Edit Profil')),
+            body: _bodyBuild(context),
           );
         },
       ),
     );
   }
 
-  Widget _buildAvatarSection() {
+  Widget _bodyBuild(BuildContext context) {
+    final state = context.watch<CustomerEditProfilBloc>().state;
+    return SafeArea(
+      child: Stack(
+        children: [
+          if (!state.isLoading) _bodyLayout(context),
+          if (state.isLoading)
+            Center(
+              child: CircularProgressIndicator(
+                color: GlobalHelper.getColorSchema(context).primary,
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
+  Widget _bodyLayout(BuildContext context) {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.fromLTRB(20, 20, 20, 100),
+      child: Column(
+        children: [
+          _buildAvatarSection(context),
+          const SizedBox(height: 32),
+          _buildFormSection(context),
+          const SizedBox(height: 20),
+          PrimaryButton(
+            label: 'Simpan Perubahan',
+            isLoading: context.watch<CustomerEditProfilBloc>().state.isSaving,
+            onPressed: () {
+              context.read<CustomerEditProfilBloc>().add(
+                CustomerEditProfilEventSave(),
+              );
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildAvatarSection(BuildContext context) {
+    final state = context.watch<CustomerEditProfilBloc>().state;
+    final colorSchema = GlobalHelper.getColorSchema(context);
+
+    Widget imageWidget;
+    if (state.photoFile != null) {
+      imageWidget = Image.file(
+        state.photoFile!,
+        fit: BoxFit.cover,
+        width: 100,
+        height: 100,
+      );
+    } else if (state.photoUrl != null && state.photoUrl!.isNotEmpty) {
+      imageWidget = Image.network(
+        state.photoUrl!,
+        fit: BoxFit.cover,
+        width: 100,
+        height: 100,
+        errorBuilder: (context, error, stackTrace) => Center(
+          child: Text(
+            '👨🏻',
+            style: GlobalHelper.getTextTheme(
+              context,
+              appTextStyle: AppTextStyle.DISPLAY_MEDIUM,
+            ),
+          ),
+        ),
+      );
+    } else {
+      imageWidget = Center(
+        child: Text(
+          '👨🏻',
+          style: GlobalHelper.getTextTheme(
+            context,
+            appTextStyle: AppTextStyle.DISPLAY_MEDIUM,
+          ),
+        ),
+      );
+    }
+
     return Column(
       children: [
-        Stack(
-          clipBehavior: Clip.none,
-          children: [
-            // Outer ring
-            Container(
-              padding: const EdgeInsets.all(4),
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(
-                  color: AppColors.primary.withValues(alpha: 0.2),
-                  width: 2,
-                ),
-              ),
-              child: Container(
-                width: 100,
-                height: 100,
-                decoration: const BoxDecoration(
-                  color: Color(0xFFB9E4C9),
-                  shape: BoxShape.circle,
-                ),
-                child: const Center(
-                  child: Text('👨🏻', style: TextStyle(fontSize: 60)),
-                ),
-              ),
+        Container(
+          padding: const EdgeInsets.all(4),
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            border: Border.all(
+              color: colorSchema.primary.withValues(alpha: 0.2),
+              width: 2,
             ),
-            // Camera badge
-            Positioned(
-              bottom: 0,
-              right: 0,
-              child: Container(
-                padding: const EdgeInsets.all(6),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  shape: BoxShape.circle,
-                  border: Border.all(color: AppColors.greyBorder),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.05),
-                      blurRadius: 4,
-                      offset: const Offset(0, 2),
-                    ),
-                  ],
-                ),
-                child: const Icon(
-                  Icons.camera_alt_outlined,
-                  size: 16,
-                  color: AppColors.primary,
-                ),
-              ),
+          ),
+          child: Container(
+            width: 100,
+            height: 100,
+            decoration: BoxDecoration(
+              color: colorSchema.primaryContainer,
+              shape: BoxShape.circle,
             ),
-          ],
+            child: ClipOval(child: imageWidget),
+          ),
         ),
         const SizedBox(height: 16),
-        // Ubah Foto button
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          decoration: BoxDecoration(
-            color: const Color(0xFFFFF8E1), // Light amber bg
-            borderRadius: BorderRadius.circular(20),
+        GestureDetector(
+          onTap: () => context.read<CustomerEditProfilBloc>().add(
+            CustomerEditProfilEventPhotoPicked(),
           ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: const [
-              Icon(
-                Icons.camera_alt_outlined,
-                size: 16,
-                color: Color(0xFFF59E0B),
-              ),
-              SizedBox(width: 6),
-              Text(
-                'Ubah Foto',
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w700,
-                  color: Color(0xFFF59E0B),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            decoration: BoxDecoration(
+              color: colorSchema.secondaryContainer,
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  Icons.camera_alt_outlined,
+                  size: 16,
+                  color: colorSchema.onSecondaryContainer,
                 ),
-              ),
-            ],
+                const SizedBox(width: 6),
+                Text(
+                  'Ubah Foto',
+                  style:
+                      GlobalHelper.getTextTheme(
+                        context,
+                        appTextStyle: AppTextStyle.LABEL_SMALL,
+                      )?.copyWith(
+                        fontWeight: FontWeight.w700,
+                        color: colorSchema.onSecondaryContainer,
+                      ),
+                ),
+              ],
+            ),
           ),
         ),
       ],
     );
   }
 
-  Widget _buildFormSection(BuildContext context, CustomerProfileState state) {
+  Widget _buildFormSection(BuildContext context) {
+    final state = context.watch<CustomerEditProfilBloc>().state;
     return ShadowCard(
       padding: const EdgeInsets.all(20),
       child: Column(
@@ -204,8 +198,8 @@ class _EditProfileView extends StatelessWidget {
             label: 'Nama Lengkap',
             prefixIcon: Icons.person_outline,
             initialValue: state.name,
-            onChanged: (value) => context.read<CustomerProfileBloc>().add(
-              CustomerUpdateProfileField('name', value),
+            onChanged: (value) => context.read<CustomerEditProfilBloc>().add(
+              CustomerEditProfilEventNameChanged(value),
             ),
           ),
           const SizedBox(height: 16),
@@ -214,8 +208,8 @@ class _EditProfileView extends StatelessWidget {
             prefixIcon: Icons.email_outlined,
             initialValue: state.email,
             keyboardType: TextInputType.emailAddress,
-            onChanged: (value) => context.read<CustomerProfileBloc>().add(
-              CustomerUpdateProfileField('email', value),
+            onChanged: (value) => context.read<CustomerEditProfilBloc>().add(
+              CustomerEditProfilEventEmailChanged(value),
             ),
           ),
           const SizedBox(height: 16),
@@ -224,86 +218,8 @@ class _EditProfileView extends StatelessWidget {
             prefixIcon: Icons.phone_outlined,
             initialValue: state.phone,
             keyboardType: TextInputType.phone,
-            onChanged: (value) => context.read<CustomerProfileBloc>().add(
-              CustomerUpdateProfileField('phone', value),
-            ),
-          ),
-          const SizedBox(height: 16),
-          CustomTextField(
-            label: 'Kota',
-            prefixIcon: Icons.location_on_outlined,
-            initialValue: state.city,
-            onChanged: (value) => context.read<CustomerProfileBloc>().add(
-              CustomerUpdateProfileField('city', value),
-            ),
-          ),
-          const SizedBox(height: 16),
-          CustomTextField(
-            label: 'Tanggal Lahir',
-            prefixIcon: Icons.calendar_today_outlined,
-            initialValue: state.birthDate,
-            onChanged: (value) => context.read<CustomerProfileBloc>().add(
-              CustomerUpdateProfileField('birthDate', value),
-            ),
-          ),
-          const SizedBox(height: 16),
-
-          // Jenis Kelamin Dropdown
-          const Text(
-            'Jenis Kelamin',
-            style: TextStyle(
-              fontSize: 12,
-              color: AppColors.greyText,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-          const SizedBox(height: 8),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: AppColors.greyBorder),
-            ),
-            child: DropdownButtonHideUnderline(
-              child: DropdownButton<String>(
-                value: state.gender,
-                isExpanded: true,
-                icon: const Icon(
-                  Icons.keyboard_arrow_down_rounded,
-                  color: AppColors.primary,
-                ),
-                items: ['Laki-laki', 'Perempuan'].map((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Row(
-                      children: [
-                        const Icon(
-                          Icons.person_outline,
-                          color: AppColors.primary,
-                          size: 20,
-                        ),
-                        const SizedBox(width: 12),
-                        Text(
-                          value,
-                          style: const TextStyle(
-                            fontSize: 14,
-                            color: AppColors.textDark,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                }).toList(),
-                onChanged: (newValue) {
-                  if (newValue != null) {
-                    context.read<CustomerProfileBloc>().add(
-                      CustomerUpdateProfileField('gender', newValue),
-                    );
-                  }
-                },
-              ),
+            onChanged: (value) => context.read<CustomerEditProfilBloc>().add(
+              CustomerEditProfilEventPhoneChanged(value),
             ),
           ),
         ],
