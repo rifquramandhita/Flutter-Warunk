@@ -144,9 +144,20 @@ class CustomerProfileScreen extends StatelessWidget {
               shape: BoxShape.circle,
               border: Border.all(color: Colors.white, width: 2),
             ),
-            child: const Center(
-              child: Text('👨🏻', style: TextStyle(fontSize: 40)),
-            ),
+            child: authState.photoUrl.isNotEmpty
+                ? ClipOval(
+                    child: Image.network(
+                      authState.photoUrl,
+                      fit: BoxFit.cover,
+                      width: 70,
+                      height: 70,
+                      errorBuilder: (context, error, stackTrace) =>
+                          const Center(child: Text('👨🏻', style: TextStyle(fontSize: 40))),
+                    ),
+                  )
+                : const Center(
+                    child: Text('👨🏻', style: TextStyle(fontSize: 40)),
+                  ),
           ),
           const SizedBox(width: 16),
           Expanded(

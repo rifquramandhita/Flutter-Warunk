@@ -26,10 +26,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     if (token != null && token.isNotEmpty) {
       final name = await SharedPreferencesHelper.getString(PREF_NAME) ?? '';
       final email = await SharedPreferencesHelper.getString(PREF_EMAIL) ?? '';
+      final photoUrl = await SharedPreferencesHelper.getString(PREF_PHOTO) ?? '';
       emit(
         state.copyWith(
           name: name,
           email: email,
+          photoUrl: photoUrl,
           isAuthenticated: true,
           isLoading: false,
         ),
