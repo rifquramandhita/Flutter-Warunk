@@ -6,4 +6,5 @@ abstract class CustomerAddressRepository {
   Future<DataState<CustomerAddressEntity>> getById(String id);
   Future<DataState<dynamic>> insert({required CustomerAddressSendParam param});
   Future<DataState<dynamic>> update({required CustomerAddressSendParam param});
+  Future<DataState<dynamic>> setAsDefault(String id);
 }

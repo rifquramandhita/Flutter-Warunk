@@ -75,6 +75,7 @@ import 'package:warunk/app/features/customer/data/repository/customer_address_re
 import 'package:warunk/app/features/customer/domain/use_case/customer_address_get_use_case.dart';
 import 'package:warunk/app/features/customer/domain/use_case/customer_address_send_use_case.dart';
 import 'package:warunk/app/features/customer/domain/use_case/customer_address_get_by_id_use_case.dart';
+import 'package:warunk/app/features/customer/domain/use_case/customer_address_set_default_use_case.dart';
 import 'package:dio/dio.dart';
 import 'package:warunk/core/network/app_interceptor.dart';
 import 'package:warunk/main.dart';
@@ -173,6 +174,8 @@ Future<void> initDependency() async {
   sl.registerLazySingleton(() => CustomerAddressGetUseCase(repository: sl()));
   sl.registerLazySingleton(() => CustomerAddressSendUseCase(repository: sl()));
   sl.registerLazySingleton(() => CustomerAddressGetByIdUseCase(repository: sl()));
+  sl.registerLazySingleton(
+      () => CustomerAddressSetDefaultUseCase(repository: sl()));
 
   //bloc
   sl.registerLazySingleton(() => AuthBloc());
@@ -190,7 +193,10 @@ Future<void> initDependency() async {
   );
   sl.registerFactory(() => CustomerProfilBloc());
   sl.registerFactory(() => CustomerEditProfilBloc(updateUseCase: sl()));
-  sl.registerFactory(() => CustomerAddressBloc(getUseCase: sl()));
+  sl.registerFactory(() => CustomerAddressBloc(
+        getUseCase: sl(),
+        setDefaultUseCase: sl(),
+      ));
   sl.registerFactory(() => CustomerInputAddressBloc(sl(), sl()));
   sl.registerFactory(() => MerchantProfilBloc(useCase: sl()));
   sl.registerFactory(

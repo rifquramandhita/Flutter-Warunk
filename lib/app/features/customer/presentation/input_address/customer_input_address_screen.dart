@@ -16,8 +16,9 @@ class CustomerInputAddressScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => sl<CustomerInputAddressBloc>()
-        ..add(CustomerInputAddressEventInit(id: addressId)),
+      create: (context) =>
+          sl<CustomerInputAddressBloc>()
+            ..add(CustomerInputAddressEventInit(id: addressId)),
       child: BlocConsumer<CustomerInputAddressBloc, CustomerInputAddressState>(
         listener: (context, state) {
           if (state.errorMessage != null) {
@@ -40,10 +41,14 @@ class CustomerInputAddressScreen extends StatelessWidget {
                     child: ElevatedButton(
                       onPressed: () {
                         navigatorKey.currentState?.pop(); // close bottom sheet
-                        navigatorKey.currentState?.pop(true); // close screen and return true
+                        navigatorKey.currentState?.pop(
+                          true,
+                        ); // close screen and return true
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: GlobalHelper.getColorSchema(context).primary,
+                        backgroundColor: GlobalHelper.getColorSchema(
+                          context,
+                        ).primary,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(14),
                         ),
@@ -51,13 +56,14 @@ class CustomerInputAddressScreen extends StatelessWidget {
                       ),
                       child: Text(
                         "Tutup",
-                        style: GlobalHelper.getTextTheme(
-                          context,
-                          appTextStyle: AppTextStyle.TITLE_SMALL,
-                        )?.copyWith(
-                          fontWeight: FontWeight.w700,
-                          color: Colors.white,
-                        ),
+                        style:
+                            GlobalHelper.getTextTheme(
+                              context,
+                              appTextStyle: AppTextStyle.TITLE_SMALL,
+                            )?.copyWith(
+                              fontWeight: FontWeight.w700,
+                              color: Colors.white,
+                            ),
                       ),
                     ),
                   ),
@@ -246,11 +252,16 @@ class CustomerInputAddressScreen extends StatelessWidget {
             onTap: () {
               // Simulate map picking
               context.read<CustomerInputAddressBloc>().add(
-                const CustomerInputAddressEventLocationChanged(106.8229, -6.1944),
+                const CustomerInputAddressEventLocationChanged(
+                  106.8229,
+                  -6.1944,
+                ),
               );
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: const Text('Titik lokasi berhasil ditambahkan (Mock)'),
+                  content: const Text(
+                    'Titik lokasi berhasil ditambahkan (Mock)',
+                  ),
                   backgroundColor: GlobalHelper.getColorSchema(context).primary,
                 ),
               );
@@ -446,7 +457,7 @@ class CustomerInputAddressScreen extends StatelessWidget {
                 const SizedBox(width: 12),
                 Expanded(
                   child: Column(
-                     crossAxisAlignment: CrossAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         'Koordinat Tersimpan',
@@ -458,13 +469,14 @@ class CustomerInputAddressScreen extends StatelessWidget {
                       const SizedBox(height: 2),
                       Text(
                         '$latitude, $longitude',
-                        style: GlobalHelper.getTextTheme(
-                          context,
-                          appTextStyle: AppTextStyle.BODY_SMALL,
-                        )?.copyWith(
-                          color: colorSchema.onSurface,
-                          fontWeight: FontWeight.w600,
-                        ),
+                        style:
+                            GlobalHelper.getTextTheme(
+                              context,
+                              appTextStyle: AppTextStyle.BODY_SMALL,
+                            )?.copyWith(
+                              color: colorSchema.onSurface,
+                              fontWeight: FontWeight.w600,
+                            ),
                       ),
                     ],
                   ),

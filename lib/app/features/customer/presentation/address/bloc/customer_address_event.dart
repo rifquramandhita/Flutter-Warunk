@@ -2,7 +2,7 @@ abstract class CustomerAddressEvent {}
 
 class CustomerAddressEventLoadAddresses extends CustomerAddressEvent {}
 
-class CustomerAddressEventSelectAddress extends CustomerAddressEvent {
+class CustomerAddressEventSetDefaultAddress extends CustomerAddressEvent {
   final String id;
-  CustomerAddressEventSelectAddress(this.id);
+  CustomerAddressEventSetDefaultAddress(this.id);
 }

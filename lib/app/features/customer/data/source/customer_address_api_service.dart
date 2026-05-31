@@ -21,4 +21,7 @@ abstract class CustomerAddressApiService {
 
   @GET('/api/user-addresses/{id}')
   Future<HttpResponse<dynamic>> getById(@Path('id') String id);
+
+  @POST('/api/user-addresses/{id}/default')
+  Future<HttpResponse<dynamic>> setAsDefault(@Path('id') String id);
 }

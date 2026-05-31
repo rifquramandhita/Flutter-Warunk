@@ -53,4 +53,12 @@ class CustomerAddressRepositoryImpl implements CustomerAddressRepository {
       },
     );
   }
+
+  @override
+  Future<DataState<dynamic>> setAsDefault(String id) {
+    return handleResponse(
+      () => _apiService.setAsDefault(id),
+      (json) => json,
+    );
+  }
 }

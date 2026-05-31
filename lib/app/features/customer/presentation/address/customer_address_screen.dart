@@ -224,41 +224,25 @@ class CustomerAddressScreen extends StatelessWidget {
 
             const SizedBox(height: 16),
             // Dotted Divider
-            const CustomDottedDivider(),
-            const SizedBox(height: 16),
+            // const CustomDottedDivider(),
+            // const SizedBox(height: 16),
 
-            // Action Buttons
-            Row(
-              children: [
-                Expanded(
-                  child: OutlineButtonCustom(
-                    onPressed: () {},
-                    icon: Icons.edit_outlined,
-                    label: 'Edit',
-                    height: 40,
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: isSelected
-                      ? PrimaryButton(
-                          onPressed: () {},
-                          icon: Icons.check_circle,
-                          label: 'Dipilih',
-                          height: 40,
-                        )
-                      : OutlineButtonCustom(
-                          onPressed: () =>
-                              context.read<CustomerAddressBloc>().add(
-                                CustomerAddressEventSelectAddress(address.id),
-                              ),
-                          icon: Icons.check_circle_outline,
-                          label: 'Pilih',
-                          height: 40,
-                        ),
-                ),
-              ],
-            ),
+            // // Action Buttons
+            // isSelected
+            //     ? PrimaryButton(
+            //         onPressed: () {},
+            //         icon: Icons.check_circle,
+            //         label: 'Utama',
+            //         height: 40,
+            //       )
+            //     : OutlineButtonCustom(
+            //         onPressed: () => context.read<CustomerAddressBloc>().add(
+            //           CustomerAddressEventSetDefaultAddress(address.id),
+            //         ),
+            //         icon: Icons.check_circle_outline,
+            //         label: 'Jadikan Utama',
+            //         height: 40,
+            //       ),
           ],
         ),
       ),

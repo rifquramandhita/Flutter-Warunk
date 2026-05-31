@@ -1,17 +1,22 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:warunk/app/features/customer/domain/use_case/customer_address_get_use_case.dart';
+import 'package:warunk/app/features/customer/domain/use_case/customer_address_set_default_use_case.dart';
 import 'package:warunk/core/network/data_state.dart';
 import 'customer_address_event.dart';
 import 'customer_address_state.dart';
 
 class CustomerAddressBloc extends Bloc<CustomerAddressEvent, CustomerAddressState> {
   final CustomerAddressGetUseCase _getUseCase;
+  final CustomerAddressSetDefaultUseCase _setDefaultUseCase;
 
-  CustomerAddressBloc({required CustomerAddressGetUseCase getUseCase})
-      : _getUseCase = getUseCase,
+  CustomerAddressBloc({
+    required CustomerAddressGetUseCase getUseCase,
+    required CustomerAddressSetDefaultUseCase setDefaultUseCase,
+  })  : _getUseCase = getUseCase,
+        _setDefaultUseCase = setDefaultUseCase,
         super(const CustomerAddressState()) {
     on<CustomerAddressEventLoadAddresses>(_onLoadAddresses);
-    on<CustomerAddressEventSelectAddress>(_onSelectAddress);
+    on<CustomerAddressEventSetDefaultAddress>(_onSetDefaultAddress);
   }
 
   Future<void> _onLoadAddresses(
@@ -41,8 +46,14 @@ class CustomerAddressBloc extends Bloc<CustomerAddressEvent, CustomerAddressStat
     emit(state.copyWith(isLoading: false));
   }
 
-  void _onSelectAddress(
-      CustomerAddressEventSelectAddress event, Emitter<CustomerAddressState> emit) {
-    emit(state.copyWith(selectedAddressId: event.id));
+  Future<void> _onSetDefaultAddress(
+      CustomerAddressEventSetDefaultAddress event, Emitter<CustomerAddressState> emit) async {
+    emit(state.copyWith(isLoading: true));
+    final response = await _setDefaultUseCase.call(event.id);
+    if (response is SuccessState) {
+      add(CustomerAddressEventLoadAddresses());
+    } else {
+      emit(state.copyWith(isLoading: false, errorMessage: response.message));
+    }
   }
 }
