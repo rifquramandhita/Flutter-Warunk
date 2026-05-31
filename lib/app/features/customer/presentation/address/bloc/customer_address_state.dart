@@ -4,7 +4,7 @@ import 'package:warunk/app/features/customer/domain/entity/customer_address.dart
 class CustomerAddressState extends Equatable {
   final bool isLoading;
   final String? errorMessage;
-  final List<CustomerAddress> addresses;
+  final List<CustomerAddressEntity> addresses;
   final String? selectedAddressId;
 
   const CustomerAddressState({
@@ -17,7 +17,7 @@ class CustomerAddressState extends Equatable {
   CustomerAddressState copyWith({
     bool? isLoading,
     String? errorMessage,
-    List<CustomerAddress>? addresses,
+    List<CustomerAddressEntity>? addresses,
     String? selectedAddressId,
   }) {
     return CustomerAddressState(

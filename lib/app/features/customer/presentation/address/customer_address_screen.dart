@@ -4,6 +4,7 @@ import 'package:warunk/app/features/customer/domain/entity/customer_address.dart
 import 'package:warunk/app/features/customer/presentation/address/bloc/customer_address_bloc.dart';
 import 'package:warunk/app/features/customer/presentation/address/bloc/customer_address_event.dart';
 import 'package:warunk/app/features/customer/presentation/address/bloc/customer_address_state.dart';
+import 'package:warunk/app/features/customer/presentation/input_address/customer_input_address_screen.dart';
 import 'package:warunk/core/dependency/dependency.dart';
 import 'package:warunk/core/helper/dialog_helper.dart';
 import 'package:warunk/core/helper/global_helper.dart';
@@ -103,162 +104,182 @@ class CustomerAddressScreen extends StatelessWidget {
 
   Widget _buildAddressCard(
     BuildContext context,
-    CustomerAddress address,
+    CustomerAddressEntity address,
     bool isSelected,
   ) {
     final iconData = _getIconForAddress(address.label);
     final colorSchema = GlobalHelper.getColorSchema(context);
 
-    return ShadowCard(
-      backgroundColor: isSelected
-          ? colorSchema.primary.withValues(alpha: 0.02)
-          : colorSchema.surface,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Icon Circle
-              Container(
-                width: 48,
-                height: 48,
-                decoration: BoxDecoration(
-                  color: colorSchema.primary.withValues(alpha: 0.1),
-                  shape: BoxShape.circle,
+    return GestureDetector(
+      onTap: () => _onPressItem(context, address),
+      child: ShadowCard(
+        backgroundColor: isSelected
+            ? colorSchema.primary.withValues(alpha: 0.02)
+            : colorSchema.surface,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Icon Circle
+                Container(
+                  width: 48,
+                  height: 48,
+                  decoration: BoxDecoration(
+                    color: colorSchema.primary.withValues(alpha: 0.1),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(iconData, color: colorSchema.primary, size: 24),
                 ),
-                child: Icon(iconData, color: colorSchema.primary, size: 24),
-              ),
-              const SizedBox(width: 16),
-              // Detail
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Text(
-                          address.recipientName,
-                          style: GlobalHelper.getTextTheme(
-                            context,
-                            appTextStyle: AppTextStyle.TITLE_MEDIUM,
-                          )?.copyWith(fontWeight: FontWeight.w800),
-                        ),
-                        const Spacer(),
-                        if (address.isDefault)
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 10,
-                              vertical: 4,
-                            ),
-                            decoration: BoxDecoration(
-                              color: colorSchema.primary.withValues(alpha: 0.1),
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child: Text(
-                              'Utama',
-                              style:
-                                  GlobalHelper.getTextTheme(
-                                    context,
-                                    appTextStyle: AppTextStyle.LABEL_SMALL,
-                                  )?.copyWith(
-                                    fontWeight: FontWeight.w700,
-                                    color: colorSchema.primary,
-                                  ),
-                            ),
+                const SizedBox(width: 16),
+                // Detail
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Text(
+                            address.recipientName,
+                            style: GlobalHelper.getTextTheme(
+                              context,
+                              appTextStyle: AppTextStyle.TITLE_MEDIUM,
+                            )?.copyWith(fontWeight: FontWeight.w800),
                           ),
-                      ],
-                    ),
-                    const SizedBox(height: 8),
-                    Row(
-                      children: [
-                        Icon(
-                          Icons.phone_outlined,
-                          size: 14,
-                          color: colorSchema.primary,
-                        ),
-                        const SizedBox(width: 8),
-                        Text(
-                          address.phone,
-                          style: GlobalHelper.getTextTheme(
-                            context,
-                            appTextStyle: AppTextStyle.BODY_SMALL,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 6),
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(top: 2),
-                          child: Icon(
-                            Icons.location_on_outlined,
+                          const Spacer(),
+                          if (address.isDefault)
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 10,
+                                vertical: 4,
+                              ),
+                              decoration: BoxDecoration(
+                                color: colorSchema.primary.withValues(
+                                  alpha: 0.1,
+                                ),
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: Text(
+                                'Utama',
+                                style:
+                                    GlobalHelper.getTextTheme(
+                                      context,
+                                      appTextStyle: AppTextStyle.LABEL_SMALL,
+                                    )?.copyWith(
+                                      fontWeight: FontWeight.w700,
+                                      color: colorSchema.primary,
+                                    ),
+                              ),
+                            ),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.phone_outlined,
                             size: 14,
                             color: colorSchema.primary,
                           ),
-                        ),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: Text(
-                            address.fullAddress,
+                          const SizedBox(width: 8),
+                          Text(
+                            address.phone,
                             style: GlobalHelper.getTextTheme(
                               context,
                               appTextStyle: AppTextStyle.BODY_SMALL,
-                            )?.copyWith(height: 1.4),
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-
-          const SizedBox(height: 16),
-          // Dotted Divider
-          const CustomDottedDivider(),
-          const SizedBox(height: 16),
-
-          // Action Buttons
-          Row(
-            children: [
-              Expanded(
-                child: OutlineButtonCustom(
-                  onPressed: () {},
-                  icon: Icons.edit_outlined,
-                  label: 'Edit',
-                  height: 40,
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: isSelected
-                    ? PrimaryButton(
-                        onPressed: () {},
-                        icon: Icons.check_circle,
-                        label: 'Dipilih',
-                        height: 40,
-                      )
-                    : OutlineButtonCustom(
-                        onPressed: () => context
-                            .read<CustomerAddressBloc>()
-                            .add(CustomerAddressEventSelectAddress(address.id)),
-                        icon: Icons.check_circle_outline,
-                        label: 'Pilih',
-                        height: 40,
+                        ],
                       ),
-              ),
-            ],
-          ),
-        ],
+                      const SizedBox(height: 6),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(top: 2),
+                            child: Icon(
+                              Icons.location_on_outlined,
+                              size: 14,
+                              color: colorSchema.primary,
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              address.fullAddress,
+                              style: GlobalHelper.getTextTheme(
+                                context,
+                                appTextStyle: AppTextStyle.BODY_SMALL,
+                              )?.copyWith(height: 1.4),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+
+            const SizedBox(height: 16),
+            // Dotted Divider
+            const CustomDottedDivider(),
+            const SizedBox(height: 16),
+
+            // Action Buttons
+            Row(
+              children: [
+                Expanded(
+                  child: OutlineButtonCustom(
+                    onPressed: () {},
+                    icon: Icons.edit_outlined,
+                    label: 'Edit',
+                    height: 40,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: isSelected
+                      ? PrimaryButton(
+                          onPressed: () {},
+                          icon: Icons.check_circle,
+                          label: 'Dipilih',
+                          height: 40,
+                        )
+                      : OutlineButtonCustom(
+                          onPressed: () =>
+                              context.read<CustomerAddressBloc>().add(
+                                CustomerAddressEventSelectAddress(address.id),
+                              ),
+                          icon: Icons.check_circle_outline,
+                          label: 'Pilih',
+                          height: 40,
+                        ),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
 
-  void _onPressItem(BuildContext context, CustomerAddressEntity item) {}
+  void _onPressItem(BuildContext context, CustomerAddressEntity item) async {
+    final bloc = context.read<CustomerAddressBloc>();
+    await navigatorKey.currentState?.push(
+      MaterialPageRoute(
+        builder: (context) => CustomerInputAddressScreen(addressId: item.id),
+      ),
+    );
+    bloc.add(CustomerAddressEventLoadAddresses());
+  }
 
-  void _onPressAdd(BuildContext context) {}
+  void _onPressAdd(BuildContext context) async {
+    final bloc = context.read<CustomerAddressBloc>();
+    await navigatorKey.currentState?.push(
+      MaterialPageRoute(builder: (context) => CustomerInputAddressScreen()),
+    );
+    bloc.add(CustomerAddressEventLoadAddresses());
+  }
 }

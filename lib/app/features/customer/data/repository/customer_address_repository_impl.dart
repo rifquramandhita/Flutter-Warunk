@@ -10,14 +10,47 @@ class CustomerAddressRepositoryImpl implements CustomerAddressRepository {
     : _apiService = apiService;
 
   @override
-  Future<DataState<List<CustomerAddress>>> get() {
+  Future<DataState<List<CustomerAddressEntity>>> get() {
     return handleResponse(() => _apiService.get(), (json) {
       if (json is Map<String, dynamic> && json['addresses'] is List) {
         return (json['addresses'] as List)
-            .map((e) => CustomerAddress.fromJson(e as Map<String, dynamic>))
+            .map(
+              (e) => CustomerAddressEntity.fromJson(e as Map<String, dynamic>),
+            )
             .toList();
       }
-      return <CustomerAddress>[];
+      return <CustomerAddressEntity>[];
     });
+  }
+
+  @override
+  Future<DataState<dynamic>> insert({required CustomerAddressSendParam param}) {
+    return handleResponse(
+      () => _apiService.create(param.toJson()),
+      (json) => json,
+    );
+  }
+
+  @override
+  Future<DataState<dynamic>> update({required CustomerAddressSendParam param}) {
+    return handleResponse(
+      () => _apiService.update(param.id!, param.toJson()),
+      (json) => json,
+    );
+  }
+
+  @override
+  Future<DataState<CustomerAddressEntity>> getById(String id) {
+    return handleResponse(
+      () => _apiService.getById(id),
+      (json) {
+        if (json is Map<String, dynamic> && json['address'] != null) {
+          return CustomerAddressEntity.fromJson(
+            json['address'] as Map<String, dynamic>,
+          );
+        }
+        throw Exception('Invalid response format');
+      },
+    );
   }
 }

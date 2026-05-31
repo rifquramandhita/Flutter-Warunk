@@ -9,6 +9,7 @@ import 'package:warunk/app/features/auth/domain/use_case/auth_register_use_case.
 import 'package:warunk/app/features/customer/presentation/profil/bloc/customer_profil_bloc.dart';
 import 'package:warunk/app/features/customer/presentation/edit_profil/bloc/customer_edit_profil_bloc.dart';
 import 'package:warunk/app/features/customer/presentation/address/bloc/customer_address_bloc.dart';
+import 'package:warunk/app/features/customer/presentation/input_address/bloc/customer_input_address_bloc.dart';
 import 'package:warunk/app/features/auth/presentation/login/bloc/auth_login_bloc.dart';
 import 'package:warunk/app/features/auth/presentation/register/bloc/auth_register_bloc.dart';
 import 'package:warunk/app/features/auth/presentation/logout/bloc/auth_logout_bloc.dart';
@@ -72,6 +73,8 @@ import 'package:warunk/app/features/customer/data/source/customer_address_api_se
 import 'package:warunk/app/features/customer/domain/repository/customer_address_repository.dart';
 import 'package:warunk/app/features/customer/data/repository/customer_address_repository_impl.dart';
 import 'package:warunk/app/features/customer/domain/use_case/customer_address_get_use_case.dart';
+import 'package:warunk/app/features/customer/domain/use_case/customer_address_send_use_case.dart';
+import 'package:warunk/app/features/customer/domain/use_case/customer_address_get_by_id_use_case.dart';
 import 'package:dio/dio.dart';
 import 'package:warunk/core/network/app_interceptor.dart';
 import 'package:warunk/main.dart';
@@ -168,6 +171,8 @@ Future<void> initDependency() async {
   sl.registerLazySingleton(() => MerchantPromotionDeleteUseCase(sl()));
   sl.registerLazySingleton(() => CustomerProfilUpdateUseCase(repository: sl()));
   sl.registerLazySingleton(() => CustomerAddressGetUseCase(repository: sl()));
+  sl.registerLazySingleton(() => CustomerAddressSendUseCase(repository: sl()));
+  sl.registerLazySingleton(() => CustomerAddressGetByIdUseCase(repository: sl()));
 
   //bloc
   sl.registerLazySingleton(() => AuthBloc());
@@ -186,6 +191,7 @@ Future<void> initDependency() async {
   sl.registerFactory(() => CustomerProfilBloc());
   sl.registerFactory(() => CustomerEditProfilBloc(updateUseCase: sl()));
   sl.registerFactory(() => CustomerAddressBloc(getUseCase: sl()));
+  sl.registerFactory(() => CustomerInputAddressBloc(sl(), sl()));
   sl.registerFactory(() => MerchantProfilBloc(useCase: sl()));
   sl.registerFactory(
     () => MerchantEditProfilBloc(getUseCase: sl(), updateUseCase: sl()),

@@ -11,4 +11,14 @@ abstract class CustomerAddressApiService {
 
   @GET('/api/user-addresses')
   Future<HttpResponse<dynamic>> get();
+
+  @POST('/api/user-addresses')
+  Future<HttpResponse<dynamic>> create(@Body() Map<String, dynamic> body);
+
+  @PATCH('/api/user-addresses/{id}')
+  Future<HttpResponse<dynamic>> update(
+      @Path('id') String id, @Body() Map<String, dynamic> body);
+
+  @GET('/api/user-addresses/{id}')
+  Future<HttpResponse<dynamic>> getById(@Path('id') String id);
 }
