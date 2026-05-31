@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:warunk/app/features/customer/domain/entity/customer_merchant.dart';
 
 class CustomerSearchState extends Equatable {
   final bool isLoading;
@@ -6,6 +7,7 @@ class CustomerSearchState extends Equatable {
   final bool showResults;
   final String searchQuery;
   final List<String> activeFilters;
+  final List<CustomerMerchantEntity> merchants;
 
   const CustomerSearchState({
     this.isLoading = false,
@@ -13,7 +15,16 @@ class CustomerSearchState extends Equatable {
     this.showResults = false,
     this.searchQuery = '',
     this.activeFilters = const ['Jakarta', 'Terdekat', 'Buka', 'Promo'],
+    this.merchants = const [],
   });
+
+  List<CustomerMerchantEntity> get filteredMerchants {
+    if (searchQuery.isEmpty) return merchants;
+    final lowerQuery = searchQuery.toLowerCase();
+    return merchants.where((merchant) {
+      return merchant.name.toLowerCase().contains(lowerQuery);
+    }).toList();
+  }
 
   CustomerSearchState copyWith({
     bool? isLoading,
@@ -21,6 +32,7 @@ class CustomerSearchState extends Equatable {
     bool? showResults,
     String? searchQuery,
     List<String>? activeFilters,
+    List<CustomerMerchantEntity>? merchants,
   }) {
     return CustomerSearchState(
       isLoading: isLoading ?? this.isLoading,
@@ -28,6 +40,7 @@ class CustomerSearchState extends Equatable {
       showResults: showResults ?? this.showResults,
       searchQuery: searchQuery ?? this.searchQuery,
       activeFilters: activeFilters ?? this.activeFilters,
+      merchants: merchants ?? this.merchants,
     );
   }
 
@@ -38,5 +51,6 @@ class CustomerSearchState extends Equatable {
     showResults,
     searchQuery,
     activeFilters,
+    merchants,
   ];
 }

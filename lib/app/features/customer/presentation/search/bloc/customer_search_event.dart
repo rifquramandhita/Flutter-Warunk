@@ -1,5 +1,7 @@
 abstract class CustomerSearchEvent {}
 
+class CustomerSearchMerchantsFetched extends CustomerSearchEvent {}
+
 class CustomerSearchQuerySubmitted extends CustomerSearchEvent {
   final String query;
   CustomerSearchQuerySubmitted(this.query);
