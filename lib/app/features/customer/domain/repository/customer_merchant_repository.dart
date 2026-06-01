@@ -3,4 +3,5 @@ import 'package:warunk/core/network/data_state.dart';
 
 abstract class CustomerMerchantRepository {
   Future<DataState<List<CustomerMerchantEntity>>> get();
+  Future<DataState<CustomerMerchantEntity>> getById(String id);
 }

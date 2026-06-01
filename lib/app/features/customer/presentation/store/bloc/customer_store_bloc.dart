@@ -1,50 +1,78 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:warunk/app/features/customer/domain/use_case/customer_merchant_get_by_id_use_case.dart';
+import 'package:warunk/app/features/customer/domain/use_case/customer_product_get_by_merchant_use_case.dart';
+import 'package:warunk/core/network/data_state.dart';
 import 'customer_store_event.dart';
 import 'customer_store_state.dart';
 
 class CustomerStoreBloc extends Bloc<CustomerStoreEvent, CustomerStoreState> {
-  CustomerStoreBloc() : super(const CustomerStoreState()) {
-    on<CustomerLoadStoreDetails>(_onLoadStoreDetails);
-    on<CustomerSelectCategory>(_onSelectCategory);
-    on<CustomerAddToCart>(_onAddToCart);
+  final CustomerMerchantGetByIdUseCase _getByIdUseCase;
+  final CustomerProductGetByMerchantUseCase _productGetByMerchantUseCase;
+
+  CustomerStoreBloc({
+    required CustomerMerchantGetByIdUseCase getByIdUseCase,
+    required CustomerProductGetByMerchantUseCase productGetByMerchantUseCase,
+  })  : _getByIdUseCase = getByIdUseCase,
+        _productGetByMerchantUseCase = productGetByMerchantUseCase,
+        super(const CustomerStoreState()) {
+    on<CustomerStoreEventLoadStoreDetails>(_onLoadStoreDetails);
+    on<CustomerStoreEventSelectCategory>(_onSelectCategory);
+    on<CustomerStoreEventAddToCart>(_onAddToCart);
   }
 
-  void _onLoadStoreDetails(CustomerLoadStoreDetails event, Emitter<CustomerStoreState> emit) {
-    emit(state.copyWith(isLoading: true, storeName: event.storeName));
-    
-    // Simulate API load
-    const dummyProducts = [
-      CustomerProductItem('Beras 5kg',      '',                    'Rp64.000', Color(0xFFF0F7EE), Icons.grain_rounded),
-      CustomerProductItem('Mie Instan',     'Indomie Goreng 85g',  'Rp3.000',  Color(0xFFFFF8E1), Icons.ramen_dining_rounded),
-      CustomerProductItem('Minyak Goreng',  'SunCo 2L',            'Rp28.000', Color(0xFFFFF3C4), Icons.opacity_rounded),
-      CustomerProductItem('Teh Botol',      'Teh Botol Sosro 450ml','Rp4.500', Color(0xFFFFE0E0), Icons.local_drink_rounded),
-      CustomerProductItem('Telur 1 kg',     'Telur Ayam Negeri',   'Rp23.000', Color(0xFFFFF8E1), Icons.egg_rounded),
-      CustomerProductItem('Kopi Sachet',    'Kapal Api Special Mix','Rp1.500',  Color(0xFFEFEBE9), Icons.coffee_rounded),
-    ];
-    const dummyCategories = ['Semua', 'Sembako', 'Minuman', 'Snack', 'Promo'];
+  Future<void> _onLoadStoreDetails(
+    CustomerStoreEventLoadStoreDetails event,
+    Emitter<CustomerStoreState> emit,
+  ) async {
+    emit(state.copyWith(isLoading: true, storeId: event.storeId));
 
-    emit(state.copyWith(
-      isLoading: false,
-      products: dummyProducts,
-      categories: dummyCategories,
-      cartCount: 2, // Dummy existing cart items
-      cartTotalAmount: 28500, // Rp28.500
-    ));
+    final merchantResponse = await _getByIdUseCase.call(event.storeId);
+
+    if (merchantResponse is SuccessState) {
+      final productResponse = await _productGetByMerchantUseCase.call(event.storeId);
+      
+      var products = state.products;
+      var categories = ['Semua'];
+      if (productResponse is SuccessState && productResponse.data != null) {
+        products = productResponse.data!;
+        categories.addAll(products.map((e) => e.category).toSet());
+      }
+
+      emit(
+        state.copyWith(
+          merchantDetail: merchantResponse.data,
+          storeName: merchantResponse.data?.name,
+          products: products,
+          categories: categories,
+          cartCount: 2, // Dummy existing cart items
+          cartTotalAmount: 28500, // Rp28.500
+        ),
+      );
+    } else {
+      emit(state.copyWith(errorMessage: merchantResponse.message));
+    }
+
+    emit(state.copyWith(isLoading: false));
   }
 
-  void _onSelectCategory(CustomerSelectCategory event, Emitter<CustomerStoreState> emit) {
+  void _onSelectCategory(
+    CustomerStoreEventSelectCategory event,
+    Emitter<CustomerStoreState> emit,
+  ) {
     emit(state.copyWith(selectedCategory: event.index));
   }
 
-  void _onAddToCart(CustomerAddToCart event, Emitter<CustomerStoreState> emit) {
-    // Basic logic for parsing dummy price strings like 'Rp64.000'
-    final rawPriceString = event.product.price.replaceAll('Rp', '').replaceAll('.', '');
-    final price = int.tryParse(rawPriceString) ?? 0;
-    
-    emit(state.copyWith(
-      cartCount: state.cartCount + 1,
-      cartTotalAmount: state.cartTotalAmount + price,
-    ));
+  void _onAddToCart(
+    CustomerStoreEventAddToCart event,
+    Emitter<CustomerStoreState> emit,
+  ) {
+    final price = event.product.price;
+
+    emit(
+      state.copyWith(
+        cartCount: state.cartCount + 1,
+        cartTotalAmount: state.cartTotalAmount + price,
+      ),
+    );
   }
 }

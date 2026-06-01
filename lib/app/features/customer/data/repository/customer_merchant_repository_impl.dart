@@ -22,4 +22,16 @@ class CustomerMerchantRepositoryImpl implements CustomerMerchantRepository {
       return <CustomerMerchantEntity>[];
     });
   }
+
+  @override
+  Future<DataState<CustomerMerchantEntity>> getById(String id) {
+    return handleResponse(() => _apiService.getById(id), (json) {
+      if (json is Map<String, dynamic> && json['merchant'] != null) {
+        return CustomerMerchantEntity.fromJson(
+          json['merchant'] as Map<String, dynamic>,
+        );
+      }
+      throw Exception('Invalid response format');
+    });
+  }
 }

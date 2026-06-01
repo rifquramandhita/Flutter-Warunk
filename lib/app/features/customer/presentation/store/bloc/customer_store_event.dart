@@ -1,18 +1,18 @@
-import 'package:warunk/app/features/customer/presentation/store/bloc/customer_store_state.dart';
+import 'package:warunk/app/features/customer/domain/entity/customer_product.dart';
 
 abstract class CustomerStoreEvent {}
 
-class CustomerLoadStoreDetails extends CustomerStoreEvent {
-  final String storeName;
-  CustomerLoadStoreDetails(this.storeName);
+class CustomerStoreEventLoadStoreDetails extends CustomerStoreEvent {
+  final String storeId;
+  CustomerStoreEventLoadStoreDetails({required this.storeId});
 }
 
-class CustomerSelectCategory extends CustomerStoreEvent {
+class CustomerStoreEventSelectCategory extends CustomerStoreEvent {
   final int index;
-  CustomerSelectCategory(this.index);
+  CustomerStoreEventSelectCategory(this.index);
 }
 
-class CustomerAddToCart extends CustomerStoreEvent {
-  final CustomerProductItem product;
-  CustomerAddToCart(this.product);
+class CustomerStoreEventAddToCart extends CustomerStoreEvent {
+  final CustomerProductEntity product;
+  CustomerStoreEventAddToCart(this.product);
 }

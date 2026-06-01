@@ -1,33 +1,27 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+import 'package:warunk/app/features/customer/domain/entity/customer_merchant.dart';
 
-class CustomerProductItem extends Equatable {
-  final String name;
-  final String subtitle;
-  final String price;
-  final Color color;
-  final IconData icon;
-
-  const CustomerProductItem(this.name, this.subtitle, this.price, this.color, this.icon);
-
-  @override
-  List<Object?> get props => [name, subtitle, price, color, icon];
-}
+import 'package:warunk/app/features/customer/domain/entity/customer_product.dart';
 
 class CustomerStoreState extends Equatable {
   final bool isLoading;
   final String? errorMessage;
+  final String storeId;
   final String storeName;
+  final CustomerMerchantEntity? merchantDetail;
   final List<String> categories;
   final int selectedCategory;
-  final List<CustomerProductItem> products;
+  final List<CustomerProductEntity> products;
   final int cartCount;
   final int cartTotalAmount;
 
   const CustomerStoreState({
     this.isLoading = false,
     this.errorMessage,
+    this.storeId = '',
     this.storeName = '',
+    this.merchantDetail,
     this.categories = const [],
     this.selectedCategory = 0,
     this.products = const [],
@@ -43,17 +37,21 @@ class CustomerStoreState extends Equatable {
   CustomerStoreState copyWith({
     bool? isLoading,
     String? errorMessage,
+    String? storeId,
     String? storeName,
+    CustomerMerchantEntity? merchantDetail,
     List<String>? categories,
     int? selectedCategory,
-    List<CustomerProductItem>? products,
+    List<CustomerProductEntity>? products,
     int? cartCount,
     int? cartTotalAmount,
   }) {
     return CustomerStoreState(
       isLoading: isLoading ?? this.isLoading,
       errorMessage: errorMessage,
+      storeId: storeId ?? this.storeId,
       storeName: storeName ?? this.storeName,
+      merchantDetail: merchantDetail ?? this.merchantDetail,
       categories: categories ?? this.categories,
       selectedCategory: selectedCategory ?? this.selectedCategory,
       products: products ?? this.products,
@@ -66,7 +64,9 @@ class CustomerStoreState extends Equatable {
   List<Object?> get props => [
     isLoading,
     errorMessage,
+    storeId,
     storeName,
+    merchantDetail,
     categories,
     selectedCategory,
     products,

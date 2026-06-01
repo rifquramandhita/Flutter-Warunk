@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'customer_merchant_api_service.dart';
+part of 'customer_product_api_service.dart';
 
 // dart format off
 
@@ -10,10 +10,8 @@ part of 'customer_merchant_api_service.dart';
 
 // ignore_for_file: unnecessary_brace_in_string_interps,no_leading_underscores_for_local_identifiers,unused_element,unnecessary_string_interpolations,unused_element_parameter,avoid_unused_constructor_parameters,unreachable_from_main
 
-class _CustomerMerchantApiService implements CustomerMerchantApiService {
-  _CustomerMerchantApiService(this._dio, {this.baseUrl, this.errorLogger}) {
-    baseUrl ??= 'https://warunk.dewalabs.com';
-  }
+class _CustomerProductApiService implements CustomerProductApiService {
+  _CustomerProductApiService(this._dio, {this.baseUrl, this.errorLogger});
 
   final Dio _dio;
 
@@ -22,38 +20,16 @@ class _CustomerMerchantApiService implements CustomerMerchantApiService {
   final ParseErrorLogger? errorLogger;
 
   @override
-  Future<HttpResponse<dynamic>> get() async {
+  Future<HttpResponse<dynamic>> getByMerchant(String merchantId) async {
     final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{r'merchant_id': merchantId};
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
     final _options = _setStreamType<HttpResponse<dynamic>>(
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/api/merchants',
-            queryParameters: queryParameters,
-            data: _data,
-          )
-          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
-    );
-    final _result = await _dio.fetch(_options);
-    final _value = _result.data;
-    final httpResponse = HttpResponse(_value, _result);
-    return httpResponse;
-  }
-
-  @override
-  Future<HttpResponse<dynamic>> getById(String id) async {
-    final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{};
-    final _headers = <String, dynamic>{};
-    const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<HttpResponse<dynamic>>(
-      Options(method: 'GET', headers: _headers, extra: _extra)
-          .compose(
-            _dio.options,
-            '/api/merchants/${id}',
+            '/api/products',
             queryParameters: queryParameters,
             data: _data,
           )

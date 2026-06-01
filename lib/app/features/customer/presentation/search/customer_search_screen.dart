@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:warunk/app/features/customer/presentation/search/bloc/customer_search_bloc.dart';
 import 'package:warunk/app/features/customer/presentation/search/bloc/customer_search_event.dart';
 import 'package:warunk/app/features/customer/presentation/search/bloc/customer_search_state.dart';
-import 'package:warunk/app/features/customer/presentation/store/customer_detail_store_screen.dart';
+import 'package:warunk/app/features/customer/presentation/store/customer_merchant_screen.dart';
 import 'package:warunk/core/dependency/dependency.dart';
 import 'package:warunk/core/helper/global_helper.dart';
 import 'package:warunk/core/helper/dialog_helper.dart';
@@ -88,18 +88,23 @@ class CustomerSearchScreen extends StatelessWidget {
                 Icon(
                   Icons.storefront_rounded,
                   size: 64,
-                  color: GlobalHelper.getColorSchema(context).onSurface.withValues(alpha: 0.2),
+                  color: GlobalHelper.getColorSchema(
+                    context,
+                  ).onSurface.withValues(alpha: 0.2),
                 ),
                 const SizedBox(height: 16),
                 Text(
                   'Silahkan tuliskan toko yang dicari',
-                  style: GlobalHelper.getTextTheme(
-                    context,
-                    appTextStyle: AppTextStyle.BODY_LARGE,
-                  )?.copyWith(
-                    color: GlobalHelper.getColorSchema(context).onSurface.withValues(alpha: 0.5),
-                    fontWeight: FontWeight.w500,
-                  ),
+                  style:
+                      GlobalHelper.getTextTheme(
+                        context,
+                        appTextStyle: AppTextStyle.BODY_LARGE,
+                      )?.copyWith(
+                        color: GlobalHelper.getColorSchema(
+                          context,
+                        ).onSurface.withValues(alpha: 0.5),
+                        fontWeight: FontWeight.w500,
+                      ),
                 ),
               ],
             ),
@@ -181,7 +186,7 @@ class CustomerSearchScreen extends StatelessWidget {
                   onTap: () => navigatorKey.currentState?.push(
                     MaterialPageRoute(
                       builder: (_) =>
-                          CustomerDetailStoreScreen(storeName: name),
+                          CustomerMerchantScreen(storeId: merchant.id),
                     ),
                   ),
                   child: Container(
@@ -207,7 +212,7 @@ class CustomerSearchScreen extends StatelessWidget {
                             color: GlobalHelper.getColorSchema(
                               context,
                             ).outline.withValues(alpha: 0.2),
-                            child: photoUrl.isNotEmpty
+                            child: photoUrl != null
                                 ? Image.network(
                                     photoUrl,
                                     fit: BoxFit.cover,
@@ -402,7 +407,6 @@ class CustomerSearchScreen extends StatelessWidget {
     );
   }
 
-
   void _clearSearch(BuildContext context) {
     context.read<CustomerSearchBloc>().add(CustomerSearchQueryCleared());
   }
@@ -478,5 +482,4 @@ class CustomerSearchScreen extends StatelessWidget {
       ),
     );
   }
-
 }
