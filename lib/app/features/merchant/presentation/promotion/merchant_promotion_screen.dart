@@ -9,6 +9,7 @@ import 'package:warunk/core/helper/global_helper.dart';
 import 'package:warunk/core/helper/dialog_helper.dart';
 import 'package:warunk/core/widgets/loading_app_widget.dart';
 import 'package:warunk/main.dart';
+import 'package:warunk/core/helper/number_helper.dart';
 
 class MerchantPromotionScreen extends StatelessWidget {
   const MerchantPromotionScreen({super.key});
@@ -17,7 +18,7 @@ class MerchantPromotionScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) =>
-          sl<MerchantPromotionBloc>()..add(MerchantPromotionEventFetched()),
+          sl<MerchantPromotionBloc>()..add(MerchantPromotionEventGet()),
       child: BlocConsumer<MerchantPromotionBloc, MerchantPromotionState>(
         listener: (context, state) {
           if (state.errorMessage != null) {
@@ -162,40 +163,65 @@ class MerchantPromotionScreen extends StatelessWidget {
     );
 
     if (promos.isEmpty && !state.isLoading) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+      return RefreshIndicator(
+        onRefresh: () async {
+          context.read<MerchantPromotionBloc>().add(
+            MerchantPromotionEventGet(),
+          );
+          await Future.delayed(const Duration(seconds: 1));
+        },
+        child: ListView(
+          physics: const AlwaysScrollableScrollPhysics(),
           children: [
-            Icon(
-              Icons.local_offer_outlined,
-              size: 64,
-              color: colors.onSurfaceVariant.withValues(alpha: 0.4),
-            ),
-            const SizedBox(height: 16),
-            Text(
-              'Belum ada promo',
-              style: textThemeTitle?.copyWith(
-                fontWeight: FontWeight.w600,
-                color: colors.onSurfaceVariant,
+            SizedBox(
+              height: MediaQuery.of(context).size.height * 0.6,
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.local_offer_outlined,
+                      size: 64,
+                      color: colors.onSurfaceVariant.withValues(alpha: 0.4),
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      'Belum ada promo',
+                      style: textThemeTitle?.copyWith(
+                        fontWeight: FontWeight.w600,
+                        color: colors.onSurfaceVariant,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    Text(
+                      'Tambah promo baru dengan tombol + di atas',
+                      style: textThemeBody?.copyWith(
+                        color: colors.onSurfaceVariant,
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-            const SizedBox(height: 6),
-            Text(
-              'Tambah promo baru dengan tombol + di atas',
-              style: textThemeBody?.copyWith(color: colors.onSurfaceVariant),
             ),
           ],
         ),
       );
     }
 
-    return ListView.separated(
-      padding: const EdgeInsets.fromLTRB(20, 4, 20, 24),
-      itemCount: promos.length,
-      separatorBuilder: (_, _) => const SizedBox(height: 12),
-      itemBuilder: (context, index) {
-        return _buildPromoCard(context, promos[index]);
+    return RefreshIndicator(
+      onRefresh: () async {
+        context.read<MerchantPromotionBloc>().add(MerchantPromotionEventGet());
+        await Future.delayed(const Duration(seconds: 1));
       },
+      child: ListView.separated(
+        physics: const AlwaysScrollableScrollPhysics(),
+        padding: const EdgeInsets.fromLTRB(20, 4, 20, 24),
+        itemCount: promos.length,
+        separatorBuilder: (_, _) => const SizedBox(height: 12),
+        itemBuilder: (context, index) {
+          return _buildPromoCard(context, promos[index]);
+        },
+      ),
     );
   }
 
@@ -217,7 +243,8 @@ class MerchantPromotionScreen extends StatelessWidget {
     final (typeLabel, typeBg, typeText) = _typeStyle(promo.type);
     final valueColor = _valueColor(promo.type, colors.primary);
 
-    final minPurchaseStr = 'Min. Pembelian Rp${promo.minPurchase}';
+    final minPurchaseStr =
+        'Min. Pembelian ${NumberHelper.formatIDR(promo.minPurchase)}';
     final dateRangeStr =
         '${DateFormat('d MMM').format(promo.datetimeStart)} - ${DateFormat('d MMM yyyy').format(promo.datetimeEnd)}';
     final usedCount = promo.maxUse ?? 0;
@@ -355,7 +382,10 @@ class MerchantPromotionScreen extends StatelessWidget {
     MerchantPromotionEntity promo,
   ) {
     return IconButton(
-      icon: Icon(Icons.delete_outline, color: GlobalHelper.getColorSchema(context).error),
+      icon: Icon(
+        Icons.delete_outline,
+        color: GlobalHelper.getColorSchema(context).error,
+      ),
       onPressed: () {
         DialogHelper.showBottomSheetDialog(
           context: context,
@@ -387,13 +417,14 @@ class MerchantPromotionScreen extends StatelessWidget {
                 ),
                 child: Text(
                   'Hapus Promo',
-                  style: GlobalHelper.getTextTheme(
-                    context,
-                    appTextStyle: AppTextStyle.TITLE_SMALL,
-                  )?.copyWith(
-                    fontWeight: FontWeight.w700,
-                    color: GlobalHelper.getColorSchema(context).onError,
-                  ),
+                  style:
+                      GlobalHelper.getTextTheme(
+                        context,
+                        appTextStyle: AppTextStyle.TITLE_SMALL,
+                      )?.copyWith(
+                        fontWeight: FontWeight.w700,
+                        color: GlobalHelper.getColorSchema(context).onError,
+                      ),
                 ),
               ),
             ],
@@ -464,14 +495,16 @@ class MerchantPromotionScreen extends StatelessWidget {
     await navigatorKey.currentState?.push(
       MaterialPageRoute(builder: (_) => const MerchantInputPromotionScreen()),
     );
-    bloc.add(MerchantPromotionEventFetched());
+    bloc.add(MerchantPromotionEventGet());
   }
 }
 
 void _onPressItem(BuildContext context, MerchantPromotionEntity promo) async {
   final bloc = context.read<MerchantPromotionBloc>();
   await navigatorKey.currentState?.push(
-    MaterialPageRoute(builder: (_) => MerchantInputPromotionScreen(id: promo.id)),
+    MaterialPageRoute(
+      builder: (_) => MerchantInputPromotionScreen(id: promo.id),
+    ),
   );
-  bloc.add(MerchantPromotionEventFetched());
+  bloc.add(MerchantPromotionEventGet());
 }
