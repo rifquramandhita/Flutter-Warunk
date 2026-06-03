@@ -21,4 +21,23 @@ class CustomerProductRepositoryImpl implements CustomerProductRepository {
       return [];
     });
   }
+
+  @override
+  Future<DataState<CustomerProductEntity>> getById(String productId) {
+    return handleResponse(() => _apiService.getById(productId), (json) {
+      if (json is Map<String, dynamic> && json['product'] != null) {
+        if (json['product'] is List) {
+          final list = json['product'] as List;
+          if (list.isNotEmpty && list.first != null) {
+            return CustomerProductEntity.fromJson(
+                list.first as Map<String, dynamic>);
+          }
+        } else if (json['product'] is Map<String, dynamic>) {
+          return CustomerProductEntity.fromJson(
+              json['product'] as Map<String, dynamic>);
+        }
+      }
+      throw const FormatException('Invalid or missing product data');
+    });
+  }
 }

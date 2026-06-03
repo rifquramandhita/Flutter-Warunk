@@ -575,13 +575,7 @@ class CustomerMerchantScreen extends StatelessWidget {
     return GestureDetector(
       onTap: () => navigatorKey.currentState?.push(
         MaterialPageRoute(
-          builder: (_) => CustomerDetailProductScreen(
-            productName: p.name,
-            price: 'Rp${p.price}',
-            subtitle: p.category,
-            color: const Color(0xFFF0F7EE),
-            icon: Icons.inventory_2_rounded,
-          ),
+          builder: (_) => CustomerDetailProductScreen(productId: p.id),
         ),
       ),
       child: Container(
@@ -655,43 +649,16 @@ class CustomerMerchantScreen extends StatelessWidget {
                           ),
                     ),
                   const SizedBox(height: 6),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Rp${p.price}',
-                        style:
-                            GlobalHelper.getTextTheme(
-                              context,
-                              appTextStyle: AppTextStyle.BODY_SMALL,
-                            )?.copyWith(
-                              fontWeight: FontWeight.w700,
-                              color: GlobalHelper.getColorSchema(
-                                context,
-                              ).primary,
-                            ),
-                      ),
-                      GestureDetector(
-                        onTap: () => context.read<CustomerStoreBloc>().add(
-                          CustomerStoreEventAddToCart(p),
+                  Text(
+                    'Rp${p.price}',
+                    style:
+                        GlobalHelper.getTextTheme(
+                          context,
+                          appTextStyle: AppTextStyle.BODY_SMALL,
+                        )?.copyWith(
+                          fontWeight: FontWeight.w700,
+                          color: GlobalHelper.getColorSchema(context).primary,
                         ),
-                        child: Container(
-                          width: 28,
-                          height: 28,
-                          decoration: BoxDecoration(
-                            color: GlobalHelper.getColorSchema(context).primary,
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Icon(
-                            Icons.add,
-                            color: GlobalHelper.getColorSchema(
-                              context,
-                            ).onPrimary,
-                            size: 18,
-                          ),
-                        ),
-                      ),
-                    ],
                   ),
                 ],
               ),
