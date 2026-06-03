@@ -52,12 +52,13 @@ sealed class MerchantOrderProductSnapshot with _$MerchantOrderProductSnapshot {
 }
 
 @freezed
-sealed class MerchantOrderProductVariantSnapshot with _$MerchantOrderProductVariantSnapshot {
+sealed class MerchantOrderProductVariantSnapshot
+    with _$MerchantOrderProductVariantSnapshot {
   @JsonSerializable(fieldRename: FieldRename.snake, includeIfNull: false)
   const factory MerchantOrderProductVariantSnapshot.entity({
     String? id,
     String? sku,
-    String? variantCombination,
+    Map<String, dynamic>? variantCombination,
     dynamic price,
     dynamic stock,
     dynamic minPurchase,
@@ -67,6 +68,7 @@ sealed class MerchantOrderProductVariantSnapshot with _$MerchantOrderProductVari
     dynamic height,
   }) = MerchantOrderProductVariantSnapshotEntity;
 
-  factory MerchantOrderProductVariantSnapshot.fromJson(Map<String, dynamic> json) =>
-      _$MerchantOrderProductVariantSnapshotFromJson(json);
+  factory MerchantOrderProductVariantSnapshot.fromJson(
+    Map<String, dynamic> json,
+  ) => _$MerchantOrderProductVariantSnapshotFromJson(json);
 }

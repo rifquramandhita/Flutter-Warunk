@@ -628,7 +628,7 @@ MerchantOrderProductVariantSnapshot _$MerchantOrderProductVariantSnapshotFromJso
 /// @nodoc
 mixin _$MerchantOrderProductVariantSnapshot {
 
- String? get id; String? get sku; String? get variantCombination; dynamic get price; dynamic get stock; dynamic get minPurchase; dynamic get weight; dynamic get length; dynamic get width; dynamic get height;
+ String? get id; String? get sku; Map<String, dynamic>? get variantCombination; dynamic get price; dynamic get stock; dynamic get minPurchase; dynamic get weight; dynamic get length; dynamic get width; dynamic get height;
 /// Create a copy of MerchantOrderProductVariantSnapshot
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -641,12 +641,12 @@ $MerchantOrderProductVariantSnapshotCopyWith<MerchantOrderProductVariantSnapshot
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MerchantOrderProductVariantSnapshot&&(identical(other.id, id) || other.id == id)&&(identical(other.sku, sku) || other.sku == sku)&&(identical(other.variantCombination, variantCombination) || other.variantCombination == variantCombination)&&const DeepCollectionEquality().equals(other.price, price)&&const DeepCollectionEquality().equals(other.stock, stock)&&const DeepCollectionEquality().equals(other.minPurchase, minPurchase)&&const DeepCollectionEquality().equals(other.weight, weight)&&const DeepCollectionEquality().equals(other.length, length)&&const DeepCollectionEquality().equals(other.width, width)&&const DeepCollectionEquality().equals(other.height, height));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MerchantOrderProductVariantSnapshot&&(identical(other.id, id) || other.id == id)&&(identical(other.sku, sku) || other.sku == sku)&&const DeepCollectionEquality().equals(other.variantCombination, variantCombination)&&const DeepCollectionEquality().equals(other.price, price)&&const DeepCollectionEquality().equals(other.stock, stock)&&const DeepCollectionEquality().equals(other.minPurchase, minPurchase)&&const DeepCollectionEquality().equals(other.weight, weight)&&const DeepCollectionEquality().equals(other.length, length)&&const DeepCollectionEquality().equals(other.width, width)&&const DeepCollectionEquality().equals(other.height, height));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,sku,variantCombination,const DeepCollectionEquality().hash(price),const DeepCollectionEquality().hash(stock),const DeepCollectionEquality().hash(minPurchase),const DeepCollectionEquality().hash(weight),const DeepCollectionEquality().hash(length),const DeepCollectionEquality().hash(width),const DeepCollectionEquality().hash(height));
+int get hashCode => Object.hash(runtimeType,id,sku,const DeepCollectionEquality().hash(variantCombination),const DeepCollectionEquality().hash(price),const DeepCollectionEquality().hash(stock),const DeepCollectionEquality().hash(minPurchase),const DeepCollectionEquality().hash(weight),const DeepCollectionEquality().hash(length),const DeepCollectionEquality().hash(width),const DeepCollectionEquality().hash(height));
 
 @override
 String toString() {
@@ -661,7 +661,7 @@ abstract mixin class $MerchantOrderProductVariantSnapshotCopyWith<$Res>  {
   factory $MerchantOrderProductVariantSnapshotCopyWith(MerchantOrderProductVariantSnapshot value, $Res Function(MerchantOrderProductVariantSnapshot) _then) = _$MerchantOrderProductVariantSnapshotCopyWithImpl;
 @useResult
 $Res call({
- String? id, String? sku, String? variantCombination, dynamic price, dynamic stock, dynamic minPurchase, dynamic weight, dynamic length, dynamic width, dynamic height
+ String? id, String? sku, Map<String, dynamic>? variantCombination, dynamic price, dynamic stock, dynamic minPurchase, dynamic weight, dynamic length, dynamic width, dynamic height
 });
 
 
@@ -683,7 +683,7 @@ class _$MerchantOrderProductVariantSnapshotCopyWithImpl<$Res>
 id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String?,sku: freezed == sku ? _self.sku : sku // ignore: cast_nullable_to_non_nullable
 as String?,variantCombination: freezed == variantCombination ? _self.variantCombination : variantCombination // ignore: cast_nullable_to_non_nullable
-as String?,price: freezed == price ? _self.price : price // ignore: cast_nullable_to_non_nullable
+as Map<String, dynamic>?,price: freezed == price ? _self.price : price // ignore: cast_nullable_to_non_nullable
 as dynamic,stock: freezed == stock ? _self.stock : stock // ignore: cast_nullable_to_non_nullable
 as dynamic,minPurchase: freezed == minPurchase ? _self.minPurchase : minPurchase // ignore: cast_nullable_to_non_nullable
 as dynamic,weight: freezed == weight ? _self.weight : weight // ignore: cast_nullable_to_non_nullable
@@ -772,7 +772,7 @@ return entity(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String? id,  String? sku,  String? variantCombination,  dynamic price,  dynamic stock,  dynamic minPurchase,  dynamic weight,  dynamic length,  dynamic width,  dynamic height)?  entity,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String? id,  String? sku,  Map<String, dynamic>? variantCombination,  dynamic price,  dynamic stock,  dynamic minPurchase,  dynamic weight,  dynamic length,  dynamic width,  dynamic height)?  entity,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case MerchantOrderProductVariantSnapshotEntity() when entity != null:
 return entity(_that.id,_that.sku,_that.variantCombination,_that.price,_that.stock,_that.minPurchase,_that.weight,_that.length,_that.width,_that.height);case _:
@@ -793,7 +793,7 @@ return entity(_that.id,_that.sku,_that.variantCombination,_that.price,_that.stoc
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String? id,  String? sku,  String? variantCombination,  dynamic price,  dynamic stock,  dynamic minPurchase,  dynamic weight,  dynamic length,  dynamic width,  dynamic height)  entity,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String? id,  String? sku,  Map<String, dynamic>? variantCombination,  dynamic price,  dynamic stock,  dynamic minPurchase,  dynamic weight,  dynamic length,  dynamic width,  dynamic height)  entity,}) {final _that = this;
 switch (_that) {
 case MerchantOrderProductVariantSnapshotEntity():
 return entity(_that.id,_that.sku,_that.variantCombination,_that.price,_that.stock,_that.minPurchase,_that.weight,_that.length,_that.width,_that.height);}
@@ -810,7 +810,7 @@ return entity(_that.id,_that.sku,_that.variantCombination,_that.price,_that.stoc
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String? id,  String? sku,  String? variantCombination,  dynamic price,  dynamic stock,  dynamic minPurchase,  dynamic weight,  dynamic length,  dynamic width,  dynamic height)?  entity,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String? id,  String? sku,  Map<String, dynamic>? variantCombination,  dynamic price,  dynamic stock,  dynamic minPurchase,  dynamic weight,  dynamic length,  dynamic width,  dynamic height)?  entity,}) {final _that = this;
 switch (_that) {
 case MerchantOrderProductVariantSnapshotEntity() when entity != null:
 return entity(_that.id,_that.sku,_that.variantCombination,_that.price,_that.stock,_that.minPurchase,_that.weight,_that.length,_that.width,_that.height);case _:
@@ -825,12 +825,20 @@ return entity(_that.id,_that.sku,_that.variantCombination,_that.price,_that.stoc
 
 @JsonSerializable(fieldRename: FieldRename.snake, includeIfNull: false)
 class MerchantOrderProductVariantSnapshotEntity implements MerchantOrderProductVariantSnapshot {
-  const MerchantOrderProductVariantSnapshotEntity({this.id, this.sku, this.variantCombination, this.price, this.stock, this.minPurchase, this.weight, this.length, this.width, this.height});
+  const MerchantOrderProductVariantSnapshotEntity({this.id, this.sku, final  Map<String, dynamic>? variantCombination, this.price, this.stock, this.minPurchase, this.weight, this.length, this.width, this.height}): _variantCombination = variantCombination;
   factory MerchantOrderProductVariantSnapshotEntity.fromJson(Map<String, dynamic> json) => _$MerchantOrderProductVariantSnapshotEntityFromJson(json);
 
 @override final  String? id;
 @override final  String? sku;
-@override final  String? variantCombination;
+ final  Map<String, dynamic>? _variantCombination;
+@override Map<String, dynamic>? get variantCombination {
+  final value = _variantCombination;
+  if (value == null) return null;
+  if (_variantCombination is EqualUnmodifiableMapView) return _variantCombination;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableMapView(value);
+}
+
 @override final  dynamic price;
 @override final  dynamic stock;
 @override final  dynamic minPurchase;
@@ -852,12 +860,12 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MerchantOrderProductVariantSnapshotEntity&&(identical(other.id, id) || other.id == id)&&(identical(other.sku, sku) || other.sku == sku)&&(identical(other.variantCombination, variantCombination) || other.variantCombination == variantCombination)&&const DeepCollectionEquality().equals(other.price, price)&&const DeepCollectionEquality().equals(other.stock, stock)&&const DeepCollectionEquality().equals(other.minPurchase, minPurchase)&&const DeepCollectionEquality().equals(other.weight, weight)&&const DeepCollectionEquality().equals(other.length, length)&&const DeepCollectionEquality().equals(other.width, width)&&const DeepCollectionEquality().equals(other.height, height));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MerchantOrderProductVariantSnapshotEntity&&(identical(other.id, id) || other.id == id)&&(identical(other.sku, sku) || other.sku == sku)&&const DeepCollectionEquality().equals(other._variantCombination, _variantCombination)&&const DeepCollectionEquality().equals(other.price, price)&&const DeepCollectionEquality().equals(other.stock, stock)&&const DeepCollectionEquality().equals(other.minPurchase, minPurchase)&&const DeepCollectionEquality().equals(other.weight, weight)&&const DeepCollectionEquality().equals(other.length, length)&&const DeepCollectionEquality().equals(other.width, width)&&const DeepCollectionEquality().equals(other.height, height));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,sku,variantCombination,const DeepCollectionEquality().hash(price),const DeepCollectionEquality().hash(stock),const DeepCollectionEquality().hash(minPurchase),const DeepCollectionEquality().hash(weight),const DeepCollectionEquality().hash(length),const DeepCollectionEquality().hash(width),const DeepCollectionEquality().hash(height));
+int get hashCode => Object.hash(runtimeType,id,sku,const DeepCollectionEquality().hash(_variantCombination),const DeepCollectionEquality().hash(price),const DeepCollectionEquality().hash(stock),const DeepCollectionEquality().hash(minPurchase),const DeepCollectionEquality().hash(weight),const DeepCollectionEquality().hash(length),const DeepCollectionEquality().hash(width),const DeepCollectionEquality().hash(height));
 
 @override
 String toString() {
@@ -872,7 +880,7 @@ abstract mixin class $MerchantOrderProductVariantSnapshotEntityCopyWith<$Res> im
   factory $MerchantOrderProductVariantSnapshotEntityCopyWith(MerchantOrderProductVariantSnapshotEntity value, $Res Function(MerchantOrderProductVariantSnapshotEntity) _then) = _$MerchantOrderProductVariantSnapshotEntityCopyWithImpl;
 @override @useResult
 $Res call({
- String? id, String? sku, String? variantCombination, dynamic price, dynamic stock, dynamic minPurchase, dynamic weight, dynamic length, dynamic width, dynamic height
+ String? id, String? sku, Map<String, dynamic>? variantCombination, dynamic price, dynamic stock, dynamic minPurchase, dynamic weight, dynamic length, dynamic width, dynamic height
 });
 
 
@@ -893,8 +901,8 @@ class _$MerchantOrderProductVariantSnapshotEntityCopyWithImpl<$Res>
   return _then(MerchantOrderProductVariantSnapshotEntity(
 id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String?,sku: freezed == sku ? _self.sku : sku // ignore: cast_nullable_to_non_nullable
-as String?,variantCombination: freezed == variantCombination ? _self.variantCombination : variantCombination // ignore: cast_nullable_to_non_nullable
-as String?,price: freezed == price ? _self.price : price // ignore: cast_nullable_to_non_nullable
+as String?,variantCombination: freezed == variantCombination ? _self._variantCombination : variantCombination // ignore: cast_nullable_to_non_nullable
+as Map<String, dynamic>?,price: freezed == price ? _self.price : price // ignore: cast_nullable_to_non_nullable
 as dynamic,stock: freezed == stock ? _self.stock : stock // ignore: cast_nullable_to_non_nullable
 as dynamic,minPurchase: freezed == minPurchase ? _self.minPurchase : minPurchase // ignore: cast_nullable_to_non_nullable
 as dynamic,weight: freezed == weight ? _self.weight : weight // ignore: cast_nullable_to_non_nullable

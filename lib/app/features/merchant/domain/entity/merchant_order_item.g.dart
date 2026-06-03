@@ -96,7 +96,7 @@ _$MerchantOrderProductVariantSnapshotEntityFromJson(
 ) => MerchantOrderProductVariantSnapshotEntity(
   id: json['id'] as String?,
   sku: json['sku'] as String?,
-  variantCombination: json['variant_combination'] as String?,
+  variantCombination: json['variant_combination'] as Map<String, dynamic>?,
   price: json['price'],
   stock: json['stock'],
   minPurchase: json['min_purchase'],

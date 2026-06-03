@@ -575,15 +575,36 @@ class MerchantDetailOrderScreen extends StatelessWidget {
                         ),
                         const SizedBox(width: 12),
                         Expanded(
-                          child: Text(
-                            item.productName ?? '-',
-                            style: GlobalHelper.getTextTheme(
-                              context,
-                              appTextStyle: AppTextStyle.BODY_SMALL,
-                            )?.copyWith(
-                              fontWeight: FontWeight.bold,
-                              color: GlobalHelper.getColorSchema(context).onSurface,
-                            ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                item.productName ?? '-',
+                                style: GlobalHelper.getTextTheme(
+                                  context,
+                                  appTextStyle: AppTextStyle.BODY_SMALL,
+                                )?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  color: GlobalHelper.getColorSchema(context).onSurface,
+                                ),
+                              ),
+                              if (item.productVariantSnapshot?.variantCombination != null &&
+                                  item.productVariantSnapshot!.variantCombination!.isNotEmpty)
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 4),
+                                  child: Text(
+                                    item.productVariantSnapshot!.variantCombination!.entries
+                                        .map((e) => '${e.key}: ${e.value}')
+                                        .join(', '),
+                                    style: GlobalHelper.getTextTheme(
+                                      context,
+                                      appTextStyle: AppTextStyle.LABEL_SMALL,
+                                    )?.copyWith(
+                                      color: GlobalHelper.getColorSchema(context).onSurfaceVariant,
+                                    ),
+                                  ),
+                                ),
+                            ],
                           ),
                         ),
                         Text(
