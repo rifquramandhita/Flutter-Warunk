@@ -233,7 +233,9 @@ class MerchantProductScreen extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(width: 6),
-                        _buildStokBadge(product.stock),
+                        _buildStokBadge(product.variants.isNotEmpty
+                            ? product.variants.first.stock
+                            : product.stock),
                       ],
                     ),
                     const SizedBox(height: 4),
@@ -242,7 +244,9 @@ class MerchantProductScreen extends StatelessWidget {
                     Row(
                       children: [
                         Text(
-                          currency.format(product.price),
+                          currency.format(product.variants.isNotEmpty
+                              ? product.variants.first.price
+                              : product.price),
                           style: const TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w800,
