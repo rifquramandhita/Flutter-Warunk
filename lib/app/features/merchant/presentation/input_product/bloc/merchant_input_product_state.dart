@@ -1,5 +1,24 @@
 part of 'merchant_input_product_bloc.dart';
 
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Variant definition model (name + list of option name strings)
+// ─────────────────────────────────────────────────────────────────────────────
+class VariantInput {
+  final String name;
+  final List<String> options; // e.g. ['Merah', 'Putih']
+
+  const VariantInput({this.name = '', this.options = const []});
+
+  VariantInput copyWith({String? name, List<String>? options}) => VariantInput(
+    name: name ?? this.name,
+    options: options ?? this.options,
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// State
+// ─────────────────────────────────────────────────────────────────────────────
 class MerchantInputProductState {
   final String? id;
   final String name;
@@ -19,12 +38,20 @@ class MerchantInputProductState {
   final String width;
   final String height;
 
-  static const List<String> categoryOptions = [
-    'Minuman',
-    'Makanan',
-    'Sembako',
-    'Lainnya',
-  ];
+  /// Variant definitions (max 2).
+  final List<VariantInput> variants;
+
+  /// Auto-generated Cartesian product of all variant options.
+  /// Each item is a [MerchantProductVariantSendParam] ready to send.
+  final List<MerchantProductVariantSendParam> combinations;
+
+  final bool isSameDimension;
+
+  /// Categories loaded from API for the dropdown.
+  final List<MerchantProductCategoryEntity> categories;
+  final bool isCategoriesLoading;
+
+  static const int maxVariants = 2;
 
   const MerchantInputProductState({
     this.id,
@@ -43,14 +70,34 @@ class MerchantInputProductState {
     this.length = '',
     this.width = '',
     this.height = '',
+    this.variants = const [],
+    this.combinations = const [],
+    this.isSameDimension = true,
+    this.categories = const [],
+    this.isCategoriesLoading = false,
   });
 
-  bool get isValid =>
-      name.trim().isNotEmpty &&
-      category.isNotEmpty &&
-      (int.tryParse(price) ?? 0) > 0 &&
-      (int.tryParse(stock) ?? 0) >= 0 &&
-      (int.tryParse(minPurchase) ?? 0) > 0;
+  bool get hasVariants => variants.isNotEmpty;
+  bool get canAddVariant => variants.length < maxVariants;
+
+  bool get isValid {
+    final baseValid = name.trim().isNotEmpty && category.isNotEmpty;
+
+    if (!hasVariants) {
+      return baseValid &&
+          (int.tryParse(price) ?? 0) > 0 &&
+          (int.tryParse(stock) ?? 0) >= 0 &&
+          (int.tryParse(minPurchase) ?? 0) > 0;
+    }
+
+    // With variants: every variant must have a name and ≥1 non-empty option
+    final variantsValid = variants.every(
+      (v) =>
+          v.name.trim().isNotEmpty &&
+          v.options.any((o) => o.trim().isNotEmpty),
+    );
+    return baseValid && variantsValid && combinations.isNotEmpty;
+  }
 
   int get descriptionLength => description.length;
 
@@ -71,6 +118,11 @@ class MerchantInputProductState {
     String? length,
     String? width,
     String? height,
+    List<VariantInput>? variants,
+    List<MerchantProductVariantSendParam>? combinations,
+    bool? isSameDimension,
+    List<MerchantProductCategoryEntity>? categories,
+    bool? isCategoriesLoading,
   }) => MerchantInputProductState(
     id: id ?? this.id,
     name: name ?? this.name,
@@ -88,5 +140,10 @@ class MerchantInputProductState {
     length: length ?? this.length,
     width: width ?? this.width,
     height: height ?? this.height,
+    variants: variants ?? this.variants,
+    combinations: combinations ?? this.combinations,
+    isSameDimension: isSameDimension ?? this.isSameDimension,
+    categories: categories ?? this.categories,
+    isCategoriesLoading: isCategoriesLoading ?? this.isCategoriesLoading,
   );
 }

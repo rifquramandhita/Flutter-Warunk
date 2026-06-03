@@ -7,6 +7,9 @@ part 'merchant_product_api_service.g.dart';
 abstract class MerchantProductApiService {
   factory MerchantProductApiService(Dio dio) => _MerchantProductApiService(dio);
 
+  @GET('/api/seller/products/categories')
+  Future<HttpResponse<dynamic>> getCategories();
+
   @GET('/api/seller/products')
   Future<HttpResponse<dynamic>> get();
 

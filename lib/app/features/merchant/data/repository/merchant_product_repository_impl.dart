@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:warunk/app/features/merchant/data/source/merchant_product_api_service.dart';
 import 'package:warunk/app/features/merchant/domain/entity/merchant_product.dart';
+import 'package:warunk/app/features/merchant/domain/entity/merchant_product_category.dart';
 import 'package:warunk/app/features/merchant/domain/repository/merchant_product_repository.dart';
 import 'package:warunk/core/network/data_state.dart';
 
@@ -10,6 +11,16 @@ class MerchantProductRepositoryImpl implements MerchantProductRepository {
   final MerchantProductApiService api;
 
   MerchantProductRepositoryImpl({required this.api});
+
+  @override
+  Future<DataState<List<MerchantProductCategoryEntity>>> getCategories() {
+    return handleResponse(() => api.getCategories(), (responseData) {
+      return List<MerchantProductCategoryEntity>.from(
+        responseData['product_categories']
+            .map((e) => MerchantProductCategoryEntity.fromJson(e)),
+      );
+    });
+  }
 
   @override
   Future<DataState<List<MerchantProductEntity>>> get() {

@@ -7,6 +7,8 @@ class MerchantInputProductGet extends MerchantInputProductEvent {
   MerchantInputProductGet(this.id);
 }
 
+class MerchantInputProductLoadCategories extends MerchantInputProductEvent {}
+
 class MerchantInputProductDownloadImages extends MerchantInputProductEvent {
   final List<String> urls;
   MerchantInputProductDownloadImages(this.urls);
@@ -73,3 +75,58 @@ class MerchantInputProductPhotoRemoved extends MerchantInputProductEvent {
 }
 
 class MerchantInputProductSaved extends MerchantInputProductEvent {}
+
+class MerchantInputProductSameDimensionToggled
+    extends MerchantInputProductEvent {}
+
+// ── Variant definition events ─────────────────────────────────────────────────
+
+class MerchantInputProductVariantAdded extends MerchantInputProductEvent {}
+
+class MerchantInputProductVariantRemoved extends MerchantInputProductEvent {
+  final int variantIndex;
+  MerchantInputProductVariantRemoved(this.variantIndex);
+}
+
+class MerchantInputProductVariantNameChanged
+    extends MerchantInputProductEvent {
+  final int variantIndex;
+  final String value;
+  MerchantInputProductVariantNameChanged(this.variantIndex, this.value);
+}
+
+class MerchantInputProductVariantOptionAdded
+    extends MerchantInputProductEvent {
+  final int variantIndex;
+  MerchantInputProductVariantOptionAdded(this.variantIndex);
+}
+
+class MerchantInputProductVariantOptionRemoved
+    extends MerchantInputProductEvent {
+  final int variantIndex;
+  final int optionIndex;
+  MerchantInputProductVariantOptionRemoved(this.variantIndex, this.optionIndex);
+}
+
+/// Update the option name string at [optionIndex] inside variant [variantIndex]
+class MerchantInputProductVariantOptionNameChanged
+    extends MerchantInputProductEvent {
+  final int variantIndex;
+  final int optionIndex;
+  final String value;
+  MerchantInputProductVariantOptionNameChanged(
+    this.variantIndex,
+    this.optionIndex,
+    this.value,
+  );
+}
+
+// ── Combination events ────────────────────────────────────────────────────────
+
+/// Update the price/stock/etc. of one generated combination
+class MerchantInputProductCombinationChanged
+    extends MerchantInputProductEvent {
+  final int combinationIndex;
+  final MerchantProductVariantSendParam updated;
+  MerchantInputProductCombinationChanged(this.combinationIndex, this.updated);
+}
