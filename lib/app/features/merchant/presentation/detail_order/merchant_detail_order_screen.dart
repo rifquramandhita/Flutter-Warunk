@@ -249,12 +249,14 @@ class MerchantDetailOrderScreen extends StatelessWidget {
 
   void _showRejectDialog(BuildContext context) {
     final reasonController = TextEditingController();
-    showDialog(
+    DialogHelper.showBottomSheetDialog(
       context: context,
-      builder: (dialogContext) {
-        return AlertDialog(
-          title: const Text('Tolak Pesanan'),
-          content: TextField(
+      title: 'Tolak Pesanan',
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          TextField(
             controller: reasonController,
             decoration: const InputDecoration(
               hintText: 'Alasan penolakan',
@@ -262,27 +264,39 @@ class MerchantDetailOrderScreen extends StatelessWidget {
             ),
             maxLines: 3,
           ),
-          actions: [
-            TextButton(
-              onPressed: () => navigatorKey.currentState?.pop(),
-              child: const Text('Batal'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                final reason = reasonController.text.trim();
-                if (reason.isNotEmpty) {
-                  navigatorKey.currentState?.pop();
-                  context.read<MerchantDetailOrderBloc>().add(
-                    MerchantDetailOrderEventReject(reason),
-                  );
-                }
-              },
-              style: ElevatedButton.styleFrom(backgroundColor: GlobalHelper.getColorSchema(context).error),
-              child: Text('Tolak', style: TextStyle(color: GlobalHelper.getColorSchema(context).onError)),
-            ),
-          ],
-        );
-      },
+          const SizedBox(height: 16),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              TextButton(
+                onPressed: () => navigatorKey.currentState?.pop(),
+                child: const Text('Batal'),
+              ),
+              const SizedBox(width: 8),
+              ElevatedButton(
+                onPressed: () {
+                  final reason = reasonController.text.trim();
+                  if (reason.isNotEmpty) {
+                    navigatorKey.currentState?.pop();
+                    context.read<MerchantDetailOrderBloc>().add(
+                      MerchantDetailOrderEventReject(reason),
+                    );
+                  }
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: GlobalHelper.getColorSchema(context).error,
+                ),
+                child: Text(
+                  'Tolak',
+                  style: TextStyle(
+                    color: GlobalHelper.getColorSchema(context).onError,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 
