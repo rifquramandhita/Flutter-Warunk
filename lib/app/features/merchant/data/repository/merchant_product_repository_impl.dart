@@ -197,4 +197,20 @@ class MerchantProductRepositoryImpl implements MerchantProductRepository {
       return ErrorState(message: e.toString());
     }
   }
+
+  @override
+  Future<DataState<bool>> publish(String id) {
+    return handleResponse(
+      () => api.publish(id),
+      (responseData) => true,
+    );
+  }
+
+  @override
+  Future<DataState<bool>> unpublish(String id) {
+    return handleResponse(
+      () => api.unpublish(id),
+      (responseData) => true,
+    );
+  }
 }

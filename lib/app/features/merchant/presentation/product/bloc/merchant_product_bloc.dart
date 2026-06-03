@@ -2,6 +2,8 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:warunk/app/features/merchant/domain/entity/merchant_product.dart';
 import 'package:warunk/app/features/merchant/domain/entity/merchant_product_category.dart';
+import 'package:warunk/app/features/merchant/domain/use_case/merchant_product_publish_usecase.dart';
+import 'package:warunk/app/features/merchant/domain/use_case/merchant_product_unpublish_usecase.dart';
 import 'package:warunk/app/features/merchant/domain/use_case/merchant_products_get_use_case.dart';
 
 part 'merchant_product_event.dart';
@@ -10,9 +12,14 @@ part 'merchant_product_state.dart';
 class MerchantProductBloc
     extends Bloc<MerchantProductEvent, MerchantProductState> {
   final MerchantProductsGetUseCase useCase;
+  final MerchantProductPublishUseCase publishUseCase;
+  final MerchantProductUnpublishUseCase unpublishUseCase;
 
-  MerchantProductBloc({required this.useCase})
-    : super(const MerchantProductState()) {
+  MerchantProductBloc({
+    required this.useCase,
+    required this.publishUseCase,
+    required this.unpublishUseCase,
+  }) : super(const MerchantProductState()) {
     on<MerchantProductEventGet>((event, emit) async {
       emit(state.copyWith(isLoading: true, errorMessage: null));
       final result = await useCase.call();
@@ -31,14 +38,28 @@ class MerchantProductBloc
       emit(state.copyWith(searchQuery: event.query));
     });
 
-    on<MerchantProductEventToggled>((event, emit) {
-      // Toggle logic would ideally call an API, but for local state:
-      final updated = state.allProducts.map((p) {
-        return p.id == event.productId
-            ? p.copyWith(isPublished: !p.isPublished)
-            : p;
-      }).toList();
-      emit(state.copyWith(allProducts: updated));
+    on<MerchantProductEventToggled>((event, emit) async {
+      final productIndex =
+          state.allProducts.indexWhere((p) => p.id == event.productId);
+      if (productIndex == -1) return;
+
+      final product = state.allProducts[productIndex];
+      final isCurrentlyPublished = product.isPublished;
+
+      emit(state.copyWith(isLoading: true, errorMessage: null));
+
+      final result = isCurrentlyPublished
+          ? await unpublishUseCase.call(product.id)
+          : await publishUseCase.call(product.id);
+
+      if (result.success) {
+        final updated = List<MerchantProductEntity>.from(state.allProducts);
+        updated[productIndex] =
+            product.copyWith(isPublished: !isCurrentlyPublished);
+        emit(state.copyWith(isLoading: false, allProducts: updated));
+      } else {
+        emit(state.copyWith(isLoading: false, errorMessage: result.message));
+      }
     });
 
     on<MerchantProductEventAddTapped>((event, emit) {

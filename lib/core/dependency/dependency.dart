@@ -38,6 +38,8 @@ import 'package:warunk/app/features/merchant/domain/use_case/merchant_product_se
 import 'package:warunk/app/features/merchant/domain/use_case/merchant_products_get_use_case.dart';
 import 'package:warunk/app/features/merchant/domain/use_case/merchant_product_get_category_use_case.dart';
 import 'package:warunk/app/features/merchant/domain/use_case/merchant_product_download_images_use_case.dart';
+import 'package:warunk/app/features/merchant/domain/use_case/merchant_product_publish_usecase.dart';
+import 'package:warunk/app/features/merchant/domain/use_case/merchant_product_unpublish_usecase.dart';
 import 'package:warunk/app/features/merchant/presentation/input_product/bloc/merchant_input_product_bloc.dart';
 import 'package:warunk/app/features/merchant/presentation/product/bloc/merchant_product_bloc.dart';
 import 'package:warunk/app/features/merchant/presentation/ship_order/bloc/merchant_ship_order_bloc.dart';
@@ -180,6 +182,8 @@ Future<void> initDependency() async {
   sl.registerLazySingleton(
     () => MerchantProductDownloadImagesUseCase(repository: sl()),
   );
+  sl.registerLazySingleton(() => MerchantProductPublishUseCase(repository: sl()));
+  sl.registerLazySingleton(() => MerchantProductUnpublishUseCase(repository: sl()));
   sl.registerLazySingleton(() => MerchantMerchantUpdateLocationUseCase(sl()));
   sl.registerLazySingleton(() => MerchantMerchantUpdateAccountUseCase(sl()));
   sl.registerLazySingleton(() => MerchantMerchantOpenUseCase(sl()));
@@ -224,7 +228,11 @@ Future<void> initDependency() async {
   sl.registerFactory(() => AuthRegisterBloc(useCase: sl()));
   sl.registerFactory(() => AuthResetPasswordBloc(useCase: sl()));
   sl.registerFactory(() => AuthLogoutBloc(authBloc: sl(), useCase: sl()));
-  sl.registerFactory(() => MerchantProductBloc(useCase: sl()));
+  sl.registerFactory(() => MerchantProductBloc(
+        useCase: sl(),
+        publishUseCase: sl(),
+        unpublishUseCase: sl(),
+      ));
   sl.registerFactory(
     () => MerchantInputProductBloc(
       useCase: sl(),

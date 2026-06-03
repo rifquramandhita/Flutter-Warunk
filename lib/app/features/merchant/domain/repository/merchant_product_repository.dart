@@ -8,5 +8,7 @@ abstract class MerchantProductRepository {
   Future<DataState<MerchantProductEntity>> getById(String id);
   Future<DataState<MerchantProductEntity>> send(MerchantProductSendParam param);
   Future<DataState<List<String>>> downloadImages(List<String> urls);
+  Future<DataState<bool>> publish(String id);
+  Future<DataState<bool>> unpublish(String id);
 }
 
