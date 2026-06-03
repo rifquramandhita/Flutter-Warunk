@@ -69,6 +69,26 @@ class MerchantInputPromotionKuotaChangedEvent extends MerchantInputPromotionEven
   List<Object?> get props => [value];
 }
 
+class MerchantInputPromotionKodeChangedEvent extends MerchantInputPromotionEvent {
+  final String value;
+  MerchantInputPromotionKodeChangedEvent(this.value);
+
+  @override
+  List<Object?> get props => [value];
+}
+
+class MerchantInputPromotionTargetPenggunaChangedEvent extends MerchantInputPromotionEvent {
+  final String value;
+  MerchantInputPromotionTargetPenggunaChangedEvent(this.value);
+
+  @override
+  List<Object?> get props => [value];
+}
+
+class MerchantInputPromotionIsShowToggledEvent extends MerchantInputPromotionEvent {}
+
+class MerchantInputPromotionIsUnlimitedUseToggledEvent extends MerchantInputPromotionEvent {}
+
 class MerchantInputPromotionFetchProductsEvent extends MerchantInputPromotionEvent {}
 
 class MerchantInputPromotionFetchDetailEvent extends MerchantInputPromotionEvent {
@@ -96,6 +116,23 @@ class MerchantInputPromotionProductSelectedEvent extends MerchantInputPromotionE
 
   @override
   List<Object?> get props => [index, productId];
+}
+
+class MerchantInputPromotionProductAllVariantsToggledEvent extends MerchantInputPromotionEvent {
+  final int index;
+  MerchantInputPromotionProductAllVariantsToggledEvent(this.index);
+
+  @override
+  List<Object?> get props => [index];
+}
+
+class MerchantInputPromotionProductVariantToggledEvent extends MerchantInputPromotionEvent {
+  final int index;
+  final String variantId;
+  MerchantInputPromotionProductVariantToggledEvent(this.index, this.variantId);
+
+  @override
+  List<Object?> get props => [index, variantId];
 }
 
 class MerchantInputPromotionSavedEvent extends MerchantInputPromotionEvent {}

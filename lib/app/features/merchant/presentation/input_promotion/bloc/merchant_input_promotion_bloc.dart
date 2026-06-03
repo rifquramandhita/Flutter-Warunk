@@ -31,11 +31,17 @@ class MerchantInputPromotionBloc
     on<MerchantInputPromotionMulaiChangedEvent>(_onMulaiChanged);
     on<MerchantInputPromotionSelesaiChangedEvent>(_onSelesaiChanged);
     on<MerchantInputPromotionKuotaChangedEvent>(_onKuotaChanged);
+    on<MerchantInputPromotionKodeChangedEvent>(_onKodeChanged);
+    on<MerchantInputPromotionTargetPenggunaChangedEvent>(_onTargetPenggunaChanged);
+    on<MerchantInputPromotionIsShowToggledEvent>(_onIsShowToggled);
+    on<MerchantInputPromotionIsUnlimitedUseToggledEvent>(_onIsUnlimitedUseToggled);
     on<MerchantInputPromotionFetchProductsEvent>(_onFetchProducts);
     on<MerchantInputPromotionFetchDetailEvent>(_onFetchDetail);
     on<MerchantInputPromotionAddProductRowEvent>(_onAddProductRow);
     on<MerchantInputPromotionRemoveProductRowEvent>(_onRemoveProductRow);
     on<MerchantInputPromotionProductSelectedEvent>(_onProductSelected);
+    on<MerchantInputPromotionProductAllVariantsToggledEvent>(_onProductAllVariantsToggled);
+    on<MerchantInputPromotionProductVariantToggledEvent>(_onProductVariantToggled);
     on<MerchantInputPromotionSavedEvent>(_onSaved);
   }
 
@@ -95,6 +101,34 @@ class MerchantInputPromotionBloc
     emit(state.copyWith(kuota: event.value));
   }
 
+  void _onKodeChanged(
+    MerchantInputPromotionKodeChangedEvent event,
+    Emitter<MerchantInputPromotionState> emit,
+  ) {
+    emit(state.copyWith(kode: event.value));
+  }
+
+  void _onTargetPenggunaChanged(
+    MerchantInputPromotionTargetPenggunaChangedEvent event,
+    Emitter<MerchantInputPromotionState> emit,
+  ) {
+    emit(state.copyWith(targetPengguna: event.value));
+  }
+
+  void _onIsShowToggled(
+    MerchantInputPromotionIsShowToggledEvent event,
+    Emitter<MerchantInputPromotionState> emit,
+  ) {
+    emit(state.copyWith(isShow: !state.isShow));
+  }
+
+  void _onIsUnlimitedUseToggled(
+    MerchantInputPromotionIsUnlimitedUseToggledEvent event,
+    Emitter<MerchantInputPromotionState> emit,
+  ) {
+    emit(state.copyWith(isUnlimitedUse: !state.isUnlimitedUse));
+  }
+
   Future<void> _onFetchProducts(
     MerchantInputPromotionFetchProductsEvent event,
     Emitter<MerchantInputPromotionState> emit,
@@ -137,8 +171,23 @@ class MerchantInputPromotionBloc
         final data = response.data!;
         
         List<String?> selectedProductIds = [];
+        List<bool> selectedProductAllVariants = [];
+        List<List<String>> selectedProductVariantIds = [];
         if (data.type == 'product' && data.productAssignments.isNotEmpty) {
-          selectedProductIds = data.productAssignments.map((e) => e.productId).toList();
+          final Map<String, List<MerchantPromotionProductAssignmentEntity>> grouped = {};
+          for (var e in data.productAssignments) {
+            grouped.putIfAbsent(e.productId, () => []).add(e);
+          }
+          grouped.forEach((productId, assignments) {
+            selectedProductIds.add(productId);
+            final isAll = assignments.any((e) => e.allVariant);
+            selectedProductAllVariants.add(isAll);
+            if (isAll) {
+              selectedProductVariantIds.add([]);
+            } else {
+              selectedProductVariantIds.add(assignments.map((e) => e.variantId).whereType<String>().toList());
+            }
+          });
         }
 
         emit(state.copyWith(
@@ -152,7 +201,13 @@ class MerchantInputPromotionBloc
           mulai: data.datetimeStart,
           selesai: data.datetimeEnd,
           kuota: data.maxUse?.toString() ?? '',
+          kode: data.code ?? '',
           selectedProductIds: selectedProductIds,
+          selectedProductAllVariants: selectedProductAllVariants,
+          selectedProductVariantIds: selectedProductVariantIds,
+          targetPengguna: data.eligibility,
+          isShow: data.isShow,
+          isUnlimitedUse: data.isUnlimitedUse,
         ));
       } else {
         emit(state.copyWith(isLoading: false, errorMessage: response.message));
@@ -167,7 +222,11 @@ class MerchantInputPromotionBloc
     Emitter<MerchantInputPromotionState> emit,
   ) {
     emit(
-      state.copyWith(selectedProductIds: [...state.selectedProductIds, null]),
+      state.copyWith(
+        selectedProductIds: [...state.selectedProductIds, null],
+        selectedProductAllVariants: [...state.selectedProductAllVariants, true],
+        selectedProductVariantIds: [...state.selectedProductVariantIds, []],
+      ),
     );
   }
 
@@ -175,18 +234,74 @@ class MerchantInputPromotionBloc
     MerchantInputPromotionRemoveProductRowEvent event,
     Emitter<MerchantInputPromotionState> emit,
   ) {
-    final updatedList = List<String?>.from(state.selectedProductIds);
-    updatedList.removeAt(event.index);
-    emit(state.copyWith(selectedProductIds: updatedList));
+    final ids = List<String?>.from(state.selectedProductIds);
+    final allVars = List<bool>.from(state.selectedProductAllVariants);
+    final varIds = List<List<String>>.from(state.selectedProductVariantIds);
+
+    ids.removeAt(event.index);
+    allVars.removeAt(event.index);
+    varIds.removeAt(event.index);
+
+    emit(state.copyWith(
+      selectedProductIds: ids,
+      selectedProductAllVariants: allVars,
+      selectedProductVariantIds: varIds,
+    ));
   }
 
   void _onProductSelected(
     MerchantInputPromotionProductSelectedEvent event,
     Emitter<MerchantInputPromotionState> emit,
   ) {
-    final updatedList = List<String?>.from(state.selectedProductIds);
-    updatedList[event.index] = event.productId;
-    emit(state.copyWith(selectedProductIds: updatedList));
+    final ids = List<String?>.from(state.selectedProductIds);
+    final allVars = List<bool>.from(state.selectedProductAllVariants);
+    final varIds = List<List<String>>.from(state.selectedProductVariantIds);
+
+    ids[event.index] = event.productId;
+    allVars[event.index] = true;
+    varIds[event.index] = [];
+
+    emit(state.copyWith(
+      selectedProductIds: ids,
+      selectedProductAllVariants: allVars,
+      selectedProductVariantIds: varIds,
+    ));
+  }
+
+  void _onProductAllVariantsToggled(
+    MerchantInputPromotionProductAllVariantsToggledEvent event,
+    Emitter<MerchantInputPromotionState> emit,
+  ) {
+    final allVars = List<bool>.from(state.selectedProductAllVariants);
+    allVars[event.index] = !allVars[event.index];
+    
+    // If turning on all variants, clear selected variant ID
+    final varIds = List<List<String>>.from(state.selectedProductVariantIds);
+    if (allVars[event.index]) {
+      varIds[event.index] = [];
+    }
+
+    emit(state.copyWith(
+      selectedProductAllVariants: allVars,
+      selectedProductVariantIds: varIds,
+    ));
+  }
+
+  void _onProductVariantToggled(
+    MerchantInputPromotionProductVariantToggledEvent event,
+    Emitter<MerchantInputPromotionState> emit,
+  ) {
+    final varIds = List<List<String>>.from(state.selectedProductVariantIds);
+    final currentList = List<String>.from(varIds[event.index]);
+    
+    if (currentList.contains(event.variantId)) {
+      currentList.remove(event.variantId);
+    } else {
+      currentList.add(event.variantId);
+    }
+    
+    varIds[event.index] = currentList;
+    emit(state.copyWith(selectedProductVariantIds: varIds));
   }
 
   Future<void> _onSaved(
@@ -201,29 +316,48 @@ class MerchantInputPromotionBloc
       final formatter = DateFormat('yyyy-MM-dd HH:mm:ss');
 
       final request = MerchantPromotionSendParam(
+        code: !state.isShow ? state.kode.trim() : null,
         title: state.nama.trim(),
-        isShow: true, // Default to true on creation
+        isShow: state.isShow,
         type: state.tipe,
         datetimeStart: formatter.format(state.mulai!),
         datetimeEnd: formatter.format(state.selesai!),
         discountType: state.tipeDiskon,
         discount: int.tryParse(state.nilai) ?? 0,
         minPurchase: int.tryParse(state.minBeli) ?? 0,
-        eligibility: 'all_user',
-        isUnlimitedUse: state.kuota.isEmpty,
-        maxUse: state.kuota.isNotEmpty ? int.tryParse(state.kuota) : null,
+        eligibility: state.targetPengguna,
+        isUnlimitedUse: state.isUnlimitedUse,
+        maxUse: state.isUnlimitedUse ? null : int.tryParse(state.kuota),
         merchantDatetimeStart: formatter.format(state.mulai!),
         merchantDatetimeEnd: formatter.format(state.selesai!),
         productAssignments: state.tipe == 'product'
-            ? state.selectedProductIds
-                  .where((id) => id != null)
-                  .map(
-                    (id) => MerchantPromotionProductAssignmentParamEntity(
-                      productId: id!,
-                      allVariant: true,
-                    ),
-                  )
-                  .toList()
+            ? () {
+                final assignments = <MerchantPromotionProductAssignmentParamEntity>[];
+                for (int i = 0; i < state.selectedProductIds.length; i++) {
+                  final id = state.selectedProductIds[i];
+                  if (id != null) {
+                    if (state.selectedProductAllVariants[i]) {
+                      assignments.add(
+                        MerchantPromotionProductAssignmentParamEntity(
+                          productId: id,
+                          allVariant: true,
+                        ),
+                      );
+                    } else {
+                      for (final variantId in state.selectedProductVariantIds[i]) {
+                        assignments.add(
+                          MerchantPromotionProductAssignmentParamEntity(
+                            productId: id,
+                            allVariant: false,
+                            variantId: variantId,
+                          ),
+                        );
+                      }
+                    }
+                  }
+                }
+                return assignments;
+              }()
             : const [],
       );
 

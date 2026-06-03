@@ -89,6 +89,11 @@ class MerchantInputPromotionScreen extends StatelessWidget {
                 _buildDropdownTipeDiskonField(context, state),
                 const SizedBox(height: 20),
 
+                _buildSectionLabel(context, 'Target Pengguna'),
+                const SizedBox(height: 10),
+                _buildDropdownTargetPenggunaField(context, state),
+                const SizedBox(height: 20),
+
                 if (state.tipe == 'product') ...[
                   _buildSectionLabel(context, 'Pilih Produk Promo'),
                   const SizedBox(height: 10),
@@ -188,27 +193,111 @@ class MerchantInputPromotionScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 20),
 
-                _buildSectionLabel(context, 'Kuota (Opsional)'),
-                const SizedBox(height: 8),
-                _buildTextField(
-                  context: context,
-                  fieldKey: 'kuota',
-                  isDetailLoaded: state.isDetailLoaded,
-                  initialValue: state.kuota,
-                  hintText: '',
-                  keyboardType: TextInputType.number,
-                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                  suffixText: 'kali',
-                  onChanged: (v) => context.read<MerchantInputPromotionBloc>().add(
-                    MerchantInputPromotionKuotaChangedEvent(v),
+                _buildIsUnlimitedUseField(context, state),
+                const SizedBox(height: 20),
+
+                if (!state.isUnlimitedUse) ...[
+                  _buildSectionLabel(context, 'Kuota'),
+                  const SizedBox(height: 8),
+                  _buildTextField(
+                    context: context,
+                    fieldKey: 'kuota',
+                    isDetailLoaded: state.isDetailLoaded,
+                    initialValue: state.kuota,
+                    hintText: '',
+                    keyboardType: TextInputType.number,
+                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                    suffixText: 'kali',
+                    onChanged: (v) => context.read<MerchantInputPromotionBloc>().add(
+                      MerchantInputPromotionKuotaChangedEvent(v),
+                    ),
                   ),
-                ),
+                  const SizedBox(height: 20),
+                ],
+
+                _buildIsShowField(context, state),
+
+                if (!state.isShow) ...[
+                  const SizedBox(height: 20),
+                  _buildSectionLabel(context, 'Kode Promo'),
+                  const SizedBox(height: 8),
+                  _buildTextField(
+                    context: context,
+                    fieldKey: 'kode',
+                    isDetailLoaded: state.isDetailLoaded,
+                    initialValue: state.kode,
+                    hintText: 'Contoh: DISKON10',
+                    onChanged: (v) => context.read<MerchantInputPromotionBloc>().add(
+                      MerchantInputPromotionKodeChangedEvent(v),
+                    ),
+                  ),
+                ],
               ],
             ),
           ),
         ),
         _buildSimpanButton(context),
       ],
+    );
+  }
+
+  Widget _buildIsUnlimitedUseField(BuildContext context, MerchantInputPromotionState state) {
+    return Container(
+      decoration: BoxDecoration(
+        color: GlobalHelper.getColorSchema(context).surface,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: GlobalHelper.getColorSchema(context).outline),
+      ),
+      child: SwitchListTile(
+        title: Text(
+          'Pemakaian tanpa batas?',
+          style: GlobalHelper.getTextTheme(
+            context,
+            appTextStyle: AppTextStyle.BODY_MEDIUM,
+          )?.copyWith(
+            fontWeight: FontWeight.w600,
+            color: GlobalHelper.getColorSchema(context).onSurface,
+          ),
+        ),
+        value: state.isUnlimitedUse,
+        activeColor: GlobalHelper.getColorSchema(context).primary,
+        onChanged: (val) {
+          context.read<MerchantInputPromotionBloc>().add(
+            MerchantInputPromotionIsUnlimitedUseToggledEvent(),
+          );
+        },
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      ),
+    );
+  }
+
+  Widget _buildIsShowField(BuildContext context, MerchantInputPromotionState state) {
+    return Container(
+      decoration: BoxDecoration(
+        color: GlobalHelper.getColorSchema(context).surface,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: GlobalHelper.getColorSchema(context).outline),
+      ),
+      child: SwitchListTile(
+        title: Text(
+          'Tampilkan di Checkout?',
+          style: GlobalHelper.getTextTheme(
+            context,
+            appTextStyle: AppTextStyle.BODY_MEDIUM,
+          )?.copyWith(
+            fontWeight: FontWeight.w600,
+            color: GlobalHelper.getColorSchema(context).onSurface,
+          ),
+        ),
+        value: state.isShow,
+        activeColor: GlobalHelper.getColorSchema(context).primary,
+        onChanged: (val) {
+          context.read<MerchantInputPromotionBloc>().add(
+            MerchantInputPromotionIsShowToggledEvent(),
+          );
+        },
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      ),
     );
   }
 
@@ -260,7 +349,13 @@ class MerchantInputPromotionScreen extends StatelessWidget {
             appTextStyle: AppTextStyle.BODY_MEDIUM,
           )?.copyWith(color: GlobalHelper.getColorSchema(context).onSurface),
           items: MerchantInputPromotionState.tipeOptions
-              .map((s) => DropdownMenuItem<String>(value: s, child: Text(s)))
+              .map((s) {
+                String label = s;
+                if (s == 'order') label = 'Transaksi';
+                if (s == 'product') label = 'Produk';
+                if (s == 'shipping') label = 'Ongkir';
+                return DropdownMenuItem<String>(value: s, child: Text(label));
+              })
               .toList(),
           onChanged: (v) {
             if (v != null) {
@@ -308,12 +403,65 @@ class MerchantInputPromotionScreen extends StatelessWidget {
             appTextStyle: AppTextStyle.BODY_MEDIUM,
           )?.copyWith(color: GlobalHelper.getColorSchema(context).onSurface),
           items: MerchantInputPromotionState.tipeDiskonOptions
-              .map((s) => DropdownMenuItem<String>(value: s, child: Text(s)))
+              .map((s) {
+                String label = s;
+                if (s == 'fixed') label = 'Nominal Tetap';
+                if (s == 'percentage') label = 'Persentase';
+                return DropdownMenuItem<String>(value: s, child: Text(label));
+              })
               .toList(),
           onChanged: (v) {
             if (v != null) {
               context.read<MerchantInputPromotionBloc>().add(
                 MerchantInputPromotionTipeDiskonChangedEvent(v),
+              );
+            }
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDropdownTargetPenggunaField(
+    BuildContext context,
+    MerchantInputPromotionState state,
+  ) {
+    return Container(
+      decoration: BoxDecoration(
+        color: GlobalHelper.getColorSchema(context).surface,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: GlobalHelper.getColorSchema(context).outline),
+      ),
+      padding: const EdgeInsets.symmetric(horizontal: 14),
+      child: DropdownButtonHideUnderline(
+        child: DropdownButton<String>(
+          value: state.targetPengguna.isEmpty ? null : state.targetPengguna,
+          isExpanded: true,
+          hint: Text(
+            'Pilih target pengguna',
+            style:
+                GlobalHelper.getTextTheme(
+                  context,
+                  appTextStyle: AppTextStyle.BODY_MEDIUM,
+                )?.copyWith(
+                  color: GlobalHelper.getColorSchema(context).onSurfaceVariant,
+                ),
+          ),
+          icon: Icon(
+            Icons.keyboard_arrow_down_rounded,
+            color: GlobalHelper.getColorSchema(context).onSurfaceVariant,
+          ),
+          style: GlobalHelper.getTextTheme(
+            context,
+            appTextStyle: AppTextStyle.BODY_MEDIUM,
+          )?.copyWith(color: GlobalHelper.getColorSchema(context).onSurface),
+          items: MerchantInputPromotionState.targetPenggunaOptions
+              .map((s) => DropdownMenuItem<String>(value: s, child: Text(s == 'all_user' ? 'Semua Pengguna' : 'Pengguna Baru')))
+              .toList(),
+          onChanged: (v) {
+            if (v != null) {
+              context.read<MerchantInputPromotionBloc>().add(
+                MerchantInputPromotionTargetPenggunaChangedEvent(v),
               );
             }
           },
@@ -349,77 +497,157 @@ class MerchantInputPromotionScreen extends StatelessWidget {
               state.products.any((p) => p.id == selectedId);
           final dropdownValue = hasValidId ? selectedId : null;
 
-          return Padding(
-            padding: const EdgeInsets.only(bottom: 10),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Container(
+          final selectedProduct = hasValidId ? state.products.firstWhere((p) => p.id == selectedId) : null;
+          final bool hasVariant = selectedProduct?.hasVariant ?? false;
+          final bool allVariants = state.selectedProductAllVariants[index];
+          final List<String> selectedVariantIds = state.selectedProductVariantIds[index];
+
+          return Card(
+            margin: const EdgeInsets.only(bottom: 12),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+              side: BorderSide(color: GlobalHelper.getColorSchema(context).outlineVariant),
+            ),
+            elevation: 0,
+            color: GlobalHelper.getColorSchema(context).surface,
+            child: Padding(
+              padding: const EdgeInsets.all(12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                  children: [
+                    Expanded(
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: GlobalHelper.getColorSchema(context).surface,
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: GlobalHelper.getColorSchema(context).outline,
+                          ),
+                        ),
+                        padding: const EdgeInsets.symmetric(horizontal: 14),
+                        child: DropdownButtonHideUnderline(
+                          child: DropdownButton<String>(
+                            value: dropdownValue,
+                            isExpanded: true,
+                            hint: Text(
+                              'Pilih produk',
+                              style:
+                                  GlobalHelper.getTextTheme(
+                                    context,
+                                    appTextStyle: AppTextStyle.BODY_MEDIUM,
+                                  )?.copyWith(
+                                    color: GlobalHelper.getColorSchema(
+                                      context,
+                                    ).onSurfaceVariant,
+                                  ),
+                            ),
+                            items: state.products
+                                .map(
+                                  (p) => DropdownMenuItem(
+                                    value: p.id,
+                                    child: Text(
+                                      p.name,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                )
+                                .toList(),
+                            onChanged: (val) {
+                              if (val != null) {
+                                context.read<MerchantInputPromotionBloc>().add(
+                                  MerchantInputPromotionProductSelectedEvent(
+                                    index,
+                                    val,
+                                  ),
+                                );
+                              }
+                            },
+                          ),
+                        ),
+                      ),
+                    ),
+                    IconButton(
+                      icon: Icon(
+                        Icons.remove_circle_outline,
+                        color: GlobalHelper.getColorSchema(context).error,
+                      ),
+                      onPressed: () {
+                        context.read<MerchantInputPromotionBloc>().add(
+                          MerchantInputPromotionRemoveProductRowEvent(index),
+                        );
+                      },
+                    ),
+                  ],
+                ),
+                if (hasVariant) ...[
+                  const SizedBox(height: 8),
+                  Container(
                     decoration: BoxDecoration(
                       color: GlobalHelper.getColorSchema(context).surface,
                       borderRadius: BorderRadius.circular(12),
-                      border: Border.all(
-                        color: GlobalHelper.getColorSchema(context).outline,
-                      ),
+                      border: Border.all(color: GlobalHelper.getColorSchema(context).outline),
                     ),
-                    padding: const EdgeInsets.symmetric(horizontal: 14),
-                    child: DropdownButtonHideUnderline(
-                      child: DropdownButton<String>(
-                        value: dropdownValue,
-                        isExpanded: true,
-                        hint: Text(
-                          'Pilih produk',
-                          style:
-                              GlobalHelper.getTextTheme(
-                                context,
-                                appTextStyle: AppTextStyle.BODY_MEDIUM,
-                              )?.copyWith(
-                                color: GlobalHelper.getColorSchema(
-                                  context,
-                                ).onSurfaceVariant,
-                              ),
+                    child: SwitchListTile(
+                      title: Text(
+                        'Semua variant?',
+                        style: GlobalHelper.getTextTheme(
+                          context,
+                          appTextStyle: AppTextStyle.BODY_MEDIUM,
+                        )?.copyWith(
+                          fontWeight: FontWeight.w600,
+                          color: GlobalHelper.getColorSchema(context).onSurface,
                         ),
-                        items: state.products
-                            .map(
-                              (p) => DropdownMenuItem(
-                                value: p.id,
-                                child: Text(
-                                  p.name,
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ),
-                            )
-                            .toList(),
-                        onChanged: (val) {
-                          if (val != null) {
-                            context.read<MerchantInputPromotionBloc>().add(
-                              MerchantInputPromotionProductSelectedEvent(
-                                index,
-                                val,
-                              ),
-                            );
-                          }
-                        },
                       ),
+                      value: allVariants,
+                      activeColor: GlobalHelper.getColorSchema(context).primary,
+                      onChanged: (val) {
+                        context.read<MerchantInputPromotionBloc>().add(
+                          MerchantInputPromotionProductAllVariantsToggledEvent(index),
+                        );
+                      },
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                     ),
                   ),
-                ),
-                IconButton(
-                  icon: Icon(
-                    Icons.remove_circle_outline,
-                    color: GlobalHelper.getColorSchema(context).error,
+                ],
+                if (hasVariant && !allVariants) ...[
+                  const SizedBox(height: 8),
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: (selectedProduct?.variants ?? []).map((v) {
+                      final isSelected = selectedVariantIds.contains(v.id);
+                      return FilterChip(
+                        label: Text(
+                          v.variantCombination.values.join(' - '),
+                          style: GlobalHelper.getTextTheme(
+                            context,
+                            appTextStyle: AppTextStyle.BODY_SMALL,
+                          ),
+                        ),
+                        selected: isSelected,
+                        onSelected: (bool selected) {
+                          context.read<MerchantInputPromotionBloc>().add(
+                            MerchantInputPromotionProductVariantToggledEvent(
+                              index,
+                              v.id,
+                            ),
+                          );
+                        },
+                        selectedColor: GlobalHelper.getColorSchema(context).primaryContainer,
+                        checkmarkColor: GlobalHelper.getColorSchema(context).onPrimaryContainer,
+                      );
+                    }).toList(),
                   ),
-                  onPressed: () {
-                    context.read<MerchantInputPromotionBloc>().add(
-                      MerchantInputPromotionRemoveProductRowEvent(index),
-                    );
-                  },
-                ),
-              ],
+                  ],
+                ],
+              ),
             ),
           );
         }),
+        const SizedBox(height: 8),
         OutlinedButton.icon(
           onPressed: () {
             context.read<MerchantInputPromotionBloc>().add(

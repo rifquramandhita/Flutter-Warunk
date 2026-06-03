@@ -10,6 +10,7 @@ class MerchantInputPromotionState extends Equatable {
   final DateTime? mulai;
   final DateTime? selesai;
   final String kuota;
+  final String kode;
   final bool isLoading;
   final bool isDetailLoaded;
   final bool isSuccess;
@@ -17,10 +18,17 @@ class MerchantInputPromotionState extends Equatable {
   final List<MerchantProductEntity> products;
   final bool isProductsLoading;
   final List<String?> selectedProductIds;
+  final List<bool> selectedProductAllVariants;
+  final List<List<String>> selectedProductVariantIds;
+  final String targetPengguna;
+  final bool isShow;
+  final bool isUnlimitedUse;
 
   static const List<String> tipeOptions = ['order', 'product', 'shipping'];
 
   static const List<String> tipeDiskonOptions = ['fixed', 'percentage'];
+
+  static const List<String> targetPenggunaOptions = ['all_user', 'new_user'];
 
   const MerchantInputPromotionState({
     this.promoId,
@@ -32,6 +40,7 @@ class MerchantInputPromotionState extends Equatable {
     this.mulai,
     this.selesai,
     this.kuota = '',
+    this.kode = '',
     this.isLoading = false,
     this.isDetailLoaded = false,
     this.isSuccess = false,
@@ -39,6 +48,11 @@ class MerchantInputPromotionState extends Equatable {
     this.products = const [],
     this.isProductsLoading = false,
     this.selectedProductIds = const [],
+    this.selectedProductAllVariants = const [],
+    this.selectedProductVariantIds = const [],
+    this.targetPengguna = 'all_user',
+    this.isShow = true,
+    this.isUnlimitedUse = true,
   });
 
   /// Satuan suffix ditentukan oleh tipe
@@ -67,7 +81,9 @@ class MerchantInputPromotionState extends Equatable {
       selesai != null &&
       (selesai!.isAfter(mulai!) || selesai!.isAtSameMomentAs(mulai!)) &&
       (tipe != 'product' ||
-          selectedProductIds.where((id) => id != null).isNotEmpty);
+          selectedProductIds.where((id) => id != null).isNotEmpty) &&
+      (isUnlimitedUse || kuota.isNotEmpty) &&
+      (isShow || kode.trim().isNotEmpty);
 
   MerchantInputPromotionState copyWith({
     String? promoId,
@@ -79,6 +95,7 @@ class MerchantInputPromotionState extends Equatable {
     DateTime? mulai,
     DateTime? selesai,
     String? kuota,
+    String? kode,
     bool? isLoading,
     bool? isDetailLoaded,
     bool? isSuccess,
@@ -86,8 +103,13 @@ class MerchantInputPromotionState extends Equatable {
     List<MerchantProductEntity>? products,
     bool? isProductsLoading,
     List<String?>? selectedProductIds,
+    List<bool>? selectedProductAllVariants,
+    List<List<String>>? selectedProductVariantIds,
     bool clearMulai = false,
     bool clearSelesai = false,
+    String? targetPengguna,
+    bool? isShow,
+    bool? isUnlimitedUse,
   }) => MerchantInputPromotionState(
     promoId: promoId ?? this.promoId,
     tipe: tipe ?? this.tipe,
@@ -98,6 +120,7 @@ class MerchantInputPromotionState extends Equatable {
     mulai: clearMulai ? null : (mulai ?? this.mulai),
     selesai: clearSelesai ? null : (selesai ?? this.selesai),
     kuota: kuota ?? this.kuota,
+    kode: kode ?? this.kode,
     isLoading: isLoading ?? this.isLoading,
     isDetailLoaded: isDetailLoaded ?? this.isDetailLoaded,
     isSuccess: isSuccess ?? false,
@@ -105,6 +128,11 @@ class MerchantInputPromotionState extends Equatable {
     products: products ?? this.products,
     isProductsLoading: isProductsLoading ?? this.isProductsLoading,
     selectedProductIds: selectedProductIds ?? this.selectedProductIds,
+    selectedProductAllVariants: selectedProductAllVariants ?? this.selectedProductAllVariants,
+    selectedProductVariantIds: selectedProductVariantIds ?? this.selectedProductVariantIds,
+    targetPengguna: targetPengguna ?? this.targetPengguna,
+    isShow: isShow ?? this.isShow,
+    isUnlimitedUse: isUnlimitedUse ?? this.isUnlimitedUse,
   );
 
   @override
@@ -118,6 +146,7 @@ class MerchantInputPromotionState extends Equatable {
     mulai,
     selesai,
     kuota,
+    kode,
     isLoading,
     isDetailLoaded,
     isSuccess,
@@ -125,5 +154,10 @@ class MerchantInputPromotionState extends Equatable {
     products,
     isProductsLoading,
     selectedProductIds,
+    selectedProductAllVariants,
+    selectedProductVariantIds,
+    targetPengguna,
+    isShow,
+    isUnlimitedUse,
   ];
 }
