@@ -10,6 +10,7 @@ import 'package:warunk/core/helper/global_helper.dart';
 import 'package:warunk/core/widgets/loading_app_widget.dart';
 import 'package:warunk/main.dart';
 import 'package:warunk/theme/app_colors.dart';
+import 'package:warunk/core/helper/number_helper.dart';
 
 class MerchantProductScreen extends StatelessWidget {
   const MerchantProductScreen({super.key});
@@ -189,12 +190,6 @@ class MerchantProductScreen extends StatelessWidget {
     BuildContext context,
     MerchantProductEntity product,
   ) {
-    final currency = NumberFormat.currency(
-      locale: 'id',
-      symbol: 'Rp',
-      decimalDigits: 0,
-    );
-
     return GestureDetector(
       onTap: () => _onPressItem(context, product),
       child: Container(
@@ -244,9 +239,11 @@ class MerchantProductScreen extends StatelessWidget {
                     Row(
                       children: [
                         Text(
-                          currency.format(product.variants.isNotEmpty
-                              ? product.variants.first.price
-                              : product.price),
+                          NumberHelper.formatIDR(((product.variants.isNotEmpty
+                                      ? product.variants.first.price
+                                      : product.price) ??
+                                  0)
+                              .toInt()),
                           style: const TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w800,

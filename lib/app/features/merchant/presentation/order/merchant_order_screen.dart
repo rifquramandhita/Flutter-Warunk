@@ -9,15 +9,11 @@ import 'package:warunk/core/helper/dialog_helper.dart';
 import 'package:warunk/core/widgets/loading_app_widget.dart';
 import 'package:warunk/main.dart';
 import 'package:warunk/core/helper/global_helper.dart';
+import 'package:warunk/core/helper/number_helper.dart';
 
 class MerchantOrderScreen extends StatelessWidget {
   const MerchantOrderScreen({super.key});
 
-  static final _currency = NumberFormat.currency(
-    locale: 'id',
-    symbol: 'Rp',
-    decimalDigits: 0,
-  );
 
   @override
   Widget build(BuildContext context) {
@@ -342,7 +338,7 @@ class MerchantOrderScreen extends StatelessWidget {
                         Align(
                           alignment: Alignment.centerRight,
                           child: Text(
-                            _currency.format(order.total ?? 0),
+                            NumberHelper.formatIDR((order.total ?? 0).toInt()),
                             style:
                                 GlobalHelper.getTextTheme(
                                   context,

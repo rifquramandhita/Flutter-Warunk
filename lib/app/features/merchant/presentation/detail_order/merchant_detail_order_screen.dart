@@ -10,6 +10,7 @@ import 'package:warunk/core/helper/dialog_helper.dart';
 import 'package:warunk/core/widgets/loading_app_widget.dart';
 import 'package:warunk/core/helper/global_helper.dart';
 import 'package:warunk/core/widgets/custom_dotted_divider.dart';
+import 'package:warunk/core/helper/number_helper.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Entry point
@@ -395,11 +396,6 @@ class MerchantDetailOrderScreen extends StatelessWidget {
   }
 
   Widget _mainCard(BuildContext context, MerchantOrderEntity order) {
-    final currency = NumberFormat.currency(
-      locale: 'id',
-      symbol: 'Rp',
-      decimalDigits: 0,
-    );
 
     return Container(
       decoration: BoxDecoration(
@@ -634,7 +630,7 @@ class MerchantDetailOrderScreen extends StatelessWidget {
                         SizedBox(
                           width: 70,
                           child: Text(
-                            currency.format(item.total ?? 0),
+                            NumberHelper.formatIDR((item.total ?? 0).toInt()),
                             textAlign: TextAlign.right,
                             style: GlobalHelper.getTextTheme(
                               context,
@@ -663,7 +659,7 @@ class MerchantDetailOrderScreen extends StatelessWidget {
                       )?.copyWith(color: GlobalHelper.getColorSchema(context).onSurfaceVariant),
                     ),
                     Text(
-                      currency.format(order.subtotal ?? 0),
+                      NumberHelper.formatIDR((order.subtotal ?? 0).toInt()),
                       style: GlobalHelper.getTextTheme(
                         context,
                         appTextStyle: AppTextStyle.BODY_SMALL,
@@ -683,7 +679,7 @@ class MerchantDetailOrderScreen extends StatelessWidget {
                       )?.copyWith(color: GlobalHelper.getColorSchema(context).onSurfaceVariant),
                     ),
                     Text(
-                      currency.format(order.shippingCost ?? 0),
+                      NumberHelper.formatIDR((order.shippingCost ?? 0).toInt()),
                       style: GlobalHelper.getTextTheme(
                         context,
                         appTextStyle: AppTextStyle.BODY_SMALL,
@@ -704,7 +700,7 @@ class MerchantDetailOrderScreen extends StatelessWidget {
                         )?.copyWith(color: GlobalHelper.getColorSchema(context).onSurfaceVariant),
                       ),
                       Text(
-                        currency.format(order.serviceFee ?? 0),
+                        NumberHelper.formatIDR((order.serviceFee ?? 0).toInt()),
                         style: GlobalHelper.getTextTheme(
                           context,
                           appTextStyle: AppTextStyle.BODY_SMALL,
@@ -731,7 +727,7 @@ class MerchantDetailOrderScreen extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      currency.format(order.total ?? 0),
+                      NumberHelper.formatIDR((order.total ?? 0).toInt()),
                       style: GlobalHelper.getTextTheme(
                         context,
                         appTextStyle: AppTextStyle.TITLE_MEDIUM,

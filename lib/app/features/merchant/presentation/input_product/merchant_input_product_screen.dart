@@ -11,6 +11,7 @@ import 'package:warunk/core/widgets/loading_app_widget.dart';
 import 'package:warunk/core/widgets/primary_button.dart';
 import 'package:warunk/main.dart';
 import 'package:warunk/theme/app_colors.dart';
+import 'package:warunk/core/helper/number_helper.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Entry point
@@ -1121,7 +1122,7 @@ class _CombinationCardState extends State<_CombinationCard> {
   bool _expanded = false;
 
   String get _priceSummary => widget.combination.price > 0
-      ? 'Rp ${widget.combination.price}'
+      ? NumberHelper.formatIDR(widget.combination.price)
       : 'Belum diisi';
 
   @override
