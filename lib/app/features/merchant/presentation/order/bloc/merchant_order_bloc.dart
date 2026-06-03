@@ -11,15 +11,14 @@ class MerchantOrderBloc extends Bloc<MerchantOrderEvent, MerchantOrderState> {
   final MerchantOrderGetUseCase _getUseCase;
 
   MerchantOrderBloc({required MerchantOrderGetUseCase getUseCase})
-      : _getUseCase = getUseCase,
-        super(const MerchantOrderState()) {
-    on<MerchantOrderEventFetchStarted>(_onFetchStarted);
+    : _getUseCase = getUseCase,
+      super(const MerchantOrderState()) {
+    on<MerchantOrderEventGet>(_onGet);
     on<MerchantOrderEventTabChanged>(_onTabChanged);
-    on<MerchantOrderEventFilterTapped>(_onFilterTapped);
   }
 
-  Future<void> _onFetchStarted(
-    MerchantOrderEventFetchStarted event,
+  Future<void> _onGet(
+    MerchantOrderEventGet event,
     Emitter<MerchantOrderState> emit,
   ) async {
     emit(state.copyWith(isLoading: true));
@@ -28,19 +27,25 @@ class MerchantOrderBloc extends Bloc<MerchantOrderEvent, MerchantOrderState> {
 
     if (response is SuccessState) {
       final orders = response.data ?? [];
-      final tabs = orders.map((e) => e.status ?? '').where((s) => s.isNotEmpty).toSet().toList();
+      final tabs = orders
+          .map((e) => e.status ?? '')
+          .where((s) => s.isNotEmpty)
+          .toSet()
+          .toList();
       tabs.insert(0, ''); // Add 'Semua' tab
       String selected = state.selectedTab;
       if (!tabs.contains(selected) && tabs.isNotEmpty) {
         selected = tabs.first;
       }
 
-      emit(state.copyWith(
-        isSuccess: true,
-        allOrders: orders,
-        availableTabs: tabs,
-        selectedTab: selected,
-      ));
+      emit(
+        state.copyWith(
+          isSuccess: true,
+          allOrders: orders,
+          availableTabs: tabs,
+          selectedTab: selected,
+        ),
+      );
     } else {
       emit(state.copyWith(errorMessage: response.message));
     }
@@ -53,12 +58,5 @@ class MerchantOrderBloc extends Bloc<MerchantOrderEvent, MerchantOrderState> {
     Emitter<MerchantOrderState> emit,
   ) {
     emit(state.copyWith(selectedTab: event.status));
-  }
-
-  void _onFilterTapped(
-    MerchantOrderEventFilterTapped event,
-    Emitter<MerchantOrderState> emit,
-  ) {
-    // TODO: show filter bottom sheet
   }
 }
