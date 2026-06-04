@@ -79,6 +79,8 @@ class MerchantInputProductSaved extends MerchantInputProductEvent {}
 class MerchantInputProductSameDimensionToggled
     extends MerchantInputProductEvent {}
 
+class MerchantInputProductDeleted extends MerchantInputProductEvent {}
+
 // ── Variant definition events ─────────────────────────────────────────────────
 
 class MerchantInputProductVariantAdded extends MerchantInputProductEvent {}
@@ -88,15 +90,13 @@ class MerchantInputProductVariantRemoved extends MerchantInputProductEvent {
   MerchantInputProductVariantRemoved(this.variantIndex);
 }
 
-class MerchantInputProductVariantNameChanged
-    extends MerchantInputProductEvent {
+class MerchantInputProductVariantNameChanged extends MerchantInputProductEvent {
   final int variantIndex;
   final String value;
   MerchantInputProductVariantNameChanged(this.variantIndex, this.value);
 }
 
-class MerchantInputProductVariantOptionAdded
-    extends MerchantInputProductEvent {
+class MerchantInputProductVariantOptionAdded extends MerchantInputProductEvent {
   final int variantIndex;
   MerchantInputProductVariantOptionAdded(this.variantIndex);
 }
@@ -124,8 +124,7 @@ class MerchantInputProductVariantOptionNameChanged
 // ── Combination events ────────────────────────────────────────────────────────
 
 /// Update the price/stock/etc. of one generated combination
-class MerchantInputProductCombinationChanged
-    extends MerchantInputProductEvent {
+class MerchantInputProductCombinationChanged extends MerchantInputProductEvent {
   final int combinationIndex;
   final MerchantProductVariantSendParam updated;
   MerchantInputProductCombinationChanged(this.combinationIndex, this.updated);

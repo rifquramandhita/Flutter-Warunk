@@ -20,11 +20,17 @@ abstract class MerchantProductApiService {
   Future<HttpResponse<dynamic>> create(@Body() FormData body);
 
   @PUT('/api/seller/products/{id}')
-  Future<HttpResponse<dynamic>> update(@Path('id') String id, @Body() FormData body);
+  Future<HttpResponse<dynamic>> update(
+    @Path('id') String id,
+    @Body() FormData body,
+  );
 
   @POST('/api/seller/products/{id}/publish')
   Future<HttpResponse<dynamic>> publish(@Path('id') String id);
 
   @POST('/api/seller/products/{id}/unpublish')
   Future<HttpResponse<dynamic>> unpublish(@Path('id') String id);
+
+  @DELETE('/api/seller/products/{id}')
+  Future<HttpResponse<dynamic>> delete(@Path('id') String id);
 }

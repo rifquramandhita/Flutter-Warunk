@@ -7,6 +7,7 @@ import 'package:warunk/app/features/merchant/domain/use_case/merchant_product_do
 import 'package:warunk/app/features/merchant/domain/use_case/merchant_product_get_by_id_use_case.dart';
 import 'package:warunk/app/features/merchant/domain/use_case/merchant_product_get_category_use_case.dart';
 import 'package:warunk/app/features/merchant/domain/use_case/merchant_product_send_use_case.dart';
+import 'package:warunk/app/features/merchant/domain/use_case/merchant_product_delete_use_case.dart';
 part 'merchant_input_product_event.dart';
 part 'merchant_input_product_state.dart';
 
@@ -16,12 +17,14 @@ class MerchantInputProductBloc
   final MerchantProductSendUseCase sendUseCase;
   final MerchantProductDownloadImagesUseCase downloadImagesUseCase;
   final MerchantProductGetCategoryUseCase getCategoryUseCase;
+  final MerchantProductDeleteUseCase deleteUseCase;
 
   MerchantInputProductBloc({
     required this.useCase,
     required this.sendUseCase,
     required this.downloadImagesUseCase,
     required this.getCategoryUseCase,
+    required this.deleteUseCase,
   }) : super(const MerchantInputProductState()) {
     on<MerchantInputProductGet>(_onGet);
     on<MerchantInputProductLoadCategories>(_onLoadCategories);
@@ -52,6 +55,7 @@ class MerchantInputProductBloc
     );
     // Combination handler
     on<MerchantInputProductCombinationChanged>(_onCombinationChanged);
+    on<MerchantInputProductDeleted>(_onDeleted);
   }
 
   // ── Helpers ──────────────────────────────────────────────────────────────────
@@ -124,7 +128,8 @@ class MerchantInputProductBloc
       final networkUrls = product.images.map((e) => e.url).toList();
 
       // ── Rebuild variants & combinations from API response ──────────────────
-      final apiVariants = product.variants; // List<MerchantProductVariantEntity>
+      final apiVariants =
+          product.variants; // List<MerchantProductVariantEntity>
 
       List<VariantInput> loadedVariants = [];
       List<MerchantProductVariantSendParam> loadedCombinations = [];
@@ -199,7 +204,6 @@ class MerchantInputProductBloc
       );
     }
   }
-
 
   Future<void> _onLoadCategories(
     MerchantInputProductLoadCategories event,
@@ -446,5 +450,26 @@ class MerchantInputProductBloc
     );
     updated[event.combinationIndex] = event.updated;
     emit(state.copyWith(combinations: updated));
+  }
+
+  Future<void> _onDeleted(
+    MerchantInputProductDeleted event,
+    Emitter<MerchantInputProductState> emit,
+  ) async {
+    if (state.id == null) return;
+    emit(state.copyWith(isLoading: true));
+    final response = await deleteUseCase(state.id!);
+    if (response.success) {
+      emit(state.copyWith(isSuccess: true));
+    } else {
+      emit(
+        state.copyWith(
+          errorMessage: response.message.isNotEmpty
+              ? response.message
+              : 'Gagal menghapus produk',
+        ),
+      );
+    }
+    emit(state.copyWith(isLoading: false));
   }
 }

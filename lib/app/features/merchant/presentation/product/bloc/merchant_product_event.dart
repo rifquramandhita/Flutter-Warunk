@@ -22,3 +22,8 @@ class MerchantProductEventToggled extends MerchantProductEvent {
 }
 
 class MerchantProductEventAddTapped extends MerchantProductEvent {}
+
+class MerchantProductEventDeleted extends MerchantProductEvent {
+  final String productId;
+  MerchantProductEventDeleted(this.productId);
+}

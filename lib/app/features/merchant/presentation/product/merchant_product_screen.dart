@@ -11,6 +11,8 @@ import 'package:warunk/core/widgets/loading_app_widget.dart';
 import 'package:warunk/main.dart';
 import 'package:warunk/theme/app_colors.dart';
 import 'package:warunk/core/helper/number_helper.dart';
+import 'package:warunk/core/widgets/primary_button.dart';
+import 'package:warunk/core/widgets/error_button.dart';
 
 class MerchantProductScreen extends StatelessWidget {
   const MerchantProductScreen({super.key});
@@ -192,6 +194,7 @@ class MerchantProductScreen extends StatelessWidget {
   ) {
     return GestureDetector(
       onTap: () => _onPressItem(context, product),
+      onLongPress: () => _onLongPressItem(context, product),
       child: Container(
         decoration: BoxDecoration(
           color: AppColors.white,
@@ -228,9 +231,11 @@ class MerchantProductScreen extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(width: 6),
-                        _buildStokBadge(product.variants.isNotEmpty
-                            ? product.variants.first.stock
-                            : product.stock),
+                        _buildStokBadge(
+                          product.variants.isNotEmpty
+                              ? product.variants.first.stock
+                              : product.stock,
+                        ),
                       ],
                     ),
                     const SizedBox(height: 4),
@@ -239,11 +244,13 @@ class MerchantProductScreen extends StatelessWidget {
                     Row(
                       children: [
                         Text(
-                          NumberHelper.formatIDR(((product.variants.isNotEmpty
-                                      ? product.variants.first.price
-                                      : product.price) ??
-                                  0)
-                              .toInt()),
+                          NumberHelper.formatIDR(
+                            ((product.variants.isNotEmpty
+                                        ? product.variants.first.price
+                                        : product.price) ??
+                                    0)
+                                .toInt(),
+                          ),
                           style: const TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w800,
@@ -437,5 +444,91 @@ class MerchantProductScreen extends StatelessWidget {
       ),
     );
     bloc.add(MerchantProductEventGet());
+  }
+
+  void _onLongPressItem(BuildContext context, MerchantProductEntity product) {
+    DialogHelper.showBottomSheetDialog(
+      context: context,
+      title: 'Opsi Produk',
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          PrimaryButton(
+            label: 'Buka / Edit',
+            onPressed: () {
+              Navigator.pop(context); // close bottom sheet
+              _onPressItem(context, product);
+            },
+          ),
+          const SizedBox(height: 12),
+          ErrorButton(
+            label: 'Hapus',
+            onPressed: () {
+              Navigator.pop(context); // close options bottom sheet
+              _showDeleteConfirmation(context, product);
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showDeleteConfirmation(
+    BuildContext context,
+    MerchantProductEntity product,
+  ) {
+    DialogHelper.showBottomSheetDialog(
+      context: context,
+      title: 'Hapus Produk',
+      content: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            'Apakah Anda yakin ingin menghapus produk "${product.name}"? Produk yang dihapus tidak dapat dikembalikan.',
+            style: GlobalHelper.getTextTheme(
+              context,
+              appTextStyle: AppTextStyle.BODY_MEDIUM,
+            )?.copyWith(color: AppColors.greyText),
+          ),
+          const SizedBox(height: 24),
+          Row(
+            children: [
+              Expanded(
+                child: OutlinedButton(
+                  onPressed: () => Navigator.pop(context),
+                  style: OutlinedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    side: const BorderSide(color: AppColors.greyBorder),
+                  ),
+                  child: const Text(
+                    'Batal',
+                    style: TextStyle(
+                      color: AppColors.textDark,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: ErrorButton(
+                  label: 'Hapus',
+                  onPressed: () {
+                    Navigator.pop(context);
+                    context.read<MerchantProductBloc>().add(
+                      MerchantProductEventDeleted(product.id),
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
   }
 }

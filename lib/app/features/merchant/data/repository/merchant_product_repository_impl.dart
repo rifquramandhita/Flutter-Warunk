@@ -16,8 +16,9 @@ class MerchantProductRepositoryImpl implements MerchantProductRepository {
   Future<DataState<List<MerchantProductCategoryEntity>>> getCategories() {
     return handleResponse(() => api.getCategories(), (responseData) {
       return List<MerchantProductCategoryEntity>.from(
-        responseData['product_categories']
-            .map((e) => MerchantProductCategoryEntity.fromJson(e)),
+        responseData['product_categories'].map(
+          (e) => MerchantProductCategoryEntity.fromJson(e),
+        ),
       );
     });
   }
@@ -200,17 +201,16 @@ class MerchantProductRepositoryImpl implements MerchantProductRepository {
 
   @override
   Future<DataState<bool>> publish(String id) {
-    return handleResponse(
-      () => api.publish(id),
-      (responseData) => true,
-    );
+    return handleResponse(() => api.publish(id), (responseData) => true);
   }
 
   @override
   Future<DataState<bool>> unpublish(String id) {
-    return handleResponse(
-      () => api.unpublish(id),
-      (responseData) => true,
-    );
+    return handleResponse(() => api.unpublish(id), (responseData) => true);
+  }
+
+  @override
+  Future<DataState<bool>> delete(String id) {
+    return handleResponse(() => api.delete(id), (responseData) => true);
   }
 }

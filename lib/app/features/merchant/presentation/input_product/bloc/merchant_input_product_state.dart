@@ -1,6 +1,5 @@
 part of 'merchant_input_product_bloc.dart';
 
-
 // ─────────────────────────────────────────────────────────────────────────────
 // Variant definition model (name + list of option name strings)
 // ─────────────────────────────────────────────────────────────────────────────
@@ -10,10 +9,8 @@ class VariantInput {
 
   const VariantInput({this.name = '', this.options = const []});
 
-  VariantInput copyWith({String? name, List<String>? options}) => VariantInput(
-    name: name ?? this.name,
-    options: options ?? this.options,
-  );
+  VariantInput copyWith({String? name, List<String>? options}) =>
+      VariantInput(name: name ?? this.name, options: options ?? this.options);
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -93,8 +90,7 @@ class MerchantInputProductState {
     // With variants: every variant must have a name and ≥1 non-empty option
     final variantsValid = variants.every(
       (v) =>
-          v.name.trim().isNotEmpty &&
-          v.options.any((o) => o.trim().isNotEmpty),
+          v.name.trim().isNotEmpty && v.options.any((o) => o.trim().isNotEmpty),
     );
     return baseValid && variantsValid && combinations.isNotEmpty;
   }

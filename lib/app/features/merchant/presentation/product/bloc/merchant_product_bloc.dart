@@ -5,6 +5,7 @@ import 'package:warunk/app/features/merchant/domain/entity/merchant_product_cate
 import 'package:warunk/app/features/merchant/domain/use_case/merchant_product_publish_usecase.dart';
 import 'package:warunk/app/features/merchant/domain/use_case/merchant_product_unpublish_usecase.dart';
 import 'package:warunk/app/features/merchant/domain/use_case/merchant_products_get_use_case.dart';
+import 'package:warunk/app/features/merchant/domain/use_case/merchant_product_delete_use_case.dart';
 
 part 'merchant_product_event.dart';
 part 'merchant_product_state.dart';
@@ -14,11 +15,13 @@ class MerchantProductBloc
   final MerchantProductsGetUseCase useCase;
   final MerchantProductPublishUseCase publishUseCase;
   final MerchantProductUnpublishUseCase unpublishUseCase;
+  final MerchantProductDeleteUseCase deleteUseCase;
 
   MerchantProductBloc({
     required this.useCase,
     required this.publishUseCase,
     required this.unpublishUseCase,
+    required this.deleteUseCase,
   }) : super(const MerchantProductState()) {
     on<MerchantProductEventGet>((event, emit) async {
       emit(state.copyWith(isLoading: true, errorMessage: null));
@@ -39,8 +42,9 @@ class MerchantProductBloc
     });
 
     on<MerchantProductEventToggled>((event, emit) async {
-      final productIndex =
-          state.allProducts.indexWhere((p) => p.id == event.productId);
+      final productIndex = state.allProducts.indexWhere(
+        (p) => p.id == event.productId,
+      );
       if (productIndex == -1) return;
 
       final product = state.allProducts[productIndex];
@@ -54,8 +58,9 @@ class MerchantProductBloc
 
       if (result.success) {
         final updated = List<MerchantProductEntity>.from(state.allProducts);
-        updated[productIndex] =
-            product.copyWith(isPublished: !isCurrentlyPublished);
+        updated[productIndex] = product.copyWith(
+          isPublished: !isCurrentlyPublished,
+        );
         emit(state.copyWith(isLoading: false, allProducts: updated));
       } else {
         emit(state.copyWith(isLoading: false, errorMessage: result.message));
@@ -64,6 +69,19 @@ class MerchantProductBloc
 
     on<MerchantProductEventAddTapped>((event, emit) {
       // Navigate to add product
+    });
+
+    on<MerchantProductEventDeleted>((event, emit) async {
+      emit(state.copyWith(isLoading: true, errorMessage: null));
+      final result = await deleteUseCase.call(event.productId);
+      if (result.success) {
+        // Optionally fetch all products again or just remove it from the list
+        final updated = List<MerchantProductEntity>.from(state.allProducts)
+          ..removeWhere((p) => p.id == event.productId);
+        emit(state.copyWith(isLoading: false, allProducts: updated));
+      } else {
+        emit(state.copyWith(isLoading: false, errorMessage: result.message));
+      }
     });
   }
 }

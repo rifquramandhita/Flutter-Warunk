@@ -11,7 +11,9 @@ import 'package:warunk/core/widgets/loading_app_widget.dart';
 import 'package:warunk/core/widgets/primary_button.dart';
 import 'package:warunk/main.dart';
 import 'package:warunk/theme/app_colors.dart';
+import 'package:warunk/core/helper/global_helper.dart';
 import 'package:warunk/core/helper/number_helper.dart';
+import 'package:warunk/core/widgets/error_button.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Entry point
@@ -107,85 +109,85 @@ class MerchantInputProductScreen extends StatelessWidget {
                     const SizedBox(height: 20),
 
                     // ── Harga (hanya tampil jika tidak ada varian) ─────────
-                    if (!state.hasVariants) ...
-                      [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const _SectionLabel('Harga'),
-                            const SizedBox(height: 8),
-                            _InputField(
-                              initialValue: state.price,
-                              hintText: '0',
-                              keyboardType: TextInputType.number,
-                              inputFormatters: [
-                                FilteringTextInputFormatter.digitsOnly,
-                              ],
-                              prefixText: 'Rp ',
-                              onChanged: (v) => context
-                                  .read<MerchantInputProductBloc>()
-                                  .add(MerchantInputProductPriceChanged(v)),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 20),
-                      ],
+                    if (!state.hasVariants) ...[
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const _SectionLabel('Harga'),
+                          const SizedBox(height: 8),
+                          _InputField(
+                            initialValue: state.price,
+                            hintText: '0',
+                            keyboardType: TextInputType.number,
+                            inputFormatters: [
+                              FilteringTextInputFormatter.digitsOnly,
+                            ],
+                            prefixText: 'Rp ',
+                            onChanged: (v) => context
+                                .read<MerchantInputProductBloc>()
+                                .add(MerchantInputProductPriceChanged(v)),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 20),
+                    ],
 
                     // ── Minimal Pembelian & Stok (hanya jika tidak ada varian)
-                    if (!state.hasVariants) ...
-                      [
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const _SectionLabel('Minimal Pembelian'),
-                                  const SizedBox(height: 8),
-                                  _InputField(
-                                    initialValue: state.minPurchase,
-                                    hintText: '1',
-                                    keyboardType: TextInputType.number,
-                                    inputFormatters: [
-                                      FilteringTextInputFormatter.digitsOnly,
-                                    ],
-                                    onChanged: (v) => context
-                                        .read<MerchantInputProductBloc>()
-                                        .add(
-                                          MerchantInputProductMinPurchaseChanged(v),
+                    if (!state.hasVariants) ...[
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const _SectionLabel('Minimal Pembelian'),
+                                const SizedBox(height: 8),
+                                _InputField(
+                                  initialValue: state.minPurchase,
+                                  hintText: '1',
+                                  keyboardType: TextInputType.number,
+                                  inputFormatters: [
+                                    FilteringTextInputFormatter.digitsOnly,
+                                  ],
+                                  onChanged: (v) => context
+                                      .read<MerchantInputProductBloc>()
+                                      .add(
+                                        MerchantInputProductMinPurchaseChanged(
+                                          v,
                                         ),
-                                  ),
-                                ],
-                              ),
+                                      ),
+                                ),
+                              ],
                             ),
-                            const SizedBox(width: 12),
-                            // Stok
-                            Expanded(
-                              flex: 2,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const _SectionLabel('Stok'),
-                                  const SizedBox(height: 8),
-                                  _InputField(
-                                    initialValue: state.stock,
-                                    hintText: '0',
-                                    keyboardType: TextInputType.number,
-                                    inputFormatters: [
-                                      FilteringTextInputFormatter.digitsOnly,
-                                    ],
-                                    onChanged: (v) => context
-                                        .read<MerchantInputProductBloc>()
-                                        .add(MerchantInputProductStockChanged(v)),
-                                  ),
-                                ],
-                              ),
+                          ),
+                          const SizedBox(width: 12),
+                          // Stok
+                          Expanded(
+                            flex: 2,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const _SectionLabel('Stok'),
+                                const SizedBox(height: 8),
+                                _InputField(
+                                  initialValue: state.stock,
+                                  hintText: '0',
+                                  keyboardType: TextInputType.number,
+                                  inputFormatters: [
+                                    FilteringTextInputFormatter.digitsOnly,
+                                  ],
+                                  onChanged: (v) => context
+                                      .read<MerchantInputProductBloc>()
+                                      .add(MerchantInputProductStockChanged(v)),
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
-                        const SizedBox(height: 20),
-                      ],
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 20),
+                    ],
 
                     // ── Berat & Dimensi (tampil jika: tidak ada varian, atau isSameDimension)
                     if (!state.hasVariants || state.isSameDimension) ...[
@@ -207,7 +209,9 @@ class MerchantInputProductScreen extends StatelessWidget {
                                   ],
                                   onChanged: (v) => context
                                       .read<MerchantInputProductBloc>()
-                                      .add(MerchantInputProductWeightChanged(v)),
+                                      .add(
+                                        MerchantInputProductWeightChanged(v),
+                                      ),
                                 ),
                               ],
                             ),
@@ -228,7 +232,9 @@ class MerchantInputProductScreen extends StatelessWidget {
                                   ],
                                   onChanged: (v) => context
                                       .read<MerchantInputProductBloc>()
-                                      .add(MerchantInputProductLengthChanged(v)),
+                                      .add(
+                                        MerchantInputProductLengthChanged(v),
+                                      ),
                                 ),
                               ],
                             ),
@@ -275,7 +281,9 @@ class MerchantInputProductScreen extends StatelessWidget {
                                   ],
                                   onChanged: (v) => context
                                       .read<MerchantInputProductBloc>()
-                                      .add(MerchantInputProductHeightChanged(v)),
+                                      .add(
+                                        MerchantInputProductHeightChanged(v),
+                                      ),
                                 ),
                               ],
                             ),
@@ -304,14 +312,11 @@ class MerchantInputProductScreen extends StatelessWidget {
                     const SizedBox(height: 16),
 
                     // ── Switch dimensi (hanya tampil jika ada varian) ──────
-                    if (state.hasVariants) ...
-                      [
-                        const SizedBox(height: 4),
-                        _SameDimensionRow(
-                          isSameDimension: state.isSameDimension,
-                        ),
-                        const SizedBox(height: 16),
-                      ],
+                    if (state.hasVariants) ...[
+                      const SizedBox(height: 4),
+                      _SameDimensionRow(isSameDimension: state.isSameDimension),
+                      const SizedBox(height: 16),
+                    ],
 
                     // ── Varian ─────────────────────────────────────────────
                     _VariantSection(
@@ -689,9 +694,9 @@ class _CategoryDropdown extends StatelessWidget {
     final selected = categories.isEmpty
         ? null
         : categories.cast<MerchantProductCategoryEntity?>().firstWhere(
-              (c) => c!.slug == selectedCategory || c.name == selectedCategory,
-              orElse: () => null,
-            );
+            (c) => c!.slug == selectedCategory || c.name == selectedCategory,
+            orElse: () => null,
+          );
 
     return Container(
       decoration: BoxDecoration(
@@ -723,10 +728,7 @@ class _CategoryDropdown extends StatelessWidget {
                   Icons.keyboard_arrow_down_rounded,
                   color: AppColors.greyText,
                 ),
-                style: const TextStyle(
-                  fontSize: 14,
-                  color: AppColors.textDark,
-                ),
+                style: const TextStyle(fontSize: 14, color: AppColors.textDark),
                 dropdownColor: AppColors.white,
                 borderRadius: BorderRadius.circular(12),
                 items: categories
@@ -793,15 +795,16 @@ class _VariantSection extends StatelessWidget {
             ),
             TextButton.icon(
               onPressed: canAddVariant
-                  ? () => context
-                      .read<MerchantInputProductBloc>()
-                      .add(MerchantInputProductVariantAdded())
+                  ? () => context.read<MerchantInputProductBloc>().add(
+                      MerchantInputProductVariantAdded(),
+                    )
                   : null,
               icon: const Icon(Icons.add, size: 16),
               label: const Text('Tambah'),
               style: TextButton.styleFrom(
-                foregroundColor:
-                    canAddVariant ? AppColors.primary : AppColors.greyText,
+                foregroundColor: canAddVariant
+                    ? AppColors.primary
+                    : AppColors.greyText,
                 textStyle: const TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.w600,
@@ -821,10 +824,7 @@ class _VariantSection extends StatelessWidget {
           ...variants.asMap().entries.map(
             (e) => Padding(
               padding: const EdgeInsets.only(bottom: 12),
-              child: _VariantCard(
-                variantIndex: e.key,
-                variant: e.value,
-              ),
+              child: _VariantCard(variantIndex: e.key, variant: e.value),
             ),
           ),
         ],
@@ -846,10 +846,7 @@ class _VariantSection extends StatelessWidget {
 // Single Variant Card — shows variant name + list of option name inputs
 // ─────────────────────────────────────────────────────────────────────────────
 class _VariantCard extends StatelessWidget {
-  const _VariantCard({
-    required this.variantIndex,
-    required this.variant,
-  });
+  const _VariantCard({required this.variantIndex, required this.variant});
   final int variantIndex;
   final VariantInput variant;
 
@@ -887,12 +884,13 @@ class _VariantCard extends StatelessWidget {
                       isDense: true,
                       contentPadding: EdgeInsets.zero,
                     ),
-                    onChanged: (v) => context
-                        .read<MerchantInputProductBloc>()
-                        .add(MerchantInputProductVariantNameChanged(
-                          variantIndex,
-                          v,
-                        )),
+                    onChanged: (v) =>
+                        context.read<MerchantInputProductBloc>().add(
+                          MerchantInputProductVariantNameChanged(
+                            variantIndex,
+                            v,
+                          ),
+                        ),
                   ),
                 ),
                 IconButton(
@@ -902,9 +900,9 @@ class _VariantCard extends StatelessWidget {
                     color: Colors.red,
                   ),
                   tooltip: 'Hapus varian',
-                  onPressed: () => context
-                      .read<MerchantInputProductBloc>()
-                      .add(MerchantInputProductVariantRemoved(variantIndex)),
+                  onPressed: () => context.read<MerchantInputProductBloc>().add(
+                    MerchantInputProductVariantRemoved(variantIndex),
+                  ),
                 ),
               ],
             ),
@@ -926,9 +924,9 @@ class _VariantCard extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.fromLTRB(14, 8, 14, 12),
               child: GestureDetector(
-                onTap: () => context
-                    .read<MerchantInputProductBloc>()
-                    .add(MerchantInputProductVariantOptionAdded(variantIndex)),
+                onTap: () => context.read<MerchantInputProductBloc>().add(
+                  MerchantInputProductVariantOptionAdded(variantIndex),
+                ),
                 child: Row(
                   children: [
                     Icon(
@@ -999,25 +997,25 @@ class _VariantOptionNameRow extends StatelessWidget {
                 isDense: true,
                 contentPadding: EdgeInsets.symmetric(vertical: 10),
               ),
-              onChanged: (v) => context
-                  .read<MerchantInputProductBloc>()
-                  .add(MerchantInputProductVariantOptionNameChanged(
-                    variantIndex,
-                    optionIndex,
-                    v,
-                  )),
+              onChanged: (v) => context.read<MerchantInputProductBloc>().add(
+                MerchantInputProductVariantOptionNameChanged(
+                  variantIndex,
+                  optionIndex,
+                  v,
+                ),
+              ),
             ),
           ),
           IconButton(
             icon: const Icon(Icons.close, size: 16, color: AppColors.greyText),
             padding: EdgeInsets.zero,
             constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
-            onPressed: () => context
-                .read<MerchantInputProductBloc>()
-                .add(MerchantInputProductVariantOptionRemoved(
-                  variantIndex,
-                  optionIndex,
-                )),
+            onPressed: () => context.read<MerchantInputProductBloc>().add(
+              MerchantInputProductVariantOptionRemoved(
+                variantIndex,
+                optionIndex,
+              ),
+            ),
           ),
         ],
       ),
@@ -1223,8 +1221,9 @@ class _CombinationFields extends StatelessWidget {
             label: 'Harga',
             hintText: '0',
             prefixText: 'Rp ',
-            initialValue:
-                combination.price > 0 ? combination.price.toString() : '',
+            initialValue: combination.price > 0
+                ? combination.price.toString()
+                : '',
             isNumber: true,
             onChanged: (v) => _update(
               context,
@@ -1238,10 +1237,9 @@ class _CombinationFields extends StatelessWidget {
                 child: _OptionFieldRow(
                   label: 'Stok',
                   hintText: '0',
-                  initialValue:
-                      combination.stock > 0
-                          ? combination.stock.toString()
-                          : '',
+                  initialValue: combination.stock > 0
+                      ? combination.stock.toString()
+                      : '',
                   isNumber: true,
                   onChanged: (v) => _update(
                     context,
@@ -1254,10 +1252,9 @@ class _CombinationFields extends StatelessWidget {
                 child: _OptionFieldRow(
                   label: 'Min. Beli',
                   hintText: '1',
-                  initialValue:
-                      combination.minPurchase > 0
-                          ? combination.minPurchase.toString()
-                          : '',
+                  initialValue: combination.minPurchase > 0
+                      ? combination.minPurchase.toString()
+                      : '',
                   isNumber: true,
                   onChanged: (v) => _update(
                     context,
@@ -1275,10 +1272,9 @@ class _CombinationFields extends StatelessWidget {
                   child: _OptionFieldRow(
                     label: 'Berat (g)',
                     hintText: '0',
-                    initialValue:
-                        (combination.weight ?? 0) > 0
-                            ? combination.weight.toString()
-                            : '',
+                    initialValue: (combination.weight ?? 0) > 0
+                        ? combination.weight.toString()
+                        : '',
                     isNumber: true,
                     onChanged: (v) => _update(
                       context,
@@ -1291,10 +1287,9 @@ class _CombinationFields extends StatelessWidget {
                   child: _OptionFieldRow(
                     label: 'Panjang (cm)',
                     hintText: '0',
-                    initialValue:
-                        (combination.length ?? 0) > 0
-                            ? combination.length.toString()
-                            : '',
+                    initialValue: (combination.length ?? 0) > 0
+                        ? combination.length.toString()
+                        : '',
                     isNumber: true,
                     onChanged: (v) => _update(
                       context,
@@ -1311,10 +1306,9 @@ class _CombinationFields extends StatelessWidget {
                   child: _OptionFieldRow(
                     label: 'Lebar (cm)',
                     hintText: '0',
-                    initialValue:
-                        (combination.width ?? 0) > 0
-                            ? combination.width.toString()
-                            : '',
+                    initialValue: (combination.width ?? 0) > 0
+                        ? combination.width.toString()
+                        : '',
                     isNumber: true,
                     onChanged: (v) => _update(
                       context,
@@ -1327,10 +1321,9 @@ class _CombinationFields extends StatelessWidget {
                   child: _OptionFieldRow(
                     label: 'Tinggi (cm)',
                     hintText: '0',
-                    initialValue:
-                        (combination.height ?? 0) > 0
-                            ? combination.height.toString()
-                            : '',
+                    initialValue: (combination.height ?? 0) > 0
+                        ? combination.height.toString()
+                        : '',
                     isNumber: true,
                     onChanged: (v) => _update(
                       context,
@@ -1389,8 +1382,9 @@ class _OptionFieldRow extends StatelessWidget {
           child: TextFormField(
             initialValue: initialValue,
             keyboardType: isNumber ? TextInputType.number : TextInputType.text,
-            inputFormatters:
-                isNumber ? [FilteringTextInputFormatter.digitsOnly] : null,
+            inputFormatters: isNumber
+                ? [FilteringTextInputFormatter.digitsOnly]
+                : null,
             onChanged: onChanged,
             style: const TextStyle(fontSize: 13, color: AppColors.textDark),
             decoration: InputDecoration(
@@ -1461,8 +1455,7 @@ class _SameDimensionRow extends StatelessWidget {
             height: 28,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(14),
-              color:
-                  isSameDimension ? AppColors.primary : AppColors.greyBorder,
+              color: isSameDimension ? AppColors.primary : AppColors.greyBorder,
             ),
             child: Stack(
               children: [
@@ -1517,15 +1510,92 @@ class _SimpanButton extends StatelessWidget {
           ),
         ],
       ),
-      child: PrimaryButton(
-        label: 'Simpan Produk',
-        height: 52,
-        isLoading: state.isLoading,
-        onPressed: !state.isValid
-            ? null
-            : () => context.read<MerchantInputProductBloc>().add(
-                MerchantInputProductSaved(),
+      child: Row(
+        children: [
+          if (state.id != null) ...[
+            Container(
+              height: 52,
+              width: 52,
+              margin: const EdgeInsets.only(right: 12),
+              decoration: BoxDecoration(
+                color: Colors.red.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(12),
               ),
+              child: IconButton(
+                icon: const Icon(Icons.delete_outline, color: Colors.red),
+                onPressed: () {
+                  DialogHelper.showBottomSheetDialog(
+                    context: context,
+                    title: 'Hapus Produk',
+                    content: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          'Apakah Anda yakin ingin menghapus produk ini? Produk yang dihapus tidak dapat dikembalikan.',
+                          style: GlobalHelper.getTextTheme(
+                            context,
+                            appTextStyle: AppTextStyle.BODY_MEDIUM,
+                          )?.copyWith(color: AppColors.greyText),
+                        ),
+                        const SizedBox(height: 24),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: OutlinedButton(
+                                onPressed: () => Navigator.pop(context),
+                                style: OutlinedButton.styleFrom(
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 14,
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  side: BorderSide(color: AppColors.greyBorder),
+                                ),
+                                child: Text(
+                                  'Batal',
+                                  style: TextStyle(
+                                    color: AppColors.textDark,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: ErrorButton(
+                                label: 'Hapus',
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                  context.read<MerchantInputProductBloc>().add(
+                                    MerchantInputProductDeleted(),
+                                  );
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
+          Expanded(
+            child: PrimaryButton(
+              label: 'Simpan Produk',
+              height: 52,
+              isLoading: state.isLoading,
+              onPressed: !state.isValid
+                  ? null
+                  : () => context.read<MerchantInputProductBloc>().add(
+                      MerchantInputProductSaved(),
+                    ),
+            ),
+          ),
+        ],
       ),
     );
   }
