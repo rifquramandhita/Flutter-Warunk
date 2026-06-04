@@ -1,19 +1,38 @@
 part of 'customer_cart_bloc.dart';
 
-abstract class CustomerCartEvent {}
+abstract class CustomerCartEvent extends Equatable {
+  const CustomerCartEvent();
 
-class CustomerCartQtyChanged extends CustomerCartEvent {
+  @override
+  List<Object?> get props => [];
+}
+
+class CustomerCartEventFetch extends CustomerCartEvent {}
+
+class CustomerCartEventQtyChanged extends CustomerCartEvent {
   final int index;
   final int delta; // +1 or -1
-  CustomerCartQtyChanged(this.index, this.delta);
+
+  const CustomerCartEventQtyChanged(this.index, this.delta);
+
+  @override
+  List<Object?> get props => [index, delta];
 }
 
-class CustomerCartItemRemoved extends CustomerCartEvent {
+class CustomerCartEventItemRemoved extends CustomerCartEvent {
   final int index;
-  CustomerCartItemRemoved(this.index);
+
+  const CustomerCartEventItemRemoved(this.index);
+
+  @override
+  List<Object?> get props => [index];
 }
 
-class CustomerCartNoteChanged extends CustomerCartEvent {
+class CustomerCartEventNoteChanged extends CustomerCartEvent {
   final String note;
-  CustomerCartNoteChanged(this.note);
+
+  const CustomerCartEventNoteChanged(this.note);
+
+  @override
+  List<Object?> get props => [note];
 }

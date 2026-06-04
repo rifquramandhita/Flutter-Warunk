@@ -97,6 +97,7 @@ import 'package:warunk/app/features/customer/domain/repository/customer_cart_rep
 import 'package:warunk/app/features/customer/data/repository/customer_cart_repository_impl.dart';
 import 'package:warunk/app/features/customer/domain/use_case/customer_cart_add_use_case.dart';
 import 'package:warunk/app/features/customer/domain/use_case/customer_cart_get_use_case.dart';
+import 'package:warunk/app/features/customer/presentation/cart/bloc/customer_cart_bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:warunk/core/network/app_interceptor.dart';
 import 'package:warunk/main.dart';
@@ -255,6 +256,7 @@ Future<void> initDependency() async {
       getCategoryUseCase: sl(),
     ),
   );
+  sl.registerFactory(() => CustomerCartBloc(getUseCase: sl()));
   sl.registerFactory(() => CustomerProfilBloc());
   sl.registerFactory(() => CustomerEditProfilBloc(updateUseCase: sl()));
   sl.registerFactory(
