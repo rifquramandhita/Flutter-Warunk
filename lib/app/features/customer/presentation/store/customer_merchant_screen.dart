@@ -4,12 +4,13 @@ import 'package:warunk/core/dependency/dependency.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:warunk/app/features/customer/presentation/cart/customer_cart_screen.dart';
 import 'package:warunk/app/features/customer/presentation/product/customer_detail_product_screen.dart';
-import 'package:warunk/app/features/customer/presentation/store/bloc/customer_store_bloc.dart';
-import 'package:warunk/app/features/customer/presentation/store/bloc/customer_store_event.dart';
-import 'package:warunk/app/features/customer/presentation/store/bloc/customer_store_state.dart';
+import 'package:warunk/app/features/customer/presentation/store/bloc/customer_merchant_bloc.dart';
+import 'package:warunk/app/features/customer/presentation/store/bloc/customer_merchant_event.dart';
+import 'package:warunk/app/features/customer/presentation/store/bloc/customer_merchant_state.dart';
 import 'package:warunk/core/widgets/primary_button.dart';
 import 'package:warunk/core/helper/global_helper.dart';
 import 'package:warunk/core/helper/dialog_helper.dart';
+import 'package:warunk/core/helper/number_helper.dart';
 import 'package:warunk/core/widgets/loading_app_widget.dart';
 import 'package:warunk/main.dart';
 
@@ -21,9 +22,9 @@ class CustomerMerchantScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) =>
-          sl<CustomerStoreBloc>()
-            ..add(CustomerStoreEventLoadStoreDetails(storeId: storeId)),
-      child: BlocConsumer<CustomerStoreBloc, CustomerStoreState>(
+          sl<CustomerMerchantBloc>()
+            ..add(CustomerMerchantEventGet(storeId: storeId)),
+      child: BlocConsumer<CustomerMerchantBloc, CustomerMerchantState>(
         listener: (context, state) {
           if (state.errorMessage != null) {
             DialogHelper.showErrorSnackBar(
@@ -40,7 +41,7 @@ class CustomerMerchantScreen extends StatelessWidget {
   }
 
   Widget _bodyBuild(BuildContext context) {
-    final state = context.watch<CustomerStoreBloc>().state;
+    final state = context.watch<CustomerMerchantBloc>().state;
     return SafeArea(
       top: false, // since we have hero image
       child: Stack(
@@ -53,7 +54,7 @@ class CustomerMerchantScreen extends StatelessWidget {
   }
 
   Widget _bodyLayout(BuildContext context) {
-    final state = context.watch<CustomerStoreBloc>().state;
+    final state = context.watch<CustomerMerchantBloc>().state;
     return Stack(
       children: [
         CustomScrollView(
@@ -70,7 +71,7 @@ class CustomerMerchantScreen extends StatelessWidget {
             // ── Store info card ───────────────────────────────────────────────
             SliverToBoxAdapter(
               child: Transform.translate(
-                offset: const Offset(0, -24),
+                offset: const Offset(0, -8),
                 child: Container(
                   margin: const EdgeInsets.symmetric(horizontal: 0),
                   decoration: BoxDecoration(
@@ -212,55 +213,6 @@ class CustomerMerchantScreen extends StatelessWidget {
                           ],
                         ),
                       ),
-
-                      // Stats row
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(vertical: 12),
-                          decoration: BoxDecoration(
-                            color: GlobalHelper.getColorSchema(context).surface,
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              _statItem(
-                                context,
-                                Icons.access_time_rounded,
-                                'Buka sampai',
-                                state.merchantDetail?.timeClose ?? '-',
-                              ),
-                              Container(
-                                width: 1,
-                                height: 36,
-                                color: GlobalHelper.getColorSchema(
-                                  context,
-                                ).outlineVariant,
-                              ),
-                              _statItem(
-                                context,
-                                Icons.delivery_dining_rounded,
-                                'Estimasi antar',
-                                '-',
-                              ),
-                              Container(
-                                width: 1,
-                                height: 36,
-                                color: GlobalHelper.getColorSchema(
-                                  context,
-                                ).outlineVariant,
-                              ),
-                              _statItem(
-                                context,
-                                Icons.map_outlined,
-                                'Jarak',
-                                '-',
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
                     ],
                   ),
                 ),
@@ -281,8 +233,8 @@ class CustomerMerchantScreen extends StatelessWidget {
                       children: List.generate(state.categories.length, (i) {
                         final selected = state.selectedCategory == i;
                         return GestureDetector(
-                          onTap: () => context.read<CustomerStoreBloc>().add(
-                            CustomerStoreEventSelectCategory(i),
+                          onTap: () => context.read<CustomerMerchantBloc>().add(
+                            CustomerMerchantEventSelectCategory(i),
                           ),
                           child: Container(
                             margin: const EdgeInsets.only(right: 10),
@@ -492,7 +444,7 @@ class CustomerMerchantScreen extends StatelessWidget {
   }
 
   Widget _buildHero(BuildContext context) {
-    final state = context.watch<CustomerStoreBloc>().state;
+    final state = context.watch<CustomerMerchantBloc>().state;
     final hasPhoto =
         state.merchantDetail?.photo != null &&
         state.merchantDetail!.photo!.isNotEmpty;
@@ -529,42 +481,6 @@ class CustomerMerchantScreen extends StatelessWidget {
       ],
     );
   }
-
-  Widget _statItem(
-    BuildContext context,
-    IconData icon,
-    String label,
-    String value,
-  ) => Column(
-    children: [
-      Icon(icon, color: GlobalHelper.getColorSchema(context).primary, size: 20),
-      const SizedBox(height: 4),
-      Text(
-        label,
-        style:
-            GlobalHelper.getTextTheme(
-              context,
-              appTextStyle: AppTextStyle.LABEL_SMALL,
-            )?.copyWith(
-              color: GlobalHelper.getColorSchema(
-                context,
-              ).onSurface.withValues(alpha: 0.6),
-            ),
-      ),
-      const SizedBox(height: 2),
-      Text(
-        value,
-        style:
-            GlobalHelper.getTextTheme(
-              context,
-              appTextStyle: AppTextStyle.LABEL_MEDIUM,
-            )?.copyWith(
-              fontWeight: FontWeight.w700,
-              color: GlobalHelper.getColorSchema(context).onSurface,
-            ),
-      ),
-    ],
-  );
 
   Widget _productCard(BuildContext context, CustomerProductEntity p) {
     // Generate dummy color/icon based on index or just static if we don't have images yet
@@ -650,7 +566,13 @@ class CustomerMerchantScreen extends StatelessWidget {
                     ),
                   const SizedBox(height: 6),
                   Text(
-                    'Rp${p.price}',
+                    NumberHelper.formatIDR(
+                      p.hasVariant &&
+                              p.variants != null &&
+                              p.variants!.isNotEmpty
+                          ? p.variants!.first.price
+                          : p.price,
+                    ),
                     style:
                         GlobalHelper.getTextTheme(
                           context,

@@ -4,7 +4,7 @@ import 'package:warunk/app/features/customer/domain/entity/customer_merchant.dar
 
 import 'package:warunk/app/features/customer/domain/entity/customer_product.dart';
 
-class CustomerStoreState extends Equatable {
+class CustomerMerchantState extends Equatable {
   final bool isLoading;
   final String? errorMessage;
   final String storeId;
@@ -16,7 +16,7 @@ class CustomerStoreState extends Equatable {
   final int cartCount;
   final int cartTotalAmount;
 
-  const CustomerStoreState({
+  const CustomerMerchantState({
     this.isLoading = false,
     this.errorMessage,
     this.storeId = '',
@@ -31,10 +31,10 @@ class CustomerStoreState extends Equatable {
 
   String get formattedCartTotal {
     if (cartTotalAmount == 0) return 'Rp0';
-    return 'Rp${(cartTotalAmount / 1000).toStringAsFixed(3).replaceAll('.', '.')}'; 
+    return 'Rp${(cartTotalAmount / 1000).toStringAsFixed(3).replaceAll('.', '.')}';
   }
 
-  CustomerStoreState copyWith({
+  CustomerMerchantState copyWith({
     bool? isLoading,
     String? errorMessage,
     String? storeId,
@@ -46,7 +46,7 @@ class CustomerStoreState extends Equatable {
     int? cartCount,
     int? cartTotalAmount,
   }) {
-    return CustomerStoreState(
+    return CustomerMerchantState(
       isLoading: isLoading ?? this.isLoading,
       errorMessage: errorMessage,
       storeId: storeId ?? this.storeId,

@@ -15,7 +15,7 @@ import 'package:warunk/app/features/customer/domain/use_case/customer_product_ge
 import 'package:warunk/app/features/customer/presentation/address/bloc/customer_address_bloc.dart';
 import 'package:warunk/app/features/customer/presentation/input_address/bloc/customer_input_address_bloc.dart';
 import 'package:warunk/app/features/customer/presentation/search/bloc/customer_search_bloc.dart';
-import 'package:warunk/app/features/customer/presentation/store/bloc/customer_store_bloc.dart';
+import 'package:warunk/app/features/customer/presentation/store/bloc/customer_merchant_bloc.dart';
 import 'package:warunk/app/features/customer/presentation/product/bloc/customer_detail_product_bloc.dart';
 import 'package:warunk/app/features/customer/domain/use_case/customer_product_get_by_id_use_case.dart';
 import 'package:warunk/app/features/auth/presentation/login/bloc/auth_login_bloc.dart';
@@ -182,8 +182,12 @@ Future<void> initDependency() async {
   sl.registerLazySingleton(
     () => MerchantProductDownloadImagesUseCase(repository: sl()),
   );
-  sl.registerLazySingleton(() => MerchantProductPublishUseCase(repository: sl()));
-  sl.registerLazySingleton(() => MerchantProductUnpublishUseCase(repository: sl()));
+  sl.registerLazySingleton(
+    () => MerchantProductPublishUseCase(repository: sl()),
+  );
+  sl.registerLazySingleton(
+    () => MerchantProductUnpublishUseCase(repository: sl()),
+  );
   sl.registerLazySingleton(() => MerchantMerchantUpdateLocationUseCase(sl()));
   sl.registerLazySingleton(() => MerchantMerchantUpdateAccountUseCase(sl()));
   sl.registerLazySingleton(() => MerchantMerchantOpenUseCase(sl()));
@@ -210,16 +214,22 @@ Future<void> initDependency() async {
   sl.registerLazySingleton(() => CustomerProfilUpdateUseCase(repository: sl()));
   sl.registerLazySingleton(() => CustomerAddressGetUseCase(repository: sl()));
   sl.registerLazySingleton(() => CustomerAddressSendUseCase(repository: sl()));
-  sl.registerLazySingleton(() => CustomerAddressGetByIdUseCase(repository: sl()));
   sl.registerLazySingleton(
-      () => CustomerAddressSetDefaultUseCase(repository: sl()));
+    () => CustomerAddressGetByIdUseCase(repository: sl()),
+  );
+  sl.registerLazySingleton(
+    () => CustomerAddressSetDefaultUseCase(repository: sl()),
+  );
   sl.registerLazySingleton(() => CustomerMerchantGetUseCase(repository: sl()));
   sl.registerLazySingleton(
-      () => CustomerMerchantGetByIdUseCase(repository: sl()));
+    () => CustomerMerchantGetByIdUseCase(repository: sl()),
+  );
   sl.registerLazySingleton(
-      () => CustomerProductGetByMerchantUseCase(repository: sl()));
+    () => CustomerProductGetByMerchantUseCase(repository: sl()),
+  );
   sl.registerLazySingleton(
-      () => CustomerProductGetByIdUseCase(repository: sl()));
+    () => CustomerProductGetByIdUseCase(repository: sl()),
+  );
   sl.registerLazySingleton(() => CustomerCartAddUseCase(repository: sl()));
 
   //bloc
@@ -228,11 +238,13 @@ Future<void> initDependency() async {
   sl.registerFactory(() => AuthRegisterBloc(useCase: sl()));
   sl.registerFactory(() => AuthResetPasswordBloc(useCase: sl()));
   sl.registerFactory(() => AuthLogoutBloc(authBloc: sl(), useCase: sl()));
-  sl.registerFactory(() => MerchantProductBloc(
-        useCase: sl(),
-        publishUseCase: sl(),
-        unpublishUseCase: sl(),
-      ));
+  sl.registerFactory(
+    () => MerchantProductBloc(
+      useCase: sl(),
+      publishUseCase: sl(),
+      unpublishUseCase: sl(),
+    ),
+  );
   sl.registerFactory(
     () => MerchantInputProductBloc(
       useCase: sl(),
@@ -243,18 +255,20 @@ Future<void> initDependency() async {
   );
   sl.registerFactory(() => CustomerProfilBloc());
   sl.registerFactory(() => CustomerEditProfilBloc(updateUseCase: sl()));
-  sl.registerFactory(() => CustomerAddressBloc(
-        getUseCase: sl(),
-        setDefaultUseCase: sl(),
-      ));
+  sl.registerFactory(
+    () => CustomerAddressBloc(getUseCase: sl(), setDefaultUseCase: sl()),
+  );
   sl.registerFactory(() => CustomerInputAddressBloc(sl(), sl()));
   sl.registerFactory(() => CustomerSearchBloc(getMerchantUseCase: sl()));
-  sl.registerFactory(() => CustomerStoreBloc(
-      getByIdUseCase: sl(), productGetByMerchantUseCase: sl()));
-  sl.registerFactory(() => CustomerDetailProductBloc(
-        useCase: sl(),
-        addCartUseCase: sl(),
-      ));
+  sl.registerFactory(
+    () => CustomerMerchantBloc(
+      getByIdUseCase: sl(),
+      productGetByMerchantUseCase: sl(),
+    ),
+  );
+  sl.registerFactory(
+    () => CustomerDetailProductBloc(useCase: sl(), addCartUseCase: sl()),
+  );
   sl.registerFactory(() => MerchantProfilBloc(useCase: sl()));
   sl.registerFactory(
     () => MerchantEditProfilBloc(getUseCase: sl(), updateUseCase: sl()),
