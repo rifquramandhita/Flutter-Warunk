@@ -7,6 +7,7 @@ import 'package:warunk/app/features/merchant/domain/use_case/merchant_order_reje
 import 'package:warunk/app/features/merchant/domain/use_case/merchant_order_received_use_case.dart';
 import 'package:warunk/app/features/merchant/domain/use_case/merchant_order_get_by_id_use_case.dart';
 import 'package:warunk/core/network/data_state.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 part 'merchant_detail_order_event.dart';
 part 'merchant_detail_order_state.dart';
@@ -33,6 +34,7 @@ class MerchantDetailOrderBloc
     on<MerchantDetailOrderEventAccept>(_onAccept);
     on<MerchantDetailOrderEventReject>(_onReject);
     on<MerchantDetailOrderEventReceived>(_onReceived);
+    on<MerchantDetailOrderEventPaymentProofTapped>(_onPaymentProofTapped);
   }
 
   Future<void> _onFetchStarted(
@@ -55,11 +57,45 @@ class MerchantDetailOrderBloc
     emit(state.copyWith(isLoading: false));
   }
 
-  void _onMapsTapped(
+  Future<void> _onMapsTapped(
     MerchantDetailOrderEventMapsTapped event,
     Emitter<MerchantDetailOrderState> emit,
-  ) {
-    // TODO: open maps based on state.order.shipping.destinationAddress coordinates
+  ) async {
+    final lat = state.order?.customerAddress?.latitude;
+    final lng = state.order?.customerAddress?.longitude;
+    final address = state.order?.customerAddress?.address;
+
+    if (lat != null && lng != null && lat.isNotEmpty && lng.isNotEmpty) {
+      final url = Uri.parse('https://www.google.com/maps/search/?api=1&query=$lat,$lng');
+      try {
+        await launchUrl(url, mode: LaunchMode.externalApplication);
+      } catch (e) {
+        // Handle error silently or emit error state if needed
+      }
+    } else if (address != null && address.isNotEmpty) {
+      final encodedAddress = Uri.encodeComponent(address);
+      final url = Uri.parse('https://www.google.com/maps/search/?api=1&query=$encodedAddress');
+      try {
+        await launchUrl(url, mode: LaunchMode.externalApplication);
+      } catch (e) {
+        // Handle error silently
+      }
+    }
+  }
+
+  Future<void> _onPaymentProofTapped(
+    MerchantDetailOrderEventPaymentProofTapped event,
+    Emitter<MerchantDetailOrderState> emit,
+  ) async {
+    final paymentProofUrl = state.order?.paymentProof;
+    if (paymentProofUrl != null && paymentProofUrl.isNotEmpty) {
+      final url = Uri.parse(paymentProofUrl);
+      try {
+        await launchUrl(url, mode: LaunchMode.externalApplication);
+      } catch (e) {
+        // Handle error silently
+      }
+    }
   }
 
   Future<void> _onAccept(

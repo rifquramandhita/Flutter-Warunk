@@ -17,3 +17,5 @@ class MerchantDetailOrderEventReject extends MerchantDetailOrderEvent {
 }
 
 class MerchantDetailOrderEventReceived extends MerchantDetailOrderEvent {}
+
+class MerchantDetailOrderEventPaymentProofTapped extends MerchantDetailOrderEvent {}

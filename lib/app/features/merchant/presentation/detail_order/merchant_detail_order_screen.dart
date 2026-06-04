@@ -11,6 +11,7 @@ import 'package:warunk/core/widgets/loading_app_widget.dart';
 import 'package:warunk/core/helper/global_helper.dart';
 import 'package:warunk/core/widgets/custom_dotted_divider.dart';
 import 'package:warunk/core/helper/number_helper.dart';
+import 'package:warunk/core/widgets/primary_button.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Entry point
@@ -73,7 +74,9 @@ class MerchantDetailOrderScreen extends StatelessWidget {
               children: [
                 _headerCard(context, order),
                 const SizedBox(height: 16),
-                _mainCard(context, order),
+                _customerCard(context, order),
+                const SizedBox(height: 16),
+                _productCard(context, order),
                 const SizedBox(height: 16),
                 _paymentCard(context, order),
                 const SizedBox(height: 16),
@@ -318,15 +321,8 @@ class MerchantDetailOrderScreen extends StatelessWidget {
   }
 
   Widget _headerCard(BuildContext context, MerchantOrderEntity order) {
-    String formattedDate = '';
-    if (order.createdAt != null) {
-      try {
-        final date = DateTime.parse(order.createdAt!).toLocal();
-        formattedDate = DateFormat('dd MMM yyyy • HH:mm', 'id_ID').format(date);
-      } catch (_) {
-        formattedDate = order.createdAt!;
-      }
-    }
+    String formattedCreatedAt = _formatDate(order.createdAt);
+    String formattedPaidAt = _formatDate(order.paidAt);
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
@@ -344,32 +340,9 @@ class MerchantDetailOrderScreen extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'Order ID',
-            style:
-                GlobalHelper.getTextTheme(
-                  context,
-                  appTextStyle: AppTextStyle.BODY_SMALL,
-                )?.copyWith(
-                  color: GlobalHelper.getColorSchema(context).onSurfaceVariant,
-                ),
-          ),
-          const SizedBox(height: 4),
           Row(
+            mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              Expanded(
-                child: Text(
-                  order.invoiceNumber ?? order.id,
-                  style:
-                      GlobalHelper.getTextTheme(
-                        context,
-                        appTextStyle: AppTextStyle.TITLE_MEDIUM,
-                      )?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: GlobalHelper.getColorSchema(context).onSurface,
-                      ),
-                ),
-              ),
               Container(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 10,
@@ -395,7 +368,30 @@ class MerchantDetailOrderScreen extends StatelessWidget {
           ),
           const SizedBox(height: 4),
           Text(
-            formattedDate,
+            'Order ID',
+            style:
+                GlobalHelper.getTextTheme(
+                  context,
+                  appTextStyle: AppTextStyle.LABEL_SMALL,
+                )?.copyWith(
+                  color: GlobalHelper.getColorSchema(context).onSurfaceVariant,
+                ),
+          ),
+
+          Text(
+            order.invoiceNumber ?? order.id,
+            style:
+                GlobalHelper.getTextTheme(
+                  context,
+                  appTextStyle: AppTextStyle.TITLE_MEDIUM,
+                )?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: GlobalHelper.getColorSchema(context).onSurface,
+                ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            formattedCreatedAt,
             style:
                 GlobalHelper.getTextTheme(
                   context,
@@ -404,13 +400,78 @@ class MerchantDetailOrderScreen extends StatelessWidget {
                   color: GlobalHelper.getColorSchema(context).onSurfaceVariant,
                 ),
           ),
+          const SizedBox(height: 16),
+          Divider(
+            height: 1,
+            color: GlobalHelper.getColorSchema(
+              context,
+            ).outlineVariant.withValues(alpha: 0.5),
+          ),
+          const SizedBox(height: 16),
+          _buildInfoRow(
+            context,
+            'Metode Pengiriman',
+            order.shipping?.courier ?? order.shipping?.type ?? 'Toko',
+          ),
+          const SizedBox(height: 8),
+          _buildInfoRow(context, 'Dibayar', formattedPaidAt),
         ],
       ),
     );
   }
 
-  Widget _mainCard(BuildContext context, MerchantOrderEntity order) {
+  Widget _buildInfoRow(
+    BuildContext context,
+    String label,
+    String value, {
+    bool isRed = false,
+    bool isBold = false,
+  }) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          label,
+          style:
+              GlobalHelper.getTextTheme(
+                context,
+                appTextStyle: AppTextStyle.BODY_SMALL,
+              )?.copyWith(
+                color: GlobalHelper.getColorSchema(context).onSurfaceVariant,
+              ),
+        ),
+        Text(
+          value,
+          style:
+              GlobalHelper.getTextTheme(
+                context,
+                appTextStyle: AppTextStyle.BODY_SMALL,
+              )?.copyWith(
+                fontWeight: isBold ? FontWeight.bold : FontWeight.w500,
+                color: isRed
+                    ? const Color(0xFFDC2626) // Red color for promo/discount
+                    : GlobalHelper.getColorSchema(context).onSurface,
+              ),
+        ),
+      ],
+    );
+  }
+
+  String _formatDate(String? dateString) {
+    if (dateString == null || dateString.isEmpty) return '-';
+    try {
+      final date = DateTime.parse(dateString).toLocal();
+      return DateFormat('dd MMM yyyy • HH:mm', 'id_ID').format(date);
+    } catch (_) {
+      return dateString;
+    }
+  }
+
+  Widget _customerCard(BuildContext context, MerchantOrderEntity order) {
+    final address = order.customerAddress;
+
     return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       decoration: BoxDecoration(
         color: GlobalHelper.getColorSchema(context).surface,
         borderRadius: BorderRadius.circular(16),
@@ -425,39 +486,169 @@ class MerchantDetailOrderScreen extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Customer Section
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Customer',
+          Text(
+            'Informasi Customer',
+            style:
+                GlobalHelper.getTextTheme(
+                  context,
+                  appTextStyle: AppTextStyle.BODY_MEDIUM,
+                )?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: GlobalHelper.getColorSchema(context).onSurface,
+                ),
+          ),
+          const SizedBox(height: 16),
+          Divider(
+            height: 1,
+            color: GlobalHelper.getColorSchema(
+              context,
+            ).outlineVariant.withValues(alpha: 0.5),
+          ),
+          const SizedBox(height: 16),
+          _buildDetailColumn(
+            context,
+            'Nama Customer',
+            address?.recipientName ?? order.customer?.name ?? '-',
+          ),
+          const SizedBox(height: 12),
+          _buildDetailColumn(
+            context,
+            'Nomor HP',
+            address?.phone ?? order.customer?.phone ?? '-',
+          ),
+          const SizedBox(height: 12),
+          _buildDetailColumn(context, 'Label Alamat', address?.label ?? '-'),
+          const SizedBox(height: 12),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Alamat',
+                style:
+                    GlobalHelper.getTextTheme(
+                      context,
+                      appTextStyle: AppTextStyle.LABEL_SMALL,
+                    )?.copyWith(
+                      color: GlobalHelper.getColorSchema(
+                        context,
+                      ).onSurfaceVariant,
+                    ),
+              ),
+              GestureDetector(
+                onTap: () => context.read<MerchantDetailOrderBloc>().add(
+                  MerchantDetailOrderEventMapsTapped(),
+                ),
+                child: Text(
+                  'Lihat di Maps',
                   style:
                       GlobalHelper.getTextTheme(
                         context,
-                        appTextStyle: AppTextStyle.BODY_MEDIUM,
+                        appTextStyle: AppTextStyle.LABEL_SMALL,
                       )?.copyWith(
                         fontWeight: FontWeight.bold,
-                        color: GlobalHelper.getColorSchema(context).onSurface,
+                        color: GlobalHelper.getColorSchema(context).primary,
                       ),
                 ),
-                const SizedBox(height: 12),
-                Row(
+              ),
+            ],
+          ),
+          const SizedBox(height: 4),
+          Text(
+            (address?.address ?? '-').isEmpty ? '-' : (address?.address ?? '-'),
+            style:
+                GlobalHelper.getTextTheme(
+                  context,
+                  appTextStyle: AppTextStyle.BODY_SMALL,
+                )?.copyWith(
+                  fontWeight: FontWeight.w500,
+                  color: GlobalHelper.getColorSchema(context).onSurface,
+                  height: 1.4,
+                ),
+          ),
+          const SizedBox(height: 12),
+          _buildDetailColumn(context, 'Catatan Alamat', address?.notes ?? '-'),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDetailColumn(BuildContext context, String label, String value) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style:
+              GlobalHelper.getTextTheme(
+                context,
+                appTextStyle: AppTextStyle.LABEL_SMALL,
+              )?.copyWith(
+                color: GlobalHelper.getColorSchema(context).onSurfaceVariant,
+              ),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          value.isEmpty ? '-' : value,
+          style:
+              GlobalHelper.getTextTheme(
+                context,
+                appTextStyle: AppTextStyle.BODY_SMALL,
+              )?.copyWith(
+                fontWeight: FontWeight.w500,
+                color: GlobalHelper.getColorSchema(context).onSurface,
+                height: 1.4,
+              ),
+        ),
+      ],
+    );
+  }
+
+  Widget _productCard(BuildContext context, MerchantOrderEntity order) {
+    return Container(
+      decoration: BoxDecoration(
+        color: GlobalHelper.getColorSchema(context).surface,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Produk',
+              style:
+                  GlobalHelper.getTextTheme(
+                    context,
+                    appTextStyle: AppTextStyle.BODY_MEDIUM,
+                  )?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: GlobalHelper.getColorSchema(context).onSurface,
+                  ),
+            ),
+            const SizedBox(height: 12),
+            ...order.items.map(
+              (item) => Padding(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: Row(
                   children: [
                     Container(
-                      width: 40,
-                      height: 40,
+                      width: 44,
+                      height: 44,
                       decoration: BoxDecoration(
                         color: GlobalHelper.getColorSchema(
                           context,
                         ).primary.withValues(alpha: 0.1),
-                        shape: BoxShape.circle,
+                        borderRadius: BorderRadius.circular(8),
                       ),
-                      child: Icon(
-                        Icons.person_outline,
-                        color: GlobalHelper.getColorSchema(context).primary,
-                        size: 20,
+                      child: const Center(
+                        child: Text('📦', style: TextStyle(fontSize: 24)),
                       ),
                     ),
                     const SizedBox(width: 12),
@@ -466,13 +657,11 @@ class MerchantDetailOrderScreen extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            order.customer?.name ??
-                                order.customerAddress?.recipientName ??
-                                'Pelanggan',
+                            item.productName ?? '-',
                             style:
                                 GlobalHelper.getTextTheme(
                                   context,
-                                  appTextStyle: AppTextStyle.BODY_MEDIUM,
+                                  appTextStyle: AppTextStyle.BODY_SMALL,
                                 )?.copyWith(
                                   fontWeight: FontWeight.bold,
                                   color: GlobalHelper.getColorSchema(
@@ -480,243 +669,37 @@ class MerchantDetailOrderScreen extends StatelessWidget {
                                   ).onSurface,
                                 ),
                           ),
-                          Text(
-                            order.customer?.phone ??
-                                order.customerAddress?.phone ??
-                                '-',
-                            style:
-                                GlobalHelper.getTextTheme(
-                                  context,
-                                  appTextStyle: AppTextStyle.BODY_SMALL,
-                                )?.copyWith(
-                                  color: GlobalHelper.getColorSchema(
-                                    context,
-                                  ).onSurfaceVariant,
-                                ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-          Divider(
-            height: 1,
-            color: GlobalHelper.getColorSchema(context).outlineVariant,
-          ),
-
-          // Alamat Pengiriman Section
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Alamat Pengiriman',
-                  style:
-                      GlobalHelper.getTextTheme(
-                        context,
-                        appTextStyle: AppTextStyle.BODY_MEDIUM,
-                      )?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: GlobalHelper.getColorSchema(context).onSurface,
-                      ),
-                ),
-                const SizedBox(height: 12),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Container(
-                      width: 40,
-                      height: 40,
-                      decoration: BoxDecoration(
-                        color: GlobalHelper.getColorSchema(
-                          context,
-                        ).primary.withValues(alpha: 0.1),
-                        shape: BoxShape.circle,
-                      ),
-                      child: Icon(
-                        Icons.location_on_outlined,
-                        color: GlobalHelper.getColorSchema(context).primary,
-                        size: 20,
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Text(
-                        order.customerAddress?.address ?? '-',
-                        style:
-                            GlobalHelper.getTextTheme(
-                              context,
-                              appTextStyle: AppTextStyle.BODY_SMALL,
-                            )?.copyWith(
-                              color: GlobalHelper.getColorSchema(
-                                context,
-                              ).onSurfaceVariant,
-                              height: 1.4,
-                            ),
-                      ),
-                    ),
-                    GestureDetector(
-                      onTap: () => context.read<MerchantDetailOrderBloc>().add(
-                        MerchantDetailOrderEventMapsTapped(),
-                      ),
-                      child: Text(
-                        'Lihat di Maps',
-                        style:
-                            GlobalHelper.getTextTheme(
-                              context,
-                              appTextStyle: AppTextStyle.BODY_SMALL,
-                            )?.copyWith(
-                              fontWeight: FontWeight.bold,
-                              color: GlobalHelper.getColorSchema(
-                                context,
-                              ).primary,
-                            ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-          Divider(
-            height: 1,
-            color: GlobalHelper.getColorSchema(context).outlineVariant,
-          ),
-
-          // Produk Section
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Produk',
-                  style:
-                      GlobalHelper.getTextTheme(
-                        context,
-                        appTextStyle: AppTextStyle.BODY_MEDIUM,
-                      )?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: GlobalHelper.getColorSchema(context).onSurface,
-                      ),
-                ),
-                const SizedBox(height: 12),
-                ...order.items.map(
-                  (item) => Padding(
-                    padding: const EdgeInsets.only(bottom: 12),
-                    child: Row(
-                      children: [
-                        Container(
-                          width: 44,
-                          height: 44,
-                          decoration: BoxDecoration(
-                            color: GlobalHelper.getColorSchema(
-                              context,
-                            ).primary.withValues(alpha: 0.1),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: const Center(
-                            child: Text('📦', style: TextStyle(fontSize: 24)),
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                item.productName ?? '-',
+                          if (item.productVariantSnapshot?.variantCombination !=
+                                  null &&
+                              item
+                                  .productVariantSnapshot!
+                                  .variantCombination!
+                                  .isNotEmpty)
+                            Padding(
+                              padding: const EdgeInsets.only(top: 4),
+                              child: Text(
+                                item
+                                    .productVariantSnapshot!
+                                    .variantCombination!
+                                    .entries
+                                    .map((e) => '${e.key}: ${e.value}')
+                                    .join(', '),
                                 style:
                                     GlobalHelper.getTextTheme(
                                       context,
-                                      appTextStyle: AppTextStyle.BODY_SMALL,
+                                      appTextStyle: AppTextStyle.LABEL_SMALL,
                                     )?.copyWith(
-                                      fontWeight: FontWeight.bold,
                                       color: GlobalHelper.getColorSchema(
                                         context,
-                                      ).onSurface,
+                                      ).onSurfaceVariant,
                                     ),
                               ),
-                              if (item
-                                          .productVariantSnapshot
-                                          ?.variantCombination !=
-                                      null &&
-                                  item
-                                      .productVariantSnapshot!
-                                      .variantCombination!
-                                      .isNotEmpty)
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 4),
-                                  child: Text(
-                                    item
-                                        .productVariantSnapshot!
-                                        .variantCombination!
-                                        .entries
-                                        .map((e) => '${e.key}: ${e.value}')
-                                        .join(', '),
-                                    style:
-                                        GlobalHelper.getTextTheme(
-                                          context,
-                                          appTextStyle:
-                                              AppTextStyle.LABEL_SMALL,
-                                        )?.copyWith(
-                                          color: GlobalHelper.getColorSchema(
-                                            context,
-                                          ).onSurfaceVariant,
-                                        ),
-                                  ),
-                                ),
-                            ],
-                          ),
-                        ),
-                        Text(
-                          '${item.quantity ?? 1}x',
-                          style:
-                              GlobalHelper.getTextTheme(
-                                context,
-                                appTextStyle: AppTextStyle.BODY_SMALL,
-                              )?.copyWith(
-                                color: GlobalHelper.getColorSchema(
-                                  context,
-                                ).onSurfaceVariant,
-                              ),
-                        ),
-                        const SizedBox(width: 16),
-                        SizedBox(
-                          width: 70,
-                          child: Text(
-                            NumberHelper.formatIDR((item.total ?? 0).toInt()),
-                            textAlign: TextAlign.right,
-                            style:
-                                GlobalHelper.getTextTheme(
-                                  context,
-                                  appTextStyle: AppTextStyle.BODY_SMALL,
-                                )?.copyWith(
-                                  color: GlobalHelper.getColorSchema(
-                                    context,
-                                  ).onSurfaceVariant,
-                                ),
-                          ),
-                        ),
-                      ],
+                            ),
+                        ],
+                      ),
                     ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8),
-                  child: CustomDottedDivider(
-                    color: GlobalHelper.getColorSchema(context).outlineVariant,
-                  ),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
                     Text(
-                      'Subtotal',
+                      '${item.quantity ?? 1}x',
                       style:
                           GlobalHelper.getTextTheme(
                             context,
@@ -727,57 +710,12 @@ class MerchantDetailOrderScreen extends StatelessWidget {
                             ).onSurfaceVariant,
                           ),
                     ),
-                    Text(
-                      NumberHelper.formatIDR((order.subtotal ?? 0).toInt()),
-                      style:
-                          GlobalHelper.getTextTheme(
-                            context,
-                            appTextStyle: AppTextStyle.BODY_SMALL,
-                          )?.copyWith(
-                            color: GlobalHelper.getColorSchema(
-                              context,
-                            ).onSurfaceVariant,
-                          ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 8),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'Ongkir (${order.shipping?.courier ?? order.shipping?.type ?? 'Toko'})',
-                      style:
-                          GlobalHelper.getTextTheme(
-                            context,
-                            appTextStyle: AppTextStyle.BODY_SMALL,
-                          )?.copyWith(
-                            color: GlobalHelper.getColorSchema(
-                              context,
-                            ).onSurfaceVariant,
-                          ),
-                    ),
-                    Text(
-                      NumberHelper.formatIDR((order.shippingCost ?? 0).toInt()),
-                      style:
-                          GlobalHelper.getTextTheme(
-                            context,
-                            appTextStyle: AppTextStyle.BODY_SMALL,
-                          )?.copyWith(
-                            color: GlobalHelper.getColorSchema(
-                              context,
-                            ).onSurfaceVariant,
-                          ),
-                    ),
-                  ],
-                ),
-                if (order.serviceFee != null && order.serviceFee! > 0) ...[
-                  const SizedBox(height: 8),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Biaya Layanan',
+                    const SizedBox(width: 16),
+                    SizedBox(
+                      width: 70,
+                      child: Text(
+                        NumberHelper.formatIDR((item.total ?? 0).toInt()),
+                        textAlign: TextAlign.right,
                         style:
                             GlobalHelper.getTextTheme(
                               context,
@@ -788,60 +726,13 @@ class MerchantDetailOrderScreen extends StatelessWidget {
                               ).onSurfaceVariant,
                             ),
                       ),
-                      Text(
-                        NumberHelper.formatIDR((order.serviceFee ?? 0).toInt()),
-                        style:
-                            GlobalHelper.getTextTheme(
-                              context,
-                              appTextStyle: AppTextStyle.BODY_SMALL,
-                            )?.copyWith(
-                              color: GlobalHelper.getColorSchema(
-                                context,
-                              ).onSurfaceVariant,
-                            ),
-                      ),
-                    ],
-                  ),
-                ],
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 12),
-                  child: CustomDottedDivider(
-                    color: GlobalHelper.getColorSchema(context).outlineVariant,
-                  ),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'Total',
-                      style:
-                          GlobalHelper.getTextTheme(
-                            context,
-                            appTextStyle: AppTextStyle.BODY_MEDIUM,
-                          )?.copyWith(
-                            fontWeight: FontWeight.bold,
-                            color: GlobalHelper.getColorSchema(
-                              context,
-                            ).onSurface,
-                          ),
-                    ),
-                    Text(
-                      NumberHelper.formatIDR((order.total ?? 0).toInt()),
-                      style:
-                          GlobalHelper.getTextTheme(
-                            context,
-                            appTextStyle: AppTextStyle.TITLE_MEDIUM,
-                          )?.copyWith(
-                            fontWeight: FontWeight.bold,
-                            color: GlobalHelper.getColorSchema(context).primary,
-                          ),
                     ),
                   ],
                 ),
-              ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -874,92 +765,72 @@ class MerchantDetailOrderScreen extends StatelessWidget {
                   color: GlobalHelper.getColorSchema(context).onSurface,
                 ),
           ),
-          const SizedBox(height: 12),
-          Row(
-            children: [
-              Container(
-                width: 40,
-                height: 40,
-                decoration: BoxDecoration(
-                  color: GlobalHelper.getColorSchema(
-                    context,
-                  ).primary.withValues(alpha: 0.1),
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(
-                  Icons.account_balance_outlined,
-                  color: GlobalHelper.getColorSchema(context).primary,
-                  size: 20,
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Metode',
-                      style:
-                          GlobalHelper.getTextTheme(
-                            context,
-                            appTextStyle: AppTextStyle.LABEL_SMALL,
-                          )?.copyWith(
-                            color: GlobalHelper.getColorSchema(
-                              context,
-                            ).onSurfaceVariant,
-                          ),
-                    ),
-                    Text(
-                      order.merchantAccount?.bankName ?? 'Transfer Bank',
-                      style:
-                          GlobalHelper.getTextTheme(
-                            context,
-                            appTextStyle: AppTextStyle.BODY_SMALL,
-                          )?.copyWith(
-                            fontWeight: FontWeight.bold,
-                            color: GlobalHelper.getColorSchema(
-                              context,
-                            ).onSurface,
-                          ),
-                    ),
-                  ],
-                ),
-              ),
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 10,
-                  vertical: 6,
-                ),
-                decoration: BoxDecoration(
-                  color:
-                      order.paidAt != null ||
-                          (order.paidAmount != null && order.paidAmount! > 0)
-                      ? const Color(0xFFD1FAE5) // light green bg
-                      : const Color(0xFFFEF2F2), // light red bg
-                  borderRadius: BorderRadius.circular(6),
-                ),
-                child: Text(
-                  order.paidAt != null ||
-                          (order.paidAmount != null && order.paidAmount! > 0)
-                      ? 'Sudah Dibayar'
-                      : 'Belum Dibayar',
-                  style:
-                      GlobalHelper.getTextTheme(
-                        context,
-                        appTextStyle: AppTextStyle.LABEL_SMALL,
-                      )?.copyWith(
-                        fontWeight: FontWeight.w600,
-                        color:
-                            order.paidAt != null ||
-                                (order.paidAmount != null &&
-                                    order.paidAmount! > 0)
-                            ? GlobalHelper.getColorSchema(context).primary
-                            : GlobalHelper.getColorSchema(context).error,
-                      ),
-                ),
-              ),
-            ],
+          const SizedBox(height: 16),
+          Divider(
+            height: 1,
+            color: GlobalHelper.getColorSchema(
+              context,
+            ).outlineVariant.withValues(alpha: 0.5),
           ),
+          const SizedBox(height: 16),
+          _buildInfoRow(
+            context,
+            'Subtotal',
+            NumberHelper.formatIDR((order.subtotal ?? 0).toInt()),
+          ),
+          const SizedBox(height: 8),
+          _buildInfoRow(
+            context,
+            'Ongkir',
+            NumberHelper.formatIDR((order.shippingCost ?? 0).toInt()),
+          ),
+          const SizedBox(height: 8),
+          _buildInfoRow(
+            context,
+            'Biaya Layanan',
+            NumberHelper.formatIDR((order.serviceFee ?? 0).toInt()),
+          ),
+          const SizedBox(height: 8),
+          _buildInfoRow(context, 'Promo', '-'),
+          const SizedBox(height: 8),
+          _buildInfoRow(
+            context,
+            'Diskon Promo',
+            NumberHelper.formatIDR(0),
+            isRed: true,
+          ),
+          const SizedBox(height: 8),
+          _buildInfoRow(
+            context,
+            'Total',
+            NumberHelper.formatIDR((order.total ?? 0).toInt()),
+            isBold: true,
+          ),
+          const SizedBox(height: 8),
+          _buildInfoRow(
+            context,
+            'Bank',
+            order.merchantAccount?.bankName ?? '-',
+          ),
+          const SizedBox(height: 8),
+          _buildInfoRow(
+            context,
+            'Nomor Rekening',
+            order.merchantAccount?.accountNumber ?? '-',
+          ),
+
+          if (order.paymentProof != null && order.paymentProof!.isNotEmpty) ...[
+            const SizedBox(height: 16),
+            PrimaryButton(
+              label: 'Unduh bukti transfer',
+              onPressed: () {
+                context.read<MerchantDetailOrderBloc>().add(
+                  MerchantDetailOrderEventPaymentProofTapped(),
+                );
+              },
+              height: 40,
+            ),
+          ],
         ],
       ),
     );
