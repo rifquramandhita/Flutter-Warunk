@@ -14,6 +14,8 @@ import 'package:warunk/theme/app_colors.dart';
 import 'package:warunk/core/helper/global_helper.dart';
 import 'package:warunk/core/helper/number_helper.dart';
 import 'package:warunk/core/widgets/error_button.dart';
+import 'package:warunk/core/helper/currency_input_formatter.dart';
+import 'package:intl/intl.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Entry point
@@ -116,16 +118,21 @@ class MerchantInputProductScreen extends StatelessWidget {
                           const _SectionLabel('Harga'),
                           const SizedBox(height: 8),
                           _InputField(
-                            initialValue: state.price,
+                            initialValue: state.price.isNotEmpty
+                                ? NumberFormat('#,###', 'id_ID')
+                                      .format(int.tryParse(state.price) ?? 0)
+                                      .replaceAll(',', '.')
+                                : '',
                             hintText: '0',
                             keyboardType: TextInputType.number,
-                            inputFormatters: [
-                              FilteringTextInputFormatter.digitsOnly,
-                            ],
+                            inputFormatters: [CurrencyInputFormatter()],
                             prefixText: 'Rp ',
-                            onChanged: (v) => context
-                                .read<MerchantInputProductBloc>()
-                                .add(MerchantInputProductPriceChanged(v)),
+                            onChanged: (v) =>
+                                context.read<MerchantInputProductBloc>().add(
+                                  MerchantInputProductPriceChanged(
+                                    v.replaceAll('.', ''),
+                                  ),
+                                ),
                           ),
                         ],
                       ),
@@ -1222,12 +1229,18 @@ class _CombinationFields extends StatelessWidget {
             hintText: '0',
             prefixText: 'Rp ',
             initialValue: combination.price > 0
-                ? combination.price.toString()
+                ? NumberFormat(
+                    '#,###',
+                    'id_ID',
+                  ).format(combination.price).replaceAll(',', '.')
                 : '',
             isNumber: true,
+            isCurrency: true,
             onChanged: (v) => _update(
               context,
-              combination.copyWith(price: int.tryParse(v) ?? 0),
+              combination.copyWith(
+                price: int.tryParse(v.replaceAll('.', '')) ?? 0,
+              ),
             ),
           ),
           const SizedBox(height: 10),
@@ -1351,6 +1364,7 @@ class _OptionFieldRow extends StatelessWidget {
     required this.onChanged,
     this.prefixText,
     this.isNumber = false,
+    this.isCurrency = false,
   });
   final String label;
   final String hintText;
@@ -1358,6 +1372,7 @@ class _OptionFieldRow extends StatelessWidget {
   final ValueChanged<String> onChanged;
   final String? prefixText;
   final bool isNumber;
+  final bool isCurrency;
 
   @override
   Widget build(BuildContext context) {
@@ -1382,7 +1397,9 @@ class _OptionFieldRow extends StatelessWidget {
           child: TextFormField(
             initialValue: initialValue,
             keyboardType: isNumber ? TextInputType.number : TextInputType.text,
-            inputFormatters: isNumber
+            inputFormatters: isCurrency
+                ? [CurrencyInputFormatter()]
+                : isNumber
                 ? [FilteringTextInputFormatter.digitsOnly]
                 : null,
             onChanged: onChanged,

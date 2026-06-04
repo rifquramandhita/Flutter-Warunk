@@ -38,6 +38,7 @@ import 'package:warunk/app/features/merchant/domain/use_case/merchant_product_se
 import 'package:warunk/app/features/merchant/domain/use_case/merchant_products_get_use_case.dart';
 import 'package:warunk/app/features/merchant/domain/use_case/merchant_product_get_category_use_case.dart';
 import 'package:warunk/app/features/merchant/domain/use_case/merchant_product_download_images_use_case.dart';
+import 'package:warunk/app/features/merchant/domain/use_case/merchant_product_delete_use_case.dart';
 import 'package:warunk/app/features/merchant/domain/use_case/merchant_product_publish_usecase.dart';
 import 'package:warunk/app/features/merchant/domain/use_case/merchant_product_unpublish_usecase.dart';
 import 'package:warunk/app/features/merchant/presentation/input_product/bloc/merchant_input_product_bloc.dart';
@@ -190,6 +191,9 @@ Future<void> initDependency() async {
   sl.registerLazySingleton(
     () => MerchantProductUnpublishUseCase(repository: sl()),
   );
+  sl.registerLazySingleton(
+    () => MerchantProductDeleteUseCase(repository: sl()),
+  );
   sl.registerLazySingleton(() => MerchantMerchantUpdateLocationUseCase(sl()));
   sl.registerLazySingleton(() => MerchantMerchantUpdateAccountUseCase(sl()));
   sl.registerLazySingleton(() => MerchantMerchantOpenUseCase(sl()));
@@ -246,6 +250,7 @@ Future<void> initDependency() async {
       useCase: sl(),
       publishUseCase: sl(),
       unpublishUseCase: sl(),
+      deleteUseCase: sl(),
     ),
   );
   sl.registerFactory(
@@ -254,6 +259,7 @@ Future<void> initDependency() async {
       sendUseCase: sl(),
       downloadImagesUseCase: sl(),
       getCategoryUseCase: sl(),
+      deleteUseCase: sl(),
     ),
   );
   sl.registerFactory(() => CustomerCartBloc(getUseCase: sl()));
