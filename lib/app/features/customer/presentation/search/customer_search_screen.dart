@@ -122,33 +122,11 @@ class CustomerSearchScreen extends StatelessWidget {
         SliverToBoxAdapter(
           child: Padding(
             padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-            child: Row(
-              children: [
-                Expanded(
-                  child: _searchBar(
-                    context,
-                    null,
-                    filled: true,
-                    query: state.searchQuery,
-                  ),
-                ),
-                const SizedBox(width: 10),
-                Container(
-                  width: 44,
-                  height: 44,
-                  decoration: BoxDecoration(
-                    color: GlobalHelper.getColorSchema(
-                      context,
-                    ).primary.withValues(alpha: 0.12),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Icon(
-                    Icons.tune_rounded,
-                    color: GlobalHelper.getColorSchema(context).primary,
-                    size: 22,
-                  ),
-                ),
-              ],
+            child: _searchBar(
+              context,
+              null,
+              filled: true,
+              query: state.searchQuery,
             ),
           ),
         ),
@@ -176,10 +154,6 @@ class CustomerSearchScreen extends StatelessWidget {
               delegate: SliverChildBuilderDelegate((_, i) {
                 final merchant = stores[i];
                 final name = merchant.name;
-                final city = 'Unknown City';
-                final rating = 4.5;
-                final reviews = 100;
-                final dist = 1.0;
                 final badges = merchant.isOpen ? ['Buka'] : ['Tutup'];
                 final photoUrl = merchant.photo;
                 return GestureDetector(
@@ -315,85 +289,8 @@ class CustomerSearchScreen extends StatelessWidget {
                                   }).toList(),
                                 ),
                                 const SizedBox(height: 6),
-                                Row(
-                                  children: [
-                                    const Icon(
-                                      Icons.star_rounded,
-                                      color: Color(0xFFFBBC05),
-                                      size: 14,
-                                    ),
-                                    const SizedBox(width: 3),
-                                    Text(
-                                      '$rating ($reviews)',
-                                      style:
-                                          GlobalHelper.getTextTheme(
-                                            context,
-                                            appTextStyle:
-                                                AppTextStyle.LABEL_SMALL,
-                                          )?.copyWith(
-                                            color: GlobalHelper.getColorSchema(
-                                              context,
-                                            ).onSurface,
-                                          ),
-                                    ),
-                                    const SizedBox(width: 6),
-                                    Container(
-                                      width: 3,
-                                      height: 3,
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        color: GlobalHelper.getColorSchema(
-                                          context,
-                                        ).onSurface.withValues(alpha: 0.5),
-                                      ),
-                                    ),
-                                    const SizedBox(width: 6),
-                                    Icon(
-                                      Icons.location_on_rounded,
-                                      size: 13,
-                                      color: GlobalHelper.getColorSchema(
-                                        context,
-                                      ).onSurface.withValues(alpha: 0.5),
-                                    ),
-                                    Text(
-                                      '$dist km',
-                                      style:
-                                          GlobalHelper.getTextTheme(
-                                            context,
-                                            appTextStyle:
-                                                AppTextStyle.LABEL_SMALL,
-                                          )?.copyWith(
-                                            color: GlobalHelper.getColorSchema(
-                                              context,
-                                            ).onSurface.withValues(alpha: 0.5),
-                                          ),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(height: 2),
-                                Text(
-                                  city,
-                                  style:
-                                      GlobalHelper.getTextTheme(
-                                        context,
-                                        appTextStyle: AppTextStyle.LABEL_SMALL,
-                                      )?.copyWith(
-                                        color: GlobalHelper.getColorSchema(
-                                          context,
-                                        ).onSurface.withValues(alpha: 0.5),
-                                      ),
-                                ),
                               ],
                             ),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(right: 10),
-                          child: Icon(
-                            Icons.chevron_right_rounded,
-                            color: GlobalHelper.getColorSchema(
-                              context,
-                            ).onSurface.withValues(alpha: 0.5),
                           ),
                         ),
                       ],
