@@ -6,8 +6,11 @@ part 'login.g.dart';
 @freezed
 sealed class Login with _$Login {
   @JsonSerializable(includeIfNull: false)
-  const factory Login.param({required String email, required String password}) =
-      LoginParam;
+  const factory Login.param({
+    required String email,
+    required String password,
+    required String fcmToken,
+  }) = LoginParam;
 
   factory Login.fromJson(Map<String, Object?> json) => _$LoginFromJson(json);
 }

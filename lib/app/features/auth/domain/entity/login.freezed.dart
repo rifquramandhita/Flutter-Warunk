@@ -22,7 +22,7 @@ Login _$LoginFromJson(
 /// @nodoc
 mixin _$Login {
 
- String get email; String get password;
+ String get email; String get password; String get fcmToken;
 /// Create a copy of Login
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -35,16 +35,16 @@ $LoginCopyWith<Login> get copyWith => _$LoginCopyWithImpl<Login>(this as Login, 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Login&&(identical(other.email, email) || other.email == email)&&(identical(other.password, password) || other.password == password));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Login&&(identical(other.email, email) || other.email == email)&&(identical(other.password, password) || other.password == password)&&(identical(other.fcmToken, fcmToken) || other.fcmToken == fcmToken));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,email,password);
+int get hashCode => Object.hash(runtimeType,email,password,fcmToken);
 
 @override
 String toString() {
-  return 'Login(email: $email, password: $password)';
+  return 'Login(email: $email, password: $password, fcmToken: $fcmToken)';
 }
 
 
@@ -55,7 +55,7 @@ abstract mixin class $LoginCopyWith<$Res>  {
   factory $LoginCopyWith(Login value, $Res Function(Login) _then) = _$LoginCopyWithImpl;
 @useResult
 $Res call({
- String email, String password
+ String email, String password, String fcmToken
 });
 
 
@@ -72,10 +72,11 @@ class _$LoginCopyWithImpl<$Res>
 
 /// Create a copy of Login
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? email = null,Object? password = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? email = null,Object? password = null,Object? fcmToken = null,}) {
   return _then(_self.copyWith(
 email: null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
 as String,password: null == password ? _self.password : password // ignore: cast_nullable_to_non_nullable
+as String,fcmToken: null == fcmToken ? _self.fcmToken : fcmToken // ignore: cast_nullable_to_non_nullable
 as String,
   ));
 }
@@ -158,10 +159,10 @@ return param(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String email,  String password)?  param,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String email,  String password,  String fcmToken)?  param,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case LoginParam() when param != null:
-return param(_that.email,_that.password);case _:
+return param(_that.email,_that.password,_that.fcmToken);case _:
   return orElse();
 
 }
@@ -179,10 +180,10 @@ return param(_that.email,_that.password);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String email,  String password)  param,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String email,  String password,  String fcmToken)  param,}) {final _that = this;
 switch (_that) {
 case LoginParam():
-return param(_that.email,_that.password);}
+return param(_that.email,_that.password,_that.fcmToken);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -196,10 +197,10 @@ return param(_that.email,_that.password);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String email,  String password)?  param,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String email,  String password,  String fcmToken)?  param,}) {final _that = this;
 switch (_that) {
 case LoginParam() when param != null:
-return param(_that.email,_that.password);case _:
+return param(_that.email,_that.password,_that.fcmToken);case _:
   return null;
 
 }
@@ -211,11 +212,12 @@ return param(_that.email,_that.password);case _:
 
 @JsonSerializable(includeIfNull: false)
 class LoginParam implements Login {
-  const LoginParam({required this.email, required this.password});
+  const LoginParam({required this.email, required this.password, required this.fcmToken});
   factory LoginParam.fromJson(Map<String, dynamic> json) => _$LoginParamFromJson(json);
 
 @override final  String email;
 @override final  String password;
+@override final  String fcmToken;
 
 /// Create a copy of Login
 /// with the given fields replaced by the non-null parameter values.
@@ -230,16 +232,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is LoginParam&&(identical(other.email, email) || other.email == email)&&(identical(other.password, password) || other.password == password));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is LoginParam&&(identical(other.email, email) || other.email == email)&&(identical(other.password, password) || other.password == password)&&(identical(other.fcmToken, fcmToken) || other.fcmToken == fcmToken));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,email,password);
+int get hashCode => Object.hash(runtimeType,email,password,fcmToken);
 
 @override
 String toString() {
-  return 'Login.param(email: $email, password: $password)';
+  return 'Login.param(email: $email, password: $password, fcmToken: $fcmToken)';
 }
 
 
@@ -250,7 +252,7 @@ abstract mixin class $LoginParamCopyWith<$Res> implements $LoginCopyWith<$Res> {
   factory $LoginParamCopyWith(LoginParam value, $Res Function(LoginParam) _then) = _$LoginParamCopyWithImpl;
 @override @useResult
 $Res call({
- String email, String password
+ String email, String password, String fcmToken
 });
 
 
@@ -267,10 +269,11 @@ class _$LoginParamCopyWithImpl<$Res>
 
 /// Create a copy of Login
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? email = null,Object? password = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? email = null,Object? password = null,Object? fcmToken = null,}) {
   return _then(LoginParam(
 email: null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
 as String,password: null == password ? _self.password : password // ignore: cast_nullable_to_non_nullable
+as String,fcmToken: null == fcmToken ? _self.fcmToken : fcmToken // ignore: cast_nullable_to_non_nullable
 as String,
   ));
 }
