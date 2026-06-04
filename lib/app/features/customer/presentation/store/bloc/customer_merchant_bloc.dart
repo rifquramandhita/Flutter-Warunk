@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:warunk/app/features/customer/domain/use_case/customer_merchant_get_by_id_use_case.dart';
 import 'package:warunk/app/features/customer/domain/use_case/customer_product_get_by_merchant_use_case.dart';
+import 'package:warunk/app/features/customer/domain/use_case/customer_cart_get_use_case.dart';
 import 'package:warunk/core/network/data_state.dart';
 import 'customer_merchant_event.dart';
 import 'customer_merchant_state.dart';
@@ -9,12 +10,15 @@ class CustomerMerchantBloc
     extends Bloc<CustomerMerchantEvent, CustomerMerchantState> {
   final CustomerMerchantGetByIdUseCase _getByIdUseCase;
   final CustomerProductGetByMerchantUseCase _productGetByMerchantUseCase;
+  final CustomerCartGetUseCase _cartGetUseCase;
 
   CustomerMerchantBloc({
     required CustomerMerchantGetByIdUseCase getByIdUseCase,
     required CustomerProductGetByMerchantUseCase productGetByMerchantUseCase,
+    required CustomerCartGetUseCase cartGetUseCase,
   }) : _getByIdUseCase = getByIdUseCase,
        _productGetByMerchantUseCase = productGetByMerchantUseCase,
+       _cartGetUseCase = cartGetUseCase,
        super(const CustomerMerchantState()) {
     on<CustomerMerchantEventGet>(_onLoadStoreDetails);
     on<CustomerMerchantEventSelectCategory>(_onSelectCategory);
@@ -33,6 +37,7 @@ class CustomerMerchantBloc
       final productResponse = await _productGetByMerchantUseCase.call(
         event.storeId,
       );
+      final cartResponse = await _cartGetUseCase.call();
 
       var products = state.products;
       var categories = ['Semua'];
@@ -41,14 +46,27 @@ class CustomerMerchantBloc
         categories.addAll(products.map((e) => e.category).toSet());
       }
 
+      int cartCount = 0;
+      int cartTotalAmount = 0;
+      if (cartResponse is SuccessState && cartResponse.data != null) {
+        final storeCarts = cartResponse.data!
+            .where((cart) => cart.product?.merchantId == event.storeId)
+            .toList();
+        cartCount = storeCarts.fold(0, (sum, item) => sum + item.quantity);
+        cartTotalAmount = storeCarts.fold(
+          0,
+          (sum, item) => sum + item.subtotal,
+        );
+      }
+
       emit(
         state.copyWith(
           merchantDetail: merchantResponse.data,
           storeName: merchantResponse.data?.name,
           products: products,
           categories: categories,
-          cartCount: 2, // Dummy existing cart items
-          cartTotalAmount: 28500, // Rp28.500
+          cartCount: cartCount,
+          cartTotalAmount: cartTotalAmount,
         ),
       );
     } else {

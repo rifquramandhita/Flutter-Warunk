@@ -7,6 +7,9 @@ part 'customer_cart_api_service.g.dart';
 abstract class CustomerCartApiService {
   factory CustomerCartApiService(Dio dio, {String baseUrl}) = _CustomerCartApiService;
 
+  @GET('/api/carts')
+  Future<HttpResponse<dynamic>> getCarts();
+
   @POST('/api/carts')
   Future<HttpResponse<dynamic>> addCart(@Body() Map<String, dynamic> body);
 }

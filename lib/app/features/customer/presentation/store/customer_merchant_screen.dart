@@ -489,11 +489,7 @@ class CustomerMerchantScreen extends StatelessWidget {
         : null;
 
     return GestureDetector(
-      onTap: () => navigatorKey.currentState?.push(
-        MaterialPageRoute(
-          builder: (_) => CustomerDetailProductScreen(productId: p.id),
-        ),
-      ),
+      onTap: () => _onPressItem(context, p),
       child: Container(
         decoration: BoxDecoration(
           color: GlobalHelper.getColorSchema(context).surface,
@@ -618,6 +614,17 @@ class CustomerMerchantScreen extends StatelessWidget {
               ),
         ),
       ),
+    );
+  }
+
+  void _onPressItem(BuildContext context, CustomerProductEntity item) async {
+    await navigatorKey.currentState?.push(
+      MaterialPageRoute(
+        builder: (_) => CustomerDetailProductScreen(productId: item.id),
+      ),
+    );
+    context.read<CustomerMerchantBloc>().add(
+      CustomerMerchantEventGet(storeId: storeId),
     );
   }
 }

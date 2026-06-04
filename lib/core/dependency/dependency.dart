@@ -96,6 +96,7 @@ import 'package:warunk/app/features/customer/data/source/customer_cart_api_servi
 import 'package:warunk/app/features/customer/domain/repository/customer_cart_repository.dart';
 import 'package:warunk/app/features/customer/data/repository/customer_cart_repository_impl.dart';
 import 'package:warunk/app/features/customer/domain/use_case/customer_cart_add_use_case.dart';
+import 'package:warunk/app/features/customer/domain/use_case/customer_cart_get_use_case.dart';
 import 'package:dio/dio.dart';
 import 'package:warunk/core/network/app_interceptor.dart';
 import 'package:warunk/main.dart';
@@ -231,6 +232,7 @@ Future<void> initDependency() async {
     () => CustomerProductGetByIdUseCase(repository: sl()),
   );
   sl.registerLazySingleton(() => CustomerCartAddUseCase(repository: sl()));
+  sl.registerLazySingleton(() => CustomerCartGetUseCase(repository: sl()));
 
   //bloc
   sl.registerLazySingleton(() => AuthBloc());
@@ -264,6 +266,7 @@ Future<void> initDependency() async {
     () => CustomerMerchantBloc(
       getByIdUseCase: sl(),
       productGetByMerchantUseCase: sl(),
+      cartGetUseCase: sl(),
     ),
   );
   sl.registerFactory(
