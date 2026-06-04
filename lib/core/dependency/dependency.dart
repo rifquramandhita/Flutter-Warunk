@@ -12,6 +12,10 @@ import 'package:warunk/app/features/customer/data/repository/customer_product_re
 import 'package:warunk/app/features/customer/data/source/customer_product_api_service.dart';
 import 'package:warunk/app/features/customer/domain/repository/customer_product_repository.dart';
 import 'package:warunk/app/features/customer/domain/use_case/customer_product_get_by_merchant_use_case.dart';
+import 'package:warunk/app/features/merchant/domain/repository/merchant_location_repository.dart';
+import 'package:warunk/app/features/merchant/data/repository/merchant_location_repository_impl.dart';
+import 'package:warunk/app/features/merchant/domain/use_case/merchant_location_get_current_use_case.dart';
+import 'package:warunk/app/features/merchant/domain/use_case/merchant_location_get_placemark_use_case.dart';
 import 'package:warunk/app/features/customer/presentation/address/bloc/customer_address_bloc.dart';
 import 'package:warunk/app/features/customer/presentation/input_address/bloc/customer_input_address_bloc.dart';
 import 'package:warunk/app/features/customer/presentation/search/bloc/customer_search_bloc.dart';
@@ -47,6 +51,7 @@ import 'package:warunk/app/features/merchant/presentation/ship_order/bloc/mercha
 import 'package:warunk/app/features/merchant/presentation/profil/bloc/merchant_profil_bloc.dart';
 import 'package:warunk/app/features/merchant/domain/use_case/merchant_merchant_update_location_use_case.dart';
 import 'package:warunk/app/features/merchant/presentation/input_address/bloc/merchant_input_address_bloc.dart';
+import 'package:warunk/app/features/merchant/presentation/maps/bloc/merchant_maps_bloc.dart';
 import 'package:warunk/app/features/merchant/presentation/input_account/bloc/merchant_input_account_bloc.dart';
 import 'package:warunk/app/features/merchant/domain/use_case/merchant_merchant_update_account_use_case.dart';
 import 'package:warunk/app/features/merchant/domain/use_case/merchant_merchant_close_use_case.dart';
@@ -135,6 +140,9 @@ Future<void> initDependency() async {
   sl.registerLazySingleton(() => CustomerCartApiService(dio));
 
   //repository
+  sl.registerLazySingleton<MerchantLocationRepository>(
+    () => MerchantLocationRepositoryImpl(),
+  );
   sl.registerLazySingleton(() => AuthRepository(api: sl()));
   sl.registerLazySingleton<MerchantProductRepository>(
     () => MerchantProductRepositoryImpl(api: sl()),
@@ -165,6 +173,8 @@ Future<void> initDependency() async {
   );
 
   //usecase
+  sl.registerLazySingleton(() => MerchantLocationGetCurrentUseCase(sl()));
+  sl.registerLazySingleton(() => MerchantLocationGetPlacemarkUseCase(sl()));
   sl.registerLazySingleton(() => AuthLoginUseCase(repository: sl()));
   sl.registerLazySingleton(() => AuthLogoutUseCase(repository: sl()));
   sl.registerLazySingleton(() => AuthRegisterUseCase(repository: sl()));
@@ -284,8 +294,9 @@ Future<void> initDependency() async {
   sl.registerFactory(
     () => MerchantEditProfilBloc(getUseCase: sl(), updateUseCase: sl()),
   );
-  sl.registerFactory(() => MerchantInputAddressBloc(sl(), sl()));
+  sl.registerFactory(() => MerchantInputAddressBloc(sl(), sl(), sl()));
   sl.registerFactory(() => MerchantInputAccountBloc(sl(), sl()));
+  sl.registerFactory(() => MerchantMapsBloc(sl()));
   sl.registerFactory(
     () => MerchantOperationalHoursBloc(
       getUseCase: sl(),

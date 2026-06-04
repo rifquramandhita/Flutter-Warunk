@@ -66,7 +66,7 @@ class WarunkApp extends StatelessWidget {
               return const Scaffold(body: LoadingAppWidget());
             }
             return state.isAuthenticated
-                ? const CustomerShellScreen()
+                ? const MerchantShellScreen()
                 : const AuthLoginScreen();
           },
         ),

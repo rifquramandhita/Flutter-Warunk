@@ -244,9 +244,7 @@ class MerchantProfilScreen extends StatelessWidget {
           context: context,
           label: 'Alamat Toko',
           onTap: () => navigatorKey.currentState?.push(
-            MaterialPageRoute(
-              builder: (_) => const MerchantInputAddressScreen(),
-            ),
+            MaterialPageRoute(builder: (_) => MerchantInputAddressScreen()),
           ),
         ),
         _divider(context),

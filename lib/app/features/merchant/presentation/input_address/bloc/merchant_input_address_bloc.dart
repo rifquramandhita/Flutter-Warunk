@@ -2,6 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:warunk/app/features/merchant/domain/use_case/merchant_merchant_get_use_case.dart';
 import 'package:warunk/app/features/merchant/domain/use_case/merchant_merchant_update_location_use_case.dart';
 import 'package:equatable/equatable.dart';
+import 'package:warunk/app/features/merchant/domain/use_case/merchant_location_get_placemark_use_case.dart';
 
 part 'merchant_input_address_event.dart';
 part 'merchant_input_address_state.dart';
@@ -10,9 +11,13 @@ class MerchantInputAddressBloc
     extends Bloc<MerchantInputAddressEvent, MerchantInputAddressState> {
   final MerchantMerchantGetUseCase _getUseCase;
   final MerchantMerchantUpdateLocationUseCase _updateLocationUseCase;
+  final MerchantLocationGetPlacemarkUseCase _getPlacemarkUseCase;
 
-  MerchantInputAddressBloc(this._getUseCase, this._updateLocationUseCase)
-    : super(const MerchantInputAddressState()) {
+  MerchantInputAddressBloc(
+    this._getUseCase,
+    this._updateLocationUseCase,
+    this._getPlacemarkUseCase,
+  ) : super(const MerchantInputAddressState()) {
     on<MerchantInputAddressEventGet>(_onGet);
     on<MerchantInputAddressEventAddressChanged>(_onAddressChanged);
     on<MerchantInputAddressEventProvinceChanged>(_onProvinceChanged);
@@ -89,11 +94,34 @@ class MerchantInputAddressBloc
     emit(state.copyWith(postalCode: event.postalCode));
   }
 
-  void _onLocationChanged(
+  Future<void> _onLocationChanged(
     MerchantInputAddressEventLocationChanged event,
     Emitter<MerchantInputAddressState> emit,
-  ) {
-    emit(state.copyWith(longitude: event.longitude, latitude: event.latitude));
+  ) async {
+    emit(state.copyWith(
+      longitude: event.longitude,
+      latitude: event.latitude,
+      isLoading: true,
+    ));
+
+    final result = await _getPlacemarkUseCase.call(
+      params: MerchantLocationGetPlacemarkParams(
+        latitude: event.latitude,
+        longitude: event.longitude,
+      ),
+    );
+
+    if (result.success && result.data != null) {
+      emit(state.copyWith(
+        province: result.data!.province.isNotEmpty ? result.data!.province : state.province,
+        city: result.data!.city.isNotEmpty ? result.data!.city : state.city,
+        district: result.data!.district.isNotEmpty ? result.data!.district : state.district,
+        postalCode: result.data!.postalCode.isNotEmpty ? result.data!.postalCode : state.postalCode,
+        address: result.data!.address.isEmpty ? state.address : result.data!.address,
+      ));
+    }
+
+    emit(state.copyWith(isLoading: false));
   }
 
   Future<void> _onSaved(

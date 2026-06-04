@@ -7,72 +7,127 @@ import 'package:warunk/core/helper/global_helper.dart';
 import 'package:warunk/core/helper/dialog_helper.dart';
 import 'package:warunk/core/widgets/loading_app_widget.dart';
 import 'package:warunk/main.dart';
+import 'package:warunk/app/features/merchant/presentation/maps/merchant_maps_screen.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class MerchantInputAddressScreen extends StatelessWidget {
-  const MerchantInputAddressScreen({super.key});
+  final TextEditingController _provinceCtrl = TextEditingController();
+  final TextEditingController _cityCtrl = TextEditingController();
+  final TextEditingController _districtCtrl = TextEditingController();
+  final TextEditingController _postalCodeCtrl = TextEditingController();
+  final TextEditingController _addressCtrl = TextEditingController();
+
+  MerchantInputAddressScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) =>
           sl<MerchantInputAddressBloc>()..add(MerchantInputAddressEventGet()),
-      child: BlocConsumer<MerchantInputAddressBloc, MerchantInputAddressState>(
-        listener: (context, state) {
-          if (state.errorMessage != null) {
-            DialogHelper.showErrorSnackBar(
-              context: context,
-              text: state.errorMessage!,
-            );
-          }
-          if (state.isSuccess) {
-            DialogHelper.showBottomSheetDialog(
-              context: context,
-              title: "Success",
-              content: Column(
-                children: [
-                  const Text("Alamat toko berhasil disimpan"),
-                  const SizedBox(height: 24),
-                  SizedBox(
-                    width: double.infinity,
-                    height: 52,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        navigatorKey.currentState?.pop(); // close bottom sheet
-                        navigatorKey.currentState?.pop(); // close screen
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: GlobalHelper.getColorSchema(
-                          context,
-                        ).primary,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(14),
-                        ),
-                        elevation: 0,
-                      ),
-                      child: Text(
-                        "Tutup",
-                        style:
-                            GlobalHelper.getTextTheme(
-                              context,
-                              appTextStyle: AppTextStyle.TITLE_SMALL,
-                            )?.copyWith(
-                              fontWeight: FontWeight.w700,
-                              color: Colors.white,
-                            ),
-                      ),
+      child: MultiBlocListener(
+        listeners: [
+          BlocListener<MerchantInputAddressBloc, MerchantInputAddressState>(
+            listenWhen: (previous, current) =>
+                !previous.isInitialLoaded &&
+                current.isInitialLoaded &&
+                current.latitude == 0.0 &&
+                current.longitude == 0.0,
+            listener: (context, state) {
+              WidgetsBinding.instance.addPostFrameCallback((_) async {
+                final result = await navigatorKey.currentState?.push(
+                  MaterialPageRoute(
+                    builder: (context) => MerchantMapsScreen(
+                      initialLatitude: state.latitude,
+                      initialLongitude: state.longitude,
                     ),
                   ),
-                ],
-              ),
+                );
+
+                if (result != null && result is LatLng && context.mounted) {
+                  context.read<MerchantInputAddressBloc>().add(
+                    MerchantInputAddressEventLocationChanged(
+                      result.longitude,
+                      result.latitude,
+                    ),
+                  );
+                } else if (context.mounted) {
+                  navigatorKey.currentState?.pop();
+                }
+              });
+            },
+          ),
+          BlocListener<MerchantInputAddressBloc, MerchantInputAddressState>(
+            listener: (context, state) {
+              if (_provinceCtrl.text != state.province)
+                _provinceCtrl.text = state.province;
+              if (_cityCtrl.text != state.city) _cityCtrl.text = state.city;
+              if (_districtCtrl.text != state.district)
+                _districtCtrl.text = state.district;
+              if (_postalCodeCtrl.text != state.postalCode)
+                _postalCodeCtrl.text = state.postalCode;
+              if (_addressCtrl.text != state.address)
+                _addressCtrl.text = state.address;
+
+              if (state.errorMessage != null) {
+                DialogHelper.showErrorSnackBar(
+                  context: context,
+                  text: state.errorMessage!,
+                );
+              }
+              if (state.isSuccess) {
+                DialogHelper.showBottomSheetDialog(
+                  context: context,
+                  title: "Success",
+                  content: Column(
+                    children: [
+                      const Text("Alamat toko berhasil disimpan"),
+                      const SizedBox(height: 24),
+                      SizedBox(
+                        width: double.infinity,
+                        height: 52,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            navigatorKey.currentState
+                                ?.pop(); // close bottom sheet
+                            navigatorKey.currentState?.pop(); // close screen
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: GlobalHelper.getColorSchema(
+                              context,
+                            ).primary,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(14),
+                            ),
+                            elevation: 0,
+                          ),
+                          child: Text(
+                            "Kembali",
+                            style:
+                                GlobalHelper.getTextTheme(
+                                  context,
+                                  appTextStyle: AppTextStyle.TITLE_SMALL,
+                                )?.copyWith(
+                                  fontWeight: FontWeight.w700,
+                                  color: Colors.white,
+                                ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              }
+            },
+          ),
+        ],
+        child: BlocBuilder<MerchantInputAddressBloc, MerchantInputAddressState>(
+          builder: (context, state) {
+            return Scaffold(
+              appBar: _buildAppBar(context),
+              body: _bodyBuild(context),
             );
-          }
-        },
-        builder: (context, state) {
-          return Scaffold(
-            appBar: _buildAppBar(context),
-            body: _bodyBuild(context),
-          );
-        },
+          },
+        ),
       ),
     );
   }
@@ -103,11 +158,39 @@ class MerchantInputAddressScreen extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SizedBox(height: 8),
+          _fieldLabel(context, 'Titik Lokasi'),
+          const SizedBox(height: 8),
+          _MapLocationPicker(
+            latitude: state.latitude,
+            longitude: state.longitude,
+            onTap: () async {
+              final result = await Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => MerchantMapsScreen(
+                    initialLatitude: state.latitude,
+                    initialLongitude: state.longitude,
+                  ),
+                ),
+              );
+
+              if (result != null && result is LatLng && context.mounted) {
+                context.read<MerchantInputAddressBloc>().add(
+                  MerchantInputAddressEventLocationChanged(
+                    result.longitude,
+                    result.latitude,
+                  ),
+                );
+              }
+            },
+          ),
+          const SizedBox(height: 20),
           _fieldLabel(context, 'Provinsi'),
+
           const SizedBox(height: 8),
           _editField(
             context: context,
-            initialValue: state.province,
+            controller: _provinceCtrl,
             hintText: '',
             keyboardType: TextInputType.text,
             onChanged: (v) => context.read<MerchantInputAddressBloc>().add(
@@ -120,7 +203,7 @@ class MerchantInputAddressScreen extends StatelessWidget {
           const SizedBox(height: 8),
           _editField(
             context: context,
-            initialValue: state.city,
+            controller: _cityCtrl,
             hintText: '',
             keyboardType: TextInputType.text,
             onChanged: (v) => context.read<MerchantInputAddressBloc>().add(
@@ -133,7 +216,7 @@ class MerchantInputAddressScreen extends StatelessWidget {
           const SizedBox(height: 8),
           _editField(
             context: context,
-            initialValue: state.district,
+            controller: _districtCtrl,
             hintText: '',
             keyboardType: TextInputType.text,
             onChanged: (v) => context.read<MerchantInputAddressBloc>().add(
@@ -146,7 +229,7 @@ class MerchantInputAddressScreen extends StatelessWidget {
           const SizedBox(height: 8),
           _editField(
             context: context,
-            initialValue: state.postalCode,
+            controller: _postalCodeCtrl,
             hintText: '',
             keyboardType: TextInputType.number,
             inputFormatters: [FilteringTextInputFormatter.digitsOnly],
@@ -160,33 +243,13 @@ class MerchantInputAddressScreen extends StatelessWidget {
           const SizedBox(height: 8),
           _editField(
             context: context,
-            initialValue: state.address,
+            controller: _addressCtrl,
             hintText: '',
             keyboardType: TextInputType.text,
             maxLines: 3,
             onChanged: (v) => context.read<MerchantInputAddressBloc>().add(
               MerchantInputAddressEventAddressChanged(v),
             ),
-          ),
-
-          const SizedBox(height: 20),
-          _fieldLabel(context, 'Titik Lokasi'),
-          const SizedBox(height: 8),
-          _MapLocationPicker(
-            latitude: state.latitude,
-            longitude: state.longitude,
-            onTap: () {
-              // Simulate map picking for now based on user cURL
-              context.read<MerchantInputAddressBloc>().add(
-                MerchantInputAddressEventLocationChanged(106.799286, -6.244669),
-              );
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: const Text('Lokasi terpilih (Mock)'),
-                  backgroundColor: GlobalHelper.getColorSchema(context).primary,
-                ),
-              );
-            },
           ),
 
           const SizedBox(height: 32),
@@ -214,7 +277,7 @@ class MerchantInputAddressScreen extends StatelessWidget {
 
   Widget _editField({
     required BuildContext context,
-    required String initialValue,
+    required TextEditingController controller,
     required String hintText,
     required TextInputType keyboardType,
     required ValueChanged<String> onChanged,
@@ -234,7 +297,7 @@ class MerchantInputAddressScreen extends StatelessWidget {
         border: Border.all(color: colorSchema.outlineVariant),
       ),
       child: TextFormField(
-        initialValue: initialValue,
+        controller: controller,
         keyboardType: keyboardType,
         inputFormatters: inputFormatters,
         onChanged: onChanged,
@@ -305,139 +368,96 @@ class _MapLocationPicker extends StatelessWidget {
     final colorSchema = GlobalHelper.getColorSchema(context);
     final isLocationSet = latitude != 0.0 && longitude != 0.0;
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        GestureDetector(
-          onTap: onTap,
-          child: Container(
-            height: 120,
-            decoration: BoxDecoration(
-              color: colorSchema.surfaceContainerHighest,
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: colorSchema.outlineVariant),
-            ),
-            child: Stack(
-              children: [
-                Positioned.fill(
-                  child: CustomPaint(painter: _MapLinesPainter()),
-                ),
-                Center(
-                  child: Icon(
-                    Icons.location_on,
-                    color: colorSchema.primary,
-                    size: 36,
-                  ),
-                ),
-                Positioned(
-                  bottom: 0,
-                  left: 0,
-                  right: 0,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(vertical: 8),
-                    decoration: BoxDecoration(
-                      color: colorSchema.surface.withValues(alpha: 0.9),
-                      borderRadius: const BorderRadius.only(
-                        bottomLeft: Radius.circular(12),
-                        bottomRight: Radius.circular(12),
-                      ),
-                      border: Border(
-                        top: BorderSide(color: colorSchema.outlineVariant),
-                      ),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.location_on_outlined,
-                          size: 16,
-                          color: colorSchema.primary,
-                        ),
-                        const SizedBox(width: 4),
-                        Text(
-                          'Ambil Lokasi',
-                          style: TextStyle(
-                            fontSize: 13,
-                            fontWeight: FontWeight.bold,
-                            color: colorSchema.primary,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        height: 120,
+        decoration: BoxDecoration(
+          color: colorSchema.surfaceContainerHighest,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: colorSchema.outlineVariant),
         ),
-        if (isLocationSet) ...[
-          const SizedBox(height: 8),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            decoration: BoxDecoration(
-              color: colorSchema.surface,
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: colorSchema.outlineVariant),
+        clipBehavior: Clip.hardEdge,
+        child: Stack(
+          children: [
+            Positioned.fill(
+              child: IgnorePointer(
+                child: GoogleMap(
+                  key: ValueKey('map_${latitude}_$longitude'),
+                  mapType: MapType.normal,
+                  initialCameraPosition: CameraPosition(
+                    target: isLocationSet
+                        ? LatLng(latitude, longitude)
+                        : const LatLng(-6.200000, 106.816666),
+                    zoom: isLocationSet ? 15.0 : 4.0,
+                  ),
+                  zoomControlsEnabled: false,
+                  scrollGesturesEnabled: false,
+                  zoomGesturesEnabled: false,
+                  tiltGesturesEnabled: false,
+                  rotateGesturesEnabled: false,
+                  myLocationButtonEnabled: false,
+                  compassEnabled: false,
+                  mapToolbarEnabled: false,
+                  markers: isLocationSet
+                      ? {
+                          Marker(
+                            markerId: const MarkerId('merchant_location'),
+                            position: LatLng(latitude, longitude),
+                          ),
+                        }
+                      : {},
+                ),
+              ),
             ),
-            child: Row(
-              children: [
-                Icon(Icons.map_outlined, size: 20, color: colorSchema.primary),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Koordinat Tersimpan',
-                        style: GlobalHelper.getTextTheme(
-                          context,
-                          appTextStyle: AppTextStyle.LABEL_SMALL,
-                        )?.copyWith(color: colorSchema.onSurfaceVariant),
-                      ),
-                      const SizedBox(height: 2),
-                      Text(
-                        '$latitude, $longitude',
-                        style:
-                            GlobalHelper.getTextTheme(
-                              context,
-                              appTextStyle: AppTextStyle.BODY_SMALL,
-                            )?.copyWith(
-                              color: colorSchema.onSurface,
-                              fontWeight: FontWeight.w600,
-                            ),
-                      ),
-                    ],
+            if (!isLocationSet)
+              Center(
+                child: Icon(
+                  Icons.location_on,
+                  color: colorSchema.primary,
+                  size: 36,
+                ),
+              ),
+            Positioned(
+              bottom: 0,
+              left: 0,
+              right: 0,
+              child: Container(
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                decoration: BoxDecoration(
+                  color: colorSchema.surface.withValues(alpha: 0.9),
+                  borderRadius: const BorderRadius.only(
+                    bottomLeft: Radius.circular(12),
+                    bottomRight: Radius.circular(12),
+                  ),
+                  border: Border(
+                    top: BorderSide(color: colorSchema.outlineVariant),
                   ),
                 ),
-              ],
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.location_on_outlined,
+                      size: 16,
+                      color: colorSchema.primary,
+                    ),
+                    const SizedBox(width: 4),
+                    Text(
+                      isLocationSet ? 'Ubah Lokasi' : 'Ambil Lokasi',
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.bold,
+                        color: colorSchema.primary,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
-          ),
-        ],
-      ],
+          ],
+        ),
+      ),
     );
   }
-}
-
-class _MapLinesPainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = Colors.white
-      ..strokeWidth = 6
-      ..style = PaintingStyle.stroke;
-
-    canvas.drawLine(
-      Offset(0, size.height * 0.3),
-      Offset(size.width, size.height * 0.7),
-      paint,
-    );
-    canvas.drawLine(
-      Offset(size.width * 0.3, 0),
-      Offset(size.width * 0.7, size.height),
-      paint,
-    );
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }

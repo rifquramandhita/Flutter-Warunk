@@ -73,7 +73,7 @@ class MerchantInputAddressState extends Equatable {
       longitude: longitude ?? this.longitude,
       latitude: latitude ?? this.latitude,
       isLoading: isLoading ?? this.isLoading,
-      isSuccess: isSuccess ?? this.isSuccess,
+      isSuccess: isSuccess ?? false,
       isInitialLoaded: isInitialLoaded ?? this.isInitialLoaded,
       errorMessage: errorMessage,
     );
