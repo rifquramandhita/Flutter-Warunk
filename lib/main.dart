@@ -1,3 +1,7 @@
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -8,7 +12,9 @@ import 'package:warunk/app/features/merchant/presentation/shell/merchant_shell_s
 import 'package:warunk/core/bloc/auth/auth_bloc.dart';
 import 'package:warunk/core/dependency/dependency.dart';
 import 'package:warunk/core/helper/global_helper.dart';
+import 'package:warunk/core/service/notification_service.dart';
 import 'package:warunk/core/widgets/loading_app_widget.dart';
+import 'package:warunk/firebase_options.dart';
 import 'package:warunk/theme/app_theme.dart';
 
 bool isProduction = false;
@@ -16,6 +22,21 @@ final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+  await NotificationService.init();
+
+  if (!kDebugMode) {
+    FlutterError.onError = (errorDetails) {
+      FirebaseCrashlytics.instance.recordFlutterFatalError(errorDetails);
+    };
+    // Pass all uncaught asynchronous errors that aren't handled by the Flutter framework to Crashlytics
+    PlatformDispatcher.instance.onError = (error, stack) {
+      FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+      return true;
+    };
+  }
+
   await initializeDateFormatting('id', null);
   await initDependency();
   isProduction = await GlobalHelper.isProduction();
@@ -45,7 +66,7 @@ class WarunkApp extends StatelessWidget {
               return const Scaffold(body: LoadingAppWidget());
             }
             return state.isAuthenticated
-                ? const MerchantShellScreen()
+                ? const CustomerShellScreen()
                 : const AuthLoginScreen();
           },
         ),
