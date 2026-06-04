@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:warunk/app/features/merchant/domain/entity/merchant_product_category.dart';
 import 'package:warunk/app/features/merchant/domain/entity/merchant_product_variant.dart';
 import 'package:warunk/app/features/merchant/presentation/input_product/bloc/merchant_input_product_bloc.dart';
@@ -723,32 +724,49 @@ class _CategoryDropdown extends StatelessWidget {
                 ),
               ),
             )
-          : DropdownButtonHideUnderline(
-              child: DropdownButton<MerchantProductCategoryEntity>(
-                isExpanded: true,
-                value: selected,
-                hint: const Text(
-                  'Pilih kategori produk',
-                  style: TextStyle(fontSize: 14, color: AppColors.greyText),
+          : DropdownSearch<MerchantProductCategoryEntity>(
+              selectedItem: selected,
+              items: (filter, loadProps) => categories,
+              itemAsString: (MerchantProductCategoryEntity? c) => c?.name ?? '',
+              compareFn: (item1, item2) => item1.slug == item2.slug,
+              onSelected: (c) {
+                if (c != null) onChanged(c.slug);
+              },
+              popupProps: PopupProps.menu(
+                showSearchBox: true,
+                searchFieldProps: TextFieldProps(
+                  decoration: InputDecoration(
+                    hintText: 'Cari kategori...',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: const BorderSide(color: AppColors.greyBorder),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: const BorderSide(color: AppColors.primary),
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 8,
+                    ),
+                  ),
                 ),
-                icon: const Icon(
-                  Icons.keyboard_arrow_down_rounded,
-                  color: AppColors.greyText,
+              ),
+              decoratorProps: DropDownDecoratorProps(
+                decoration: InputDecoration(
+                  hintText: 'Pilih kategori produk',
+                  hintStyle: const TextStyle(
+                    fontSize: 14,
+                    color: AppColors.greyText,
+                  ),
+                  border: InputBorder.none,
+                  enabledBorder: InputBorder.none,
+                  focusedBorder: InputBorder.none,
+                  errorBorder: InputBorder.none,
+                  focusedErrorBorder: InputBorder.none,
+                  disabledBorder: InputBorder.none,
+                  contentPadding: const EdgeInsets.symmetric(vertical: 12),
                 ),
-                style: const TextStyle(fontSize: 14, color: AppColors.textDark),
-                dropdownColor: AppColors.white,
-                borderRadius: BorderRadius.circular(12),
-                items: categories
-                    .map(
-                      (c) => DropdownMenuItem<MerchantProductCategoryEntity>(
-                        value: c,
-                        child: Text(c.name),
-                      ),
-                    )
-                    .toList(),
-                onChanged: (c) {
-                  if (c != null) onChanged(c.slug);
-                },
               ),
             ),
     );
