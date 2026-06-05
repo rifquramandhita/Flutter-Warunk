@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:warunk/app/features/merchant/domain/use_case/merchant_location_get_current_use_case.dart';
 
 part 'merchant_maps_event.dart';
@@ -12,6 +13,8 @@ class MerchantMapsBloc extends Bloc<MerchantMapsEvent, MerchantMapsState> {
     on<MerchantMapsEventInit>(_onInit);
     on<MerchantMapsEventLocationChanged>(_onLocationChanged);
     on<MerchantMapsEventGetMyLocation>(_onGetMyLocation);
+    on<MerchantMapsEventSearchLocation>(_onSearchLocation);
+    on<MerchantMapsEventMoveCamera>(_onMoveCamera);
   }
 
   Future<void> _onInit(
@@ -75,5 +78,48 @@ class MerchantMapsBloc extends Bloc<MerchantMapsEvent, MerchantMapsState> {
         errorMessage: result.message,
       ));
     }
+  }
+
+  Future<void> _onSearchLocation(
+    MerchantMapsEventSearchLocation event,
+    Emitter<MerchantMapsState> emit,
+  ) async {
+    if (event.query.trim().isEmpty) return;
+
+    emit(state.copyWith(isSearchingLocation: true));
+
+    try {
+      List<Location> locations = await locationFromAddress(event.query);
+      if (locations.isNotEmpty) {
+        final location = locations.first;
+        emit(state.copyWith(
+          latitude: location.latitude,
+          longitude: location.longitude,
+          moveCameraToCurrentLocation: true,
+          isSearchingLocation: false,
+        ));
+      } else {
+        emit(state.copyWith(
+          errorMessage: 'Lokasi tidak ditemukan',
+          isSearchingLocation: false,
+        ));
+      }
+    } catch (e) {
+      emit(state.copyWith(
+        errorMessage: 'Gagal mencari lokasi',
+        isSearchingLocation: false,
+      ));
+    }
+  }
+
+  void _onMoveCamera(
+    MerchantMapsEventMoveCamera event,
+    Emitter<MerchantMapsState> emit,
+  ) {
+    emit(state.copyWith(
+      latitude: event.latitude,
+      longitude: event.longitude,
+      moveCameraToCurrentLocation: true,
+    ));
   }
 }

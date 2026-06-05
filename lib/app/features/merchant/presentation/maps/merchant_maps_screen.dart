@@ -8,6 +8,7 @@ import 'package:warunk/core/helper/global_helper.dart';
 import 'package:warunk/core/helper/dialog_helper.dart';
 import 'package:warunk/app/features/merchant/presentation/maps/bloc/merchant_maps_bloc.dart';
 import 'package:warunk/main.dart';
+import 'package:dio/dio.dart';
 
 class MerchantMapsScreen extends StatelessWidget {
   final double? initialLatitude;
@@ -75,6 +76,7 @@ class MerchantMapsScreen extends StatelessWidget {
     return Stack(
       children: [
         _mapLayout(context),
+        _searchLayout(context),
         _centerMarkerLayout(context),
         _myLocationButtonLayout(context),
         _bottomPanelLayout(context),
@@ -122,6 +124,150 @@ class MerchantMapsScreen extends StatelessWidget {
           );
         }
       },
+    );
+  }
+
+  Widget _searchLayout(BuildContext context) {
+    final state = context.watch<MerchantMapsBloc>().state;
+    final colorSchema = GlobalHelper.getColorSchema(context);
+
+    return Positioned(
+      top: 16,
+      left: 16,
+      right: 16,
+      child: SafeArea(
+        child: Container(
+          decoration: BoxDecoration(
+            color: colorSchema.surface,
+            borderRadius: BorderRadius.circular(12),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.1),
+                blurRadius: 8,
+                offset: const Offset(0, 2),
+              ),
+            ],
+          ),
+          child: Autocomplete<Map<String, dynamic>>(
+            optionsBuilder: (TextEditingValue textEditingValue) async {
+              if (textEditingValue.text.length < 3) {
+                return const Iterable<Map<String, dynamic>>.empty();
+              }
+              try {
+                final dio = sl<Dio>();
+                final response = await dio.get(
+                  'https://nominatim.openstreetmap.org/search',
+                  queryParameters: {
+                    'q': textEditingValue.text,
+                    'format': 'json',
+                    'addressdetails': 1,
+                    'limit': 5,
+                    'countrycodes': 'id',
+                  },
+                  options: Options(
+                    headers: {'User-Agent': 'warunk_app/1.0'},
+                  ),
+                );
+                if (response.statusCode == 200) {
+                  final List data = response.data;
+                  return data.map((e) => e as Map<String, dynamic>);
+                }
+              } catch (e) {
+                debugPrint(e.toString());
+              }
+              return const Iterable<Map<String, dynamic>>.empty();
+            },
+            displayStringForOption: (option) => option['display_name'] ?? '',
+            onSelected: (option) {
+              final latStr = option['lat'];
+              final lonStr = option['lon'];
+              if (latStr != null && lonStr != null) {
+                final lat = double.tryParse(latStr.toString());
+                final lon = double.tryParse(lonStr.toString());
+                if (lat != null && lon != null) {
+                  context.read<MerchantMapsBloc>().add(
+                    MerchantMapsEventMoveCamera(lat, lon),
+                  );
+                }
+              }
+            },
+            fieldViewBuilder: (context, controller, focusNode, onEditingComplete) {
+              return TextField(
+                controller: controller,
+                focusNode: focusNode,
+                textInputAction: TextInputAction.search,
+                onSubmitted: (value) {
+                  if (value.trim().isNotEmpty) {
+                    context.read<MerchantMapsBloc>().add(
+                      MerchantMapsEventSearchLocation(value),
+                    );
+                  }
+                },
+                decoration: InputDecoration(
+                  hintText: 'Cari lokasi...',
+                  border: InputBorder.none,
+                  prefixIcon: const Icon(Icons.search),
+                  suffixIcon: state.isSearchingLocation
+                      ? const Padding(
+                          padding: EdgeInsets.all(12.0),
+                          child: SizedBox(
+                            width: 16,
+                            height: 16,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          ),
+                        )
+                      : IconButton(
+                          icon: const Icon(Icons.clear, size: 20),
+                          onPressed: () {
+                            controller.clear();
+                          },
+                        ),
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 14,
+                  ),
+                ),
+              );
+            },
+            optionsViewBuilder: (context, onSelected, options) {
+              return Align(
+                alignment: Alignment.topLeft,
+                child: Material(
+                  elevation: 4.0,
+                  borderRadius: BorderRadius.circular(12),
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(
+                      maxHeight: 250,
+                      maxWidth: MediaQuery.of(context).size.width - 32,
+                    ),
+                    child: ListView.separated(
+                      padding: EdgeInsets.zero,
+                      shrinkWrap: true,
+                      itemCount: options.length,
+                      separatorBuilder: (context, index) => const Divider(height: 1),
+                      itemBuilder: (context, index) {
+                        final option = options.elementAt(index);
+                        return ListTile(
+                          leading: const Icon(Icons.location_on_outlined),
+                          title: Text(
+                            option['display_name'] ?? '',
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(fontSize: 14),
+                          ),
+                          onTap: () {
+                            onSelected(option);
+                          },
+                        );
+                      },
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+      ),
     );
   }
 

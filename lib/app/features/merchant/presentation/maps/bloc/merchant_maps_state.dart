@@ -6,6 +6,7 @@ class MerchantMapsState extends Equatable {
   final bool isLoadingLocation;
   final String? errorMessage;
   final bool moveCameraToCurrentLocation;
+  final bool isSearchingLocation;
 
   const MerchantMapsState({
     this.latitude,
@@ -13,6 +14,7 @@ class MerchantMapsState extends Equatable {
     this.isLoadingLocation = true,
     this.errorMessage,
     this.moveCameraToCurrentLocation = false,
+    this.isSearchingLocation = false,
   });
 
   MerchantMapsState copyWith({
@@ -21,6 +23,7 @@ class MerchantMapsState extends Equatable {
     bool? isLoadingLocation,
     String? errorMessage,
     bool? moveCameraToCurrentLocation,
+    bool? isSearchingLocation,
   }) {
     return MerchantMapsState(
       latitude: latitude ?? this.latitude,
@@ -28,6 +31,7 @@ class MerchantMapsState extends Equatable {
       isLoadingLocation: isLoadingLocation ?? this.isLoadingLocation,
       errorMessage: errorMessage, // Do not fallback to this.errorMessage
       moveCameraToCurrentLocation: moveCameraToCurrentLocation ?? false, // Default to false so it only triggers once when true
+      isSearchingLocation: isSearchingLocation ?? this.isSearchingLocation,
     );
   }
 
@@ -38,5 +42,6 @@ class MerchantMapsState extends Equatable {
         isLoadingLocation,
         errorMessage,
         moveCameraToCurrentLocation,
+        isSearchingLocation,
       ];
 }

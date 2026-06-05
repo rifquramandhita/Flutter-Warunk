@@ -31,3 +31,22 @@ class MerchantMapsEventLocationChanged extends MerchantMapsEvent {
 }
 
 class MerchantMapsEventGetMyLocation extends MerchantMapsEvent {}
+
+class MerchantMapsEventSearchLocation extends MerchantMapsEvent {
+  final String query;
+
+  const MerchantMapsEventSearchLocation(this.query);
+
+  @override
+  List<Object?> get props => [query];
+}
+
+class MerchantMapsEventMoveCamera extends MerchantMapsEvent {
+  final double latitude;
+  final double longitude;
+
+  const MerchantMapsEventMoveCamera(this.latitude, this.longitude);
+
+  @override
+  List<Object?> get props => [latitude, longitude];
+}
