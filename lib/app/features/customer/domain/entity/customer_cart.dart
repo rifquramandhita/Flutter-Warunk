@@ -12,7 +12,7 @@ sealed class CustomerCart with _$CustomerCart {
     required String id,
     required int userId,
     required String productId,
-    required String productVariantId,
+    String? productVariantId,
     required int quantity,
     String? notes,
     required int unitPrice,

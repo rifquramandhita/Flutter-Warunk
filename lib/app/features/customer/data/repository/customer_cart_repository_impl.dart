@@ -1,5 +1,6 @@
 import 'package:warunk/app/features/customer/data/source/customer_cart_api_service.dart';
 import 'package:warunk/app/features/customer/domain/entity/customer_cart_add_param.dart';
+import 'package:warunk/app/features/customer/domain/entity/customer_cart_update_param.dart';
 import 'package:warunk/app/features/customer/domain/entity/customer_cart.dart';
 import 'package:warunk/app/features/customer/domain/repository/customer_cart_repository.dart';
 import 'package:warunk/core/network/data_state.dart';
@@ -15,6 +16,22 @@ class CustomerCartRepositoryImpl implements CustomerCartRepository {
   Future<DataState<dynamic>> addCart(CustomerCartAddParam param) {
     return handleResponse(
       () => _apiService.addCart(param.toJson()),
+      (json) => json,
+    );
+  }
+
+  @override
+  Future<DataState<dynamic>> deleteCart(String cartId) {
+    return handleResponse(
+      () => _apiService.deleteCart(cartId),
+      (json) => json,
+    );
+  }
+
+  @override
+  Future<DataState<dynamic>> updateCart(CustomerCartUpdateParam param) {
+    return handleResponse(
+      () => _apiService.updateCart(param.cartId, param.toJson()),
       (json) => json,
     );
   }

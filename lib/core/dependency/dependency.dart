@@ -103,6 +103,8 @@ import 'package:warunk/app/features/customer/domain/repository/customer_cart_rep
 import 'package:warunk/app/features/customer/data/repository/customer_cart_repository_impl.dart';
 import 'package:warunk/app/features/customer/domain/use_case/customer_cart_add_use_case.dart';
 import 'package:warunk/app/features/customer/domain/use_case/customer_cart_get_use_case.dart';
+import 'package:warunk/app/features/customer/domain/use_case/customer_cart_delete_use_case.dart';
+import 'package:warunk/app/features/customer/domain/use_case/customer_cart_update_use_case.dart';
 import 'package:warunk/app/features/customer/presentation/cart/bloc/customer_cart_bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:warunk/core/network/app_interceptor.dart';
@@ -248,6 +250,8 @@ Future<void> initDependency() async {
   );
   sl.registerLazySingleton(() => CustomerCartAddUseCase(repository: sl()));
   sl.registerLazySingleton(() => CustomerCartGetUseCase(repository: sl()));
+  sl.registerLazySingleton(() => CustomerCartDeleteUseCase(sl()));
+  sl.registerLazySingleton(() => CustomerCartUpdateUseCase(sl()));
 
   //bloc
   sl.registerLazySingleton(() => AuthBloc());
@@ -272,7 +276,13 @@ Future<void> initDependency() async {
       deleteUseCase: sl(),
     ),
   );
-  sl.registerFactory(() => CustomerCartBloc(getUseCase: sl()));
+  sl.registerFactory(
+    () => CustomerCartBloc(
+      getUseCase: sl(),
+      updateUseCase: sl(),
+      deleteUseCase: sl(),
+    ),
+  );
   sl.registerFactory(() => CustomerProfilBloc());
   sl.registerFactory(() => CustomerEditProfilBloc(updateUseCase: sl()));
   sl.registerFactory(

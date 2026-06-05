@@ -22,7 +22,7 @@ CustomerCart _$CustomerCartFromJson(
 /// @nodoc
 mixin _$CustomerCart {
 
- String get id; int get userId; String get productId; String get productVariantId; int get quantity; String? get notes; int get unitPrice; int get subtotal; CustomerProductEntity? get product; CustomerProductVariantEntity? get productVariant; String? get createdAt; String? get updatedAt;
+ String get id; int get userId; String get productId; String? get productVariantId; int get quantity; String? get notes; int get unitPrice; int get subtotal; CustomerProductEntity? get product; CustomerProductVariantEntity? get productVariant; String? get createdAt; String? get updatedAt;
 /// Create a copy of CustomerCart
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -55,7 +55,7 @@ abstract mixin class $CustomerCartCopyWith<$Res>  {
   factory $CustomerCartCopyWith(CustomerCart value, $Res Function(CustomerCart) _then) = _$CustomerCartCopyWithImpl;
 @useResult
 $Res call({
- String id, int userId, String productId, String productVariantId, int quantity, String? notes, int unitPrice, int subtotal, CustomerProductEntity? product, CustomerProductVariantEntity? productVariant, String? createdAt, String? updatedAt
+ String id, int userId, String productId, String? productVariantId, int quantity, String? notes, int unitPrice, int subtotal, CustomerProductEntity? product, CustomerProductVariantEntity? productVariant, String? createdAt, String? updatedAt
 });
 
 
@@ -72,13 +72,13 @@ class _$CustomerCartCopyWithImpl<$Res>
 
 /// Create a copy of CustomerCart
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? userId = null,Object? productId = null,Object? productVariantId = null,Object? quantity = null,Object? notes = freezed,Object? unitPrice = null,Object? subtotal = null,Object? product = freezed,Object? productVariant = freezed,Object? createdAt = freezed,Object? updatedAt = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? userId = null,Object? productId = null,Object? productVariantId = freezed,Object? quantity = null,Object? notes = freezed,Object? unitPrice = null,Object? subtotal = null,Object? product = freezed,Object? productVariant = freezed,Object? createdAt = freezed,Object? updatedAt = freezed,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,userId: null == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
 as int,productId: null == productId ? _self.productId : productId // ignore: cast_nullable_to_non_nullable
-as String,productVariantId: null == productVariantId ? _self.productVariantId : productVariantId // ignore: cast_nullable_to_non_nullable
-as String,quantity: null == quantity ? _self.quantity : quantity // ignore: cast_nullable_to_non_nullable
+as String,productVariantId: freezed == productVariantId ? _self.productVariantId : productVariantId // ignore: cast_nullable_to_non_nullable
+as String?,quantity: null == quantity ? _self.quantity : quantity // ignore: cast_nullable_to_non_nullable
 as int,notes: freezed == notes ? _self.notes : notes // ignore: cast_nullable_to_non_nullable
 as String?,unitPrice: null == unitPrice ? _self.unitPrice : unitPrice // ignore: cast_nullable_to_non_nullable
 as int,subtotal: null == subtotal ? _self.subtotal : subtotal // ignore: cast_nullable_to_non_nullable
@@ -168,7 +168,7 @@ return entity(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String id,  int userId,  String productId,  String productVariantId,  int quantity,  String? notes,  int unitPrice,  int subtotal,  CustomerProductEntity? product,  CustomerProductVariantEntity? productVariant,  String? createdAt,  String? updatedAt)?  entity,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String id,  int userId,  String productId,  String? productVariantId,  int quantity,  String? notes,  int unitPrice,  int subtotal,  CustomerProductEntity? product,  CustomerProductVariantEntity? productVariant,  String? createdAt,  String? updatedAt)?  entity,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case CustomerCartEntity() when entity != null:
 return entity(_that.id,_that.userId,_that.productId,_that.productVariantId,_that.quantity,_that.notes,_that.unitPrice,_that.subtotal,_that.product,_that.productVariant,_that.createdAt,_that.updatedAt);case _:
@@ -189,7 +189,7 @@ return entity(_that.id,_that.userId,_that.productId,_that.productVariantId,_that
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String id,  int userId,  String productId,  String productVariantId,  int quantity,  String? notes,  int unitPrice,  int subtotal,  CustomerProductEntity? product,  CustomerProductVariantEntity? productVariant,  String? createdAt,  String? updatedAt)  entity,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String id,  int userId,  String productId,  String? productVariantId,  int quantity,  String? notes,  int unitPrice,  int subtotal,  CustomerProductEntity? product,  CustomerProductVariantEntity? productVariant,  String? createdAt,  String? updatedAt)  entity,}) {final _that = this;
 switch (_that) {
 case CustomerCartEntity():
 return entity(_that.id,_that.userId,_that.productId,_that.productVariantId,_that.quantity,_that.notes,_that.unitPrice,_that.subtotal,_that.product,_that.productVariant,_that.createdAt,_that.updatedAt);}
@@ -206,7 +206,7 @@ return entity(_that.id,_that.userId,_that.productId,_that.productVariantId,_that
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String id,  int userId,  String productId,  String productVariantId,  int quantity,  String? notes,  int unitPrice,  int subtotal,  CustomerProductEntity? product,  CustomerProductVariantEntity? productVariant,  String? createdAt,  String? updatedAt)?  entity,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String id,  int userId,  String productId,  String? productVariantId,  int quantity,  String? notes,  int unitPrice,  int subtotal,  CustomerProductEntity? product,  CustomerProductVariantEntity? productVariant,  String? createdAt,  String? updatedAt)?  entity,}) {final _that = this;
 switch (_that) {
 case CustomerCartEntity() when entity != null:
 return entity(_that.id,_that.userId,_that.productId,_that.productVariantId,_that.quantity,_that.notes,_that.unitPrice,_that.subtotal,_that.product,_that.productVariant,_that.createdAt,_that.updatedAt);case _:
@@ -221,13 +221,13 @@ return entity(_that.id,_that.userId,_that.productId,_that.productVariantId,_that
 
 @JsonSerializable(fieldRename: FieldRename.snake, includeIfNull: false)
 class CustomerCartEntity implements CustomerCart {
-  const CustomerCartEntity({required this.id, required this.userId, required this.productId, required this.productVariantId, required this.quantity, this.notes, required this.unitPrice, required this.subtotal, this.product, this.productVariant, this.createdAt, this.updatedAt});
+  const CustomerCartEntity({required this.id, required this.userId, required this.productId, this.productVariantId, required this.quantity, this.notes, required this.unitPrice, required this.subtotal, this.product, this.productVariant, this.createdAt, this.updatedAt});
   factory CustomerCartEntity.fromJson(Map<String, dynamic> json) => _$CustomerCartEntityFromJson(json);
 
 @override final  String id;
 @override final  int userId;
 @override final  String productId;
-@override final  String productVariantId;
+@override final  String? productVariantId;
 @override final  int quantity;
 @override final  String? notes;
 @override final  int unitPrice;
@@ -270,7 +270,7 @@ abstract mixin class $CustomerCartEntityCopyWith<$Res> implements $CustomerCartC
   factory $CustomerCartEntityCopyWith(CustomerCartEntity value, $Res Function(CustomerCartEntity) _then) = _$CustomerCartEntityCopyWithImpl;
 @override @useResult
 $Res call({
- String id, int userId, String productId, String productVariantId, int quantity, String? notes, int unitPrice, int subtotal, CustomerProductEntity? product, CustomerProductVariantEntity? productVariant, String? createdAt, String? updatedAt
+ String id, int userId, String productId, String? productVariantId, int quantity, String? notes, int unitPrice, int subtotal, CustomerProductEntity? product, CustomerProductVariantEntity? productVariant, String? createdAt, String? updatedAt
 });
 
 
@@ -287,13 +287,13 @@ class _$CustomerCartEntityCopyWithImpl<$Res>
 
 /// Create a copy of CustomerCart
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? userId = null,Object? productId = null,Object? productVariantId = null,Object? quantity = null,Object? notes = freezed,Object? unitPrice = null,Object? subtotal = null,Object? product = freezed,Object? productVariant = freezed,Object? createdAt = freezed,Object? updatedAt = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? userId = null,Object? productId = null,Object? productVariantId = freezed,Object? quantity = null,Object? notes = freezed,Object? unitPrice = null,Object? subtotal = null,Object? product = freezed,Object? productVariant = freezed,Object? createdAt = freezed,Object? updatedAt = freezed,}) {
   return _then(CustomerCartEntity(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,userId: null == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
 as int,productId: null == productId ? _self.productId : productId // ignore: cast_nullable_to_non_nullable
-as String,productVariantId: null == productVariantId ? _self.productVariantId : productVariantId // ignore: cast_nullable_to_non_nullable
-as String,quantity: null == quantity ? _self.quantity : quantity // ignore: cast_nullable_to_non_nullable
+as String,productVariantId: freezed == productVariantId ? _self.productVariantId : productVariantId // ignore: cast_nullable_to_non_nullable
+as String?,quantity: null == quantity ? _self.quantity : quantity // ignore: cast_nullable_to_non_nullable
 as int,notes: freezed == notes ? _self.notes : notes // ignore: cast_nullable_to_non_nullable
 as String?,unitPrice: null == unitPrice ? _self.unitPrice : unitPrice // ignore: cast_nullable_to_non_nullable
 as int,subtotal: null == subtotal ? _self.subtotal : subtotal // ignore: cast_nullable_to_non_nullable

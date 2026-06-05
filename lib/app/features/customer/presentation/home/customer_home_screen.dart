@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:warunk/app/features/customer/presentation/home/bloc/customer_home_bloc.dart';
-import 'package:warunk/app/features/customer/presentation/notification/customer_notification_screen.dart';
+import 'package:warunk/app/features/customer/presentation/cart/customer_cart_screen.dart';
+import 'package:warunk/main.dart';
 import 'package:warunk/app/features/customer/presentation/search/customer_search_screen.dart';
 import 'package:warunk/theme/app_colors.dart';
 
@@ -70,7 +71,7 @@ class _HomeHeader extends StatelessWidget {
           const SizedBox(width: 12),
           _LocationChip(),
           const SizedBox(width: 8),
-          const _NotificationBell(),
+          const _CartButton(),
         ],
       ),
     );
@@ -137,14 +138,14 @@ class _LocationChip extends StatelessWidget {
   }
 }
 
-class _NotificationBell extends StatelessWidget {
-  const _NotificationBell();
+class _CartButton extends StatelessWidget {
+  const _CartButton();
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => Navigator.of(context).push(
-        MaterialPageRoute(builder: (_) => const CustomerNotificationScreen()),
+      onTap: () => navigatorKey.currentState?.push(
+        MaterialPageRoute(builder: (_) => const CustomerCartScreen()),
       ),
       child: Stack(
         children: [
@@ -157,7 +158,7 @@ class _NotificationBell extends StatelessWidget {
               border: Border.all(color: AppColors.greyBorder),
             ),
             child: const Icon(
-              Icons.notifications_outlined,
+              Icons.shopping_cart_outlined,
               color: AppColors.primary,
               size: 20,
             ),
@@ -198,9 +199,9 @@ class _HomeSearchBar extends StatelessWidget {
   const _HomeSearchBar();
 
   void _openSearch(BuildContext context) {
-    Navigator.of(
-      context,
-    ).push(MaterialPageRoute(builder: (_) => const CustomerSearchScreen()));
+    navigatorKey.currentState?.push(
+      MaterialPageRoute(builder: (_) => const CustomerSearchScreen()),
+    );
   }
 
   @override

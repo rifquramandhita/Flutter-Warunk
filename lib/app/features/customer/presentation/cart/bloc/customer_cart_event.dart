@@ -1,38 +1,47 @@
 part of 'customer_cart_bloc.dart';
 
-abstract class CustomerCartEvent extends Equatable {
+sealed class CustomerCartEvent {
   const CustomerCartEvent();
-
-  @override
-  List<Object?> get props => [];
 }
 
-class CustomerCartEventFetch extends CustomerCartEvent {}
+final class CustomerCartEventGet extends CustomerCartEvent {
+  const CustomerCartEventGet();
+}
 
-class CustomerCartEventQtyChanged extends CustomerCartEvent {
+final class CustomerCartEventQtyChanged extends CustomerCartEvent {
   final int index;
   final int delta; // +1 or -1
 
   const CustomerCartEventQtyChanged(this.index, this.delta);
-
-  @override
-  List<Object?> get props => [index, delta];
 }
 
-class CustomerCartEventItemRemoved extends CustomerCartEvent {
+final class CustomerCartEventItemRemoved extends CustomerCartEvent {
   final int index;
 
   const CustomerCartEventItemRemoved(this.index);
-
-  @override
-  List<Object?> get props => [index];
 }
 
-class CustomerCartEventNoteChanged extends CustomerCartEvent {
+final class CustomerCartEventNoteChanged extends CustomerCartEvent {
   final String note;
 
   const CustomerCartEventNoteChanged(this.note);
+}
 
-  @override
-  List<Object?> get props => [note];
+final class CustomerCartEventMerchantToggled extends CustomerCartEvent {
+  final String merchantId;
+  final bool isSelected;
+
+  const CustomerCartEventMerchantToggled(this.merchantId, this.isSelected);
+}
+
+final class CustomerCartEventItemToggled extends CustomerCartEvent {
+  final String itemId;
+  final String merchantId;
+  final bool isSelected;
+
+  const CustomerCartEventItemToggled(
+    this.itemId,
+    this.merchantId,
+    this.isSelected,
+  );
 }

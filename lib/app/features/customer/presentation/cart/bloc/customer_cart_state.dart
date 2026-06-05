@@ -5,14 +5,19 @@ class CustomerCartState extends Equatable {
   final String? errorMessage;
   final List<CustomerCartEntity> items;
   final String note;
+  final String? selectedMerchantId;
+  final Set<String> selectedItemIds;
 
   static const int serviceFee = 2000;
   static const int ongkir = 8000;
   static const int diskon = 8000;
 
-  int get subtotal => items.fold(0, (s, i) => s + (i.unitPrice * i.quantity));
-  int get itemCount => items.fold(0, (s, i) => s + i.quantity);
-  int get total => subtotal + serviceFee + ongkir - diskon;
+  List<CustomerCartEntity> get selectedItems =>
+      items.where((i) => i.product?.merchant?.id == selectedMerchantId && selectedItemIds.contains(i.id)).toList();
+
+  int get subtotal => selectedItems.fold(0, (s, i) => s + (i.unitPrice * i.quantity));
+  int get itemCount => selectedItems.fold(0, (s, i) => s + i.quantity);
+  int get total => selectedItems.isEmpty ? 0 : subtotal + serviceFee + ongkir - diskon;
 
   Map<String, List<MapEntry<int, CustomerCartEntity>>>
   get groupedItemsWithIndex {
@@ -30,6 +35,8 @@ class CustomerCartState extends Equatable {
     this.errorMessage,
     required this.items,
     this.note = '',
+    this.selectedMerchantId,
+    this.selectedItemIds = const {},
   });
 
   CustomerCartState copyWith({
@@ -37,13 +44,17 @@ class CustomerCartState extends Equatable {
     String? errorMessage,
     List<CustomerCartEntity>? items,
     String? note,
+    String? selectedMerchantId,
+    Set<String>? selectedItemIds,
   }) => CustomerCartState(
     isLoading: isLoading ?? this.isLoading,
     errorMessage: errorMessage,
     items: items ?? this.items,
     note: note ?? this.note,
+    selectedMerchantId: selectedMerchantId,
+    selectedItemIds: selectedItemIds ?? this.selectedItemIds,
   );
 
   @override
-  List<Object?> get props => [isLoading, errorMessage, items, note];
+  List<Object?> get props => [isLoading, errorMessage, items, note, selectedMerchantId, selectedItemIds];
 }

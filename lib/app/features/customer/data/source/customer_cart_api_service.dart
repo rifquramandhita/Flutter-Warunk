@@ -12,4 +12,13 @@ abstract class CustomerCartApiService {
 
   @POST('/api/carts')
   Future<HttpResponse<dynamic>> addCart(@Body() Map<String, dynamic> body);
+
+  @DELETE('/api/carts/{cart}')
+  Future<HttpResponse<dynamic>> deleteCart(@Path('cart') String cartId);
+
+  @PATCH('/api/carts/{cart}')
+  Future<HttpResponse<dynamic>> updateCart(
+    @Path('cart') String cartId,
+    @Body() Map<String, dynamic> body,
+  );
 }
