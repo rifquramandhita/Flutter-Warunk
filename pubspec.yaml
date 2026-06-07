@@ -58,6 +58,8 @@ dependencies:
   geocoding: ^4.0.0
   geolocator: ^14.0.2
   url_launcher: ^6.3.2
+  device_info_plus: ^12.4.0
+  firebase_app_installations: ^0.4.2+3
 
 dev_dependencies:
   flutter_test:
