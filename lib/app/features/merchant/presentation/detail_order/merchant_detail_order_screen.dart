@@ -12,6 +12,7 @@ import 'package:warunk/core/helper/global_helper.dart';
 import 'package:warunk/core/widgets/custom_dotted_divider.dart';
 import 'package:warunk/core/helper/number_helper.dart';
 import 'package:warunk/core/widgets/primary_button.dart';
+import 'package:warunk/app/features/customer/domain/entity/delivery_method.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Entry point
@@ -64,6 +65,9 @@ class MerchantDetailOrderScreen extends StatelessWidget {
 
     if (order == null) return const SizedBox();
 
+    final deliveryMethod = DeliveryMethod.fromString(order.type ?? order.shipping?.type);
+    final isPickup = deliveryMethod == DeliveryMethod.pickup;
+
     return Column(
       children: [
         Expanded(
@@ -74,11 +78,15 @@ class MerchantDetailOrderScreen extends StatelessWidget {
               children: [
                 _headerCard(context, order),
                 const SizedBox(height: 16),
-                _customerCard(context, order),
-                const SizedBox(height: 16),
                 _productCard(context, order),
                 const SizedBox(height: 16),
                 _paymentCard(context, order),
+                if (!isPickup) ...[
+                  const SizedBox(height: 16),
+                  _shippingCard(context, order),
+                  const SizedBox(height: 16),
+                  _addressCard(context, order),
+                ],
                 const SizedBox(height: 16),
                 _catatanCard(context, order),
               ],
@@ -411,8 +419,12 @@ class MerchantDetailOrderScreen extends StatelessWidget {
           _buildInfoRow(
             context,
             'Metode Pengiriman',
-            order.shipping?.courier ?? order.shipping?.type ?? 'Toko',
+            _getDeliveryMethodLabel(order),
           ),
+          const SizedBox(height: 8),
+          _buildInfoRow(context, 'Customer', order.customer?.name ?? ''),
+          const SizedBox(height: 8),
+          _buildInfoRow(context, 'Nomor HP', order.customer?.phone ?? ''),
           const SizedBox(height: 8),
           _buildInfoRow(context, 'Dibayar', formattedPaidAt),
         ],
@@ -467,7 +479,90 @@ class MerchantDetailOrderScreen extends StatelessWidget {
     }
   }
 
-  Widget _customerCard(BuildContext context, MerchantOrderEntity order) {
+  String _getDeliveryMethodLabel(MerchantOrderEntity order) {
+    final deliveryMethod = DeliveryMethod.fromString(order.type ?? order.shipping?.type);
+    return deliveryMethod?.label ?? order.type ?? order.shipping?.type ?? '-';
+  }
+
+  Widget _shippingCard(BuildContext context, MerchantOrderEntity order) {
+    final shipping = order.shipping;
+    if (shipping == null) return const SizedBox.shrink();
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+      decoration: BoxDecoration(
+        color: GlobalHelper.getColorSchema(context).surface,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Pengiriman',
+            style:
+                GlobalHelper.getTextTheme(
+                  context,
+                  appTextStyle: AppTextStyle.BODY_MEDIUM,
+                )?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: GlobalHelper.getColorSchema(context).onSurface,
+                ),
+          ),
+          const SizedBox(height: 16),
+          Divider(
+            height: 1,
+            color: GlobalHelper.getColorSchema(
+              context,
+            ).outlineVariant.withValues(alpha: 0.5),
+          ),
+          const SizedBox(height: 16),
+          _buildInfoRow(context, 'Kurir', shipping.courier ?? '-'),
+          const SizedBox(height: 8),
+          _buildInfoRow(context, 'Layanan', shipping.service ?? '-'),
+          const SizedBox(height: 8),
+          _buildInfoRow(context, 'Resi', shipping.trackingNumber ?? '-'),
+          const SizedBox(height: 8),
+          _buildInfoRow(
+            context,
+            'Order ID Biteship',
+            shipping.biteshipOrderId ?? '-',
+          ),
+          const SizedBox(height: 8),
+          _buildInfoRow(context, 'No HP Kurir', shipping.driverPhone ?? '-'),
+          const SizedBox(height: 8),
+          _buildInfoRow(
+            context,
+            'No Kendaraan',
+            shipping.driverVehicleNumber ?? '-',
+          ),
+          const SizedBox(height: 8),
+          _buildInfoRow(
+            context,
+            'Status Pengiriman',
+            _capitalizeFirst(shipping.status ?? '-'),
+          ),
+          const SizedBox(height: 8),
+          _buildInfoRow(context, 'Dikirim', _formatDate(shipping.shippedAt)),
+          const SizedBox(height: 8),
+          _buildInfoRow(context, 'Terkirim', _formatDate(shipping.deliveredAt)),
+        ],
+      ),
+    );
+  }
+
+  String _capitalizeFirst(String text) {
+    if (text.isEmpty || text == '-') return text;
+    return text[0].toUpperCase() + text.substring(1);
+  }
+
+  Widget _addressCard(BuildContext context, MerchantOrderEntity order) {
     final address = order.customerAddress;
 
     return Container(
@@ -487,7 +582,7 @@ class MerchantDetailOrderScreen extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Informasi Customer',
+            'Penerima',
             style:
                 GlobalHelper.getTextTheme(
                   context,
@@ -507,15 +602,11 @@ class MerchantDetailOrderScreen extends StatelessWidget {
           const SizedBox(height: 16),
           _buildDetailColumn(
             context,
-            'Nama Customer',
-            address?.recipientName ?? order.customer?.name ?? '-',
+            'Nama penerima',
+            address?.recipientName ?? '-',
           ),
           const SizedBox(height: 12),
-          _buildDetailColumn(
-            context,
-            'Nomor HP',
-            address?.phone ?? order.customer?.phone ?? '-',
-          ),
+          _buildDetailColumn(context, 'Nomor HP', address?.phone ?? '-'),
           const SizedBox(height: 12),
           _buildDetailColumn(context, 'Label Alamat', address?.label ?? '-'),
           const SizedBox(height: 12),
