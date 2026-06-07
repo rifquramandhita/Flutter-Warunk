@@ -348,7 +348,9 @@ class CustomerCartScreen extends StatelessWidget {
                       : () {
                           navigatorKey.currentState?.push(
                             MaterialPageRoute(
-                              builder: (_) => const CustomerCheckoutScreen(),
+                              builder: (_) => CustomerCheckoutScreen(
+                                selectedItems: state.selectedItems,
+                              ),
                             ),
                           );
                         },

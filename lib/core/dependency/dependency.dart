@@ -11,6 +11,7 @@ import 'package:warunk/app/features/customer/presentation/edit_profil/bloc/custo
 import 'package:warunk/app/features/customer/data/repository/customer_product_repository_impl.dart';
 import 'package:warunk/app/features/customer/data/source/customer_product_api_service.dart';
 import 'package:warunk/app/features/customer/domain/repository/customer_product_repository.dart';
+import 'package:warunk/app/features/customer/domain/use_case/customer_checkout_get_shipping_option_use_case.dart';
 import 'package:warunk/app/features/customer/domain/use_case/customer_product_get_by_merchant_use_case.dart';
 import 'package:warunk/app/features/merchant/domain/repository/merchant_location_repository.dart';
 import 'package:warunk/app/features/merchant/data/repository/merchant_location_repository_impl.dart';
@@ -90,6 +91,7 @@ import 'package:warunk/app/features/customer/data/source/customer_address_api_se
 import 'package:warunk/app/features/customer/domain/repository/customer_address_repository.dart';
 import 'package:warunk/app/features/customer/data/repository/customer_address_repository_impl.dart';
 import 'package:warunk/app/features/customer/domain/use_case/customer_address_get_use_case.dart';
+import 'package:warunk/app/features/customer/domain/use_case/customer_address_get_default_use_case.dart';
 import 'package:warunk/app/features/customer/domain/use_case/customer_address_send_use_case.dart';
 import 'package:warunk/app/features/customer/domain/use_case/customer_address_get_by_id_use_case.dart';
 import 'package:warunk/app/features/customer/domain/use_case/customer_address_set_default_use_case.dart';
@@ -106,9 +108,15 @@ import 'package:warunk/app/features/customer/domain/use_case/customer_cart_get_u
 import 'package:warunk/app/features/customer/domain/use_case/customer_cart_delete_use_case.dart';
 import 'package:warunk/app/features/customer/domain/use_case/customer_cart_update_use_case.dart';
 import 'package:warunk/app/features/customer/presentation/cart/bloc/customer_cart_bloc.dart';
+import 'package:warunk/app/features/customer/presentation/checkout/bloc/customer_checkout_bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:warunk/core/network/app_interceptor.dart';
 import 'package:warunk/main.dart';
+import 'package:warunk/app/features/customer/data/source/customer_order_api_service.dart';
+import 'package:warunk/app/features/customer/domain/repository/customer_order_repository.dart';
+import 'package:warunk/app/features/customer/data/repository/customer_order_repository_impl.dart';
+import 'package:warunk/app/features/customer/domain/use_case/customer_checkout_get_option_use_case.dart';
+import 'package:warunk/app/features/customer/domain/use_case/customer_order_create_use_case.dart';
 
 final sl = GetIt.instance;
 
@@ -140,6 +148,7 @@ Future<void> initDependency() async {
   sl.registerLazySingleton(() => CustomerMerchantApiService(dio));
   sl.registerLazySingleton(() => CustomerProductApiService(dio));
   sl.registerLazySingleton(() => CustomerCartApiService(dio));
+  sl.registerLazySingleton(() => CustomerOrderApiService(dio));
 
   //repository
   sl.registerLazySingleton<MerchantLocationRepository>(
@@ -172,6 +181,9 @@ Future<void> initDependency() async {
   );
   sl.registerLazySingleton<CustomerCartRepository>(
     () => CustomerCartRepositoryImpl(apiService: sl()),
+  );
+  sl.registerLazySingleton<CustomerOrderRepository>(
+    () => CustomerOrderRepositoryImpl(apiService: sl()),
   );
 
   //usecase
@@ -231,6 +243,7 @@ Future<void> initDependency() async {
   sl.registerLazySingleton(() => MerchantPromotionDeleteUseCase(sl()));
   sl.registerLazySingleton(() => CustomerProfilUpdateUseCase(repository: sl()));
   sl.registerLazySingleton(() => CustomerAddressGetUseCase(repository: sl()));
+  sl.registerLazySingleton(() => CustomerAddressGetDefaultUseCase(sl()));
   sl.registerLazySingleton(() => CustomerAddressSendUseCase(repository: sl()));
   sl.registerLazySingleton(
     () => CustomerAddressGetByIdUseCase(repository: sl()),
@@ -252,6 +265,9 @@ Future<void> initDependency() async {
   sl.registerLazySingleton(() => CustomerCartGetUseCase(repository: sl()));
   sl.registerLazySingleton(() => CustomerCartDeleteUseCase(sl()));
   sl.registerLazySingleton(() => CustomerCartUpdateUseCase(sl()));
+  sl.registerLazySingleton(() => CustomerCheckoutGetOptionUseCase(repository: sl()));
+  sl.registerLazySingleton(() => CustomerCheckoutGetShippingOptionUseCase(repository: sl()));
+  sl.registerLazySingleton(() => CustomerOrderCreateUseCase(sl()));
 
   //bloc
   sl.registerLazySingleton(() => AuthBloc());
@@ -281,6 +297,14 @@ Future<void> initDependency() async {
       getUseCase: sl(),
       updateUseCase: sl(),
       deleteUseCase: sl(),
+    ),
+  );
+  sl.registerFactory(
+    () => CustomerCheckoutBloc(
+      getDefaultAddressUseCase: sl(),
+      getOptionUseCase: sl(),
+      getShippingOptionUseCase: sl(),
+      createOrderUseCase: sl(),
     ),
   );
   sl.registerFactory(() => CustomerProfilBloc());
