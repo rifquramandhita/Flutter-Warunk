@@ -11,6 +11,11 @@ import 'package:warunk/app/features/customer/presentation/edit_profil/bloc/custo
 import 'package:warunk/app/features/customer/data/repository/customer_product_repository_impl.dart';
 import 'package:warunk/app/features/customer/data/source/customer_product_api_service.dart';
 import 'package:warunk/app/features/customer/domain/repository/customer_product_repository.dart';
+import 'package:warunk/app/features/customer/domain/repository/customer_location_repository.dart';
+import 'package:warunk/app/features/customer/data/repository/customer_location_repository_impl.dart';
+import 'package:warunk/app/features/customer/domain/use_case/customer_location_get_current_use_case.dart';
+import 'package:warunk/app/features/customer/domain/use_case/customer_location_get_placemark_use_case.dart';
+import 'package:warunk/app/features/customer/presentation/address_map/bloc/customer_address_maps_bloc.dart';
 import 'package:warunk/app/features/customer/domain/use_case/customer_checkout_get_shipping_option_use_case.dart';
 import 'package:warunk/app/features/customer/domain/use_case/customer_product_get_by_merchant_use_case.dart';
 import 'package:warunk/app/features/merchant/domain/repository/merchant_location_repository.dart';
@@ -186,6 +191,9 @@ Future<void> initDependency() async {
   sl.registerLazySingleton<CustomerOrderRepository>(
     () => CustomerOrderRepositoryImpl(apiService: sl()),
   );
+  sl.registerLazySingleton<CustomerLocationRepository>(
+    () => CustomerLocationRepositoryImpl(),
+  );
 
   //usecase
   sl.registerLazySingleton(() => MerchantLocationGetCurrentUseCase(sl()));
@@ -272,6 +280,8 @@ Future<void> initDependency() async {
   sl.registerLazySingleton(() => CustomerCheckoutGetOptionUseCase(repository: sl()));
   sl.registerLazySingleton(() => CustomerCheckoutGetShippingOptionUseCase(repository: sl()));
   sl.registerLazySingleton(() => CustomerOrderCreateUseCase(sl()));
+  sl.registerLazySingleton(() => CustomerLocationGetCurrentUseCase(sl()));
+  sl.registerLazySingleton(() => CustomerLocationGetPlacemarkUseCase(sl()));
 
   //bloc
   sl.registerLazySingleton(() => AuthBloc());
@@ -316,7 +326,7 @@ Future<void> initDependency() async {
   sl.registerFactory(
     () => CustomerAddressBloc(getUseCase: sl(), setDefaultUseCase: sl()),
   );
-  sl.registerFactory(() => CustomerInputAddressBloc(sl(), sl()));
+  sl.registerFactory(() => CustomerInputAddressBloc(sl(), sl(), sl()));
   sl.registerFactory(() => CustomerSearchBloc(getMerchantUseCase: sl()));
   sl.registerFactory(
     () => CustomerMerchantBloc(
@@ -366,4 +376,5 @@ Future<void> initDependency() async {
   sl.registerFactoryParam<MerchantShipOrderBloc, String, void>(
     (orderId, _) => MerchantShipOrderBloc(shipUseCase: sl(), orderId: orderId),
   );
+  sl.registerFactory(() => CustomerAddressMapsBloc(sl()));
 }
