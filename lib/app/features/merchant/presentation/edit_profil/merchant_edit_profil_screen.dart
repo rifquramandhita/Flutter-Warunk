@@ -8,6 +8,8 @@ import 'package:warunk/core/helper/global_helper.dart';
 import 'package:warunk/core/widgets/loading_app_widget.dart';
 import 'package:warunk/core/widgets/primary_button.dart';
 import 'package:warunk/main.dart';
+import 'package:dropdown_search/dropdown_search.dart';
+import 'package:warunk/app/features/merchant/domain/entity/merchant_category.dart';
 
 class MerchantEditProfilScreen extends StatelessWidget {
   const MerchantEditProfilScreen({super.key});
@@ -96,13 +98,47 @@ class MerchantEditProfilScreen extends StatelessWidget {
           const SizedBox(height: 20),
           _fieldLabel(context, 'Kategori Toko'),
           const SizedBox(height: 8),
-          _editField(
-            context: context,
-            initialValue: state.merchantCategoryId,
-            hintText: 'Masukkan kategori toko',
-            keyboardType: TextInputType.text,
-            onChanged: (v) => context.read<MerchantEditProfilBloc>().add(
-              MerchantEditProfilEventCategoryChanged(v),
+          DropdownSearch<MerchantCategoryEntity>(
+            selectedItem: state.selectedCategory,
+            items: (filter, loadProps) => state.categories,
+            itemAsString: (MerchantCategoryEntity? u) => u?.name ?? '',
+            compareFn: (item1, item2) => item1.id == item2.id,
+            onSelected: (MerchantCategoryEntity? data) {
+              context.read<MerchantEditProfilBloc>().add(
+                MerchantEditProfilEventCategoryChanged(data),
+              );
+            },
+            decoratorProps: DropDownDecoratorProps(
+              decoration: InputDecoration(
+                hintText: "Pilih kategori toko",
+                contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(color: GlobalHelper.getColorSchema(context).outlineVariant),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(color: GlobalHelper.getColorSchema(context).outlineVariant),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(color: GlobalHelper.getColorSchema(context).primary),
+                ),
+                filled: true,
+                fillColor: GlobalHelper.getColorSchema(context).surface,
+              ),
+            ),
+            popupProps: PopupProps.menu(
+              showSearchBox: true,
+              searchFieldProps: TextFieldProps(
+                decoration: InputDecoration(
+                  hintText: "Cari kategori...",
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                ),
+              ),
             ),
           ),
           const SizedBox(height: 20),

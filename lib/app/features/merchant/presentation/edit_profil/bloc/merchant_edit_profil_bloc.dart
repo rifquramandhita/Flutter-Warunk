@@ -5,7 +5,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:warunk/app/features/merchant/domain/entity/merchant_merchant.dart';
 import 'package:warunk/app/features/merchant/domain/use_case/merchant_merchant_get_use_case.dart';
+import 'package:warunk/app/features/merchant/domain/use_case/merchant_merchant_get_category_use_case.dart';
 import 'package:warunk/app/features/merchant/domain/use_case/merchant_merchant_update_use_case.dart';
+import 'package:warunk/app/features/merchant/domain/entity/merchant_category.dart';
 import 'package:warunk/core/network/data_state.dart';
 
 part 'merchant_edit_profil_event.dart';
@@ -15,12 +17,15 @@ class MerchantEditProfilBloc
     extends Bloc<MerchantEditProfilEvent, MerchantEditProfilState> {
   final MerchantMerchantGetUseCase _getUseCase;
   final MerchantMerchantUpdateUseCase _updateUseCase;
+  final MerchantMerchantGetCategoryUseCase _getCategoryUseCase;
 
   MerchantEditProfilBloc({
     required MerchantMerchantGetUseCase getUseCase,
     required MerchantMerchantUpdateUseCase updateUseCase,
+    required MerchantMerchantGetCategoryUseCase getCategoryUseCase,
   }) : _getUseCase = getUseCase,
        _updateUseCase = updateUseCase,
+       _getCategoryUseCase = getCategoryUseCase,
        super(const MerchantEditProfilState()) {
     on<MerchantEditProfilEventGet>(_onGet);
     on<MerchantEditProfilEventNameChanged>(_onNameChanged);
@@ -37,21 +42,34 @@ class MerchantEditProfilBloc
     emit(state.copyWith(isLoading: true));
 
     final response = await _getUseCase.call();
+    final categoryResponse = await _getCategoryUseCase.call();
+    
+    List<MerchantCategoryEntity> categories = [];
+    if (categoryResponse is SuccessState && categoryResponse.data != null) {
+      categories = categoryResponse.data!;
+    }
 
     if (response is SuccessState) {
       final merchant = response.data;
       if (merchant != null) {
+        MerchantCategoryEntity? selectedCategory;
+        try {
+          selectedCategory = categories.firstWhere((element) => element.id == merchant.merchantCategory || element.name == merchant.merchantCategory);
+        } catch (_) {}
+
         emit(
           state.copyWith(
             name: merchant.name,
             whatsappNumber: merchant.phone ?? '',
             merchantCategoryId: merchant.merchantCategory ?? '',
+            selectedCategory: selectedCategory,
+            categories: categories,
             photoUrl: merchant.photo,
             isInitialLoaded: true,
           ),
         );
       } else {
-        emit(state.copyWith(isInitialLoaded: true));
+        emit(state.copyWith(isInitialLoaded: true, categories: categories));
       }
     } else {
       emit(
@@ -80,7 +98,7 @@ class MerchantEditProfilBloc
     MerchantEditProfilEventCategoryChanged event,
     Emitter<MerchantEditProfilState> emit,
   ) {
-    emit(state.copyWith(merchantCategoryId: event.value));
+    emit(state.copyWith(merchantCategoryId: event.value?.name ?? '', selectedCategory: event.value));
   }
 
   Future<void> _onPhotoPicked(

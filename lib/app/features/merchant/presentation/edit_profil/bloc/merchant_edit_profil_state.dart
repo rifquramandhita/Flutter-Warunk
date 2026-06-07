@@ -4,6 +4,8 @@ class MerchantEditProfilState extends Equatable {
   final String name;
   final String whatsappNumber;
   final String merchantCategoryId;
+  final MerchantCategoryEntity? selectedCategory;
+  final List<MerchantCategoryEntity> categories;
   final File? photoFile;
   final String? photoUrl;
   final bool isLoading;
@@ -15,6 +17,8 @@ class MerchantEditProfilState extends Equatable {
     this.name = '',
     this.whatsappNumber = '',
     this.merchantCategoryId = '',
+    this.selectedCategory,
+    this.categories = const [],
     this.photoFile,
     this.photoUrl,
     this.isLoading = false,
@@ -27,6 +31,8 @@ class MerchantEditProfilState extends Equatable {
     String? name,
     String? whatsappNumber,
     String? merchantCategoryId,
+    MerchantCategoryEntity? selectedCategory,
+    List<MerchantCategoryEntity>? categories,
     File? photoFile,
     String? photoUrl,
     bool? isLoading,
@@ -38,6 +44,8 @@ class MerchantEditProfilState extends Equatable {
       name: name ?? this.name,
       whatsappNumber: whatsappNumber ?? this.whatsappNumber,
       merchantCategoryId: merchantCategoryId ?? this.merchantCategoryId,
+      selectedCategory: selectedCategory ?? this.selectedCategory,
+      categories: categories ?? this.categories,
       photoFile: photoFile ?? this.photoFile,
       photoUrl: photoUrl ?? this.photoUrl,
       isLoading: isLoading ?? this.isLoading,
@@ -52,6 +60,8 @@ class MerchantEditProfilState extends Equatable {
     name,
     whatsappNumber,
     merchantCategoryId,
+    selectedCategory,
+    categories,
     photoFile,
     photoUrl,
     isLoading,

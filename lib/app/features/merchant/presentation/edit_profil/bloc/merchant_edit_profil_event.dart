@@ -15,7 +15,7 @@ class MerchantEditProfilEventWhatsappChanged extends MerchantEditProfilEvent {
 }
 
 class MerchantEditProfilEventCategoryChanged extends MerchantEditProfilEvent {
-  final String value;
+  final MerchantCategoryEntity? value;
   MerchantEditProfilEventCategoryChanged(this.value);
 }
 

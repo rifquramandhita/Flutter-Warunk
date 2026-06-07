@@ -3,6 +3,7 @@ import 'package:warunk/app/features/merchant/domain/entity/merchant_account.dart
 import 'package:warunk/app/features/merchant/domain/entity/merchant_merchant.dart';
 import 'package:warunk/app/features/merchant/domain/entity/merchant_operational_hour.dart';
 import 'package:warunk/app/features/merchant/domain/entity/merchant_shipping.dart';
+import 'package:warunk/app/features/merchant/domain/entity/merchant_category.dart';
 import 'package:warunk/app/features/merchant/domain/repository/merchant_merchant_repository.dart';
 import 'package:warunk/core/network/data_state.dart';
 
@@ -16,6 +17,14 @@ class MerchantMerchantRepositoryImpl implements MerchantMerchantRepository {
   Future<DataState<MerchantMerchantEntity>> get() async {
     return handleResponse(() => _api.get(), (responseData) {
       return MerchantMerchantEntity.fromJson(responseData['merchant']);
+    });
+  }
+
+  @override
+  Future<DataState<List<MerchantCategoryEntity>>> getCategories() async {
+    return handleResponse(() => _api.getCategories(), (responseData) {
+      final List<dynamic> categories = responseData['merchant_categories'];
+      return categories.map((e) => MerchantCategoryEntity.fromJson(e)).toList();
     });
   }
 
