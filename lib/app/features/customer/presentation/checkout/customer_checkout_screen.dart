@@ -363,7 +363,7 @@ class CustomerCheckoutScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       Text(
-                        NumberHelper.formatIDR(item.unitPrice * item.quantity),
+                        NumberHelper.formatIDR(item.unitPrice),
                         style:
                             GlobalHelper.getTextTheme(
                               context,
@@ -377,7 +377,7 @@ class CustomerCheckoutScreen extends StatelessWidget {
                       ),
                       const SizedBox(height: 2),
                       Text(
-                        '${item.quantity}x',
+                        '${item.quantity} x ${NumberHelper.formatIDR(item.unitPrice)}',
                         style:
                             GlobalHelper.getTextTheme(
                               context,
@@ -447,7 +447,7 @@ class CustomerCheckoutScreen extends StatelessWidget {
           final method = opt.key ?? '';
           final deliveryMethodEnum = DeliveryMethod.fromString(method);
           if (deliveryMethodEnum == null) return const SizedBox.shrink();
-          
+
           final selected = state.deliveryMethod == deliveryMethodEnum;
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
