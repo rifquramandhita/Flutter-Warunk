@@ -16,7 +16,14 @@ import 'package:warunk/core/widgets/sticky_bottom_bar.dart';
 import 'package:warunk/main.dart';
 
 class CustomerAddressScreen extends StatelessWidget {
-  const CustomerAddressScreen({super.key});
+  final bool isSelectionMode;
+  final String? selectedAddressId;
+
+  const CustomerAddressScreen({
+    super.key,
+    this.isSelectionMode = false,
+    this.selectedAddressId,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +41,9 @@ class CustomerAddressScreen extends StatelessWidget {
         },
         builder: (context, state) {
           return Scaffold(
-            appBar: AppBar(title: const Text('Alamat Saya')),
+            appBar: AppBar(
+              title: Text(isSelectionMode ? 'Pilih Alamat' : 'Alamat Saya'),
+            ),
             body: _bodyBuild(context),
             floatingActionButton: _fabBuild(context),
           );
@@ -82,7 +91,9 @@ class CustomerAddressScreen extends StatelessWidget {
             children: [
               // ── Address Cards ──────────────────────────────────────────
               ...state.addresses.map((address) {
-                final isSelected = state.selectedAddressId == address.id;
+                final isSelected = isSelectionMode
+                    ? selectedAddressId == address.id
+                    : state.selectedAddressId == address.id;
                 return Padding(
                   padding: const EdgeInsets.only(bottom: 16.0),
                   child: _buildAddressCard(context, address, isSelected),
@@ -116,6 +127,10 @@ class CustomerAddressScreen extends StatelessWidget {
         backgroundColor: isSelected
             ? colorSchema.primary.withValues(alpha: 0.02)
             : colorSchema.surface,
+        border: Border.all(
+          color: isSelected ? colorSchema.primary : Colors.transparent,
+          width: 1.5,
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -140,14 +155,15 @@ class CustomerAddressScreen extends StatelessWidget {
                     children: [
                       Row(
                         children: [
-                          Text(
-                            address.recipientName,
-                            style: GlobalHelper.getTextTheme(
-                              context,
-                              appTextStyle: AppTextStyle.TITLE_MEDIUM,
-                            )?.copyWith(fontWeight: FontWeight.w800),
+                          Expanded(
+                            child: Text(
+                              address.recipientName,
+                              style: GlobalHelper.getTextTheme(
+                                context,
+                                appTextStyle: AppTextStyle.TITLE_MEDIUM,
+                              )?.copyWith(fontWeight: FontWeight.w800),
+                            ),
                           ),
-                          const Spacer(),
                           if (address.isDefault)
                             Container(
                               padding: const EdgeInsets.symmetric(
@@ -172,6 +188,17 @@ class CustomerAddressScreen extends StatelessWidget {
                                     ),
                               ),
                             ),
+                          if (isSelectionMode) ...[
+                            if (address.isDefault) const SizedBox(width: 8),
+                            GestureDetector(
+                              onTap: () => _editAddress(context, address),
+                              child: Icon(
+                                Icons.edit_outlined,
+                                size: 20,
+                                color: colorSchema.primary,
+                              ),
+                            ),
+                          ],
                         ],
                       ),
                       const SizedBox(height: 8),
@@ -222,27 +249,29 @@ class CustomerAddressScreen extends StatelessWidget {
               ],
             ),
 
-            const SizedBox(height: 16),
-            // Dotted Divider
-            // const CustomDottedDivider(),
-            // const SizedBox(height: 16),
+            if (!isSelectionMode) ...[
+              const SizedBox(height: 16),
+              // Dotted Divider
+              const CustomDottedDivider(),
+              const SizedBox(height: 16),
 
-            // // Action Buttons
-            // isSelected
-            //     ? PrimaryButton(
-            //         onPressed: () {},
-            //         icon: Icons.check_circle,
-            //         label: 'Utama',
-            //         height: 40,
-            //       )
-            //     : OutlineButtonCustom(
-            //         onPressed: () => context.read<CustomerAddressBloc>().add(
-            //           CustomerAddressEventSetDefaultAddress(address.id),
-            //         ),
-            //         icon: Icons.check_circle_outline,
-            //         label: 'Jadikan Utama',
-            //         height: 40,
-            //       ),
+              // Action Buttons
+              isSelected
+                  ? PrimaryButton(
+                      onPressed: () {},
+                      icon: Icons.check_circle,
+                      label: 'Utama',
+                      height: 40,
+                    )
+                  : OutlineButtonCustom(
+                      onPressed: () => context.read<CustomerAddressBloc>().add(
+                        CustomerAddressEventSetDefaultAddress(address.id),
+                      ),
+                      icon: Icons.check_circle_outline,
+                      label: 'Jadikan Utama',
+                      height: 40,
+                    ),
+            ],
           ],
         ),
       ),
@@ -250,6 +279,14 @@ class CustomerAddressScreen extends StatelessWidget {
   }
 
   void _onPressItem(BuildContext context, CustomerAddressEntity item) async {
+    if (isSelectionMode) {
+      Navigator.pop(context, item);
+      return;
+    }
+    _editAddress(context, item);
+  }
+
+  void _editAddress(BuildContext context, CustomerAddressEntity item) async {
     final bloc = context.read<CustomerAddressBloc>();
     await navigatorKey.currentState?.push(
       MaterialPageRoute(

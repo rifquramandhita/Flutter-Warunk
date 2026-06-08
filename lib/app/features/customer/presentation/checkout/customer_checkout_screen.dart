@@ -158,7 +158,10 @@ class CustomerCheckoutScreen extends StatelessWidget {
             onTap: () async {
               final newAddress = await navigatorKey.currentState?.push(
                 MaterialPageRoute(
-                  builder: (_) => const CustomerAddressScreen(),
+                  builder: (_) => CustomerAddressScreen(
+                    isSelectionMode: true,
+                    selectedAddressId: state.address?.id,
+                  ),
                 ),
               );
               if (newAddress != null && newAddress is CustomerAddressEntity) {

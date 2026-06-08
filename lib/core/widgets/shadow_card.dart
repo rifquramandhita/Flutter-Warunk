@@ -6,6 +6,7 @@ class ShadowCard extends StatelessWidget {
   final EdgeInsetsGeometry? margin;
   final double borderRadius;
   final Color backgroundColor;
+  final BoxBorder? border;
 
   const ShadowCard({
     super.key,
@@ -14,6 +15,7 @@ class ShadowCard extends StatelessWidget {
     this.margin,
     this.borderRadius = 20.0,
     this.backgroundColor = Colors.white,
+    this.border,
   });
 
   @override
@@ -24,6 +26,7 @@ class ShadowCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: backgroundColor,
         borderRadius: BorderRadius.circular(borderRadius),
+        border: border,
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.03),
