@@ -26,6 +26,52 @@ sealed class CustomerOrder with _$CustomerOrder {
     String? biteshipRateKey,
   }) = CustomerOrderGetPromotionParam;
 
+  @JsonSerializable(fieldRename: FieldRename.snake, includeIfNull: false)
+  const factory CustomerOrder.entity({
+    String? id,
+    String? invoiceNumber,
+    String? invoiceUrl,
+    String? merchantId,
+    int? customerId,
+    String? customerAddressId,
+    String? merchantAccountId,
+    int? subtotal,
+    int? shippingCost,
+    int? serviceFee,
+    String? promotionId,
+    String? promotionCode,
+    String? promotionTitle,
+    String? promotionType,
+    int? promotionDiscount,
+    dynamic promotion,
+    List<dynamic>? promotions,
+    int? total,
+    int? paidAmount,
+    String? paymentProof,
+    String? type,
+    String? status,
+    String? statusLabel,
+    String? notes,
+    String? cancelReason,
+    String? customerBank,
+    String? customerAccountNumber,
+    String? customerAccountName,
+    String? refundProof,
+    dynamic customer,
+    dynamic customerAddress,
+    dynamic merchantAccount,
+    dynamic merchant,
+    List<dynamic>? items,
+    List<dynamic>? reviews,
+    bool? needsReview,
+    dynamic shipping,
+    String? paidAt,
+    String? cancelledAt,
+    String? completedAt,
+    String? createdAt,
+    String? updatedAt,
+  }) = CustomerOrderEntity;
+
   factory CustomerOrder.fromJson(Map<String, dynamic> json) =>
       _$CustomerOrderFromJson(json);
 }

@@ -16,6 +16,7 @@ import 'package:warunk/app/features/customer/data/repository/customer_location_r
 import 'package:warunk/app/features/customer/domain/use_case/customer_location_get_current_use_case.dart';
 import 'package:warunk/app/features/customer/domain/use_case/customer_location_get_placemark_use_case.dart';
 import 'package:warunk/app/features/customer/presentation/address_map/bloc/customer_address_maps_bloc.dart';
+import 'package:warunk/app/features/customer/domain/use_case/customer_order_get_by_id_use_case.dart';
 import 'package:warunk/app/features/customer/domain/use_case/customer_checkout_get_shipping_option_use_case.dart';
 import 'package:warunk/app/features/customer/domain/use_case/customer_product_get_by_merchant_use_case.dart';
 import 'package:warunk/app/features/merchant/domain/repository/merchant_location_repository.dart';
@@ -115,6 +116,8 @@ import 'package:warunk/app/features/customer/domain/use_case/customer_cart_delet
 import 'package:warunk/app/features/customer/domain/use_case/customer_cart_update_use_case.dart';
 import 'package:warunk/app/features/customer/presentation/cart/bloc/customer_cart_bloc.dart';
 import 'package:warunk/app/features/customer/presentation/checkout/bloc/customer_checkout_bloc.dart';
+import 'package:warunk/app/features/customer/presentation/order_success/bloc/customer_order_success_bloc.dart';
+import 'package:warunk/app/features/customer/presentation/promotion/bloc/customer_promotion_bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:warunk/core/network/app_interceptor.dart';
 import 'package:warunk/main.dart';
@@ -124,7 +127,6 @@ import 'package:warunk/app/features/customer/data/repository/customer_order_repo
 import 'package:warunk/app/features/customer/domain/use_case/customer_checkout_get_option_use_case.dart';
 import 'package:warunk/app/features/customer/domain/use_case/customer_order_create_use_case.dart';
 import 'package:warunk/app/features/customer/domain/use_case/customer_order_get_promotion_use_case.dart';
-import 'package:warunk/app/features/customer/presentation/promotion/bloc/customer_promotion_bloc.dart';
 
 final sl = GetIt.instance;
 
@@ -285,6 +287,7 @@ Future<void> initDependency() async {
   sl.registerLazySingleton(() => CustomerLocationGetCurrentUseCase(sl()));
   sl.registerLazySingleton(() => CustomerLocationGetPlacemarkUseCase(sl()));
   sl.registerLazySingleton(() => CustomerOrderGetPromotionUseCase(sl()));
+  sl.registerLazySingleton(() => CustomerOrderGetByIdUseCase(sl()));
 
   //bloc
   sl.registerLazySingleton(() => AuthBloc());
@@ -379,10 +382,9 @@ Future<void> initDependency() async {
   sl.registerFactoryParam<MerchantShipOrderBloc, String, void>(
     (orderId, _) => MerchantShipOrderBloc(shipUseCase: sl(), orderId: orderId),
   );
-  sl.registerFactory(() => CustomerAddressMapsBloc(sl()));
   sl.registerFactory(
-    () => CustomerPromotionBloc(
-      getPromotionUseCase: sl(),
-    ),
+    () => CustomerOrderSuccessBloc(getOrderByIdUseCase: sl()),
   );
+  sl.registerFactory(() => CustomerPromotionBloc(getPromotionUseCase: sl()));
+  sl.registerFactory(() => CustomerAddressMapsBloc(sl()));
 }

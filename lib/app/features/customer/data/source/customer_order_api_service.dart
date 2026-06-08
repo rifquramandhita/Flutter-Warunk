@@ -31,4 +31,7 @@ abstract class CustomerOrderApiService {
     @Part(name: 'promotions[0][id]') String? promotionId,
     @Part(name: 'promotions[0][code]') String? promotionCode,
   );
+
+  @GET('/api/orders/{id}')
+  Future<HttpResponse<dynamic>> getOrderById(@Path('id') String id);
 }

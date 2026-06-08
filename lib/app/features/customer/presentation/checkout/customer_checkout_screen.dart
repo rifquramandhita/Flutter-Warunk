@@ -39,12 +39,11 @@ class CustomerCheckoutScreen extends StatelessWidget {
               text: state.errorMessage!,
             );
           }
-          if (state.isSuccess) {
-            Navigator.of(context).pushAndRemoveUntil(
+          if (state.isSuccess && state.createdOrderId != null) {
+            navigatorKey.currentState?.pushAndRemoveUntil(
               MaterialPageRoute(
-                builder: (_) => CustomerOrderSuccessScreen(
-                  paymentMethod: state.selectedPaymentMethodName ?? '-',
-                ),
+                builder: (_) =>
+                    CustomerOrderSuccessScreen(orderId: state.createdOrderId!),
               ),
               (route) => route.isFirst,
             );

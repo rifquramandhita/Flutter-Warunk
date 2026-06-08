@@ -321,8 +321,12 @@ class CustomerCheckoutBloc
 
     final result = await _createOrderUseCase(params: param);
 
-    if (result.success) {
-      emit(state.copyWith(isLoading: false, isSuccess: true));
+    if (result.success && result.data != null) {
+      emit(state.copyWith(
+        isLoading: false, 
+        isSuccess: true,
+        createdOrderId: result.data,
+      ));
     } else {
       emit(state.copyWith(isLoading: false, errorMessage: result.message));
     }

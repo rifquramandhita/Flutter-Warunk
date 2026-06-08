@@ -13,5 +13,6 @@ abstract class CustomerOrderRepository {
   Future<DataState<List<CustomerPromotionEntity>>> getPromotions(
     CustomerOrderGetPromotionParam param,
   );
-  Future<DataState> createOrder(CustomerOrderCreateParam param);
+  Future<DataState<String>> createOrder(CustomerOrderCreateParam param);
+  Future<DataState<CustomerOrderEntity>> getOrderById(String id);
 }

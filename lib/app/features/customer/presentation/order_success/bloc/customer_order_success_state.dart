@@ -1,25 +1,26 @@
 import 'package:equatable/equatable.dart';
+import 'package:warunk/app/features/customer/domain/entity/customer_order.dart';
 
 class CustomerOrderSuccessState extends Equatable {
   final bool isLoading;
   final String? errorMessage;
-  final String orderId;
+  final CustomerOrderEntity? order;
 
   const CustomerOrderSuccessState({
     this.isLoading = false,
     this.errorMessage,
-    this.orderId = '#WRK-240128-018',
+    this.order,
   });
 
   CustomerOrderSuccessState copyWith({
     bool? isLoading,
     String? errorMessage,
-    String? orderId,
+    CustomerOrderEntity? order,
   }) {
     return CustomerOrderSuccessState(
       isLoading: isLoading ?? this.isLoading,
       errorMessage: errorMessage,
-      orderId: orderId ?? this.orderId,
+      order: order ?? this.order,
     );
   }
 
@@ -27,6 +28,6 @@ class CustomerOrderSuccessState extends Equatable {
   List<Object?> get props => [
     isLoading,
     errorMessage,
-    orderId,
+    order,
   ];
 }

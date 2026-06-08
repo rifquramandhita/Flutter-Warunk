@@ -1,677 +1,323 @@
-import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:warunk/app/features/customer/presentation/order_success/bloc/customer_order_success_bloc.dart';
 import 'package:warunk/app/features/customer/presentation/order_success/bloc/customer_order_success_event.dart';
 import 'package:warunk/app/features/customer/presentation/order_success/bloc/customer_order_success_state.dart';
-import 'package:warunk/theme/app_colors.dart';
+import 'package:warunk/core/dependency/dependency.dart';
+import 'package:warunk/core/helper/dialog_helper.dart';
+import 'package:warunk/core/helper/global_helper.dart';
+import 'package:warunk/core/widgets/primary_button.dart';
+import 'package:warunk/core/widgets/outline_button_custom.dart';
 
 class CustomerOrderSuccessScreen extends StatelessWidget {
-  final String paymentMethod;
-  const CustomerOrderSuccessScreen({super.key, required this.paymentMethod});
+  final String orderId;
+
+  const CustomerOrderSuccessScreen({super.key, required this.orderId});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) =>
-          CustomerOrderSuccessBloc()..add(CustomerLoadOrderSuccessData()),
-      child: _OrderSuccessView(paymentMethod: paymentMethod),
+      create: (context) => sl<CustomerOrderSuccessBloc>()
+        ..add(CustomerLoadOrderSuccessData(orderId)),
+      child: BlocConsumer<CustomerOrderSuccessBloc, CustomerOrderSuccessState>(
+        listener: (context, state) {
+          if (state.errorMessage != null) {
+            DialogHelper.showErrorSnackBar(
+                context: context, text: state.errorMessage!);
+          }
+        },
+        builder: (context, state) {
+          return Scaffold(
+            backgroundColor: GlobalHelper.getColorSchema(context).surface,
+            body: SafeArea(
+              child: _bodyBuild(context),
+            ),
+          );
+        },
+      ),
     );
   }
-}
 
-class _OrderSuccessView extends StatefulWidget {
-  final String paymentMethod;
-  const _OrderSuccessView({required this.paymentMethod});
+  Widget _bodyBuild(BuildContext context) {
+    final state = context.watch<CustomerOrderSuccessBloc>().state;
 
-  @override
-  State<_OrderSuccessView> createState() => _OrderSuccessViewState();
-}
+    if (state.isLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
 
-class _OrderSuccessViewState extends State<_OrderSuccessView>
-    with TickerProviderStateMixin {
-  late final AnimationController _checkCtrl;
-  late final AnimationController _confettiCtrl;
-  late final Animation<double> _checkScale;
-  late final Animation<double> _checkFade;
-  late final Animation<double> _contentFade;
-  late final Animation<Offset> _contentSlide;
-
-  static const _relatedProducts = [
-    (
-      'Indomie Goreng',
-      'Rp3.500',
-      Icons.ramen_dining_rounded,
-      Color(0xFFFFF8E1),
-      true,
-    ),
-    (
-      'Teh Botol',
-      'Rp4.500',
-      Icons.local_drink_rounded,
-      Color(0xFFFFE0E0),
-      false,
-    ),
-  ];
-
-  @override
-  void initState() {
-    super.initState();
-    _checkCtrl = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 700),
+    return Stack(
+      children: [
+        _bodyLayout(context),
+      ],
     );
-    _confettiCtrl = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 3),
-    )..repeat();
-    _checkScale = CurvedAnimation(parent: _checkCtrl, curve: Curves.elasticOut);
-    _checkFade = Tween<double>(
-      begin: 0,
-      end: 1,
-    ).animate(CurvedAnimation(parent: _checkCtrl, curve: Curves.easeIn));
-    _contentFade = Tween<double>(begin: 0, end: 1).animate(
-      CurvedAnimation(parent: _checkCtrl, curve: const Interval(0.5, 1.0)),
-    );
-    _contentSlide = Tween<Offset>(begin: const Offset(0, 0.2), end: Offset.zero)
-        .animate(
-          CurvedAnimation(
-            parent: _checkCtrl,
-            curve: const Interval(0.5, 1.0, curve: Curves.easeOut),
+  }
+
+  Widget _bodyLayout(BuildContext context) {
+    final state = context.watch<CustomerOrderSuccessBloc>().state;
+    final order = state.order;
+
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          const SizedBox(height: 40),
+          _successIcon(context),
+          const SizedBox(height: 32),
+          Text(
+            'Pesanan Berhasil!',
+            style: GlobalHelper.getTextTheme(
+              context,
+              appTextStyle: AppTextStyle.HEADLINE_SMALL,
+            )?.copyWith(
+              fontWeight: FontWeight.w800,
+              color: GlobalHelper.getColorSchema(context).primary,
+            ),
           ),
-        );
-    _checkCtrl.forward();
-  }
-
-  @override
-  void dispose() {
-    _checkCtrl.dispose();
-    _confettiCtrl.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.background,
-      body: SafeArea(
-        child: BlocBuilder<CustomerOrderSuccessBloc, CustomerOrderSuccessState>(
-          builder: (context, state) {
-            return SingleChildScrollView(
-              child: Column(
-                children: [
-                  const SizedBox(height: 40),
-
-                  // ── Confetti + checkmark ────────────────────────────────────
-                  SizedBox(
-                    height: 180,
-                    child: Stack(
-                      alignment: Alignment.center,
-                      children: [
-                        AnimatedBuilder(
-                          animation: _confettiCtrl,
-                          builder: (context, child) => CustomPaint(
-                            size: const Size(280, 180),
-                            painter: _ConfettiPainter(_confettiCtrl.value),
-                          ),
-                        ),
-                        FadeTransition(
-                          opacity: _checkFade,
-                          child: ScaleTransition(
-                            scale: _checkScale,
-                            child: Container(
-                              width: 96,
-                              height: 96,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                gradient: const LinearGradient(
-                                  begin: Alignment.topLeft,
-                                  end: Alignment.bottomRight,
-                                  colors: [
-                                    Color(0xFF52B788),
-                                    Color(0xFF2D6A4F),
-                                  ],
-                                ),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: AppColors.primary.withValues(
-                                      alpha: 0.4,
-                                    ),
-                                    blurRadius: 24,
-                                    offset: const Offset(0, 8),
-                                  ),
-                                ],
-                              ),
-                              child: const Icon(
-                                Icons.check_rounded,
-                                color: Colors.white,
-                                size: 48,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
+          const SizedBox(height: 8),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 40),
+            child: Text(
+              'Pesananmu sudah diterima merchant dan sedang diproses.',
+              textAlign: TextAlign.center,
+              style: GlobalHelper.getTextTheme(
+                context,
+                appTextStyle: AppTextStyle.BODY_LARGE,
+              )?.copyWith(
+                color: GlobalHelper.getColorSchema(context).onSurface.withValues(alpha: 0.5),
+              ),
+            ),
+          ),
+          const SizedBox(height: 40),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            child: Container(
+              decoration: BoxDecoration(
+                color: GlobalHelper.getColorSchema(context).surface,
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: GlobalHelper.getColorSchema(context).outline.withValues(alpha: 0.2)),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.03),
+                    blurRadius: 20,
+                    offset: const Offset(0, 10),
                   ),
-
-                  // ── Title ───────────────────────────────────────────────────
-                  SlideTransition(
-                    position: _contentSlide,
-                    child: FadeTransition(
-                      opacity: _contentFade,
-                      child: const Column(
-                        children: [
-                          Text(
-                            'Pesanan Berhasil!',
-                            style: TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.w900,
-                              color: AppColors.primary,
-                            ),
-                          ),
-                          SizedBox(height: 8),
-                          Text(
-                            'Pesananmu sudah diterima merchant\ndan sedang diproses.',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: AppColors.greyText,
-                              height: 1.5,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-
-                  // ── Order detail card ───────────────────────────────────────
-                  SlideTransition(
-                    position: _contentSlide,
-                    child: FadeTransition(
-                      opacity: _contentFade,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: AppColors.white,
-                            borderRadius: BorderRadius.circular(16),
-                            border: Border.all(color: AppColors.greyBorder),
-                          ),
-                          child: Column(
-                            children: [
-                              _detailRow(
-                                Icons.receipt_long_rounded,
-                                'No. Pesanan',
-                                trailing: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Text(
-                                      state.orderId,
-                                      style: const TextStyle(
-                                        fontSize: 13,
-                                        fontWeight: FontWeight.w700,
-                                        color: AppColors.textDark,
-                                      ),
-                                    ),
-                                    const SizedBox(width: 6),
-                                    GestureDetector(
-                                      onTap: () => Clipboard.setData(
-                                        ClipboardData(text: state.orderId),
-                                      ),
-                                      child: const Icon(
-                                        Icons.copy_rounded,
-                                        size: 16,
-                                        color: AppColors.greyText,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              const Divider(
-                                height: 1,
-                                color: AppColors.greyBorder,
-                                indent: 16,
-                                endIndent: 16,
-                              ),
-                              _detailRow(
-                                Icons.storefront_rounded,
-                                'Merchant',
-                                trailing: const Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Text(
-                                      'Warung Madura Cahaya',
-                                      style: TextStyle(
-                                        fontSize: 13,
-                                        fontWeight: FontWeight.w600,
-                                        color: AppColors.textDark,
-                                      ),
-                                    ),
-                                    Icon(
-                                      Icons.chevron_right_rounded,
-                                      size: 16,
-                                      color: AppColors.greyText,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              const Divider(
-                                height: 1,
-                                color: AppColors.greyBorder,
-                                indent: 16,
-                                endIndent: 16,
-                              ),
-                              _detailRow(
-                                Icons.delivery_dining_rounded,
-                                'Estimasi antar',
-                                trailing: const Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Text(
-                                      '10–20 menit',
-                                      style: TextStyle(
-                                        fontSize: 13,
-                                        fontWeight: FontWeight.w600,
-                                        color: AppColors.textDark,
-                                      ),
-                                    ),
-                                    Icon(
-                                      Icons.chevron_right_rounded,
-                                      size: 16,
-                                      color: AppColors.greyText,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              const Divider(
-                                height: 1,
-                                color: AppColors.greyBorder,
-                              ),
-                              _detailRow(
-                                Icons.local_offer_rounded,
-                                'Total bayar',
-                                trailing: const Text(
-                                  'Rp20.000',
-                                  style: TextStyle(
-                                    fontSize: 13,
-                                    fontWeight: FontWeight.w700,
-                                    color: AppColors.textDark,
-                                  ),
-                                ),
-                              ),
-                              const Divider(
-                                height: 1,
-                                color: AppColors.greyBorder,
-                                indent: 16,
-                                endIndent: 16,
-                              ),
-                              _detailRow(
-                                Icons.credit_card_rounded,
-                                'Metode bayar',
-                                trailing: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Text(
-                                      widget.paymentMethod,
-                                      style: const TextStyle(
-                                        fontSize: 13,
-                                        fontWeight: FontWeight.w600,
-                                        color: AppColors.textDark,
-                                      ),
-                                    ),
-                                    const SizedBox(width: 6),
-                                    Container(
-                                      width: 28,
-                                      height: 20,
-                                      decoration: BoxDecoration(
-                                        color: const Color(0xFF005BAC),
-                                        borderRadius: BorderRadius.circular(4),
-                                      ),
-                                      child: const Center(
-                                        child: Text(
-                                          'BCA',
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 9,
-                                            fontWeight: FontWeight.w900,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              const Divider(
-                                height: 1,
-                                color: AppColors.greyBorder,
-                                indent: 16,
-                                endIndent: 16,
-                              ),
-                              _detailRow(
-                                Icons.access_time_rounded,
-                                'Status',
-                                trailing: Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 10,
-                                    vertical: 4,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: AppColors.primary.withValues(
-                                      alpha: 0.1,
-                                    ),
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  child: const Text(
-                                    'Diproses',
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w700,
-                                      color: AppColors.primary,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-
-                  // ── Action buttons ──────────────────────────────────────────
-                  SlideTransition(
-                    position: _contentSlide,
-                    child: FadeTransition(
-                      opacity: _contentFade,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        child: Column(
-                          children: [
-                            SizedBox(
-                              width: double.infinity,
-                              height: 50,
-                              child: ElevatedButton.icon(
-                                onPressed: () {},
-                                icon: const Icon(
-                                  Icons.location_on_outlined,
-                                  size: 20,
-                                ),
-                                label: const Text(
-                                  'Lacak Pesanan',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.w700,
-                                    fontSize: 15,
-                                  ),
-                                ),
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: AppColors.primary,
-                                  foregroundColor: Colors.white,
-                                  elevation: 0,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(14),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(height: 10),
-                            SizedBox(
-                              width: double.infinity,
-                              height: 50,
-                              child: OutlinedButton.icon(
-                                onPressed: () => Navigator.of(
-                                  context,
-                                ).popUntil((r) => r.isFirst),
-                                icon: const Icon(
-                                  Icons.home_outlined,
-                                  size: 20,
-                                  color: AppColors.primary,
-                                ),
-                                label: const Text(
-                                  'Kembali ke Home',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.w700,
-                                    fontSize: 15,
-                                    color: AppColors.primary,
-                                  ),
-                                ),
-                                style: OutlinedButton.styleFrom(
-                                  side: const BorderSide(
-                                    color: AppColors.primary,
-                                    width: 1.5,
-                                  ),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(14),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-
-                  // ── Reorder section ─────────────────────────────────────────
-                  SlideTransition(
-                    position: _contentSlide,
-                    child: FadeTransition(
-                      opacity: _contentFade,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                const Text(
-                                  'Beli lagi dari Warung Madura Cahaya',
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w700,
-                                    color: AppColors.textDark,
-                                  ),
-                                ),
-                                const Spacer(),
-                                GestureDetector(
-                                  onTap: () {},
-                                  child: const Row(
-                                    children: [
-                                      Text(
-                                        'Lihat semua',
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                          color: AppColors.primary,
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                      ),
-                                      Icon(
-                                        Icons.chevron_right_rounded,
-                                        size: 14,
-                                        color: AppColors.primary,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 12),
-                            SizedBox(
-                              height: 160,
-                              child: ListView.separated(
-                                scrollDirection: Axis.horizontal,
-                                itemCount: _relatedProducts.length,
-                                separatorBuilder: (context, index) =>
-                                    const SizedBox(width: 12),
-                                itemBuilder: (_, i) {
-                                  final (
-                                    name,
-                                    price,
-                                    icon,
-                                    color,
-                                    isBestSeller,
-                                  ) = _relatedProducts[i];
-                                  return Container(
-                                    width: 130,
-                                    decoration: BoxDecoration(
-                                      color: AppColors.white,
-                                      borderRadius: BorderRadius.circular(14),
-                                      border: Border.all(
-                                        color: AppColors.greyBorder,
-                                      ),
-                                    ),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Expanded(
-                                          child: Container(
-                                            width: double.infinity,
-                                            decoration: BoxDecoration(
-                                              color: color,
-                                              borderRadius:
-                                                  const BorderRadius.vertical(
-                                                    top: Radius.circular(13),
-                                                  ),
-                                            ),
-                                            child: Center(
-                                              child: Icon(
-                                                icon,
-                                                size: 46,
-                                                color: AppColors.primaryLight,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.all(8),
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                name,
-                                                style: const TextStyle(
-                                                  fontSize: 12,
-                                                  fontWeight: FontWeight.w700,
-                                                  color: AppColors.textDark,
-                                                ),
-                                              ),
-                                              if (isBestSeller)
-                                                Row(
-                                                  children: const [
-                                                    Icon(
-                                                      Icons.star_rounded,
-                                                      size: 11,
-                                                      color: Color(0xFFFBBC05),
-                                                    ),
-                                                    SizedBox(width: 3),
-                                                    Text(
-                                                      'Best Seller',
-                                                      style: TextStyle(
-                                                        fontSize: 10,
-                                                        color: Color(
-                                                          0xFFF59E0B,
-                                                        ),
-                                                        fontWeight:
-                                                            FontWeight.w600,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              const SizedBox(height: 4),
-                                              Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                children: [
-                                                  Text(
-                                                    price,
-                                                    style: const TextStyle(
-                                                      fontSize: 12,
-                                                      fontWeight:
-                                                          FontWeight.w700,
-                                                      color: AppColors.primary,
-                                                    ),
-                                                  ),
-                                                  Container(
-                                                    width: 22,
-                                                    height: 22,
-                                                    decoration: BoxDecoration(
-                                                      color: AppColors.primary,
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                            6,
-                                                          ),
-                                                    ),
-                                                    child: const Icon(
-                                                      Icons.add,
-                                                      color: Colors.white,
-                                                      size: 14,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  );
-                                },
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-
-                  // ── Footer ──────────────────────────────────────────────────
-                  FadeTransition(
-                    opacity: _contentFade,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: const [
-                        Icon(
-                          Icons.verified_user_outlined,
-                          size: 14,
-                          color: AppColors.primary,
-                        ),
-                        SizedBox(width: 6),
-                        Text(
-                          'Belanja aman & nyaman hanya di ',
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: AppColors.greyText,
-                          ),
-                        ),
-                        Text(
-                          'WARRUNK',
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w900,
-                            color: AppColors.primary,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 32),
                 ],
               ),
-            );
-          },
+              child: Column(
+                children: [
+                  _detailRow(
+                    context,
+                    Icons.receipt_long_rounded,
+                    'No. Pesanan',
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Flexible(
+                          child: Text(
+                            order?.invoiceNumber ?? orderId,
+                            style: GlobalHelper.getTextTheme(
+                              context,
+                              appTextStyle: AppTextStyle.BODY_MEDIUM,
+                            )?.copyWith(
+                              fontWeight: FontWeight.w700,
+                              color: GlobalHelper.getColorSchema(context).onSurface,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        const SizedBox(width: 6),
+                        GestureDetector(
+                          onTap: () => Clipboard.setData(
+                            ClipboardData(text: order?.invoiceNumber ?? orderId),
+                          ),
+                          child: Icon(
+                            Icons.copy_rounded,
+                            size: 16,
+                            color: GlobalHelper.getColorSchema(context).onSurface.withValues(alpha: 0.5),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  _divider(context),
+                  _detailRow(
+                    context,
+                    Icons.storefront_rounded,
+                    'Merchant',
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Flexible(
+                          child: Text(
+                            order?.merchant?['name'] ?? '-',
+                            style: GlobalHelper.getTextTheme(
+                              context,
+                              appTextStyle: AppTextStyle.BODY_MEDIUM,
+                            )?.copyWith(
+                              fontWeight: FontWeight.w600,
+                              color: GlobalHelper.getColorSchema(context).onSurface,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        Icon(
+                          Icons.chevron_right_rounded,
+                          size: 16,
+                          color: GlobalHelper.getColorSchema(context).onSurface.withValues(alpha: 0.5),
+                        ),
+                      ],
+                    ),
+                  ),
+                  _divider(context),
+                  _detailRow(
+                    context,
+                    Icons.local_shipping_rounded,
+                    'Estimasi antar',
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          '10–20 menit',
+                          style: GlobalHelper.getTextTheme(
+                            context,
+                            appTextStyle: AppTextStyle.BODY_MEDIUM,
+                          )?.copyWith(
+                            fontWeight: FontWeight.w700,
+                            color: GlobalHelper.getColorSchema(context).onSurface,
+                          ),
+                        ),
+                        Icon(
+                          Icons.chevron_right_rounded,
+                          size: 16,
+                          color: GlobalHelper.getColorSchema(context).onSurface.withValues(alpha: 0.5),
+                        ),
+                      ],
+                    ),
+                  ),
+                  _divider(context),
+                  _detailRow(
+                    context,
+                    Icons.local_offer_rounded,
+                    'Total bayar',
+                    trailing: Text(
+                      'Rp${order?.total ?? 0}',
+                      style: GlobalHelper.getTextTheme(
+                        context,
+                        appTextStyle: AppTextStyle.BODY_MEDIUM,
+                      )?.copyWith(
+                        fontWeight: FontWeight.w700,
+                        color: GlobalHelper.getColorSchema(context).onSurface,
+                      ),
+                    ),
+                  ),
+                  _divider(context),
+                  _detailRow(
+                    context,
+                    Icons.payment_rounded,
+                    'Metode bayar',
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Flexible(
+                          child: Text(
+                            order?.merchantAccount?['bank_name'] ?? '-',
+                            style: GlobalHelper.getTextTheme(
+                              context,
+                              appTextStyle: AppTextStyle.BODY_MEDIUM,
+                            )?.copyWith(
+                              fontWeight: FontWeight.w600,
+                              color: GlobalHelper.getColorSchema(context).onSurface,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        const SizedBox(width: 6),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+                          decoration: BoxDecoration(
+                            color: GlobalHelper.getColorSchema(context).primary,
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                          child: Center(
+                            child: Text(
+                              order?.merchantAccount?['bank_name'] ?? 'Bank',
+                              style: GlobalHelper.getTextTheme(
+                                context,
+                                appTextStyle: AppTextStyle.BODY_SMALL,
+                              )?.copyWith(
+                                color: GlobalHelper.getColorSchema(context).onPrimary,
+                                fontSize: 8,
+                                fontWeight: FontWeight.w900,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  _divider(context),
+                  _detailRow(
+                    context,
+                    Icons.access_time_rounded,
+                    'Status',
+                    trailing: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                      decoration: BoxDecoration(
+                        color: GlobalHelper.getColorSchema(context).primary.withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Text(
+                        order?.statusLabel ?? 'Menunggu',
+                        style: GlobalHelper.getTextTheme(
+                          context,
+                          appTextStyle: AppTextStyle.BODY_SMALL,
+                        )?.copyWith(
+                          fontWeight: FontWeight.w700,
+                          color: GlobalHelper.getColorSchema(context).primary,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 32),
+          _actionButtons(context),
+          const SizedBox(height: 32),
+          _relatedProductsList(context),
+          const SizedBox(height: 32),
+        ],
+      ),
+    );
+  }
+
+  Widget _successIcon(BuildContext context) {
+    return Container(
+      width: 96,
+      height: 96,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: GlobalHelper.getColorSchema(context).primary,
+        boxShadow: [
+          BoxShadow(
+            color: GlobalHelper.getColorSchema(context).primary.withValues(alpha: 0.4),
+            blurRadius: 30,
+            offset: const Offset(0, 10),
+          ),
+        ],
+      ),
+      child: Center(
+        child: Icon(
+          Icons.check_rounded,
+          size: 48,
+          color: GlobalHelper.getColorSchema(context).onPrimary,
         ),
       ),
     );
   }
 
-  Widget _detailRow(IconData icon, String label, {required Widget trailing}) {
+  Widget _detailRow(BuildContext context, IconData icon, String label, {required Widget trailing}) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 13),
       child: Row(
@@ -680,75 +326,117 @@ class _OrderSuccessViewState extends State<_OrderSuccessView>
             width: 34,
             height: 34,
             decoration: BoxDecoration(
-              color: AppColors.primary.withValues(alpha: 0.08),
+              color: GlobalHelper.getColorSchema(context).primary.withValues(alpha: 0.08),
               borderRadius: BorderRadius.circular(9),
             ),
-            child: Icon(icon, color: AppColors.primary, size: 18),
+            child: Icon(icon, color: GlobalHelper.getColorSchema(context).primary, size: 18),
           ),
           const SizedBox(width: 12),
           Text(
             label,
-            style: const TextStyle(fontSize: 13, color: AppColors.greyText),
+            style: GlobalHelper.getTextTheme(
+              context,
+              appTextStyle: AppTextStyle.BODY_MEDIUM,
+            )?.copyWith(
+              color: GlobalHelper.getColorSchema(context).onSurface.withValues(alpha: 0.5),
+            ),
           ),
-          const Spacer(),
-          trailing,
+          const SizedBox(width: 16),
+          Expanded(
+            child: Align(
+              alignment: Alignment.centerRight,
+              child: trailing,
+            ),
+          ),
         ],
       ),
     );
   }
-}
 
-// ── Confetti Painter ──────────────────────────────────────────────────────────
-class _ConfettiPainter extends CustomPainter {
-  final double progress;
-  _ConfettiPainter(this.progress);
-
-  static final _rng = math.Random(42);
-  static final _particles = List.generate(
-    30,
-    (i) => (
-      x: _rng.nextDouble(),
-      y: _rng.nextDouble(),
-      color: [
-        const Color(0xFF52B788),
-        const Color(0xFFFBBC05),
-        const Color(0xFFEA4335),
-        const Color(0xFF4285F4),
-        const Color(0xFFF59E0B),
-        const Color(0xFF74C69D),
-      ][i % 6],
-      size: 4.0 + _rng.nextDouble() * 5,
-      speed: 0.3 + _rng.nextDouble() * 0.7,
-      angle: _rng.nextDouble() * math.pi * 2,
-    ),
-  );
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    for (final p in _particles) {
-      final t = (progress * p.speed + p.y) % 1.0;
-      final x = p.x * size.width + math.sin(t * math.pi * 2 + p.angle) * 20;
-      final y = t * size.height;
-      final paint = Paint()
-        ..color = p.color.withValues(alpha: (1 - t).clamp(0.0, 1.0));
-      canvas.save();
-      canvas.translate(x, y);
-      canvas.rotate(t * math.pi * 4);
-      canvas.drawRRect(
-        RRect.fromRectAndRadius(
-          Rect.fromCenter(
-            center: Offset.zero,
-            width: p.size,
-            height: p.size * 0.6,
-          ),
-          const Radius.circular(2),
-        ),
-        paint,
-      );
-      canvas.restore();
-    }
+  Widget _divider(BuildContext context) {
+    return Divider(
+      height: 1,
+      thickness: 1,
+      color: GlobalHelper.getColorSchema(context).outline.withValues(alpha: 0.1),
+      indent: 16,
+      endIndent: 16,
+    );
   }
 
-  @override
-  bool shouldRepaint(_ConfettiPainter old) => old.progress != progress;
+  Widget _actionButtons(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 24),
+      child: Column(
+        children: [
+          PrimaryButton(
+            label: 'Lacak Pesanan',
+            icon: Icons.location_on_outlined,
+            onPressed: () {},
+          ),
+          const SizedBox(height: 12),
+          OutlineButtonCustom(
+            label: 'Kembali ke Home',
+            icon: Icons.home_outlined,
+            onPressed: () {},
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _relatedProductsList(BuildContext context) {
+    final state = context.watch<CustomerOrderSuccessBloc>().state;
+    final order = state.order;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24),
+          child: Row(
+            children: [
+              Expanded(
+                child: Text(
+                  'Beli lagi dari ${order?.merchant?['name'] ?? '-'}',
+                  style: GlobalHelper.getTextTheme(
+                    context,
+                    appTextStyle: AppTextStyle.BODY_LARGE,
+                  )?.copyWith(
+                    fontWeight: FontWeight.w700,
+                    color: GlobalHelper.getColorSchema(context).onSurface,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+              const SizedBox(width: 8),
+              GestureDetector(
+                onTap: () {},
+                child: Row(
+                  children: [
+                    Text(
+                      'Lihat Toko',
+                      style: GlobalHelper.getTextTheme(
+                        context,
+                        appTextStyle: AppTextStyle.BODY_MEDIUM,
+                      )?.copyWith(
+                        fontWeight: FontWeight.w700,
+                        color: GlobalHelper.getColorSchema(context).primary,
+                      ),
+                    ),
+                    const SizedBox(width: 2),
+                    Icon(
+                      Icons.arrow_forward_ios_rounded,
+                      size: 12,
+                      color: GlobalHelper.getColorSchema(context).primary,
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 16),
+      ],
+    );
+  }
 }

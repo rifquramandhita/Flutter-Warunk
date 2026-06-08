@@ -47,7 +47,7 @@ class CustomerOrderRepositoryImpl implements CustomerOrderRepository {
   }
 
   @override
-  Future<DataState> createOrder(CustomerOrderCreateParam param) {
+  Future<DataState<String>> createOrder(CustomerOrderCreateParam param) {
     return handleResponse(() {
       return _apiService.createOrder(
         param.addressId,
@@ -60,6 +60,14 @@ class CustomerOrderRepositoryImpl implements CustomerOrderRepository {
         param.promotionId,
         param.promotionCode,
       );
-    }, (json) => null);
+    }, (json) => json['order']['id'] as String);
+  }
+
+  @override
+  Future<DataState<CustomerOrderEntity>> getOrderById(String id) {
+    return handleResponse(
+      () => _apiService.getOrderById(id),
+      (json) => CustomerOrderEntity.fromJson(json['order'] as Map<String, dynamic>),
+    );
   }
 }

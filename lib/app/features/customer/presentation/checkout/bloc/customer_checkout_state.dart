@@ -15,6 +15,7 @@ class CustomerCheckoutState extends Equatable {
   final bool isSuccess;
   final String? appliedPromoId;
   final String? appliedPromoCode;
+  final String? createdOrderId;
 
   int get ongkir {
     if (deliveryMethod == DeliveryMethod.biteship) {
@@ -82,6 +83,7 @@ class CustomerCheckoutState extends Equatable {
     this.isSuccess = false,
     this.appliedPromoId,
     this.appliedPromoCode,
+    this.createdOrderId,
   });
 
   CustomerCheckoutState copyWith({
@@ -101,6 +103,7 @@ class CustomerCheckoutState extends Equatable {
     bool? clearAppliedPromoId,
     String? appliedPromoCode,
     bool? clearAppliedPromoCode,
+    String? createdOrderId,
   }) => CustomerCheckoutState(
     deliveryMethod: deliveryMethod ?? this.deliveryMethod,
     selectedExpedition: selectedExpedition ?? this.selectedExpedition,
@@ -121,6 +124,7 @@ class CustomerCheckoutState extends Equatable {
     appliedPromoCode:
         appliedPromoCode ??
         ((clearAppliedPromoCode ?? false) ? null : this.appliedPromoCode),
+    createdOrderId: createdOrderId ?? this.createdOrderId,
   );
 
   @override
@@ -139,5 +143,6 @@ class CustomerCheckoutState extends Equatable {
     isSuccess,
     appliedPromoId,
     appliedPromoCode,
+    createdOrderId,
   ];
 }
