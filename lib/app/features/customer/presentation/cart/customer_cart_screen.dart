@@ -326,7 +326,7 @@ class CustomerCartScreen extends StatelessWidget {
                           ),
                     ),
                     Text(
-                      NumberHelper.formatIDR(state.total),
+                      NumberHelper.formatIDR(state.subtotal),
                       style:
                           GlobalHelper.getTextTheme(
                             context,
@@ -472,9 +472,7 @@ class CustomerCartScreen extends StatelessWidget {
                           ),
                         const SizedBox(height: 6),
                         Text(
-                          NumberHelper.formatIDR(
-                            item.unitPrice * item.quantity,
-                          ),
+                          NumberHelper.formatIDR(item.unitPrice),
                           style:
                               GlobalHelper.getTextTheme(
                                 context,
@@ -608,26 +606,6 @@ class CustomerCartScreen extends StatelessWidget {
         appTextStyle: AppTextStyle.LABEL_SMALL,
       )?.copyWith(fontWeight: FontWeight.w700, color: color),
     ),
-  );
-
-  Widget _priceRow(BuildContext context, String label, String value) => Row(
-    children: [
-      Text(
-        label,
-        style: GlobalHelper.getTextTheme(
-          context,
-          appTextStyle: AppTextStyle.BODY_MEDIUM,
-        )?.copyWith(color: GlobalHelper.getColorSchema(context).outline),
-      ),
-      const Spacer(),
-      Text(
-        value,
-        style: GlobalHelper.getTextTheme(
-          context,
-          appTextStyle: AppTextStyle.BODY_MEDIUM,
-        )?.copyWith(color: GlobalHelper.getColorSchema(context).onSurface),
-      ),
-    ],
   );
 
   void _onPressMerchant(BuildContext context, String? merchantId) async {
