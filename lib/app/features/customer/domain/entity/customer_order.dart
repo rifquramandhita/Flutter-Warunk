@@ -18,6 +18,14 @@ sealed class CustomerOrder with _$CustomerOrder {
     String? promotionCode,
   }) = CustomerOrderCreateParam;
 
+  @JsonSerializable(fieldRename: FieldRename.snake, includeIfNull: false)
+  const factory CustomerOrder.getPromotionParam({
+    required List<String> cartIds,
+    String? addressId,
+    String? shippingKey,
+    String? biteshipRateKey,
+  }) = CustomerOrderGetPromotionParam;
+
   factory CustomerOrder.fromJson(Map<String, dynamic> json) =>
       _$CustomerOrderFromJson(json);
 }

@@ -11,6 +11,7 @@ import 'package:warunk/app/features/customer/domain/use_case/customer_order_crea
 import 'package:warunk/app/features/customer/domain/entity/customer_checkout.dart';
 import 'package:warunk/app/features/customer/domain/entity/customer_order.dart';
 import 'package:warunk/app/features/customer/domain/entity/delivery_method.dart';
+import 'package:warunk/app/features/customer/domain/entity/customer_promotion.dart';
 
 part 'customer_checkout_event.dart';
 part 'customer_checkout_state.dart';
@@ -41,6 +42,7 @@ class CustomerCheckoutBloc
     on<CustomerCheckoutEventPaymentProofChanged>(_onPaymentProofChanged);
     on<CustomerCheckoutEventNotesChanged>(_onNotesChanged);
     on<CustomerCheckoutEventSubmit>(_onSubmit);
+    on<CustomerCheckoutEventPromoChanged>(_onPromoChanged);
   }
 
   Future<void> _onFetchStarted(
@@ -67,7 +69,9 @@ class CustomerCheckoutBloc
 
       if (optionResult.success) {
         final option = optionResult.data;
-        DeliveryMethod? deliveryMethod = DeliveryMethod.fromString(option?.selectedShippingKey);
+        DeliveryMethod? deliveryMethod = DeliveryMethod.fromString(
+          option?.selectedShippingKey,
+        );
         String? expedition = option?.selectedBiteshipRateKey;
 
         if (deliveryMethod == DeliveryMethod.biteship &&
@@ -88,6 +92,7 @@ class CustomerCheckoutBloc
             deliveryMethod: deliveryMethod,
             selectedExpedition: expedition,
             selectedPaymentMethodKey: paymentKey,
+            hasVoucher: option?.promotion != null,
           ),
         );
       } else {
@@ -158,11 +163,22 @@ class CustomerCheckoutBloc
       shippingKey: state.deliveryMethod != null
           ? state.deliveryMethod!.value
           : null,
-      promotions: state.checkoutOption?.promotion != null
+      promotions:
+          (state.appliedPromoId != null || state.appliedPromoCode != null)
           ? [
               {
-                "id": state.checkoutOption!.promotion!.id,
-                "code": state.checkoutOption!.promotion!.code,
+                if (state.appliedPromoId != null) "id": state.appliedPromoId!,
+                if (state.appliedPromoCode != null)
+                  "code": state.appliedPromoCode!,
+              },
+            ]
+          : state.checkoutOption?.promotion != null
+          ? [
+              {
+                if (state.checkoutOption!.promotion!.id != null)
+                  "id": state.checkoutOption!.promotion!.id!,
+                if (state.checkoutOption!.promotion!.code != null)
+                  "code": state.checkoutOption!.promotion!.code!,
               },
             ]
           : null,
@@ -190,6 +206,10 @@ class CustomerCheckoutBloc
           selectedExpedition: expedition,
           selectedPaymentMethodKey: paymentKey,
           isLoading: false,
+          hasVoucher:
+              state.appliedPromoId != null ||
+              state.appliedPromoCode != null ||
+              newOption?.promotion != null,
         ),
       );
     } else {
@@ -201,7 +221,32 @@ class CustomerCheckoutBloc
     CustomerCheckoutEventVoucherRemoved event,
     Emitter<CustomerCheckoutState> emit,
   ) {
-    emit(state.copyWith(hasVoucher: false));
+    emit(
+      state.copyWith(
+        hasVoucher: false,
+        appliedPromoId: null,
+        appliedPromoCode: null,
+      ),
+    );
+  }
+
+  Future<void> _onPromoChanged(
+    CustomerCheckoutEventPromoChanged event,
+    Emitter<CustomerCheckoutState> emit,
+  ) async {
+    String? promoId = event.promo?.id;
+    String? promoCode = event.code;
+
+    emit(
+      state.copyWith(
+        appliedPromoId: promoId,
+        clearAppliedPromoId: promoId == null,
+        appliedPromoCode: promoCode,
+        clearAppliedPromoCode: promoCode == null,
+        hasVoucher: true,
+      ),
+    );
+    await _fetchShippingOptions(emit);
   }
 
   void _onPaymentProofChanged(
@@ -269,8 +314,9 @@ class CustomerCheckoutBloc
       notes: state.notes,
       paymentProof: state.paymentProof!.path,
       cartIds: state.items.map((e) => e.id).toList(),
-      promotionId: state.checkoutOption?.promotion?.id,
-      promotionCode: state.checkoutOption?.promotion?.code,
+      promotionId: state.appliedPromoId ?? state.checkoutOption?.promotion?.id,
+      promotionCode:
+          state.appliedPromoCode ?? state.checkoutOption?.promotion?.code,
     );
 
     final result = await _createOrderUseCase(params: param);

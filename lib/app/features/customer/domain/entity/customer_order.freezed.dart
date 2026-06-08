@@ -14,15 +14,31 @@ T _$identity<T>(T value) => value;
 CustomerOrder _$CustomerOrderFromJson(
   Map<String, dynamic> json
 ) {
-    return CustomerOrderCreateParam.fromJson(
-      json
-    );
+        switch (json['runtimeType']) {
+                  case 'createParam':
+          return CustomerOrderCreateParam.fromJson(
+            json
+          );
+                case 'getPromotionParam':
+          return CustomerOrderGetPromotionParam.fromJson(
+            json
+          );
+        
+          default:
+            throw CheckedFromJsonException(
+  json,
+  'runtimeType',
+  'CustomerOrder',
+  'Invalid union type "${json['runtimeType']}"!'
+);
+        }
+      
 }
 
 /// @nodoc
 mixin _$CustomerOrder {
 
- String get addressId; String? get shippingKey; String? get biteshipRateKey; String? get merchantAccountId; String? get notes; String get paymentProof; List<String> get cartIds; String? get promotionId; String? get promotionCode;
+ String? get addressId; String? get shippingKey; String? get biteshipRateKey; List<String> get cartIds;
 /// Create a copy of CustomerOrder
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -35,16 +51,16 @@ $CustomerOrderCopyWith<CustomerOrder> get copyWith => _$CustomerOrderCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CustomerOrder&&(identical(other.addressId, addressId) || other.addressId == addressId)&&(identical(other.shippingKey, shippingKey) || other.shippingKey == shippingKey)&&(identical(other.biteshipRateKey, biteshipRateKey) || other.biteshipRateKey == biteshipRateKey)&&(identical(other.merchantAccountId, merchantAccountId) || other.merchantAccountId == merchantAccountId)&&(identical(other.notes, notes) || other.notes == notes)&&(identical(other.paymentProof, paymentProof) || other.paymentProof == paymentProof)&&const DeepCollectionEquality().equals(other.cartIds, cartIds)&&(identical(other.promotionId, promotionId) || other.promotionId == promotionId)&&(identical(other.promotionCode, promotionCode) || other.promotionCode == promotionCode));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CustomerOrder&&(identical(other.addressId, addressId) || other.addressId == addressId)&&(identical(other.shippingKey, shippingKey) || other.shippingKey == shippingKey)&&(identical(other.biteshipRateKey, biteshipRateKey) || other.biteshipRateKey == biteshipRateKey)&&const DeepCollectionEquality().equals(other.cartIds, cartIds));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,addressId,shippingKey,biteshipRateKey,merchantAccountId,notes,paymentProof,const DeepCollectionEquality().hash(cartIds),promotionId,promotionCode);
+int get hashCode => Object.hash(runtimeType,addressId,shippingKey,biteshipRateKey,const DeepCollectionEquality().hash(cartIds));
 
 @override
 String toString() {
-  return 'CustomerOrder(addressId: $addressId, shippingKey: $shippingKey, biteshipRateKey: $biteshipRateKey, merchantAccountId: $merchantAccountId, notes: $notes, paymentProof: $paymentProof, cartIds: $cartIds, promotionId: $promotionId, promotionCode: $promotionCode)';
+  return 'CustomerOrder(addressId: $addressId, shippingKey: $shippingKey, biteshipRateKey: $biteshipRateKey, cartIds: $cartIds)';
 }
 
 
@@ -55,7 +71,7 @@ abstract mixin class $CustomerOrderCopyWith<$Res>  {
   factory $CustomerOrderCopyWith(CustomerOrder value, $Res Function(CustomerOrder) _then) = _$CustomerOrderCopyWithImpl;
 @useResult
 $Res call({
- String addressId, String? shippingKey, String? biteshipRateKey, String? merchantAccountId, String? notes, String paymentProof, List<String> cartIds, String? promotionId, String? promotionCode
+ String addressId, String? shippingKey, String? biteshipRateKey, List<String> cartIds
 });
 
 
@@ -72,18 +88,13 @@ class _$CustomerOrderCopyWithImpl<$Res>
 
 /// Create a copy of CustomerOrder
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? addressId = null,Object? shippingKey = freezed,Object? biteshipRateKey = freezed,Object? merchantAccountId = freezed,Object? notes = freezed,Object? paymentProof = null,Object? cartIds = null,Object? promotionId = freezed,Object? promotionCode = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? addressId = null,Object? shippingKey = freezed,Object? biteshipRateKey = freezed,Object? cartIds = null,}) {
   return _then(_self.copyWith(
-addressId: null == addressId ? _self.addressId : addressId // ignore: cast_nullable_to_non_nullable
+addressId: null == addressId ? _self.addressId! : addressId // ignore: cast_nullable_to_non_nullable
 as String,shippingKey: freezed == shippingKey ? _self.shippingKey : shippingKey // ignore: cast_nullable_to_non_nullable
 as String?,biteshipRateKey: freezed == biteshipRateKey ? _self.biteshipRateKey : biteshipRateKey // ignore: cast_nullable_to_non_nullable
-as String?,merchantAccountId: freezed == merchantAccountId ? _self.merchantAccountId : merchantAccountId // ignore: cast_nullable_to_non_nullable
-as String?,notes: freezed == notes ? _self.notes : notes // ignore: cast_nullable_to_non_nullable
-as String?,paymentProof: null == paymentProof ? _self.paymentProof : paymentProof // ignore: cast_nullable_to_non_nullable
-as String,cartIds: null == cartIds ? _self.cartIds : cartIds // ignore: cast_nullable_to_non_nullable
-as List<String>,promotionId: freezed == promotionId ? _self.promotionId : promotionId // ignore: cast_nullable_to_non_nullable
-as String?,promotionCode: freezed == promotionCode ? _self.promotionCode : promotionCode // ignore: cast_nullable_to_non_nullable
-as String?,
+as String?,cartIds: null == cartIds ? _self.cartIds : cartIds // ignore: cast_nullable_to_non_nullable
+as List<String>,
   ));
 }
 
@@ -104,11 +115,12 @@ extension CustomerOrderPatterns on CustomerOrder {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( CustomerOrderCreateParam value)?  createParam,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( CustomerOrderCreateParam value)?  createParam,TResult Function( CustomerOrderGetPromotionParam value)?  getPromotionParam,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case CustomerOrderCreateParam() when createParam != null:
-return createParam(_that);case _:
+return createParam(_that);case CustomerOrderGetPromotionParam() when getPromotionParam != null:
+return getPromotionParam(_that);case _:
   return orElse();
 
 }
@@ -126,11 +138,12 @@ return createParam(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( CustomerOrderCreateParam value)  createParam,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( CustomerOrderCreateParam value)  createParam,required TResult Function( CustomerOrderGetPromotionParam value)  getPromotionParam,}){
 final _that = this;
 switch (_that) {
 case CustomerOrderCreateParam():
-return createParam(_that);}
+return createParam(_that);case CustomerOrderGetPromotionParam():
+return getPromotionParam(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -144,11 +157,12 @@ return createParam(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( CustomerOrderCreateParam value)?  createParam,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( CustomerOrderCreateParam value)?  createParam,TResult? Function( CustomerOrderGetPromotionParam value)?  getPromotionParam,}){
 final _that = this;
 switch (_that) {
 case CustomerOrderCreateParam() when createParam != null:
-return createParam(_that);case _:
+return createParam(_that);case CustomerOrderGetPromotionParam() when getPromotionParam != null:
+return getPromotionParam(_that);case _:
   return null;
 
 }
@@ -165,10 +179,11 @@ return createParam(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String addressId,  String? shippingKey,  String? biteshipRateKey,  String? merchantAccountId,  String? notes,  String paymentProof,  List<String> cartIds,  String? promotionId,  String? promotionCode)?  createParam,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String addressId,  String? shippingKey,  String? biteshipRateKey,  String? merchantAccountId,  String? notes,  String paymentProof,  List<String> cartIds,  String? promotionId,  String? promotionCode)?  createParam,TResult Function( List<String> cartIds,  String? addressId,  String? shippingKey,  String? biteshipRateKey)?  getPromotionParam,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case CustomerOrderCreateParam() when createParam != null:
-return createParam(_that.addressId,_that.shippingKey,_that.biteshipRateKey,_that.merchantAccountId,_that.notes,_that.paymentProof,_that.cartIds,_that.promotionId,_that.promotionCode);case _:
+return createParam(_that.addressId,_that.shippingKey,_that.biteshipRateKey,_that.merchantAccountId,_that.notes,_that.paymentProof,_that.cartIds,_that.promotionId,_that.promotionCode);case CustomerOrderGetPromotionParam() when getPromotionParam != null:
+return getPromotionParam(_that.cartIds,_that.addressId,_that.shippingKey,_that.biteshipRateKey);case _:
   return orElse();
 
 }
@@ -186,10 +201,11 @@ return createParam(_that.addressId,_that.shippingKey,_that.biteshipRateKey,_that
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String addressId,  String? shippingKey,  String? biteshipRateKey,  String? merchantAccountId,  String? notes,  String paymentProof,  List<String> cartIds,  String? promotionId,  String? promotionCode)  createParam,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String addressId,  String? shippingKey,  String? biteshipRateKey,  String? merchantAccountId,  String? notes,  String paymentProof,  List<String> cartIds,  String? promotionId,  String? promotionCode)  createParam,required TResult Function( List<String> cartIds,  String? addressId,  String? shippingKey,  String? biteshipRateKey)  getPromotionParam,}) {final _that = this;
 switch (_that) {
 case CustomerOrderCreateParam():
-return createParam(_that.addressId,_that.shippingKey,_that.biteshipRateKey,_that.merchantAccountId,_that.notes,_that.paymentProof,_that.cartIds,_that.promotionId,_that.promotionCode);}
+return createParam(_that.addressId,_that.shippingKey,_that.biteshipRateKey,_that.merchantAccountId,_that.notes,_that.paymentProof,_that.cartIds,_that.promotionId,_that.promotionCode);case CustomerOrderGetPromotionParam():
+return getPromotionParam(_that.cartIds,_that.addressId,_that.shippingKey,_that.biteshipRateKey);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -203,10 +219,11 @@ return createParam(_that.addressId,_that.shippingKey,_that.biteshipRateKey,_that
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String addressId,  String? shippingKey,  String? biteshipRateKey,  String? merchantAccountId,  String? notes,  String paymentProof,  List<String> cartIds,  String? promotionId,  String? promotionCode)?  createParam,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String addressId,  String? shippingKey,  String? biteshipRateKey,  String? merchantAccountId,  String? notes,  String paymentProof,  List<String> cartIds,  String? promotionId,  String? promotionCode)?  createParam,TResult? Function( List<String> cartIds,  String? addressId,  String? shippingKey,  String? biteshipRateKey)?  getPromotionParam,}) {final _that = this;
 switch (_that) {
 case CustomerOrderCreateParam() when createParam != null:
-return createParam(_that.addressId,_that.shippingKey,_that.biteshipRateKey,_that.merchantAccountId,_that.notes,_that.paymentProof,_that.cartIds,_that.promotionId,_that.promotionCode);case _:
+return createParam(_that.addressId,_that.shippingKey,_that.biteshipRateKey,_that.merchantAccountId,_that.notes,_that.paymentProof,_that.cartIds,_that.promotionId,_that.promotionCode);case CustomerOrderGetPromotionParam() when getPromotionParam != null:
+return getPromotionParam(_that.cartIds,_that.addressId,_that.shippingKey,_that.biteshipRateKey);case _:
   return null;
 
 }
@@ -218,15 +235,15 @@ return createParam(_that.addressId,_that.shippingKey,_that.biteshipRateKey,_that
 @JsonSerializable()
 
 class CustomerOrderCreateParam implements CustomerOrder {
-  const CustomerOrderCreateParam({required this.addressId, this.shippingKey, this.biteshipRateKey, this.merchantAccountId, this.notes, required this.paymentProof, required final  List<String> cartIds, this.promotionId, this.promotionCode}): _cartIds = cartIds;
+  const CustomerOrderCreateParam({required this.addressId, this.shippingKey, this.biteshipRateKey, this.merchantAccountId, this.notes, required this.paymentProof, required final  List<String> cartIds, this.promotionId, this.promotionCode, final  String? $type}): _cartIds = cartIds,$type = $type ?? 'createParam';
   factory CustomerOrderCreateParam.fromJson(Map<String, dynamic> json) => _$CustomerOrderCreateParamFromJson(json);
 
 @override final  String addressId;
 @override final  String? shippingKey;
 @override final  String? biteshipRateKey;
-@override final  String? merchantAccountId;
-@override final  String? notes;
-@override final  String paymentProof;
+ final  String? merchantAccountId;
+ final  String? notes;
+ final  String paymentProof;
  final  List<String> _cartIds;
 @override List<String> get cartIds {
   if (_cartIds is EqualUnmodifiableListView) return _cartIds;
@@ -234,8 +251,12 @@ class CustomerOrderCreateParam implements CustomerOrder {
   return EqualUnmodifiableListView(_cartIds);
 }
 
-@override final  String? promotionId;
-@override final  String? promotionCode;
+ final  String? promotionId;
+ final  String? promotionCode;
+
+@JsonKey(name: 'runtimeType')
+final String $type;
+
 
 /// Create a copy of CustomerOrder
 /// with the given fields replaced by the non-null parameter values.
@@ -298,6 +319,91 @@ as String?,paymentProof: null == paymentProof ? _self.paymentProof : paymentProo
 as String,cartIds: null == cartIds ? _self._cartIds : cartIds // ignore: cast_nullable_to_non_nullable
 as List<String>,promotionId: freezed == promotionId ? _self.promotionId : promotionId // ignore: cast_nullable_to_non_nullable
 as String?,promotionCode: freezed == promotionCode ? _self.promotionCode : promotionCode // ignore: cast_nullable_to_non_nullable
+as String?,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+@JsonSerializable(fieldRename: FieldRename.snake, includeIfNull: false)
+class CustomerOrderGetPromotionParam implements CustomerOrder {
+  const CustomerOrderGetPromotionParam({required final  List<String> cartIds, this.addressId, this.shippingKey, this.biteshipRateKey, final  String? $type}): _cartIds = cartIds,$type = $type ?? 'getPromotionParam';
+  factory CustomerOrderGetPromotionParam.fromJson(Map<String, dynamic> json) => _$CustomerOrderGetPromotionParamFromJson(json);
+
+ final  List<String> _cartIds;
+@override List<String> get cartIds {
+  if (_cartIds is EqualUnmodifiableListView) return _cartIds;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_cartIds);
+}
+
+@override final  String? addressId;
+@override final  String? shippingKey;
+@override final  String? biteshipRateKey;
+
+@JsonKey(name: 'runtimeType')
+final String $type;
+
+
+/// Create a copy of CustomerOrder
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$CustomerOrderGetPromotionParamCopyWith<CustomerOrderGetPromotionParam> get copyWith => _$CustomerOrderGetPromotionParamCopyWithImpl<CustomerOrderGetPromotionParam>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$CustomerOrderGetPromotionParamToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CustomerOrderGetPromotionParam&&const DeepCollectionEquality().equals(other._cartIds, _cartIds)&&(identical(other.addressId, addressId) || other.addressId == addressId)&&(identical(other.shippingKey, shippingKey) || other.shippingKey == shippingKey)&&(identical(other.biteshipRateKey, biteshipRateKey) || other.biteshipRateKey == biteshipRateKey));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_cartIds),addressId,shippingKey,biteshipRateKey);
+
+@override
+String toString() {
+  return 'CustomerOrder.getPromotionParam(cartIds: $cartIds, addressId: $addressId, shippingKey: $shippingKey, biteshipRateKey: $biteshipRateKey)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $CustomerOrderGetPromotionParamCopyWith<$Res> implements $CustomerOrderCopyWith<$Res> {
+  factory $CustomerOrderGetPromotionParamCopyWith(CustomerOrderGetPromotionParam value, $Res Function(CustomerOrderGetPromotionParam) _then) = _$CustomerOrderGetPromotionParamCopyWithImpl;
+@override @useResult
+$Res call({
+ List<String> cartIds, String? addressId, String? shippingKey, String? biteshipRateKey
+});
+
+
+
+
+}
+/// @nodoc
+class _$CustomerOrderGetPromotionParamCopyWithImpl<$Res>
+    implements $CustomerOrderGetPromotionParamCopyWith<$Res> {
+  _$CustomerOrderGetPromotionParamCopyWithImpl(this._self, this._then);
+
+  final CustomerOrderGetPromotionParam _self;
+  final $Res Function(CustomerOrderGetPromotionParam) _then;
+
+/// Create a copy of CustomerOrder
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? cartIds = null,Object? addressId = freezed,Object? shippingKey = freezed,Object? biteshipRateKey = freezed,}) {
+  return _then(CustomerOrderGetPromotionParam(
+cartIds: null == cartIds ? _self._cartIds : cartIds // ignore: cast_nullable_to_non_nullable
+as List<String>,addressId: freezed == addressId ? _self.addressId : addressId // ignore: cast_nullable_to_non_nullable
+as String?,shippingKey: freezed == shippingKey ? _self.shippingKey : shippingKey // ignore: cast_nullable_to_non_nullable
+as String?,biteshipRateKey: freezed == biteshipRateKey ? _self.biteshipRateKey : biteshipRateKey // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }

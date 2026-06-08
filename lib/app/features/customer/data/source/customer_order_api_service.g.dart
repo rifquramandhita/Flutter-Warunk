@@ -70,6 +70,29 @@ class _CustomerOrderApiService implements CustomerOrderApiService {
   }
 
   @override
+  Future<HttpResponse<dynamic>> getPromotions(Map<String, dynamic> body) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    _data.addAll(body);
+    final _options = _setStreamType<HttpResponse<dynamic>>(
+      Options(method: 'POST', headers: _headers, extra: _extra)
+          .compose(
+            _dio.options,
+            '/api/orders/promotions',
+            queryParameters: queryParameters,
+            data: _data,
+          )
+          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
+    );
+    final _result = await _dio.fetch(_options);
+    final _value = _result.data;
+    final httpResponse = HttpResponse(_value, _result);
+    return httpResponse;
+  }
+
+  @override
   Future<HttpResponse<dynamic>> createOrder(
     String addressId,
     String? shippingKey,
@@ -78,7 +101,8 @@ class _CustomerOrderApiService implements CustomerOrderApiService {
     String? notes,
     File paymentProof,
     List<String> cartIds,
-    String? promotions,
+    String? promotionId,
+    String? promotionCode,
   ) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
@@ -110,8 +134,11 @@ class _CustomerOrderApiService implements CustomerOrderApiService {
     cartIds.forEach((i) {
       _data.fields.add(MapEntry('cart_ids[]', i));
     });
-    if (promotions != null) {
-      _data.fields.add(MapEntry('promotions', promotions));
+    if (promotionId != null) {
+      _data.fields.add(MapEntry('promotions[0][id]', promotionId));
+    }
+    if (promotionCode != null) {
+      _data.fields.add(MapEntry('promotions[0][code]', promotionCode));
     }
     final _options = _setStreamType<HttpResponse<dynamic>>(
       Options(

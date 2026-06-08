@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:warunk/app/features/customer/data/source/customer_order_api_service.dart';
 import 'package:warunk/app/features/customer/domain/entity/customer_checkout.dart';
+import 'package:warunk/app/features/customer/domain/entity/customer_promotion.dart';
 import 'package:warunk/app/features/customer/domain/repository/customer_order_repository.dart';
 import 'package:warunk/app/features/customer/domain/entity/customer_order.dart';
 import 'package:warunk/core/network/data_state.dart';
@@ -34,15 +35,20 @@ class CustomerOrderRepositoryImpl implements CustomerOrderRepository {
   }
 
   @override
+  Future<DataState<List<CustomerPromotionEntity>>> getPromotions(
+    CustomerOrderGetPromotionParam param,
+  ) {
+    return handleResponse(
+      () => _apiService.getPromotions(param.toJson()),
+      (json) => List.from(
+        json['promotions'].map((e) => CustomerPromotionEntity.fromJson(e)),
+      ),
+    );
+  }
+
+  @override
   Future<DataState> createOrder(CustomerOrderCreateParam param) {
     return handleResponse(() {
-      String? promotionsJson;
-      if (param.promotionId != null) {
-        promotionsJson = '[{"id":"${param.promotionId}"}]';
-      } else if (param.promotionCode != null) {
-        promotionsJson = '[{"code":"${param.promotionCode}"}]';
-      }
-
       return _apiService.createOrder(
         param.addressId,
         param.shippingKey,
@@ -51,7 +57,8 @@ class CustomerOrderRepositoryImpl implements CustomerOrderRepository {
         param.notes,
         File(param.paymentProof),
         param.cartIds,
-        promotionsJson,
+        param.promotionId,
+        param.promotionCode,
       );
     }, (json) => null);
   }

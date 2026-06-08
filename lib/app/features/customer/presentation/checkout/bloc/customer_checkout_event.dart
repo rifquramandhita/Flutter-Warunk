@@ -46,3 +46,9 @@ final class CustomerCheckoutEventNotesChanged extends CustomerCheckoutEvent {
 final class CustomerCheckoutEventSubmit extends CustomerCheckoutEvent {
   const CustomerCheckoutEventSubmit();
 }
+
+final class CustomerCheckoutEventPromoChanged extends CustomerCheckoutEvent {
+  final CustomerPromotionEntity? promo;
+  final String? code;
+  const CustomerCheckoutEventPromoChanged({this.promo, this.code});
+}

@@ -13,6 +13,8 @@ class CustomerCheckoutState extends Equatable {
   final File? paymentProof;
   final String? notes;
   final bool isSuccess;
+  final String? appliedPromoId;
+  final String? appliedPromoCode;
 
   int get ongkir {
     if (deliveryMethod == DeliveryMethod.biteship) {
@@ -78,6 +80,8 @@ class CustomerCheckoutState extends Equatable {
     this.paymentProof,
     this.notes,
     this.isSuccess = false,
+    this.appliedPromoId,
+    this.appliedPromoCode,
   });
 
   CustomerCheckoutState copyWith({
@@ -93,6 +97,10 @@ class CustomerCheckoutState extends Equatable {
     File? paymentProof,
     String? notes,
     bool? isSuccess,
+    String? appliedPromoId,
+    bool? clearAppliedPromoId,
+    String? appliedPromoCode,
+    bool? clearAppliedPromoCode,
   }) => CustomerCheckoutState(
     deliveryMethod: deliveryMethod ?? this.deliveryMethod,
     selectedExpedition: selectedExpedition ?? this.selectedExpedition,
@@ -107,6 +115,12 @@ class CustomerCheckoutState extends Equatable {
     paymentProof: paymentProof ?? this.paymentProof,
     notes: notes ?? this.notes,
     isSuccess: isSuccess ?? this.isSuccess,
+    appliedPromoId:
+        appliedPromoId ??
+        ((clearAppliedPromoId ?? false) ? null : this.appliedPromoId),
+    appliedPromoCode:
+        appliedPromoCode ??
+        ((clearAppliedPromoCode ?? false) ? null : this.appliedPromoCode),
   );
 
   @override
@@ -123,5 +137,7 @@ class CustomerCheckoutState extends Equatable {
     paymentProof,
     notes,
     isSuccess,
+    appliedPromoId,
+    appliedPromoCode,
   ];
 }

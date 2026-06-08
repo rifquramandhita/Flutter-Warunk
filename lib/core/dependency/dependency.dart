@@ -123,6 +123,8 @@ import 'package:warunk/app/features/customer/domain/repository/customer_order_re
 import 'package:warunk/app/features/customer/data/repository/customer_order_repository_impl.dart';
 import 'package:warunk/app/features/customer/domain/use_case/customer_checkout_get_option_use_case.dart';
 import 'package:warunk/app/features/customer/domain/use_case/customer_order_create_use_case.dart';
+import 'package:warunk/app/features/customer/domain/use_case/customer_order_get_promotion_use_case.dart';
+import 'package:warunk/app/features/customer/presentation/promotion/bloc/customer_promotion_bloc.dart';
 
 final sl = GetIt.instance;
 
@@ -282,6 +284,7 @@ Future<void> initDependency() async {
   sl.registerLazySingleton(() => CustomerOrderCreateUseCase(sl()));
   sl.registerLazySingleton(() => CustomerLocationGetCurrentUseCase(sl()));
   sl.registerLazySingleton(() => CustomerLocationGetPlacemarkUseCase(sl()));
+  sl.registerLazySingleton(() => CustomerOrderGetPromotionUseCase(sl()));
 
   //bloc
   sl.registerLazySingleton(() => AuthBloc());
@@ -377,4 +380,9 @@ Future<void> initDependency() async {
     (orderId, _) => MerchantShipOrderBloc(shipUseCase: sl(), orderId: orderId),
   );
   sl.registerFactory(() => CustomerAddressMapsBloc(sl()));
+  sl.registerFactory(
+    () => CustomerPromotionBloc(
+      getPromotionUseCase: sl(),
+    ),
+  );
 }

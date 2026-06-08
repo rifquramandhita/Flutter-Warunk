@@ -15,6 +15,9 @@ abstract class CustomerOrderApiService {
   @POST('/api/checkout/shipping-options')
   Future<HttpResponse<dynamic>> getCheckoutShippingOption(@Body() Map<String, dynamic> body);
 
+  @POST('/api/orders/promotions')
+  Future<HttpResponse<dynamic>> getPromotions(@Body() Map<String, dynamic> body);
+
   @MultiPart()
   @POST('/api/orders')
   Future<HttpResponse<dynamic>> createOrder(
@@ -25,6 +28,7 @@ abstract class CustomerOrderApiService {
     @Part(name: 'notes') String? notes,
     @Part(name: 'payment_proof') File paymentProof,
     @Part(name: 'cart_ids[]') List<String> cartIds,
-    @Part(name: 'promotions') String? promotions,
+    @Part(name: 'promotions[0][id]') String? promotionId,
+    @Part(name: 'promotions[0][code]') String? promotionCode,
   );
 }

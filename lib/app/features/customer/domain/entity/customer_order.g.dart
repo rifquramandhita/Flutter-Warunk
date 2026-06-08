@@ -18,6 +18,7 @@ CustomerOrderCreateParam _$CustomerOrderCreateParamFromJson(
   cartIds: (json['cartIds'] as List<dynamic>).map((e) => e as String).toList(),
   promotionId: json['promotionId'] as String?,
   promotionCode: json['promotionCode'] as String?,
+  $type: json['runtimeType'] as String?,
 );
 
 Map<String, dynamic> _$CustomerOrderCreateParamToJson(
@@ -32,4 +33,25 @@ Map<String, dynamic> _$CustomerOrderCreateParamToJson(
   'cartIds': instance.cartIds,
   'promotionId': instance.promotionId,
   'promotionCode': instance.promotionCode,
+  'runtimeType': instance.$type,
+};
+
+CustomerOrderGetPromotionParam _$CustomerOrderGetPromotionParamFromJson(
+  Map<String, dynamic> json,
+) => CustomerOrderGetPromotionParam(
+  cartIds: (json['cart_ids'] as List<dynamic>).map((e) => e as String).toList(),
+  addressId: json['address_id'] as String?,
+  shippingKey: json['shipping_key'] as String?,
+  biteshipRateKey: json['biteship_rate_key'] as String?,
+  $type: json['runtimeType'] as String?,
+);
+
+Map<String, dynamic> _$CustomerOrderGetPromotionParamToJson(
+  CustomerOrderGetPromotionParam instance,
+) => <String, dynamic>{
+  'cart_ids': instance.cartIds,
+  'address_id': ?instance.addressId,
+  'shipping_key': ?instance.shippingKey,
+  'biteship_rate_key': ?instance.biteshipRateKey,
+  'runtimeType': instance.$type,
 };

@@ -49,8 +49,14 @@ CustomerCheckoutOptionEntity _$CustomerCheckoutOptionEntityFromJson(
       : CustomerCheckoutSummaryEntity.fromJson(
           json['summary'] as Map<String, dynamic>,
         ),
-  availablePromotions: json['available_promotions'] as List<dynamic>?,
-  promotion: json['promotion'],
+  availablePromotions: (json['available_promotions'] as List<dynamic>?)
+      ?.map((e) => CustomerPromotionEntity.fromJson(e as Map<String, dynamic>))
+      .toList(),
+  promotion: json['promotion'] == null
+      ? null
+      : CustomerPromotionEntity.fromJson(
+          json['promotion'] as Map<String, dynamic>,
+        ),
   $type: json['runtimeType'] as String?,
 );
 

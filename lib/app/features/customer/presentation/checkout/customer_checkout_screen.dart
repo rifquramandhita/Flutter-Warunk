@@ -9,7 +9,9 @@ import 'package:warunk/app/features/customer/domain/entity/customer_checkout.dar
 import 'package:warunk/app/features/customer/domain/entity/delivery_method.dart';
 import 'package:warunk/app/features/customer/presentation/address/customer_address_screen.dart';
 import 'package:warunk/app/features/customer/domain/entity/customer_cart.dart';
+import 'package:warunk/app/features/customer/domain/entity/customer_order.dart';
 import 'package:warunk/app/features/customer/presentation/order_success/customer_order_success_screen.dart';
+import 'package:warunk/app/features/customer/presentation/promotion/customer_promotion_screen.dart';
 import 'package:warunk/core/dependency/dependency.dart';
 import 'package:warunk/app/features/customer/presentation/checkout/bloc/customer_checkout_bloc.dart';
 import 'package:warunk/core/helper/dialog_helper.dart';
@@ -89,8 +91,8 @@ class CustomerCheckoutScreen extends StatelessWidget {
                 const SizedBox(height: 12),
                 _paymentMethodDropdownSection(context, state),
                 const SizedBox(height: 12),
-                if (state.hasVoucher) _voucherSection(context, state),
-                if (state.hasVoucher) const SizedBox(height: 12),
+                _voucherSection(context, state),
+                const SizedBox(height: 12),
                 _notesSection(context, state),
                 const SizedBox(height: 12),
                 _paymentProofSection(context, state),
@@ -691,59 +693,74 @@ class CustomerCheckoutScreen extends StatelessWidget {
       context: context,
       icon: Icons.local_offer_rounded,
       title: 'Voucher & Promo',
-      trailing: Icon(
-        Icons.chevron_right_rounded,
-        color: GlobalHelper.getColorSchema(context).outline,
+      trailing: GestureDetector(
+        onTap: () => _onPressPromotion(context),
+        child: Icon(
+          Icons.chevron_right_rounded,
+          color: GlobalHelper.getColorSchema(context).outline,
+        ),
       ),
       child: Row(
         children: [
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-            decoration: BoxDecoration(
-              color: GlobalHelper.getColorSchema(
-                context,
-              ).primary.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(
+          if (state.hasVoucher)
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+              decoration: BoxDecoration(
                 color: GlobalHelper.getColorSchema(
                   context,
-                ).primary.withValues(alpha: 0.3),
+                ).primary.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                  color: GlobalHelper.getColorSchema(
+                    context,
+                  ).primary.withValues(alpha: 0.3),
+                ),
               ),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(
-                  Icons.local_offer_rounded,
-                  size: 12,
-                  color: GlobalHelper.getColorSchema(context).primary,
-                ),
-                const SizedBox(width: 5),
-                Text(
-                  'Gratis Ongkir',
-                  style:
-                      GlobalHelper.getTextTheme(
-                        context,
-                        appTextStyle: AppTextStyle.LABEL_MEDIUM,
-                      )?.copyWith(
-                        fontWeight: FontWeight.w600,
-                        color: GlobalHelper.getColorSchema(context).primary,
-                      ),
-                ),
-                const SizedBox(width: 5),
-                GestureDetector(
-                  onTap: () => context.read<CustomerCheckoutBloc>().add(
-                    const CustomerCheckoutEventVoucherRemoved(),
-                  ),
-                  child: Icon(
-                    Icons.close,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    Icons.local_offer_rounded,
                     size: 12,
                     color: GlobalHelper.getColorSchema(context).primary,
                   ),
-                ),
-              ],
+                  const SizedBox(width: 5),
+                  Text(
+                    state.appliedPromoCode ??
+                        state.checkoutOption?.promotion?.code ??
+                        state.checkoutOption?.promotion?.title ??
+                        'Promo Terpakai',
+                    style:
+                        GlobalHelper.getTextTheme(
+                          context,
+                          appTextStyle: AppTextStyle.LABEL_MEDIUM,
+                        )?.copyWith(
+                          fontWeight: FontWeight.w600,
+                          color: GlobalHelper.getColorSchema(context).primary,
+                        ),
+                  ),
+                  const SizedBox(width: 5),
+                  GestureDetector(
+                    onTap: () => context.read<CustomerCheckoutBloc>().add(
+                      const CustomerCheckoutEventVoucherRemoved(),
+                    ),
+                    child: Icon(
+                      Icons.close,
+                      size: 12,
+                      color: GlobalHelper.getColorSchema(context).primary,
+                    ),
+                  ),
+                ],
+              ),
+            )
+          else
+            Text(
+              'Pilih atau masukkan promo',
+              style: GlobalHelper.getTextTheme(
+                context,
+                appTextStyle: AppTextStyle.BODY_MEDIUM,
+              )?.copyWith(color: GlobalHelper.getColorSchema(context).outline),
             ),
-          ),
         ],
       ),
     );
@@ -1165,5 +1182,30 @@ class CustomerCheckoutScreen extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  void _onPressPromotion(BuildContext context) async {
+    final state = context.read<CustomerCheckoutBloc>().state;
+
+    final param = CustomerOrderGetPromotionParam(
+      cartIds: state.items.map((e) => e.id).toList(),
+      addressId: state.address?.id,
+      shippingKey: state.deliveryMethod?.value,
+      biteshipRateKey: state.selectedExpedition,
+    );
+    final result = await navigatorKey.currentState?.push(
+      MaterialPageRoute(
+        builder: (context) => CustomerPromotionScreen(param: param),
+      ),
+    );
+
+    if (result != null && context.mounted) {
+      context.read<CustomerCheckoutBloc>().add(
+        CustomerCheckoutEventPromoChanged(
+          promo: result['promo'],
+          code: result['code'],
+        ),
+      );
+    }
   }
 }

@@ -152,7 +152,7 @@ return getShippingOptionParam(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( CustomerMerchantEntity? merchant,  String? blockingMessage,  List<CustomerCheckoutShippingOptionEntity>? shippingOptions,  List<CustomerCheckoutShippingOptionEntity>? biteshipShippingOptions,  String? selectedShippingKey,  String? selectedBiteshipRateKey,  CustomerCheckoutShippingOptionEntity? selectedShippingOption,  String? selectedMerchantAccountId,  List<CustomerCheckoutPaymentMethodEntity>? paymentMethods,  CustomerCheckoutSummaryEntity? summary,  List<dynamic>? availablePromotions,  dynamic promotion)?  optionEntity,TResult Function( List<String> cartIds,  String? notes)?  sendParam,TResult Function( List<String> cartIds,  String? addressId,  String? shippingKey,  List<Map<String, String>>? promotions)?  getShippingOptionParam,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( CustomerMerchantEntity? merchant,  String? blockingMessage,  List<CustomerCheckoutShippingOptionEntity>? shippingOptions,  List<CustomerCheckoutShippingOptionEntity>? biteshipShippingOptions,  String? selectedShippingKey,  String? selectedBiteshipRateKey,  CustomerCheckoutShippingOptionEntity? selectedShippingOption,  String? selectedMerchantAccountId,  List<CustomerCheckoutPaymentMethodEntity>? paymentMethods,  CustomerCheckoutSummaryEntity? summary,  List<CustomerPromotionEntity>? availablePromotions,  CustomerPromotionEntity? promotion)?  optionEntity,TResult Function( List<String> cartIds,  String? notes)?  sendParam,TResult Function( List<String> cartIds,  String? addressId,  String? shippingKey,  List<Map<String, String>>? promotions)?  getShippingOptionParam,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case CustomerCheckoutOptionEntity() when optionEntity != null:
 return optionEntity(_that.merchant,_that.blockingMessage,_that.shippingOptions,_that.biteshipShippingOptions,_that.selectedShippingKey,_that.selectedBiteshipRateKey,_that.selectedShippingOption,_that.selectedMerchantAccountId,_that.paymentMethods,_that.summary,_that.availablePromotions,_that.promotion);case CustomerCheckoutSendParam() when sendParam != null:
@@ -175,7 +175,7 @@ return getShippingOptionParam(_that.cartIds,_that.addressId,_that.shippingKey,_t
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( CustomerMerchantEntity? merchant,  String? blockingMessage,  List<CustomerCheckoutShippingOptionEntity>? shippingOptions,  List<CustomerCheckoutShippingOptionEntity>? biteshipShippingOptions,  String? selectedShippingKey,  String? selectedBiteshipRateKey,  CustomerCheckoutShippingOptionEntity? selectedShippingOption,  String? selectedMerchantAccountId,  List<CustomerCheckoutPaymentMethodEntity>? paymentMethods,  CustomerCheckoutSummaryEntity? summary,  List<dynamic>? availablePromotions,  dynamic promotion)  optionEntity,required TResult Function( List<String> cartIds,  String? notes)  sendParam,required TResult Function( List<String> cartIds,  String? addressId,  String? shippingKey,  List<Map<String, String>>? promotions)  getShippingOptionParam,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( CustomerMerchantEntity? merchant,  String? blockingMessage,  List<CustomerCheckoutShippingOptionEntity>? shippingOptions,  List<CustomerCheckoutShippingOptionEntity>? biteshipShippingOptions,  String? selectedShippingKey,  String? selectedBiteshipRateKey,  CustomerCheckoutShippingOptionEntity? selectedShippingOption,  String? selectedMerchantAccountId,  List<CustomerCheckoutPaymentMethodEntity>? paymentMethods,  CustomerCheckoutSummaryEntity? summary,  List<CustomerPromotionEntity>? availablePromotions,  CustomerPromotionEntity? promotion)  optionEntity,required TResult Function( List<String> cartIds,  String? notes)  sendParam,required TResult Function( List<String> cartIds,  String? addressId,  String? shippingKey,  List<Map<String, String>>? promotions)  getShippingOptionParam,}) {final _that = this;
 switch (_that) {
 case CustomerCheckoutOptionEntity():
 return optionEntity(_that.merchant,_that.blockingMessage,_that.shippingOptions,_that.biteshipShippingOptions,_that.selectedShippingKey,_that.selectedBiteshipRateKey,_that.selectedShippingOption,_that.selectedMerchantAccountId,_that.paymentMethods,_that.summary,_that.availablePromotions,_that.promotion);case CustomerCheckoutSendParam():
@@ -194,7 +194,7 @@ return getShippingOptionParam(_that.cartIds,_that.addressId,_that.shippingKey,_t
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( CustomerMerchantEntity? merchant,  String? blockingMessage,  List<CustomerCheckoutShippingOptionEntity>? shippingOptions,  List<CustomerCheckoutShippingOptionEntity>? biteshipShippingOptions,  String? selectedShippingKey,  String? selectedBiteshipRateKey,  CustomerCheckoutShippingOptionEntity? selectedShippingOption,  String? selectedMerchantAccountId,  List<CustomerCheckoutPaymentMethodEntity>? paymentMethods,  CustomerCheckoutSummaryEntity? summary,  List<dynamic>? availablePromotions,  dynamic promotion)?  optionEntity,TResult? Function( List<String> cartIds,  String? notes)?  sendParam,TResult? Function( List<String> cartIds,  String? addressId,  String? shippingKey,  List<Map<String, String>>? promotions)?  getShippingOptionParam,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( CustomerMerchantEntity? merchant,  String? blockingMessage,  List<CustomerCheckoutShippingOptionEntity>? shippingOptions,  List<CustomerCheckoutShippingOptionEntity>? biteshipShippingOptions,  String? selectedShippingKey,  String? selectedBiteshipRateKey,  CustomerCheckoutShippingOptionEntity? selectedShippingOption,  String? selectedMerchantAccountId,  List<CustomerCheckoutPaymentMethodEntity>? paymentMethods,  CustomerCheckoutSummaryEntity? summary,  List<CustomerPromotionEntity>? availablePromotions,  CustomerPromotionEntity? promotion)?  optionEntity,TResult? Function( List<String> cartIds,  String? notes)?  sendParam,TResult? Function( List<String> cartIds,  String? addressId,  String? shippingKey,  List<Map<String, String>>? promotions)?  getShippingOptionParam,}) {final _that = this;
 switch (_that) {
 case CustomerCheckoutOptionEntity() when optionEntity != null:
 return optionEntity(_that.merchant,_that.blockingMessage,_that.shippingOptions,_that.biteshipShippingOptions,_that.selectedShippingKey,_that.selectedBiteshipRateKey,_that.selectedShippingOption,_that.selectedMerchantAccountId,_that.paymentMethods,_that.summary,_that.availablePromotions,_that.promotion);case CustomerCheckoutSendParam() when sendParam != null:
@@ -211,7 +211,7 @@ return getShippingOptionParam(_that.cartIds,_that.addressId,_that.shippingKey,_t
 
 @JsonSerializable(fieldRename: FieldRename.snake, includeIfNull: false)
 class CustomerCheckoutOptionEntity implements CustomerCheckout {
-  const CustomerCheckoutOptionEntity({this.merchant, this.blockingMessage, final  List<CustomerCheckoutShippingOptionEntity>? shippingOptions, final  List<CustomerCheckoutShippingOptionEntity>? biteshipShippingOptions, this.selectedShippingKey, this.selectedBiteshipRateKey, this.selectedShippingOption, this.selectedMerchantAccountId, final  List<CustomerCheckoutPaymentMethodEntity>? paymentMethods, this.summary, final  List<dynamic>? availablePromotions, this.promotion, final  String? $type}): _shippingOptions = shippingOptions,_biteshipShippingOptions = biteshipShippingOptions,_paymentMethods = paymentMethods,_availablePromotions = availablePromotions,$type = $type ?? 'optionEntity';
+  const CustomerCheckoutOptionEntity({this.merchant, this.blockingMessage, final  List<CustomerCheckoutShippingOptionEntity>? shippingOptions, final  List<CustomerCheckoutShippingOptionEntity>? biteshipShippingOptions, this.selectedShippingKey, this.selectedBiteshipRateKey, this.selectedShippingOption, this.selectedMerchantAccountId, final  List<CustomerCheckoutPaymentMethodEntity>? paymentMethods, this.summary, final  List<CustomerPromotionEntity>? availablePromotions, this.promotion, final  String? $type}): _shippingOptions = shippingOptions,_biteshipShippingOptions = biteshipShippingOptions,_paymentMethods = paymentMethods,_availablePromotions = availablePromotions,$type = $type ?? 'optionEntity';
   factory CustomerCheckoutOptionEntity.fromJson(Map<String, dynamic> json) => _$CustomerCheckoutOptionEntityFromJson(json);
 
  final  CustomerMerchantEntity? merchant;
@@ -248,8 +248,8 @@ class CustomerCheckoutOptionEntity implements CustomerCheckout {
 }
 
  final  CustomerCheckoutSummaryEntity? summary;
- final  List<dynamic>? _availablePromotions;
- List<dynamic>? get availablePromotions {
+ final  List<CustomerPromotionEntity>? _availablePromotions;
+ List<CustomerPromotionEntity>? get availablePromotions {
   final value = _availablePromotions;
   if (value == null) return null;
   if (_availablePromotions is EqualUnmodifiableListView) return _availablePromotions;
@@ -257,7 +257,7 @@ class CustomerCheckoutOptionEntity implements CustomerCheckout {
   return EqualUnmodifiableListView(value);
 }
 
- final  dynamic promotion;
+ final  CustomerPromotionEntity? promotion;
 
 @JsonKey(name: 'runtimeType')
 final String $type;
@@ -296,7 +296,7 @@ abstract mixin class $CustomerCheckoutOptionEntityCopyWith<$Res> implements $Cus
   factory $CustomerCheckoutOptionEntityCopyWith(CustomerCheckoutOptionEntity value, $Res Function(CustomerCheckoutOptionEntity) _then) = _$CustomerCheckoutOptionEntityCopyWithImpl;
 @useResult
 $Res call({
- CustomerMerchantEntity? merchant, String? blockingMessage, List<CustomerCheckoutShippingOptionEntity>? shippingOptions, List<CustomerCheckoutShippingOptionEntity>? biteshipShippingOptions, String? selectedShippingKey, String? selectedBiteshipRateKey, CustomerCheckoutShippingOptionEntity? selectedShippingOption, String? selectedMerchantAccountId, List<CustomerCheckoutPaymentMethodEntity>? paymentMethods, CustomerCheckoutSummaryEntity? summary, List<dynamic>? availablePromotions, dynamic promotion
+ CustomerMerchantEntity? merchant, String? blockingMessage, List<CustomerCheckoutShippingOptionEntity>? shippingOptions, List<CustomerCheckoutShippingOptionEntity>? biteshipShippingOptions, String? selectedShippingKey, String? selectedBiteshipRateKey, CustomerCheckoutShippingOptionEntity? selectedShippingOption, String? selectedMerchantAccountId, List<CustomerCheckoutPaymentMethodEntity>? paymentMethods, CustomerCheckoutSummaryEntity? summary, List<CustomerPromotionEntity>? availablePromotions, CustomerPromotionEntity? promotion
 });
 
 
@@ -326,8 +326,8 @@ as CustomerCheckoutShippingOptionEntity?,selectedMerchantAccountId: freezed == s
 as String?,paymentMethods: freezed == paymentMethods ? _self._paymentMethods : paymentMethods // ignore: cast_nullable_to_non_nullable
 as List<CustomerCheckoutPaymentMethodEntity>?,summary: freezed == summary ? _self.summary : summary // ignore: cast_nullable_to_non_nullable
 as CustomerCheckoutSummaryEntity?,availablePromotions: freezed == availablePromotions ? _self._availablePromotions : availablePromotions // ignore: cast_nullable_to_non_nullable
-as List<dynamic>?,promotion: freezed == promotion ? _self.promotion : promotion // ignore: cast_nullable_to_non_nullable
-as dynamic,
+as List<CustomerPromotionEntity>?,promotion: freezed == promotion ? _self.promotion : promotion // ignore: cast_nullable_to_non_nullable
+as CustomerPromotionEntity?,
   ));
 }
 

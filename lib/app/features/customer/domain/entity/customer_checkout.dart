@@ -1,5 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:warunk/app/features/customer/domain/entity/customer_merchant.dart';
+import 'package:warunk/app/features/customer/domain/entity/customer_promotion.dart';
 
 part 'customer_checkout.freezed.dart';
 part 'customer_checkout.g.dart';
@@ -18,8 +19,8 @@ sealed class CustomerCheckout with _$CustomerCheckout {
     String? selectedMerchantAccountId,
     List<CustomerCheckoutPaymentMethodEntity>? paymentMethods,
     CustomerCheckoutSummaryEntity? summary,
-    List<dynamic>? availablePromotions,
-    dynamic promotion,
+    List<CustomerPromotionEntity>? availablePromotions,
+    CustomerPromotionEntity? promotion,
   }) = CustomerCheckoutOptionEntity;
 
   @JsonSerializable(fieldRename: FieldRename.snake, includeIfNull: false)
