@@ -150,4 +150,14 @@ class MerchantMerchantRepositoryImpl implements MerchantMerchantRepository {
       return responseData;
     });
   }
+
+  @override
+  Future<DataState<String>> topUpBalance({required int amount}) async {
+    return handleResponse(
+      () => _api.topUpBalance({'amount': amount}),
+      (responseData) {
+        return responseData['payment_url'] as String;
+      },
+    );
+  }
 }

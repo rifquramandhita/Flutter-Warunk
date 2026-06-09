@@ -31,4 +31,5 @@ abstract class MerchantMerchantRepository {
       {required MerchantShippingUpdateParam param});
   Future<DataState<dynamic>> open();
   Future<DataState<dynamic>> close();
+  Future<DataState<String>> topUpBalance({required int amount});
 }

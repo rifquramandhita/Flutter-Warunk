@@ -130,6 +130,9 @@ import 'package:warunk/app/features/customer/domain/use_case/customer_order_get_
 import 'package:warunk/app/features/merchant/domain/use_case/merchant_merchant_get_history_balance_use_case.dart';
 import 'package:warunk/app/features/merchant/presentation/balance_history/bloc/merchant_balance_history_bloc.dart';
 import 'package:warunk/app/features/merchant/presentation/balance_topup_payment/bloc/merchant_balance_topup_payment_bloc.dart';
+import 'package:warunk/app/features/merchant/domain/use_case/merchant_merchant_top_up_balance_use_case.dart';
+
+import 'package:warunk/app/features/merchant/presentation/input_topup/bloc/merchant_input_topup_bloc.dart';
 
 final sl = GetIt.instance;
 
@@ -250,6 +253,7 @@ Future<void> initDependency() async {
   sl.registerLazySingleton(
     () => MerchantMerchantGetCourierUseCase(repository: sl()),
   );
+  sl.registerLazySingleton(() => MerchantMerchantTopUpBalanceUseCase(sl()));
   sl.registerLazySingleton(
     () => MerchantMerchantUpdateShippingUseCase(repository: sl()),
   );
@@ -300,6 +304,7 @@ Future<void> initDependency() async {
   sl.registerFactory(() => AuthLoginBloc(authBloc: sl(), useCase: sl()));
   sl.registerFactory(() => MerchantBalanceHistoryBloc(useCase: sl()));
   sl.registerFactory(() => MerchantBalanceTopupPaymentBloc());
+  sl.registerFactory(() => MerchantInputTopupBloc(useCase: sl()));
   sl.registerFactory(() => AuthRegisterBloc(useCase: sl()));
   sl.registerFactory(() => AuthResetPasswordBloc(useCase: sl()));
   sl.registerFactory(() => AuthLogoutBloc(authBloc: sl(), useCase: sl()));

@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:warunk/app/features/merchant/presentation/balance_history/bloc/merchant_balance_history_bloc.dart';
 import 'package:warunk/core/dependency/dependency.dart';
 import 'package:warunk/app/features/merchant/presentation/balance_topup_payment/merchant_balance_topup_payment_screen.dart';
+import 'package:warunk/app/features/merchant/presentation/input_topup/merchant_input_topup_screen.dart';
 import 'package:warunk/main.dart';
 import 'package:warunk/core/helper/global_helper.dart';
 import 'package:warunk/core/helper/number_helper.dart';
@@ -128,13 +129,50 @@ class MerchantBalanceHistoryScreen extends StatelessWidget {
               style: bodyMedium?.copyWith(color: Colors.white70),
             ),
             const SizedBox(height: 8),
-            Text(
-              NumberHelper.formatIDR(currentBalance),
-              style: titleLarge?.copyWith(
-                color: Colors.white,
-                fontSize: 32,
-                fontWeight: FontWeight.bold,
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Text(
+                  NumberHelper.formatIDR(currentBalance),
+                  style: titleLarge?.copyWith(
+                    color: Colors.white,
+                    fontSize: 32,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                InkWell(
+                  onTap: () async {
+                    await navigatorKey.currentState?.push(
+                      MaterialPageRoute(
+                        builder: (context) => const MerchantInputTopupScreen(),
+                      ),
+                    );
+                    if (context.mounted) {
+                      context.read<MerchantBalanceHistoryBloc>().add(
+                        MerchantBalanceHistoryEventFetch(),
+                      );
+                    }
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 8,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Text(
+                      'Top Up',
+                      style: bodyMedium?.copyWith(
+                        color: colorSchema.primary,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ],
         ),
