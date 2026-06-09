@@ -45,8 +45,12 @@ class NotificationService {
 
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
-    final fcmToken = await FirebaseMessaging.instance.getToken();
-    print(fcmToken);
+    try {
+      final fcmToken = await FirebaseMessaging.instance.getToken();
+      print(fcmToken);
+    } catch (e) {
+      print('Failed to get FCM token: $e');
+    }
 
     FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
       RemoteNotification? notification = message.notification;
