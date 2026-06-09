@@ -7,12 +7,14 @@ import 'package:warunk/app/features/merchant/presentation/edit_profil/merchant_e
 import 'package:warunk/app/features/merchant/presentation/input_address/merchant_input_address_screen.dart';
 import 'package:warunk/app/features/merchant/presentation/input_account/merchant_input_account_screen.dart';
 import 'package:warunk/app/features/merchant/presentation/operational_hours/merchant_operational_hours_screen.dart';
+import 'package:warunk/app/features/merchant/presentation/balance_history/merchant_balance_history_screen.dart';
+import 'package:warunk/main.dart';
 import 'package:warunk/app/features/merchant/presentation/profil/bloc/merchant_profil_bloc.dart';
 import 'package:warunk/core/dependency/dependency.dart';
 import 'package:warunk/core/helper/global_helper.dart';
 import 'package:warunk/core/helper/dialog_helper.dart';
+import 'package:warunk/core/helper/number_helper.dart';
 import 'package:warunk/core/widgets/loading_app_widget.dart';
-import 'package:warunk/main.dart';
 
 class MerchantProfilScreen extends StatelessWidget {
   const MerchantProfilScreen({super.key});
@@ -99,6 +101,10 @@ class MerchantProfilScreen extends StatelessWidget {
       context,
       appTextStyle: AppTextStyle.TITLE_LARGE,
     );
+    final titleMedium = GlobalHelper.getTextTheme(
+      context,
+      appTextStyle: AppTextStyle.TITLE_MEDIUM,
+    );
     final labelSmall = GlobalHelper.getTextTheme(
       context,
       appTextStyle: AppTextStyle.LABEL_SMALL,
@@ -122,92 +128,181 @@ class MerchantProfilScreen extends StatelessWidget {
       child: SafeArea(
         child: Padding(
           padding: const EdgeInsets.fromLTRB(20, 20, 20, 24),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
+          child: Column(
             children: [
-              Container(
-                width: 80,
-                height: 80,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.white.withValues(alpha: 0.2),
-                  border: Border.all(color: Colors.white, width: 3),
-                ),
-                child: ClipOval(
-                  child:
-                      state.merchant?.photo != null &&
-                          state.merchant!.photo!.isNotEmpty
-                      ? Image.network(
-                          state.merchant!.photo!,
-                          fit: BoxFit.cover,
-                          width: 80,
-                          height: 80,
-                          errorBuilder: (context, error, stackTrace) =>
-                              Container(
-                                color: colorSchema.primary.withValues(
-                                  alpha: 0.3,
-                                ),
-                                child: const Center(
-                                  child: Text(
-                                    '🏪',
-                                    style: TextStyle(fontSize: 36),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Container(
+                    width: 80,
+                    height: 80,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.white.withValues(alpha: 0.2),
+                      border: Border.all(color: Colors.white, width: 3),
+                    ),
+                    child: ClipOval(
+                      child:
+                          state.merchant?.photo != null &&
+                              state.merchant!.photo!.isNotEmpty
+                          ? Image.network(
+                              state.merchant!.photo!,
+                              fit: BoxFit.cover,
+                              width: 80,
+                              height: 80,
+                              errorBuilder: (context, error, stackTrace) =>
+                                  Container(
+                                    color: colorSchema.primary.withValues(
+                                      alpha: 0.3,
+                                    ),
+                                    child: const Center(
+                                      child: Text(
+                                        '🏪',
+                                        style: TextStyle(fontSize: 36),
+                                      ),
+                                    ),
                                   ),
+                            )
+                          : Container(
+                              color: colorSchema.primary.withValues(alpha: 0.3),
+                              child: const Center(
+                                child: Text(
+                                  '🏪',
+                                  style: TextStyle(fontSize: 36),
                                 ),
                               ),
-                        )
-                      : Container(
-                          color: colorSchema.primary.withValues(alpha: 0.3),
-                          child: const Center(
-                            child: Text('🏪', style: TextStyle(fontSize: 36)),
+                            ),
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          state.merchant?.name ?? '',
+                          style: titleLarge?.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
                           ),
                         ),
-                ),
-              ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      state.merchant?.name ?? '',
-                      style: titleLarge?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
-                    const SizedBox(height: 6),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 4,
-                      ),
-                      decoration: BoxDecoration(
-                        color: colorSchema.secondary,
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Text(
-                        state.merchant?.merchantCategory ?? '',
-                        style: labelSmall?.copyWith(
-                          fontWeight: FontWeight.w700,
-                          color: Colors.white,
+                        const SizedBox(height: 6),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 4,
+                          ),
+                          decoration: BoxDecoration(
+                            color: colorSchema.secondary,
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Text(
+                            state.merchant?.merchantCategory ?? '',
+                            style: labelSmall?.copyWith(
+                              fontWeight: FontWeight.w700,
+                              color: Colors.white,
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    Row(
-                      children: [
-                        const Icon(
-                          Icons.phone,
-                          color: Colors.white70,
-                          size: 14,
-                        ),
-                        const SizedBox(width: 6),
-                        Text(
-                          state.merchant?.phone ?? '',
-                          style: bodySmall?.copyWith(color: Colors.white),
+                        const SizedBox(height: 10),
+                        Row(
+                          children: [
+                            const Icon(
+                              Icons.phone,
+                              color: Colors.white70,
+                              size: 14,
+                            ),
+                            const SizedBox(width: 6),
+                            Text(
+                              state.merchant?.phone ?? '',
+                              style: bodySmall?.copyWith(color: Colors.white),
+                            ),
+                          ],
                         ),
                       ],
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 12,
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.15),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color: Colors.white.withValues(alpha: 0.3),
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.2),
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(
+                        Icons.account_balance_wallet,
+                        color: Colors.white,
+                        size: 20,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Saldo Saat Ini',
+                            style: labelSmall?.copyWith(color: Colors.white70),
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            NumberHelper.formatIDR(
+                              state.merchant?.balance ?? 0,
+                            ),
+                            style: titleMedium?.copyWith(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    TextButton.icon(
+                      onPressed: () {
+                        navigatorKey.currentState?.push(
+                          MaterialPageRoute(
+                            builder: (context) => const MerchantBalanceHistoryScreen(),
+                          ),
+                        );
+                      },
+                      icon: Icon(Icons.history, color: colorSchema.primary, size: 16),
+                      label: Text(
+                        'Riwayat',
+                        style: labelSmall?.copyWith(
+                          color: colorSchema.primary,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      style: TextButton.styleFrom(
+                        backgroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 6,
+                        ),
+                        minimumSize: Size.zero,
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
                     ),
                   ],
                 ),

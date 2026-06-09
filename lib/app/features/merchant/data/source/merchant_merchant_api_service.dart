@@ -20,6 +20,9 @@ abstract class MerchantMerchantApiService {
   @GET('/api/seller/merchant/courier-code-available')
   Future<HttpResponse<dynamic>> getCourier();
 
+  @GET('/api/seller/merchant/balance-histories')
+  Future<HttpResponse<dynamic>> getHistoryBalance();
+
   @MultiPart()
   @PUT('/api/seller/merchant/information')
   Future<HttpResponse<dynamic>> update(

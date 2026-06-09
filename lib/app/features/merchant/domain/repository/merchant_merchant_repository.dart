@@ -3,10 +3,12 @@ import 'package:warunk/app/features/merchant/domain/entity/merchant_merchant.dar
 import 'package:warunk/app/features/merchant/domain/entity/merchant_operational_hour.dart';
 import 'package:warunk/app/features/merchant/domain/entity/merchant_shipping.dart';
 import 'package:warunk/app/features/merchant/domain/entity/merchant_category.dart';
+import 'package:warunk/app/features/merchant/domain/entity/merchant_balance_history.dart';
 import 'package:warunk/core/network/data_state.dart';
 
 abstract class MerchantMerchantRepository {
   Future<DataState<MerchantMerchantEntity>> get();
+  Future<DataState<MerchantBalanceHistorySummaryEntity>> getHistoryBalance();
   Future<DataState<List<MerchantCategoryEntity>>> getCategories();
   Future<DataState<List<String>>> getCourier();
   Future<DataState<dynamic>> update(

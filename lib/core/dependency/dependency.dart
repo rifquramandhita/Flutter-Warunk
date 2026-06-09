@@ -127,6 +127,8 @@ import 'package:warunk/app/features/customer/data/repository/customer_order_repo
 import 'package:warunk/app/features/customer/domain/use_case/customer_checkout_get_option_use_case.dart';
 import 'package:warunk/app/features/customer/domain/use_case/customer_order_create_use_case.dart';
 import 'package:warunk/app/features/customer/domain/use_case/customer_order_get_promotion_use_case.dart';
+import 'package:warunk/app/features/merchant/domain/use_case/merchant_merchant_get_history_balance_use_case.dart';
+import 'package:warunk/app/features/merchant/presentation/balance_history/bloc/merchant_balance_history_bloc.dart';
 
 final sl = GetIt.instance;
 
@@ -240,6 +242,9 @@ Future<void> initDependency() async {
   sl.registerLazySingleton(() => MerchantMerchantCloseUseCase(sl()));
   sl.registerLazySingleton(
     () => MerchantMerchantUpdateOperationalHourUseCase(sl()),
+  );
+  sl.registerLazySingleton(
+    () => MerchantMerchantGetHistoryBalanceUseCase(repository: sl()),
   );
   sl.registerLazySingleton(
     () => MerchantMerchantGetCourierUseCase(repository: sl()),
@@ -379,6 +384,7 @@ Future<void> initDependency() async {
     () => MerchantPromotionBloc(useCase: sl(), deleteUseCase: sl()),
   );
   sl.registerFactory(() => MerchantInputPromotionBloc(sl(), sl(), sl()));
+  sl.registerFactory(() => MerchantBalanceHistoryBloc(useCase: sl()));
   sl.registerFactoryParam<MerchantShipOrderBloc, String, void>(
     (orderId, _) => MerchantShipOrderBloc(shipUseCase: sl(), orderId: orderId),
   );
