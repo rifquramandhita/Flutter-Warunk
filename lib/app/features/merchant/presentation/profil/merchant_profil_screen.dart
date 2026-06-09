@@ -276,14 +276,22 @@ class MerchantProfilScreen extends StatelessWidget {
                     ),
                     const SizedBox(width: 8),
                     TextButton.icon(
-                      onPressed: () {
-                        navigatorKey.currentState?.push(
+                      onPressed: () async {
+                        await navigatorKey.currentState?.push(
                           MaterialPageRoute(
-                            builder: (context) => const MerchantBalanceHistoryScreen(),
+                            builder: (context) =>
+                                const MerchantBalanceHistoryScreen(),
                           ),
                         );
+                        context.read<MerchantProfilBloc>().add(
+                          MerchantProfilEventGet(),
+                        );
                       },
-                      icon: Icon(Icons.history, color: colorSchema.primary, size: 16),
+                      icon: Icon(
+                        Icons.history,
+                        color: colorSchema.primary,
+                        size: 16,
+                      ),
                       label: Text(
                         'Riwayat',
                         style: labelSmall?.copyWith(
