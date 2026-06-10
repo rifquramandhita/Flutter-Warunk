@@ -541,39 +541,6 @@ class CustomerDetailOrderScreen extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(height: 10),
-              // Hubungi Merchant
-              SizedBox(
-                width: double.infinity,
-                height: 50,
-                child: OutlinedButton.icon(
-                  onPressed: () => context.read<CustomerDetailOrderBloc>().add(
-                    CustomerDetailOrderContactMerchant(),
-                  ),
-                  icon: const Icon(
-                    Icons.chat_bubble_outline_rounded,
-                    size: 20,
-                    color: AppColors.primary,
-                  ),
-                  label: const Text(
-                    'Hubungi Merchant',
-                    style: TextStyle(
-                      fontWeight: FontWeight.w700,
-                      fontSize: 15,
-                      color: AppColors.primary,
-                    ),
-                  ),
-                  style: OutlinedButton.styleFrom(
-                    side: const BorderSide(
-                      color: AppColors.primary,
-                      width: 1.5,
-                    ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(14),
-                    ),
-                  ),
-                ),
-              ),
             ],
           ),
         ),
