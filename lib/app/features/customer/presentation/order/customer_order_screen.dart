@@ -2,7 +2,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:warunk/app/features/customer/presentation/order/bloc/customer_order_bloc.dart';
-import 'package:warunk/app/features/customer/presentation/transaction_detail/customer_transaction_detail_screen.dart';
+import 'package:warunk/app/features/customer/presentation/detail_order/customer_detail_order_screen.dart';
 import 'package:warunk/theme/app_colors.dart';
 import 'package:warunk/core/helper/global_helper.dart';
 
@@ -560,7 +560,7 @@ class CustomerOrderScreen extends StatelessWidget {
                   onTap: () => Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (_) =>
-                          CustomerTransactionDetailScreen(transaction: tx),
+                          CustomerDetailOrderScreen(transaction: tx),
                     ),
                   ),
                   child: Row(

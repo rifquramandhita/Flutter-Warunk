@@ -135,6 +135,7 @@ import 'package:warunk/app/features/merchant/presentation/balance_topup_payment/
 import 'package:warunk/app/features/merchant/domain/use_case/merchant_merchant_top_up_balance_use_case.dart';
 
 import 'package:warunk/app/features/merchant/presentation/input_topup/bloc/merchant_input_topup_bloc.dart';
+import 'package:warunk/app/features/customer/presentation/detail_order/bloc/customer_detail_order_bloc.dart';
 
 final sl = GetIt.instance;
 
@@ -410,4 +411,5 @@ Future<void> initDependency() async {
   sl.registerFactory(() => CustomerPromotionBloc(getPromotionUseCase: sl()));
   sl.registerFactory(() => CustomerAddressMapsBloc(sl()));
   sl.registerFactory(() => CustomerOrderBloc(getOrdersUseCase: sl()));
+  sl.registerFactory(() => CustomerDetailOrderBloc(sl()));
 }
