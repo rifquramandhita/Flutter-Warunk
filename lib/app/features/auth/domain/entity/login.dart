@@ -14,6 +14,7 @@ sealed class Login with _$Login {
     required String apkVersion,
     required String type,
     required String firebaseId,
+    required String role,
     required AuthDeviceEntity device,
   }) = LoginParam;
 

@@ -3,6 +3,7 @@ import 'package:warunk/app/features/auth/domain/use_case/auth_login_use_case.dar
 import 'package:warunk/core/bloc/auth/auth_bloc.dart';
 import 'package:warunk/core/constants/constant.dart';
 import 'package:warunk/core/helper/shared_preferences_helper.dart';
+import 'package:warunk/core/enum/role.dart';
 import 'auth_login_event.dart';
 import 'auth_login_state.dart';
 
@@ -40,7 +41,7 @@ class AuthLoginBloc extends Bloc<AuthLoginEvent, AuthLoginState> {
   }
 
   void _onRoleSelected(AuthRoleSelected event, Emitter<AuthLoginState> emit) {
-    emit(state.copyWith(isMerchant: event.isMerchant));
+    emit(state.copyWith(role: event.role));
   }
 
   Future<void> _onLoginSubmitted(
@@ -52,12 +53,9 @@ class AuthLoginBloc extends Bloc<AuthLoginEvent, AuthLoginState> {
     final response = await _useCase(
       email: state.email,
       password: state.password,
+      role: state.role.value,
     );
     if (response.success) {
-      await SharedPreferencesHelper.setBoolean(
-        PREF_IS_MERCHANT,
-        state.isMerchant,
-      );
       _authBloc.add(AuthEventCheck());
     } else {
       emit(state.copyWith(errorMessage: response.message));

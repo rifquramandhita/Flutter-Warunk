@@ -15,6 +15,7 @@ import 'package:warunk/main.dart';
 import 'package:warunk/theme/app_colors.dart';
 import 'package:warunk/core/widgets/loading_app_widget.dart';
 import 'package:warunk/core/widgets/primary_button.dart';
+import 'package:warunk/core/enum/role.dart';
 
 class AuthLoginScreen extends StatelessWidget {
   const AuthLoginScreen({super.key});
@@ -317,14 +318,14 @@ class AuthLoginScreen extends StatelessWidget {
           _itemRoleLayout(
             context: context,
             state: state,
-            isMerchant: false,
+            role: RoleEnum.customer,
             label: 'Customer',
             icon: Icons.person_outline_rounded,
           ),
           _itemRoleLayout(
             context: context,
             state: state,
-            isMerchant: true,
+            role: RoleEnum.merchant,
             label: 'Merchant',
             icon: Icons.storefront_outlined,
           ),
@@ -336,15 +337,14 @@ class AuthLoginScreen extends StatelessWidget {
   Widget _itemRoleLayout({
     required BuildContext context,
     required AuthLoginState state,
-    required bool isMerchant,
+    required RoleEnum role,
     required String label,
     required IconData icon,
   }) {
-    final isSelected = state.isMerchant == isMerchant;
+    final isSelected = state.role == role;
     return Expanded(
       child: GestureDetector(
-        onTap: () =>
-            context.read<AuthLoginBloc>().add(AuthRoleSelected(isMerchant)),
+        onTap: () => context.read<AuthLoginBloc>().add(AuthRoleSelected(role)),
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 200),
           padding: const EdgeInsets.symmetric(vertical: 10),

@@ -1,10 +1,11 @@
 import 'package:equatable/equatable.dart';
+import 'package:warunk/core/enum/role.dart';
 
 class AuthLoginState extends Equatable {
   final String email;
   final String password;
   final bool obscurePassword;
-  final bool isMerchant;
+  final RoleEnum role;
   final bool isLoading;
   final String? errorMessage;
 
@@ -12,7 +13,7 @@ class AuthLoginState extends Equatable {
     this.email = '',
     this.password = '',
     this.obscurePassword = true,
-    this.isMerchant = false,
+    this.role = RoleEnum.customer,
     this.isLoading = false,
     this.errorMessage,
   });
@@ -21,7 +22,7 @@ class AuthLoginState extends Equatable {
     String? email,
     String? password,
     bool? obscurePassword,
-    bool? isMerchant,
+    RoleEnum? role,
     bool? isLoading,
     String? errorMessage,
   }) {
@@ -29,7 +30,7 @@ class AuthLoginState extends Equatable {
       email: email ?? this.email,
       password: password ?? this.password,
       obscurePassword: obscurePassword ?? this.obscurePassword,
-      isMerchant: isMerchant ?? this.isMerchant,
+      role: role ?? this.role,
       isLoading: isLoading ?? this.isLoading,
       errorMessage: errorMessage,
     );
@@ -40,7 +41,7 @@ class AuthLoginState extends Equatable {
     email,
     password,
     obscurePassword,
-    isMerchant,
+    role,
     isLoading,
     errorMessage,
   ];

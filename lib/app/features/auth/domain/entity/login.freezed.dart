@@ -22,7 +22,7 @@ Login _$LoginFromJson(
 /// @nodoc
 mixin _$Login {
 
- String get email; String get password; String get fcmToken; String get apkVersion; String get type; String get firebaseId; AuthDeviceEntity get device;
+ String get email; String get password; String get fcmToken; String get apkVersion; String get type; String get firebaseId; String get role; AuthDeviceEntity get device;
 /// Create a copy of Login
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -35,16 +35,16 @@ $LoginCopyWith<Login> get copyWith => _$LoginCopyWithImpl<Login>(this as Login, 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Login&&(identical(other.email, email) || other.email == email)&&(identical(other.password, password) || other.password == password)&&(identical(other.fcmToken, fcmToken) || other.fcmToken == fcmToken)&&(identical(other.apkVersion, apkVersion) || other.apkVersion == apkVersion)&&(identical(other.type, type) || other.type == type)&&(identical(other.firebaseId, firebaseId) || other.firebaseId == firebaseId)&&const DeepCollectionEquality().equals(other.device, device));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Login&&(identical(other.email, email) || other.email == email)&&(identical(other.password, password) || other.password == password)&&(identical(other.fcmToken, fcmToken) || other.fcmToken == fcmToken)&&(identical(other.apkVersion, apkVersion) || other.apkVersion == apkVersion)&&(identical(other.type, type) || other.type == type)&&(identical(other.firebaseId, firebaseId) || other.firebaseId == firebaseId)&&(identical(other.role, role) || other.role == role)&&const DeepCollectionEquality().equals(other.device, device));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,email,password,fcmToken,apkVersion,type,firebaseId,const DeepCollectionEquality().hash(device));
+int get hashCode => Object.hash(runtimeType,email,password,fcmToken,apkVersion,type,firebaseId,role,const DeepCollectionEquality().hash(device));
 
 @override
 String toString() {
-  return 'Login(email: $email, password: $password, fcmToken: $fcmToken, apkVersion: $apkVersion, type: $type, firebaseId: $firebaseId, device: $device)';
+  return 'Login(email: $email, password: $password, fcmToken: $fcmToken, apkVersion: $apkVersion, type: $type, firebaseId: $firebaseId, role: $role, device: $device)';
 }
 
 
@@ -55,7 +55,7 @@ abstract mixin class $LoginCopyWith<$Res>  {
   factory $LoginCopyWith(Login value, $Res Function(Login) _then) = _$LoginCopyWithImpl;
 @useResult
 $Res call({
- String email, String password, String fcmToken, String apkVersion, String type, String firebaseId, AuthDeviceEntity device
+ String email, String password, String fcmToken, String apkVersion, String type, String firebaseId, String role, AuthDeviceEntity device
 });
 
 
@@ -72,7 +72,7 @@ class _$LoginCopyWithImpl<$Res>
 
 /// Create a copy of Login
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? email = null,Object? password = null,Object? fcmToken = null,Object? apkVersion = null,Object? type = null,Object? firebaseId = null,Object? device = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? email = null,Object? password = null,Object? fcmToken = null,Object? apkVersion = null,Object? type = null,Object? firebaseId = null,Object? role = null,Object? device = freezed,}) {
   return _then(_self.copyWith(
 email: null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
 as String,password: null == password ? _self.password : password // ignore: cast_nullable_to_non_nullable
@@ -80,6 +80,7 @@ as String,fcmToken: null == fcmToken ? _self.fcmToken : fcmToken // ignore: cast
 as String,apkVersion: null == apkVersion ? _self.apkVersion : apkVersion // ignore: cast_nullable_to_non_nullable
 as String,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
 as String,firebaseId: null == firebaseId ? _self.firebaseId : firebaseId // ignore: cast_nullable_to_non_nullable
+as String,role: null == role ? _self.role : role // ignore: cast_nullable_to_non_nullable
 as String,device: freezed == device ? _self.device : device // ignore: cast_nullable_to_non_nullable
 as AuthDeviceEntity,
   ));
@@ -163,10 +164,10 @@ return param(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String email,  String password,  String fcmToken,  String apkVersion,  String type,  String firebaseId,  AuthDeviceEntity device)?  param,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String email,  String password,  String fcmToken,  String apkVersion,  String type,  String firebaseId,  String role,  AuthDeviceEntity device)?  param,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case LoginParam() when param != null:
-return param(_that.email,_that.password,_that.fcmToken,_that.apkVersion,_that.type,_that.firebaseId,_that.device);case _:
+return param(_that.email,_that.password,_that.fcmToken,_that.apkVersion,_that.type,_that.firebaseId,_that.role,_that.device);case _:
   return orElse();
 
 }
@@ -184,10 +185,10 @@ return param(_that.email,_that.password,_that.fcmToken,_that.apkVersion,_that.ty
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String email,  String password,  String fcmToken,  String apkVersion,  String type,  String firebaseId,  AuthDeviceEntity device)  param,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String email,  String password,  String fcmToken,  String apkVersion,  String type,  String firebaseId,  String role,  AuthDeviceEntity device)  param,}) {final _that = this;
 switch (_that) {
 case LoginParam():
-return param(_that.email,_that.password,_that.fcmToken,_that.apkVersion,_that.type,_that.firebaseId,_that.device);}
+return param(_that.email,_that.password,_that.fcmToken,_that.apkVersion,_that.type,_that.firebaseId,_that.role,_that.device);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -201,10 +202,10 @@ return param(_that.email,_that.password,_that.fcmToken,_that.apkVersion,_that.ty
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String email,  String password,  String fcmToken,  String apkVersion,  String type,  String firebaseId,  AuthDeviceEntity device)?  param,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String email,  String password,  String fcmToken,  String apkVersion,  String type,  String firebaseId,  String role,  AuthDeviceEntity device)?  param,}) {final _that = this;
 switch (_that) {
 case LoginParam() when param != null:
-return param(_that.email,_that.password,_that.fcmToken,_that.apkVersion,_that.type,_that.firebaseId,_that.device);case _:
+return param(_that.email,_that.password,_that.fcmToken,_that.apkVersion,_that.type,_that.firebaseId,_that.role,_that.device);case _:
   return null;
 
 }
@@ -216,7 +217,7 @@ return param(_that.email,_that.password,_that.fcmToken,_that.apkVersion,_that.ty
 
 @JsonSerializable(includeIfNull: false, fieldRename: FieldRename.snake)
 class LoginParam implements Login {
-  const LoginParam({required this.email, required this.password, required this.fcmToken, required this.apkVersion, required this.type, required this.firebaseId, required this.device});
+  const LoginParam({required this.email, required this.password, required this.fcmToken, required this.apkVersion, required this.type, required this.firebaseId, required this.role, required this.device});
   factory LoginParam.fromJson(Map<String, dynamic> json) => _$LoginParamFromJson(json);
 
 @override final  String email;
@@ -225,6 +226,7 @@ class LoginParam implements Login {
 @override final  String apkVersion;
 @override final  String type;
 @override final  String firebaseId;
+@override final  String role;
 @override final  AuthDeviceEntity device;
 
 /// Create a copy of Login
@@ -240,16 +242,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is LoginParam&&(identical(other.email, email) || other.email == email)&&(identical(other.password, password) || other.password == password)&&(identical(other.fcmToken, fcmToken) || other.fcmToken == fcmToken)&&(identical(other.apkVersion, apkVersion) || other.apkVersion == apkVersion)&&(identical(other.type, type) || other.type == type)&&(identical(other.firebaseId, firebaseId) || other.firebaseId == firebaseId)&&const DeepCollectionEquality().equals(other.device, device));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is LoginParam&&(identical(other.email, email) || other.email == email)&&(identical(other.password, password) || other.password == password)&&(identical(other.fcmToken, fcmToken) || other.fcmToken == fcmToken)&&(identical(other.apkVersion, apkVersion) || other.apkVersion == apkVersion)&&(identical(other.type, type) || other.type == type)&&(identical(other.firebaseId, firebaseId) || other.firebaseId == firebaseId)&&(identical(other.role, role) || other.role == role)&&const DeepCollectionEquality().equals(other.device, device));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,email,password,fcmToken,apkVersion,type,firebaseId,const DeepCollectionEquality().hash(device));
+int get hashCode => Object.hash(runtimeType,email,password,fcmToken,apkVersion,type,firebaseId,role,const DeepCollectionEquality().hash(device));
 
 @override
 String toString() {
-  return 'Login.param(email: $email, password: $password, fcmToken: $fcmToken, apkVersion: $apkVersion, type: $type, firebaseId: $firebaseId, device: $device)';
+  return 'Login.param(email: $email, password: $password, fcmToken: $fcmToken, apkVersion: $apkVersion, type: $type, firebaseId: $firebaseId, role: $role, device: $device)';
 }
 
 
@@ -260,7 +262,7 @@ abstract mixin class $LoginParamCopyWith<$Res> implements $LoginCopyWith<$Res> {
   factory $LoginParamCopyWith(LoginParam value, $Res Function(LoginParam) _then) = _$LoginParamCopyWithImpl;
 @override @useResult
 $Res call({
- String email, String password, String fcmToken, String apkVersion, String type, String firebaseId, AuthDeviceEntity device
+ String email, String password, String fcmToken, String apkVersion, String type, String firebaseId, String role, AuthDeviceEntity device
 });
 
 
@@ -277,7 +279,7 @@ class _$LoginParamCopyWithImpl<$Res>
 
 /// Create a copy of Login
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? email = null,Object? password = null,Object? fcmToken = null,Object? apkVersion = null,Object? type = null,Object? firebaseId = null,Object? device = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? email = null,Object? password = null,Object? fcmToken = null,Object? apkVersion = null,Object? type = null,Object? firebaseId = null,Object? role = null,Object? device = freezed,}) {
   return _then(LoginParam(
 email: null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
 as String,password: null == password ? _self.password : password // ignore: cast_nullable_to_non_nullable
@@ -285,6 +287,7 @@ as String,fcmToken: null == fcmToken ? _self.fcmToken : fcmToken // ignore: cast
 as String,apkVersion: null == apkVersion ? _self.apkVersion : apkVersion // ignore: cast_nullable_to_non_nullable
 as String,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
 as String,firebaseId: null == firebaseId ? _self.firebaseId : firebaseId // ignore: cast_nullable_to_non_nullable
+as String,role: null == role ? _self.role : role // ignore: cast_nullable_to_non_nullable
 as String,device: freezed == device ? _self.device : device // ignore: cast_nullable_to_non_nullable
 as AuthDeviceEntity,
   ));

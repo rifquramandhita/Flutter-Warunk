@@ -7,7 +7,7 @@ class AuthState extends Equatable {
   final bool isAuthenticated;
   final bool isLoading;
   final bool showSplash;
-  final bool isMerchant;
+  final RoleEnum role;
 
   const AuthState({
     this.name = '',
@@ -16,7 +16,7 @@ class AuthState extends Equatable {
     this.isAuthenticated = false,
     this.isLoading = false,
     this.showSplash = true,
-    this.isMerchant = false,
+    this.role = RoleEnum.customer,
   });
 
   AuthState copyWith({
@@ -25,7 +25,7 @@ class AuthState extends Equatable {
     String? photoUrl,
     bool? isAuthenticated,
     bool? isLoading,
-    bool? isMerchant,
+    RoleEnum? role,
   }) {
     return AuthState(
       name: name ?? this.name,
@@ -34,7 +34,7 @@ class AuthState extends Equatable {
       isAuthenticated: isAuthenticated ?? this.isAuthenticated,
       isLoading: isLoading ?? this.isLoading,
       showSplash: false,
-      isMerchant: isMerchant ?? this.isMerchant,
+      role: role ?? this.role,
     );
   }
 
@@ -45,6 +45,6 @@ class AuthState extends Equatable {
     photoUrl,
     isAuthenticated,
     isLoading,
-    isMerchant,
+    role,
   ];
 }

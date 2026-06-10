@@ -17,6 +17,7 @@ class AuthLoginUseCase {
   Future<DataState> call({
     required String email,
     required String password,
+    required String role,
   }) async {
     final fcmToken = await FirebaseMessaging.instance.getToken() ?? '';
 
@@ -53,6 +54,7 @@ class AuthLoginUseCase {
       type: '',
       firebaseId: await FirebaseInstallations.instance.getId(),
       device: AuthDeviceEntity(brand: brand, model: model, os: os),
+      role: role,
     );
     return await _repository.login(param: param);
   }

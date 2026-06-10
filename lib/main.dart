@@ -11,6 +11,7 @@ import 'package:warunk/app/features/customer/presentation/shell/customer_shell_s
 import 'package:warunk/app/features/merchant/presentation/shell/merchant_shell_screen.dart';
 import 'package:warunk/core/bloc/auth/auth_bloc.dart';
 import 'package:warunk/core/dependency/dependency.dart';
+import 'package:warunk/core/enum/role.dart';
 import 'package:warunk/core/helper/global_helper.dart';
 import 'package:warunk/core/service/notification_service.dart';
 import 'package:warunk/core/widgets/loading_app_widget.dart';
@@ -66,7 +67,7 @@ class WarunkApp extends StatelessWidget {
               return const Scaffold(body: LoadingAppWidget());
             }
             return state.isAuthenticated
-                ? (state.isMerchant)
+                ? (state.role == RoleEnum.merchant)
                       ? const MerchantShellScreen()
                       : const CustomerShellScreen()
                 : const AuthLoginScreen();

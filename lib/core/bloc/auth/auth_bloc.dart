@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:warunk/core/constants/constant.dart';
+import 'package:warunk/core/enum/role.dart';
 import 'package:warunk/core/helper/shared_preferences_helper.dart';
 
 part 'auth_event.dart';
@@ -28,8 +29,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       final email = await SharedPreferencesHelper.getString(PREF_EMAIL) ?? '';
       final photoUrl =
           await SharedPreferencesHelper.getString(PREF_PHOTO) ?? '';
-      final isMerchant =
-          await SharedPreferencesHelper.getBoolean(PREF_IS_MERCHANT) ?? false;
+      final role = await SharedPreferencesHelper.getString(PREF_ROLE) ?? '';
       emit(
         state.copyWith(
           name: name,
@@ -37,7 +37,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           photoUrl: photoUrl,
           isAuthenticated: true,
           isLoading: false,
-          isMerchant: isMerchant,
+          role: RoleEnum.fromString(role),
         ),
       );
     } else {

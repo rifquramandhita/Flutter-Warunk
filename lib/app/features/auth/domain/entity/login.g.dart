@@ -13,6 +13,7 @@ LoginParam _$LoginParamFromJson(Map<String, dynamic> json) => LoginParam(
   apkVersion: json['apk_version'] as String,
   type: json['type'] as String,
   firebaseId: json['firebase_id'] as String,
+  role: json['role'] as String,
   device: AuthDeviceEntity.fromJson(json['device'] as Map<String, dynamic>),
 );
 
@@ -24,5 +25,6 @@ Map<String, dynamic> _$LoginParamToJson(LoginParam instance) =>
       'apk_version': instance.apkVersion,
       'type': instance.type,
       'firebase_id': instance.firebaseId,
+      'role': instance.role,
       'device': instance.device,
     };

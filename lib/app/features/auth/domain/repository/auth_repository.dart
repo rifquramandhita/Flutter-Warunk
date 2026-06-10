@@ -33,6 +33,7 @@ class AuthRepository {
           auth.user.profilePhoto!,
         );
       }
+      await SharedPreferencesHelper.setString(PREF_ROLE, param.role);
       return null;
     });
   }

@@ -1,3 +1,5 @@
+import 'package:warunk/core/enum/role.dart';
+
 abstract class AuthLoginEvent {}
 
 class AuthEmailChanged extends AuthLoginEvent {
@@ -13,8 +15,8 @@ class AuthPasswordChanged extends AuthLoginEvent {
 class AuthObscurePasswordToggled extends AuthLoginEvent {}
 
 class AuthRoleSelected extends AuthLoginEvent {
-  final bool isMerchant;
-  AuthRoleSelected(this.isMerchant);
+  final RoleEnum role;
+  AuthRoleSelected(this.role);
 }
 
 class AuthLoginSubmitted extends AuthLoginEvent {}
