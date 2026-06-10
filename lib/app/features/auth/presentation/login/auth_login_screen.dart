@@ -179,7 +179,9 @@ class AuthLoginScreen extends StatelessWidget {
             child: TextButton(
               onPressed: () {
                 navigatorKey.currentState?.push(
-                  MaterialPageRoute(builder: (_) => const AuthResetPasswordScreen()),
+                  MaterialPageRoute(
+                    builder: (_) => const AuthResetPasswordScreen(),
+                  ),
                 );
               },
               style: TextButton.styleFrom(
@@ -315,14 +317,14 @@ class AuthLoginScreen extends StatelessWidget {
           _itemRoleLayout(
             context: context,
             state: state,
-            index: 0,
+            isMerchant: false,
             label: 'Customer',
             icon: Icons.person_outline_rounded,
           ),
           _itemRoleLayout(
             context: context,
             state: state,
-            index: 1,
+            isMerchant: true,
             label: 'Merchant',
             icon: Icons.storefront_outlined,
           ),
@@ -334,14 +336,15 @@ class AuthLoginScreen extends StatelessWidget {
   Widget _itemRoleLayout({
     required BuildContext context,
     required AuthLoginState state,
-    required int index,
+    required bool isMerchant,
     required String label,
     required IconData icon,
   }) {
-    final isSelected = state.selectedRole == index;
+    final isSelected = state.isMerchant == isMerchant;
     return Expanded(
       child: GestureDetector(
-        onTap: () => context.read<AuthLoginBloc>().add(AuthRoleSelected(index)),
+        onTap: () =>
+            context.read<AuthLoginBloc>().add(AuthRoleSelected(isMerchant)),
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 200),
           padding: const EdgeInsets.symmetric(vertical: 10),

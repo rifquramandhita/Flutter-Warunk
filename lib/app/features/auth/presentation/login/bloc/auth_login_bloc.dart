@@ -40,7 +40,7 @@ class AuthLoginBloc extends Bloc<AuthLoginEvent, AuthLoginState> {
   }
 
   void _onRoleSelected(AuthRoleSelected event, Emitter<AuthLoginState> emit) {
-    emit(state.copyWith(selectedRole: event.roleIndex));
+    emit(state.copyWith(isMerchant: event.isMerchant));
   }
 
   Future<void> _onLoginSubmitted(
@@ -54,6 +54,10 @@ class AuthLoginBloc extends Bloc<AuthLoginEvent, AuthLoginState> {
       password: state.password,
     );
     if (response.success) {
+      await SharedPreferencesHelper.setBoolean(
+        PREF_IS_MERCHANT,
+        state.isMerchant,
+      );
       _authBloc.add(AuthEventCheck());
     } else {
       emit(state.copyWith(errorMessage: response.message));

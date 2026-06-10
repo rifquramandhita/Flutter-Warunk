@@ -1,4 +1,3 @@
-
 abstract class AuthLoginEvent {}
 
 class AuthEmailChanged extends AuthLoginEvent {
@@ -14,8 +13,8 @@ class AuthPasswordChanged extends AuthLoginEvent {
 class AuthObscurePasswordToggled extends AuthLoginEvent {}
 
 class AuthRoleSelected extends AuthLoginEvent {
-  final int roleIndex; // 0 = Customer, 1 = Merchant
-  AuthRoleSelected(this.roleIndex);
+  final bool isMerchant;
+  AuthRoleSelected(this.isMerchant);
 }
 
 class AuthLoginSubmitted extends AuthLoginEvent {}

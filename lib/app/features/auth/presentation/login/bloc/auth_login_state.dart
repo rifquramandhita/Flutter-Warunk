@@ -4,7 +4,7 @@ class AuthLoginState extends Equatable {
   final String email;
   final String password;
   final bool obscurePassword;
-  final int selectedRole;
+  final bool isMerchant;
   final bool isLoading;
   final String? errorMessage;
 
@@ -12,7 +12,7 @@ class AuthLoginState extends Equatable {
     this.email = '',
     this.password = '',
     this.obscurePassword = true,
-    this.selectedRole = 1,
+    this.isMerchant = false,
     this.isLoading = false,
     this.errorMessage,
   });
@@ -21,7 +21,7 @@ class AuthLoginState extends Equatable {
     String? email,
     String? password,
     bool? obscurePassword,
-    int? selectedRole,
+    bool? isMerchant,
     bool? isLoading,
     String? errorMessage,
   }) {
@@ -29,7 +29,7 @@ class AuthLoginState extends Equatable {
       email: email ?? this.email,
       password: password ?? this.password,
       obscurePassword: obscurePassword ?? this.obscurePassword,
-      selectedRole: selectedRole ?? this.selectedRole,
+      isMerchant: isMerchant ?? this.isMerchant,
       isLoading: isLoading ?? this.isLoading,
       errorMessage: errorMessage,
     );
@@ -40,7 +40,7 @@ class AuthLoginState extends Equatable {
     email,
     password,
     obscurePassword,
-    selectedRole,
+    isMerchant,
     isLoading,
     errorMessage,
   ];
