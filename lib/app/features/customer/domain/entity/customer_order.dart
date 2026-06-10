@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:warunk/app/features/customer/domain/entity/customer_shipping.dart';
 
 part 'customer_order.g.dart';
 part 'customer_order.freezed.dart';
@@ -64,7 +65,7 @@ sealed class CustomerOrder with _$CustomerOrder {
     List<dynamic>? items,
     List<dynamic>? reviews,
     bool? needsReview,
-    dynamic shipping,
+    CustomerShippingEntity? shipping,
     String? paidAt,
     String? cancelledAt,
     String? completedAt,

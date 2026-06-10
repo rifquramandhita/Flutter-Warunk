@@ -10,11 +10,12 @@ final class CustomerCheckoutEventFetchStarted extends CustomerCheckoutEvent {
 }
 
 final class CustomerCheckoutEventDeliveryChanged extends CustomerCheckoutEvent {
-  final DeliveryMethod method;
+  final DeliveryMethodEnum method;
   const CustomerCheckoutEventDeliveryChanged(this.method);
 }
 
-final class CustomerCheckoutEventExpeditionChanged extends CustomerCheckoutEvent {
+final class CustomerCheckoutEventExpeditionChanged
+    extends CustomerCheckoutEvent {
   final String expedition;
   const CustomerCheckoutEventExpeditionChanged(this.expedition);
 }
@@ -28,12 +29,14 @@ final class CustomerCheckoutEventAddressChanged extends CustomerCheckoutEvent {
   const CustomerCheckoutEventAddressChanged(this.address);
 }
 
-final class CustomerCheckoutEventPaymentMethodChanged extends CustomerCheckoutEvent {
+final class CustomerCheckoutEventPaymentMethodChanged
+    extends CustomerCheckoutEvent {
   final String methodKey;
   const CustomerCheckoutEventPaymentMethodChanged(this.methodKey);
 }
 
-final class CustomerCheckoutEventPaymentProofChanged extends CustomerCheckoutEvent {
+final class CustomerCheckoutEventPaymentProofChanged
+    extends CustomerCheckoutEvent {
   final File file;
   const CustomerCheckoutEventPaymentProofChanged(this.file);
 }

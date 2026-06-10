@@ -6,7 +6,7 @@ import 'package:dropdown_search/dropdown_search.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:warunk/app/features/customer/domain/entity/customer_address.dart';
 import 'package:warunk/app/features/customer/domain/entity/customer_checkout.dart';
-import 'package:warunk/app/features/customer/domain/entity/delivery_method.dart';
+import 'package:warunk/core/enum/delivery_method.dart';
 import 'package:warunk/app/features/customer/presentation/address/customer_address_screen.dart';
 import 'package:warunk/app/features/customer/domain/entity/customer_cart.dart';
 import 'package:warunk/app/features/customer/domain/entity/customer_order.dart';
@@ -446,7 +446,7 @@ class CustomerCheckoutScreen extends StatelessWidget {
       child: Column(
         children: availableOptions.map((opt) {
           final method = opt.key ?? '';
-          final deliveryMethodEnum = DeliveryMethod.fromString(method);
+          final deliveryMethodEnum = DeliveryMethodEnum.fromString(method);
           if (deliveryMethodEnum == null) return const SizedBox.shrink();
 
           final selected = state.deliveryMethod == deliveryMethodEnum;
@@ -461,7 +461,7 @@ class CustomerCheckoutScreen extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(vertical: 5),
                   child: Row(
                     children: [
-                      Radio<DeliveryMethod>(
+                      Radio<DeliveryMethodEnum>(
                         value: deliveryMethodEnum,
                         groupValue: state.deliveryMethod,
                         onChanged: (v) => context

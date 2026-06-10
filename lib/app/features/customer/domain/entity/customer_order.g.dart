@@ -94,7 +94,11 @@ CustomerOrderEntity _$CustomerOrderEntityFromJson(Map<String, dynamic> json) =>
       items: json['items'] as List<dynamic>?,
       reviews: json['reviews'] as List<dynamic>?,
       needsReview: json['needs_review'] as bool?,
-      shipping: json['shipping'],
+      shipping: json['shipping'] == null
+          ? null
+          : CustomerShippingEntity.fromJson(
+              json['shipping'] as Map<String, dynamic>,
+            ),
       paidAt: json['paid_at'] as String?,
       cancelledAt: json['cancelled_at'] as String?,
       completedAt: json['completed_at'] as String?,

@@ -8,7 +8,7 @@ import 'package:warunk/core/dependency/dependency.dart';
 import 'package:warunk/core/helper/dialog_helper.dart';
 import 'package:warunk/core/widgets/loading_app_widget.dart';
 import 'package:warunk/core/helper/global_helper.dart';
-import 'package:warunk/app/features/customer/domain/entity/delivery_method.dart';
+import 'package:warunk/core/enum/delivery_method.dart';
 
 // ── Entry point ────────────────────────────────────────────────────────────
 class CustomerDetailOrderScreen extends StatelessWidget {
@@ -503,86 +503,78 @@ class CustomerDetailOrderScreen extends StatelessWidget {
         ),
 
         // ── Fixed bottom buttons ────────────────────────────────────
-        Positioned(
-          bottom: 0,
-          left: 0,
-          right: 0,
-          child: Container(
-            padding: EdgeInsets.all(16),
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black12,
-                  blurRadius: 16,
-                  offset: Offset(0, -4),
-                ),
-              ],
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // Lacak Pesanan
-                SizedBox(
-                  width: double.infinity,
-                  height: 50,
-                  child: ElevatedButton.icon(
-                    onPressed: () => context
-                        .read<CustomerDetailOrderBloc>()
-                        .add(CustomerDetailOrderTrackOrder()),
-                    icon: const Icon(Icons.location_on_outlined, size: 20),
-                    label: const Text(
-                      'Lacak Pesanan',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w700,
-                        fontSize: 15,
-                      ),
-                    ),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primary,
-                      foregroundColor: Colors.white,
-                      elevation: 0,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(14),
-                      ),
+        Container(
+          padding: EdgeInsets.all(16),
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black12,
+                blurRadius: 16,
+                offset: Offset(0, -4),
+              ),
+            ],
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Lacak Pesanan
+              SizedBox(
+                width: double.infinity,
+                height: 50,
+                child: ElevatedButton.icon(
+                  onPressed: () => context.read<CustomerDetailOrderBloc>().add(
+                    CustomerDetailOrderTrackOrder(),
+                  ),
+                  icon: const Icon(Icons.location_on_outlined, size: 20),
+                  label: const Text(
+                    'Lacak Pesanan',
+                    style: TextStyle(fontWeight: FontWeight.w700, fontSize: 15),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.primary,
+                    foregroundColor: Colors.white,
+                    elevation: 0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14),
                     ),
                   ),
                 ),
-                const SizedBox(height: 10),
-                // Hubungi Merchant
-                SizedBox(
-                  width: double.infinity,
-                  height: 50,
-                  child: OutlinedButton.icon(
-                    onPressed: () => context
-                        .read<CustomerDetailOrderBloc>()
-                        .add(CustomerDetailOrderContactMerchant()),
-                    icon: const Icon(
-                      Icons.chat_bubble_outline_rounded,
-                      size: 20,
+              ),
+              const SizedBox(height: 10),
+              // Hubungi Merchant
+              SizedBox(
+                width: double.infinity,
+                height: 50,
+                child: OutlinedButton.icon(
+                  onPressed: () => context.read<CustomerDetailOrderBloc>().add(
+                    CustomerDetailOrderContactMerchant(),
+                  ),
+                  icon: const Icon(
+                    Icons.chat_bubble_outline_rounded,
+                    size: 20,
+                    color: AppColors.primary,
+                  ),
+                  label: const Text(
+                    'Hubungi Merchant',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w700,
+                      fontSize: 15,
                       color: AppColors.primary,
                     ),
-                    label: const Text(
-                      'Hubungi Merchant',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w700,
-                        fontSize: 15,
-                        color: AppColors.primary,
-                      ),
+                  ),
+                  style: OutlinedButton.styleFrom(
+                    side: const BorderSide(
+                      color: AppColors.primary,
+                      width: 1.5,
                     ),
-                    style: OutlinedButton.styleFrom(
-                      side: const BorderSide(
-                        color: AppColors.primary,
-                        width: 1.5,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(14),
-                      ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14),
                     ),
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ],
@@ -608,12 +600,12 @@ class CustomerDetailOrderScreen extends StatelessWidget {
 
   String _getDeliveryMethodLabel(CustomerOrderEntity order) {
     String? typeString;
-    if (order.type != null) {
-      typeString = order.type;
-    } else if (order.shipping != null && order.shipping is Map) {
-      typeString = (order.shipping as Map)['type'] as String?;
+
+    typeString = order.shipping?.type;
+    if (typeString == DeliveryMethodEnum.biteship.value) {
+      typeString = order.shipping?.courier;
     }
-    final deliveryMethod = DeliveryMethod.fromString(typeString);
+    final deliveryMethod = DeliveryMethodEnum.fromString(typeString);
     return deliveryMethod?.label ?? typeString ?? '-';
   }
 

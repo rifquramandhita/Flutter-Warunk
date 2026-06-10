@@ -1,7 +1,7 @@
 part of 'customer_checkout_bloc.dart';
 
 class CustomerCheckoutState extends Equatable {
-  final DeliveryMethod? deliveryMethod;
+  final DeliveryMethodEnum? deliveryMethod;
   final String? selectedExpedition;
   final bool hasVoucher;
   final bool isLoading;
@@ -18,7 +18,7 @@ class CustomerCheckoutState extends Equatable {
   final String? createdOrderId;
 
   int get ongkir {
-    if (deliveryMethod == DeliveryMethod.biteship) {
+    if (deliveryMethod == DeliveryMethodEnum.biteship) {
       if (selectedExpedition?.isNotEmpty == true) {
         final selectedPrice = checkoutOption?.biteshipShippingOptions
             ?.where((e) => e.key == selectedExpedition)
@@ -35,7 +35,7 @@ class CustomerCheckoutState extends Equatable {
 
   int get total {
     final sTotal = checkoutOption?.summary?.total ?? 0;
-    if (deliveryMethod == DeliveryMethod.biteship) {
+    if (deliveryMethod == DeliveryMethodEnum.biteship) {
       final originalOngkir = checkoutOption?.summary?.shippingCost ?? 0;
       return sTotal - originalOngkir + ongkir;
     }
@@ -87,7 +87,7 @@ class CustomerCheckoutState extends Equatable {
   });
 
   CustomerCheckoutState copyWith({
-    DeliveryMethod? deliveryMethod,
+    DeliveryMethodEnum? deliveryMethod,
     String? selectedExpedition,
     bool? hasVoucher,
     bool? isLoading,

@@ -12,7 +12,7 @@ import 'package:warunk/core/helper/global_helper.dart';
 import 'package:warunk/core/widgets/custom_dotted_divider.dart';
 import 'package:warunk/core/helper/number_helper.dart';
 import 'package:warunk/core/widgets/primary_button.dart';
-import 'package:warunk/app/features/customer/domain/entity/delivery_method.dart';
+import 'package:warunk/core/enum/delivery_method.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Entry point
@@ -65,8 +65,10 @@ class MerchantDetailOrderScreen extends StatelessWidget {
 
     if (order == null) return const SizedBox();
 
-    final deliveryMethod = DeliveryMethod.fromString(order.type ?? order.shipping?.type);
-    final isPickup = deliveryMethod == DeliveryMethod.pickup;
+    final deliveryMethod = DeliveryMethodEnum.fromString(
+      order.type ?? order.shipping?.type,
+    );
+    final isPickup = deliveryMethod == DeliveryMethodEnum.pickup;
 
     return Column(
       children: [
@@ -480,7 +482,9 @@ class MerchantDetailOrderScreen extends StatelessWidget {
   }
 
   String _getDeliveryMethodLabel(MerchantOrderEntity order) {
-    final deliveryMethod = DeliveryMethod.fromString(order.type ?? order.shipping?.type);
+    final deliveryMethod = DeliveryMethodEnum.fromString(
+      order.type ?? order.shipping?.type,
+    );
     return deliveryMethod?.label ?? order.type ?? order.shipping?.type ?? '-';
   }
 

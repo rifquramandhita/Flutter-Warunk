@@ -10,7 +10,7 @@ import 'package:warunk/app/features/customer/domain/use_case/customer_checkout_g
 import 'package:warunk/app/features/customer/domain/use_case/customer_order_create_use_case.dart';
 import 'package:warunk/app/features/customer/domain/entity/customer_checkout.dart';
 import 'package:warunk/app/features/customer/domain/entity/customer_order.dart';
-import 'package:warunk/app/features/customer/domain/entity/delivery_method.dart';
+import 'package:warunk/core/enum/delivery_method.dart';
 import 'package:warunk/app/features/customer/domain/entity/customer_promotion.dart';
 
 part 'customer_checkout_event.dart';
@@ -69,12 +69,12 @@ class CustomerCheckoutBloc
 
       if (optionResult.success) {
         final option = optionResult.data;
-        DeliveryMethod? deliveryMethod = DeliveryMethod.fromString(
+        DeliveryMethodEnum? deliveryMethod = DeliveryMethodEnum.fromString(
           option?.selectedShippingKey,
         );
         String? expedition = option?.selectedBiteshipRateKey;
 
-        if (deliveryMethod == DeliveryMethod.biteship &&
+        if (deliveryMethod == DeliveryMethodEnum.biteship &&
             (expedition == null || expedition.isEmpty) &&
             option?.biteshipShippingOptions?.isNotEmpty == true) {
           expedition = option!.biteshipShippingOptions!.first.key;
@@ -113,7 +113,7 @@ class CustomerCheckoutBloc
             ?.map((e) => e.key!)
             .toList() ??
         [];
-    if (event.method == DeliveryMethod.biteship &&
+    if (event.method == DeliveryMethodEnum.biteship &&
         (expedition == null || expedition.isEmpty) &&
         availableCouriers.isNotEmpty) {
       expedition = availableCouriers.first;
@@ -188,7 +188,7 @@ class CustomerCheckoutBloc
     if (result.success) {
       final newOption = result.data;
       String? expedition = state.selectedExpedition;
-      if (state.deliveryMethod == DeliveryMethod.biteship &&
+      if (state.deliveryMethod == DeliveryMethodEnum.biteship &&
           (expedition == null || expedition.isEmpty) &&
           newOption?.biteshipShippingOptions?.isNotEmpty == true) {
         expedition = newOption!.biteshipShippingOptions!.first.key;
@@ -279,7 +279,7 @@ class CustomerCheckoutBloc
       );
       return;
     }
-    if (state.deliveryMethod == DeliveryMethod.biteship &&
+    if (state.deliveryMethod == DeliveryMethodEnum.biteship &&
         (state.selectedExpedition == null ||
             state.selectedExpedition!.isEmpty)) {
       emit(state.copyWith(errorMessage: 'Pilih kurir terlebih dahulu'));
@@ -304,7 +304,7 @@ class CustomerCheckoutBloc
       shippingKey: state.deliveryMethod != null
           ? state.deliveryMethod!.value
           : null,
-      biteshipRateKey: state.deliveryMethod == DeliveryMethod.biteship
+      biteshipRateKey: state.deliveryMethod == DeliveryMethodEnum.biteship
           ? state.selectedExpedition
           : null,
       merchantAccountId: state.checkoutOption?.paymentMethods
@@ -322,11 +322,13 @@ class CustomerCheckoutBloc
     final result = await _createOrderUseCase(params: param);
 
     if (result.success && result.data != null) {
-      emit(state.copyWith(
-        isLoading: false, 
-        isSuccess: true,
-        createdOrderId: result.data,
-      ));
+      emit(
+        state.copyWith(
+          isLoading: false,
+          isSuccess: true,
+          createdOrderId: result.data,
+        ),
+      );
     } else {
       emit(state.copyWith(isLoading: false, errorMessage: result.message));
     }
