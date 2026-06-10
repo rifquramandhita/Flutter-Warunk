@@ -18,6 +18,7 @@ import 'package:warunk/app/features/customer/domain/use_case/customer_location_g
 import 'package:warunk/app/features/customer/presentation/address_map/bloc/customer_address_maps_bloc.dart';
 import 'package:warunk/app/features/customer/domain/use_case/customer_order_get_by_id_use_case.dart';
 import 'package:warunk/app/features/customer/domain/use_case/customer_order_get_use_case.dart';
+import 'package:warunk/app/features/customer/domain/use_case/customer_order_complete_use_case.dart';
 import 'package:warunk/app/features/customer/domain/use_case/customer_checkout_get_shipping_option_use_case.dart';
 import 'package:warunk/app/features/customer/domain/use_case/customer_product_get_by_merchant_use_case.dart';
 import 'package:warunk/app/features/merchant/domain/repository/merchant_location_repository.dart';
@@ -118,6 +119,7 @@ import 'package:warunk/app/features/customer/domain/use_case/customer_cart_delet
 import 'package:warunk/app/features/customer/domain/use_case/customer_cart_update_use_case.dart';
 import 'package:warunk/app/features/customer/presentation/cart/bloc/customer_cart_bloc.dart';
 import 'package:warunk/app/features/customer/presentation/checkout/bloc/customer_checkout_bloc.dart';
+import 'package:warunk/app/features/customer/presentation/review_order/bloc/customer_review_order_bloc.dart';
 import 'package:warunk/app/features/customer/presentation/order_success/bloc/customer_order_success_bloc.dart';
 import 'package:warunk/app/features/customer/presentation/promotion/bloc/customer_promotion_bloc.dart';
 import 'package:dio/dio.dart';
@@ -306,6 +308,7 @@ Future<void> initDependency() async {
   sl.registerLazySingleton(() => CustomerOrderGetPromotionUseCase(sl()));
   sl.registerLazySingleton(() => CustomerOrderGetByIdUseCase(sl()));
   sl.registerLazySingleton(() => CustomerOrderGetUseCase(sl()));
+  sl.registerLazySingleton(() => CustomerOrderCompleteUseCase(sl()));
 
   //bloc
   sl.registerLazySingleton(() => AuthBloc());
@@ -408,6 +411,7 @@ Future<void> initDependency() async {
     (orderId, _) => MerchantShipOrderBloc(shipUseCase: sl(), orderId: orderId),
   );
   sl.registerFactory(() => CustomerOrderSuccessBloc(getOrderByIdUseCase: sl()));
+  sl.registerFactory(() => CustomerReviewOrderBloc(sl()));
   sl.registerFactory(() => CustomerPromotionBloc(getPromotionUseCase: sl()));
   sl.registerFactory(() => CustomerAddressMapsBloc(sl()));
   sl.registerFactory(() => CustomerOrderBloc(getOrdersUseCase: sl()));

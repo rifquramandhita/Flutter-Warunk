@@ -563,7 +563,7 @@ class CustomerMerchantScreen extends StatelessWidget {
                   const SizedBox(height: 6),
                   Text(
                     NumberHelper.formatIDR(
-                      p.hasVariant &&
+                      (p.hasVariant ?? false) &&
                               p.variants != null &&
                               p.variants!.isNotEmpty
                           ? p.variants!.first.price

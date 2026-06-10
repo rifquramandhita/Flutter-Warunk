@@ -9,6 +9,7 @@ sealed class CustomerProductVariant with _$CustomerProductVariant {
   const factory CustomerProductVariant.entity({
     required String id,
     required String productId,
+    String? name,
     required Map<String, String> variantCombination,
     String? sku,
     required int price,

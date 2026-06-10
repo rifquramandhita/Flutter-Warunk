@@ -6,7 +6,6 @@ import 'package:warunk/app/features/customer/presentation/edit_profil/bloc/custo
 import 'package:warunk/core/widgets/custom_text_field.dart';
 import 'package:warunk/core/widgets/primary_button.dart';
 import 'package:warunk/core/widgets/shadow_card.dart';
-import 'package:warunk/core/widgets/sticky_bottom_bar.dart';
 import 'package:warunk/core/dependency/dependency.dart';
 import 'package:warunk/core/helper/global_helper.dart';
 import 'package:warunk/core/helper/dialog_helper.dart';

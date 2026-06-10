@@ -23,6 +23,14 @@ CustomerOrder _$CustomerOrderFromJson(
           return CustomerOrderGetPromotionParam.fromJson(
             json
           );
+                case 'completeParam':
+          return CustomerOrderCompleteParam.fromJson(
+            json
+          );
+                case 'completeReviewParam':
+          return CustomerOrderCompleteReviewParam.fromJson(
+            json
+          );
                 case 'entity':
           return CustomerOrderEntity.fromJson(
             json
@@ -85,12 +93,14 @@ extension CustomerOrderPatterns on CustomerOrder {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( CustomerOrderCreateParam value)?  createParam,TResult Function( CustomerOrderGetPromotionParam value)?  getPromotionParam,TResult Function( CustomerOrderEntity value)?  entity,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( CustomerOrderCreateParam value)?  createParam,TResult Function( CustomerOrderGetPromotionParam value)?  getPromotionParam,TResult Function( CustomerOrderCompleteParam value)?  completeParam,TResult Function( CustomerOrderCompleteReviewParam value)?  completeReviewParam,TResult Function( CustomerOrderEntity value)?  entity,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case CustomerOrderCreateParam() when createParam != null:
 return createParam(_that);case CustomerOrderGetPromotionParam() when getPromotionParam != null:
-return getPromotionParam(_that);case CustomerOrderEntity() when entity != null:
+return getPromotionParam(_that);case CustomerOrderCompleteParam() when completeParam != null:
+return completeParam(_that);case CustomerOrderCompleteReviewParam() when completeReviewParam != null:
+return completeReviewParam(_that);case CustomerOrderEntity() when entity != null:
 return entity(_that);case _:
   return orElse();
 
@@ -109,12 +119,14 @@ return entity(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( CustomerOrderCreateParam value)  createParam,required TResult Function( CustomerOrderGetPromotionParam value)  getPromotionParam,required TResult Function( CustomerOrderEntity value)  entity,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( CustomerOrderCreateParam value)  createParam,required TResult Function( CustomerOrderGetPromotionParam value)  getPromotionParam,required TResult Function( CustomerOrderCompleteParam value)  completeParam,required TResult Function( CustomerOrderCompleteReviewParam value)  completeReviewParam,required TResult Function( CustomerOrderEntity value)  entity,}){
 final _that = this;
 switch (_that) {
 case CustomerOrderCreateParam():
 return createParam(_that);case CustomerOrderGetPromotionParam():
-return getPromotionParam(_that);case CustomerOrderEntity():
+return getPromotionParam(_that);case CustomerOrderCompleteParam():
+return completeParam(_that);case CustomerOrderCompleteReviewParam():
+return completeReviewParam(_that);case CustomerOrderEntity():
 return entity(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
@@ -129,12 +141,14 @@ return entity(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( CustomerOrderCreateParam value)?  createParam,TResult? Function( CustomerOrderGetPromotionParam value)?  getPromotionParam,TResult? Function( CustomerOrderEntity value)?  entity,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( CustomerOrderCreateParam value)?  createParam,TResult? Function( CustomerOrderGetPromotionParam value)?  getPromotionParam,TResult? Function( CustomerOrderCompleteParam value)?  completeParam,TResult? Function( CustomerOrderCompleteReviewParam value)?  completeReviewParam,TResult? Function( CustomerOrderEntity value)?  entity,}){
 final _that = this;
 switch (_that) {
 case CustomerOrderCreateParam() when createParam != null:
 return createParam(_that);case CustomerOrderGetPromotionParam() when getPromotionParam != null:
-return getPromotionParam(_that);case CustomerOrderEntity() when entity != null:
+return getPromotionParam(_that);case CustomerOrderCompleteParam() when completeParam != null:
+return completeParam(_that);case CustomerOrderCompleteReviewParam() when completeReviewParam != null:
+return completeReviewParam(_that);case CustomerOrderEntity() when entity != null:
 return entity(_that);case _:
   return null;
 
@@ -152,11 +166,13 @@ return entity(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String addressId,  String? shippingKey,  String? biteshipRateKey,  String? merchantAccountId,  String? notes,  String paymentProof,  List<String> cartIds,  String? promotionId,  String? promotionCode)?  createParam,TResult Function( List<String> cartIds,  String? addressId,  String? shippingKey,  String? biteshipRateKey)?  getPromotionParam,TResult Function( String? id,  String? invoiceNumber,  String? invoiceUrl,  String? merchantId,  int? customerId,  String? customerAddressId,  String? merchantAccountId,  int? subtotal,  int? shippingCost,  int? serviceFee,  String? promotionId,  String? promotionCode,  String? promotionTitle,  String? promotionType,  int? promotionDiscount,  dynamic promotion,  List<dynamic>? promotions,  int? total,  int? paidAmount,  String? paymentProof,  String? type,  String? status,  String? statusLabel,  String? notes,  String? cancelReason,  String? customerBank,  String? customerAccountNumber,  String? customerAccountName,  String? refundProof,  dynamic customer,  dynamic customerAddress,  dynamic merchantAccount,  dynamic merchant,  List<dynamic>? items,  List<dynamic>? reviews,  bool? needsReview,  CustomerShippingEntity? shipping,  String? paidAt,  String? cancelledAt,  String? completedAt,  String? createdAt,  String? updatedAt)?  entity,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String addressId,  String? shippingKey,  String? biteshipRateKey,  String? merchantAccountId,  String? notes,  String paymentProof,  List<String> cartIds,  String? promotionId,  String? promotionCode)?  createParam,TResult Function( List<String> cartIds,  String? addressId,  String? shippingKey,  String? biteshipRateKey)?  getPromotionParam,TResult Function( String orderId,  List<CustomerOrderCompleteReviewParam> reviews)?  completeParam,TResult Function( String orderItemId,  int rating,  String? review, @JsonKey(includeFromJson: false, includeToJson: false)  List<File> images)?  completeReviewParam,TResult Function( String? id,  String? invoiceNumber,  String? invoiceUrl,  String? merchantId,  int? customerId,  String? customerAddressId,  String? merchantAccountId,  int? subtotal,  int? shippingCost,  int? serviceFee,  String? promotionId,  String? promotionCode,  String? promotionTitle,  String? promotionType,  int? promotionDiscount,  dynamic promotion,  List<dynamic>? promotions,  int? total,  int? paidAmount,  String? paymentProof,  String? type,  String? status,  String? statusLabel,  String? notes,  String? cancelReason,  String? customerBank,  String? customerAccountNumber,  String? customerAccountName,  String? refundProof,  dynamic customer,  dynamic customerAddress,  dynamic merchantAccount,  dynamic merchant,  List<CustomerOrderItemEntity>? items,  List<dynamic>? reviews,  bool? needsReview,  CustomerShippingEntity? shipping,  String? paidAt,  String? cancelledAt,  String? completedAt,  String? createdAt,  String? updatedAt)?  entity,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case CustomerOrderCreateParam() when createParam != null:
 return createParam(_that.addressId,_that.shippingKey,_that.biteshipRateKey,_that.merchantAccountId,_that.notes,_that.paymentProof,_that.cartIds,_that.promotionId,_that.promotionCode);case CustomerOrderGetPromotionParam() when getPromotionParam != null:
-return getPromotionParam(_that.cartIds,_that.addressId,_that.shippingKey,_that.biteshipRateKey);case CustomerOrderEntity() when entity != null:
+return getPromotionParam(_that.cartIds,_that.addressId,_that.shippingKey,_that.biteshipRateKey);case CustomerOrderCompleteParam() when completeParam != null:
+return completeParam(_that.orderId,_that.reviews);case CustomerOrderCompleteReviewParam() when completeReviewParam != null:
+return completeReviewParam(_that.orderItemId,_that.rating,_that.review,_that.images);case CustomerOrderEntity() when entity != null:
 return entity(_that.id,_that.invoiceNumber,_that.invoiceUrl,_that.merchantId,_that.customerId,_that.customerAddressId,_that.merchantAccountId,_that.subtotal,_that.shippingCost,_that.serviceFee,_that.promotionId,_that.promotionCode,_that.promotionTitle,_that.promotionType,_that.promotionDiscount,_that.promotion,_that.promotions,_that.total,_that.paidAmount,_that.paymentProof,_that.type,_that.status,_that.statusLabel,_that.notes,_that.cancelReason,_that.customerBank,_that.customerAccountNumber,_that.customerAccountName,_that.refundProof,_that.customer,_that.customerAddress,_that.merchantAccount,_that.merchant,_that.items,_that.reviews,_that.needsReview,_that.shipping,_that.paidAt,_that.cancelledAt,_that.completedAt,_that.createdAt,_that.updatedAt);case _:
   return orElse();
 
@@ -175,11 +191,13 @@ return entity(_that.id,_that.invoiceNumber,_that.invoiceUrl,_that.merchantId,_th
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String addressId,  String? shippingKey,  String? biteshipRateKey,  String? merchantAccountId,  String? notes,  String paymentProof,  List<String> cartIds,  String? promotionId,  String? promotionCode)  createParam,required TResult Function( List<String> cartIds,  String? addressId,  String? shippingKey,  String? biteshipRateKey)  getPromotionParam,required TResult Function( String? id,  String? invoiceNumber,  String? invoiceUrl,  String? merchantId,  int? customerId,  String? customerAddressId,  String? merchantAccountId,  int? subtotal,  int? shippingCost,  int? serviceFee,  String? promotionId,  String? promotionCode,  String? promotionTitle,  String? promotionType,  int? promotionDiscount,  dynamic promotion,  List<dynamic>? promotions,  int? total,  int? paidAmount,  String? paymentProof,  String? type,  String? status,  String? statusLabel,  String? notes,  String? cancelReason,  String? customerBank,  String? customerAccountNumber,  String? customerAccountName,  String? refundProof,  dynamic customer,  dynamic customerAddress,  dynamic merchantAccount,  dynamic merchant,  List<dynamic>? items,  List<dynamic>? reviews,  bool? needsReview,  CustomerShippingEntity? shipping,  String? paidAt,  String? cancelledAt,  String? completedAt,  String? createdAt,  String? updatedAt)  entity,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String addressId,  String? shippingKey,  String? biteshipRateKey,  String? merchantAccountId,  String? notes,  String paymentProof,  List<String> cartIds,  String? promotionId,  String? promotionCode)  createParam,required TResult Function( List<String> cartIds,  String? addressId,  String? shippingKey,  String? biteshipRateKey)  getPromotionParam,required TResult Function( String orderId,  List<CustomerOrderCompleteReviewParam> reviews)  completeParam,required TResult Function( String orderItemId,  int rating,  String? review, @JsonKey(includeFromJson: false, includeToJson: false)  List<File> images)  completeReviewParam,required TResult Function( String? id,  String? invoiceNumber,  String? invoiceUrl,  String? merchantId,  int? customerId,  String? customerAddressId,  String? merchantAccountId,  int? subtotal,  int? shippingCost,  int? serviceFee,  String? promotionId,  String? promotionCode,  String? promotionTitle,  String? promotionType,  int? promotionDiscount,  dynamic promotion,  List<dynamic>? promotions,  int? total,  int? paidAmount,  String? paymentProof,  String? type,  String? status,  String? statusLabel,  String? notes,  String? cancelReason,  String? customerBank,  String? customerAccountNumber,  String? customerAccountName,  String? refundProof,  dynamic customer,  dynamic customerAddress,  dynamic merchantAccount,  dynamic merchant,  List<CustomerOrderItemEntity>? items,  List<dynamic>? reviews,  bool? needsReview,  CustomerShippingEntity? shipping,  String? paidAt,  String? cancelledAt,  String? completedAt,  String? createdAt,  String? updatedAt)  entity,}) {final _that = this;
 switch (_that) {
 case CustomerOrderCreateParam():
 return createParam(_that.addressId,_that.shippingKey,_that.biteshipRateKey,_that.merchantAccountId,_that.notes,_that.paymentProof,_that.cartIds,_that.promotionId,_that.promotionCode);case CustomerOrderGetPromotionParam():
-return getPromotionParam(_that.cartIds,_that.addressId,_that.shippingKey,_that.biteshipRateKey);case CustomerOrderEntity():
+return getPromotionParam(_that.cartIds,_that.addressId,_that.shippingKey,_that.biteshipRateKey);case CustomerOrderCompleteParam():
+return completeParam(_that.orderId,_that.reviews);case CustomerOrderCompleteReviewParam():
+return completeReviewParam(_that.orderItemId,_that.rating,_that.review,_that.images);case CustomerOrderEntity():
 return entity(_that.id,_that.invoiceNumber,_that.invoiceUrl,_that.merchantId,_that.customerId,_that.customerAddressId,_that.merchantAccountId,_that.subtotal,_that.shippingCost,_that.serviceFee,_that.promotionId,_that.promotionCode,_that.promotionTitle,_that.promotionType,_that.promotionDiscount,_that.promotion,_that.promotions,_that.total,_that.paidAmount,_that.paymentProof,_that.type,_that.status,_that.statusLabel,_that.notes,_that.cancelReason,_that.customerBank,_that.customerAccountNumber,_that.customerAccountName,_that.refundProof,_that.customer,_that.customerAddress,_that.merchantAccount,_that.merchant,_that.items,_that.reviews,_that.needsReview,_that.shipping,_that.paidAt,_that.cancelledAt,_that.completedAt,_that.createdAt,_that.updatedAt);}
 }
 /// A variant of `when` that fallback to returning `null`
@@ -194,11 +212,13 @@ return entity(_that.id,_that.invoiceNumber,_that.invoiceUrl,_that.merchantId,_th
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String addressId,  String? shippingKey,  String? biteshipRateKey,  String? merchantAccountId,  String? notes,  String paymentProof,  List<String> cartIds,  String? promotionId,  String? promotionCode)?  createParam,TResult? Function( List<String> cartIds,  String? addressId,  String? shippingKey,  String? biteshipRateKey)?  getPromotionParam,TResult? Function( String? id,  String? invoiceNumber,  String? invoiceUrl,  String? merchantId,  int? customerId,  String? customerAddressId,  String? merchantAccountId,  int? subtotal,  int? shippingCost,  int? serviceFee,  String? promotionId,  String? promotionCode,  String? promotionTitle,  String? promotionType,  int? promotionDiscount,  dynamic promotion,  List<dynamic>? promotions,  int? total,  int? paidAmount,  String? paymentProof,  String? type,  String? status,  String? statusLabel,  String? notes,  String? cancelReason,  String? customerBank,  String? customerAccountNumber,  String? customerAccountName,  String? refundProof,  dynamic customer,  dynamic customerAddress,  dynamic merchantAccount,  dynamic merchant,  List<dynamic>? items,  List<dynamic>? reviews,  bool? needsReview,  CustomerShippingEntity? shipping,  String? paidAt,  String? cancelledAt,  String? completedAt,  String? createdAt,  String? updatedAt)?  entity,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String addressId,  String? shippingKey,  String? biteshipRateKey,  String? merchantAccountId,  String? notes,  String paymentProof,  List<String> cartIds,  String? promotionId,  String? promotionCode)?  createParam,TResult? Function( List<String> cartIds,  String? addressId,  String? shippingKey,  String? biteshipRateKey)?  getPromotionParam,TResult? Function( String orderId,  List<CustomerOrderCompleteReviewParam> reviews)?  completeParam,TResult? Function( String orderItemId,  int rating,  String? review, @JsonKey(includeFromJson: false, includeToJson: false)  List<File> images)?  completeReviewParam,TResult? Function( String? id,  String? invoiceNumber,  String? invoiceUrl,  String? merchantId,  int? customerId,  String? customerAddressId,  String? merchantAccountId,  int? subtotal,  int? shippingCost,  int? serviceFee,  String? promotionId,  String? promotionCode,  String? promotionTitle,  String? promotionType,  int? promotionDiscount,  dynamic promotion,  List<dynamic>? promotions,  int? total,  int? paidAmount,  String? paymentProof,  String? type,  String? status,  String? statusLabel,  String? notes,  String? cancelReason,  String? customerBank,  String? customerAccountNumber,  String? customerAccountName,  String? refundProof,  dynamic customer,  dynamic customerAddress,  dynamic merchantAccount,  dynamic merchant,  List<CustomerOrderItemEntity>? items,  List<dynamic>? reviews,  bool? needsReview,  CustomerShippingEntity? shipping,  String? paidAt,  String? cancelledAt,  String? completedAt,  String? createdAt,  String? updatedAt)?  entity,}) {final _that = this;
 switch (_that) {
 case CustomerOrderCreateParam() when createParam != null:
 return createParam(_that.addressId,_that.shippingKey,_that.biteshipRateKey,_that.merchantAccountId,_that.notes,_that.paymentProof,_that.cartIds,_that.promotionId,_that.promotionCode);case CustomerOrderGetPromotionParam() when getPromotionParam != null:
-return getPromotionParam(_that.cartIds,_that.addressId,_that.shippingKey,_that.biteshipRateKey);case CustomerOrderEntity() when entity != null:
+return getPromotionParam(_that.cartIds,_that.addressId,_that.shippingKey,_that.biteshipRateKey);case CustomerOrderCompleteParam() when completeParam != null:
+return completeParam(_that.orderId,_that.reviews);case CustomerOrderCompleteReviewParam() when completeReviewParam != null:
+return completeReviewParam(_that.orderItemId,_that.rating,_that.review,_that.images);case CustomerOrderEntity() when entity != null:
 return entity(_that.id,_that.invoiceNumber,_that.invoiceUrl,_that.merchantId,_that.customerId,_that.customerAddressId,_that.merchantAccountId,_that.subtotal,_that.shippingCost,_that.serviceFee,_that.promotionId,_that.promotionCode,_that.promotionTitle,_that.promotionType,_that.promotionDiscount,_that.promotion,_that.promotions,_that.total,_that.paidAmount,_that.paymentProof,_that.type,_that.status,_that.statusLabel,_that.notes,_that.cancelReason,_that.customerBank,_that.customerAccountNumber,_that.customerAccountName,_that.refundProof,_that.customer,_that.customerAddress,_that.merchantAccount,_that.merchant,_that.items,_that.reviews,_that.needsReview,_that.shipping,_that.paidAt,_that.cancelledAt,_that.completedAt,_that.createdAt,_that.updatedAt);case _:
   return null;
 
@@ -388,10 +408,176 @@ as String?,
 }
 
 /// @nodoc
+@JsonSerializable()
+
+class CustomerOrderCompleteParam implements CustomerOrder {
+  const CustomerOrderCompleteParam({required this.orderId, required final  List<CustomerOrderCompleteReviewParam> reviews, final  String? $type}): _reviews = reviews,$type = $type ?? 'completeParam';
+  factory CustomerOrderCompleteParam.fromJson(Map<String, dynamic> json) => _$CustomerOrderCompleteParamFromJson(json);
+
+ final  String orderId;
+ final  List<CustomerOrderCompleteReviewParam> _reviews;
+ List<CustomerOrderCompleteReviewParam> get reviews {
+  if (_reviews is EqualUnmodifiableListView) return _reviews;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_reviews);
+}
+
+
+@JsonKey(name: 'runtimeType')
+final String $type;
+
+
+/// Create a copy of CustomerOrder
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$CustomerOrderCompleteParamCopyWith<CustomerOrderCompleteParam> get copyWith => _$CustomerOrderCompleteParamCopyWithImpl<CustomerOrderCompleteParam>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$CustomerOrderCompleteParamToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CustomerOrderCompleteParam&&(identical(other.orderId, orderId) || other.orderId == orderId)&&const DeepCollectionEquality().equals(other._reviews, _reviews));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,orderId,const DeepCollectionEquality().hash(_reviews));
+
+@override
+String toString() {
+  return 'CustomerOrder.completeParam(orderId: $orderId, reviews: $reviews)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $CustomerOrderCompleteParamCopyWith<$Res> implements $CustomerOrderCopyWith<$Res> {
+  factory $CustomerOrderCompleteParamCopyWith(CustomerOrderCompleteParam value, $Res Function(CustomerOrderCompleteParam) _then) = _$CustomerOrderCompleteParamCopyWithImpl;
+@useResult
+$Res call({
+ String orderId, List<CustomerOrderCompleteReviewParam> reviews
+});
+
+
+
+
+}
+/// @nodoc
+class _$CustomerOrderCompleteParamCopyWithImpl<$Res>
+    implements $CustomerOrderCompleteParamCopyWith<$Res> {
+  _$CustomerOrderCompleteParamCopyWithImpl(this._self, this._then);
+
+  final CustomerOrderCompleteParam _self;
+  final $Res Function(CustomerOrderCompleteParam) _then;
+
+/// Create a copy of CustomerOrder
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? orderId = null,Object? reviews = null,}) {
+  return _then(CustomerOrderCompleteParam(
+orderId: null == orderId ? _self.orderId : orderId // ignore: cast_nullable_to_non_nullable
+as String,reviews: null == reviews ? _self._reviews : reviews // ignore: cast_nullable_to_non_nullable
+as List<CustomerOrderCompleteReviewParam>,
+  ));
+}
+
+
+}
+
+/// @nodoc
+@JsonSerializable()
+
+class CustomerOrderCompleteReviewParam implements CustomerOrder {
+  const CustomerOrderCompleteReviewParam({required this.orderItemId, required this.rating, this.review, @JsonKey(includeFromJson: false, includeToJson: false) final  List<File> images = const [], final  String? $type}): _images = images,$type = $type ?? 'completeReviewParam';
+  factory CustomerOrderCompleteReviewParam.fromJson(Map<String, dynamic> json) => _$CustomerOrderCompleteReviewParamFromJson(json);
+
+ final  String orderItemId;
+ final  int rating;
+ final  String? review;
+ final  List<File> _images;
+@JsonKey(includeFromJson: false, includeToJson: false) List<File> get images {
+  if (_images is EqualUnmodifiableListView) return _images;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_images);
+}
+
+
+@JsonKey(name: 'runtimeType')
+final String $type;
+
+
+/// Create a copy of CustomerOrder
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$CustomerOrderCompleteReviewParamCopyWith<CustomerOrderCompleteReviewParam> get copyWith => _$CustomerOrderCompleteReviewParamCopyWithImpl<CustomerOrderCompleteReviewParam>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$CustomerOrderCompleteReviewParamToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CustomerOrderCompleteReviewParam&&(identical(other.orderItemId, orderItemId) || other.orderItemId == orderItemId)&&(identical(other.rating, rating) || other.rating == rating)&&(identical(other.review, review) || other.review == review)&&const DeepCollectionEquality().equals(other._images, _images));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,orderItemId,rating,review,const DeepCollectionEquality().hash(_images));
+
+@override
+String toString() {
+  return 'CustomerOrder.completeReviewParam(orderItemId: $orderItemId, rating: $rating, review: $review, images: $images)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $CustomerOrderCompleteReviewParamCopyWith<$Res> implements $CustomerOrderCopyWith<$Res> {
+  factory $CustomerOrderCompleteReviewParamCopyWith(CustomerOrderCompleteReviewParam value, $Res Function(CustomerOrderCompleteReviewParam) _then) = _$CustomerOrderCompleteReviewParamCopyWithImpl;
+@useResult
+$Res call({
+ String orderItemId, int rating, String? review,@JsonKey(includeFromJson: false, includeToJson: false) List<File> images
+});
+
+
+
+
+}
+/// @nodoc
+class _$CustomerOrderCompleteReviewParamCopyWithImpl<$Res>
+    implements $CustomerOrderCompleteReviewParamCopyWith<$Res> {
+  _$CustomerOrderCompleteReviewParamCopyWithImpl(this._self, this._then);
+
+  final CustomerOrderCompleteReviewParam _self;
+  final $Res Function(CustomerOrderCompleteReviewParam) _then;
+
+/// Create a copy of CustomerOrder
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? orderItemId = null,Object? rating = null,Object? review = freezed,Object? images = null,}) {
+  return _then(CustomerOrderCompleteReviewParam(
+orderItemId: null == orderItemId ? _self.orderItemId : orderItemId // ignore: cast_nullable_to_non_nullable
+as String,rating: null == rating ? _self.rating : rating // ignore: cast_nullable_to_non_nullable
+as int,review: freezed == review ? _self.review : review // ignore: cast_nullable_to_non_nullable
+as String?,images: null == images ? _self._images : images // ignore: cast_nullable_to_non_nullable
+as List<File>,
+  ));
+}
+
+
+}
+
+/// @nodoc
 
 @JsonSerializable(fieldRename: FieldRename.snake, includeIfNull: false)
 class CustomerOrderEntity implements CustomerOrder {
-  const CustomerOrderEntity({this.id, this.invoiceNumber, this.invoiceUrl, this.merchantId, this.customerId, this.customerAddressId, this.merchantAccountId, this.subtotal, this.shippingCost, this.serviceFee, this.promotionId, this.promotionCode, this.promotionTitle, this.promotionType, this.promotionDiscount, this.promotion, final  List<dynamic>? promotions, this.total, this.paidAmount, this.paymentProof, this.type, this.status, this.statusLabel, this.notes, this.cancelReason, this.customerBank, this.customerAccountNumber, this.customerAccountName, this.refundProof, this.customer, this.customerAddress, this.merchantAccount, this.merchant, final  List<dynamic>? items, final  List<dynamic>? reviews, this.needsReview, this.shipping, this.paidAt, this.cancelledAt, this.completedAt, this.createdAt, this.updatedAt, final  String? $type}): _promotions = promotions,_items = items,_reviews = reviews,$type = $type ?? 'entity';
+  const CustomerOrderEntity({this.id, this.invoiceNumber, this.invoiceUrl, this.merchantId, this.customerId, this.customerAddressId, this.merchantAccountId, this.subtotal, this.shippingCost, this.serviceFee, this.promotionId, this.promotionCode, this.promotionTitle, this.promotionType, this.promotionDiscount, this.promotion, final  List<dynamic>? promotions, this.total, this.paidAmount, this.paymentProof, this.type, this.status, this.statusLabel, this.notes, this.cancelReason, this.customerBank, this.customerAccountNumber, this.customerAccountName, this.refundProof, this.customer, this.customerAddress, this.merchantAccount, this.merchant, final  List<CustomerOrderItemEntity>? items, final  List<dynamic>? reviews, this.needsReview, this.shipping, this.paidAt, this.cancelledAt, this.completedAt, this.createdAt, this.updatedAt, final  String? $type}): _promotions = promotions,_items = items,_reviews = reviews,$type = $type ?? 'entity';
   factory CustomerOrderEntity.fromJson(Map<String, dynamic> json) => _$CustomerOrderEntityFromJson(json);
 
  final  String? id;
@@ -435,8 +621,8 @@ class CustomerOrderEntity implements CustomerOrder {
  final  dynamic customerAddress;
  final  dynamic merchantAccount;
  final  dynamic merchant;
- final  List<dynamic>? _items;
- List<dynamic>? get items {
+ final  List<CustomerOrderItemEntity>? _items;
+ List<CustomerOrderItemEntity>? get items {
   final value = _items;
   if (value == null) return null;
   if (_items is EqualUnmodifiableListView) return _items;
@@ -498,7 +684,7 @@ abstract mixin class $CustomerOrderEntityCopyWith<$Res> implements $CustomerOrde
   factory $CustomerOrderEntityCopyWith(CustomerOrderEntity value, $Res Function(CustomerOrderEntity) _then) = _$CustomerOrderEntityCopyWithImpl;
 @useResult
 $Res call({
- String? id, String? invoiceNumber, String? invoiceUrl, String? merchantId, int? customerId, String? customerAddressId, String? merchantAccountId, int? subtotal, int? shippingCost, int? serviceFee, String? promotionId, String? promotionCode, String? promotionTitle, String? promotionType, int? promotionDiscount, dynamic promotion, List<dynamic>? promotions, int? total, int? paidAmount, String? paymentProof, String? type, String? status, String? statusLabel, String? notes, String? cancelReason, String? customerBank, String? customerAccountNumber, String? customerAccountName, String? refundProof, dynamic customer, dynamic customerAddress, dynamic merchantAccount, dynamic merchant, List<dynamic>? items, List<dynamic>? reviews, bool? needsReview, CustomerShippingEntity? shipping, String? paidAt, String? cancelledAt, String? completedAt, String? createdAt, String? updatedAt
+ String? id, String? invoiceNumber, String? invoiceUrl, String? merchantId, int? customerId, String? customerAddressId, String? merchantAccountId, int? subtotal, int? shippingCost, int? serviceFee, String? promotionId, String? promotionCode, String? promotionTitle, String? promotionType, int? promotionDiscount, dynamic promotion, List<dynamic>? promotions, int? total, int? paidAmount, String? paymentProof, String? type, String? status, String? statusLabel, String? notes, String? cancelReason, String? customerBank, String? customerAccountNumber, String? customerAccountName, String? refundProof, dynamic customer, dynamic customerAddress, dynamic merchantAccount, dynamic merchant, List<CustomerOrderItemEntity>? items, List<dynamic>? reviews, bool? needsReview, CustomerShippingEntity? shipping, String? paidAt, String? cancelledAt, String? completedAt, String? createdAt, String? updatedAt
 });
 
 
@@ -551,7 +737,7 @@ as dynamic,customerAddress: freezed == customerAddress ? _self.customerAddress :
 as dynamic,merchantAccount: freezed == merchantAccount ? _self.merchantAccount : merchantAccount // ignore: cast_nullable_to_non_nullable
 as dynamic,merchant: freezed == merchant ? _self.merchant : merchant // ignore: cast_nullable_to_non_nullable
 as dynamic,items: freezed == items ? _self._items : items // ignore: cast_nullable_to_non_nullable
-as List<dynamic>?,reviews: freezed == reviews ? _self._reviews : reviews // ignore: cast_nullable_to_non_nullable
+as List<CustomerOrderItemEntity>?,reviews: freezed == reviews ? _self._reviews : reviews // ignore: cast_nullable_to_non_nullable
 as List<dynamic>?,needsReview: freezed == needsReview ? _self.needsReview : needsReview // ignore: cast_nullable_to_non_nullable
 as bool?,shipping: freezed == shipping ? _self.shipping : shipping // ignore: cast_nullable_to_non_nullable
 as CustomerShippingEntity?,paidAt: freezed == paidAt ? _self.paidAt : paidAt // ignore: cast_nullable_to_non_nullable

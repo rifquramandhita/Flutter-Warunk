@@ -80,4 +80,18 @@ class CustomerOrderRepositoryImpl implements CustomerOrderRepository {
       ),
     );
   }
+
+  @override
+  Future<DataState<CustomerOrderEntity>> completeOrder(
+    CustomerOrderCompleteParam param,
+  ) async {
+    final formData = await param.toFormData();
+    return handleResponse(
+      () => _apiService.completeOrder(param.orderId, formData),
+      (json) {
+        if (json['order'] == null) return const CustomerOrderEntity();
+        return CustomerOrderEntity.fromJson(json['order'] as Map<String, dynamic>);
+      },
+    );
+  }
 }

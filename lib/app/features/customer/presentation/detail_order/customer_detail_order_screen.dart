@@ -9,6 +9,7 @@ import 'package:warunk/core/helper/dialog_helper.dart';
 import 'package:warunk/core/widgets/loading_app_widget.dart';
 import 'package:warunk/core/helper/global_helper.dart';
 import 'package:warunk/core/enum/delivery_method.dart';
+import 'package:warunk/app/features/customer/presentation/review_order/customer_review_order_screen.dart';
 
 // ── Entry point ────────────────────────────────────────────────────────────
 class CustomerDetailOrderScreen extends StatelessWidget {
@@ -223,18 +224,22 @@ class CustomerDetailOrderScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       // Item rows
-                      ...(tx.items ?? []).map((itemRaw) {
-                        final item = itemRaw as Map<String, dynamic>;
-                        final name = item['product_name']?.toString() ?? '-';
-                        final qty = item['quantity'] as int? ?? 1;
-                        final price = item['price'] as num? ?? 0;
-                        final variantSnapshot =
-                            item['product_variant_snapshot'];
+                      ...(tx.items ?? []).map((item) {
+                        final name =
+                            item.productName ?? item.product?.name ?? '-';
+                        final qty = item.quantity ?? 1;
+                        final price = item.price ?? 0;
+                        final variantSnapshot = item.productVariantSnapshot;
                         Map<String, dynamic>? variantCombination;
                         if (variantSnapshot is Map<String, dynamic>) {
                           variantCombination =
                               variantSnapshot['variant_combination']
                                   as Map<String, dynamic>?;
+                        } else if (item.productVariantLabel != null) {
+                          // Fallback if variant snapshot is not available but label is
+                          variantCombination = {
+                            'name': item.productVariantLabel,
+                          };
                         }
 
                         return Padding(
@@ -327,10 +332,9 @@ class CustomerDetailOrderScreen extends StatelessWidget {
                           Text(
                             _fmt(
                               (tx.items ?? []).fold<int>(0, (s, i) {
-                                final itemMap = i as Map<String, dynamic>;
-                                final price = itemMap['price'] as num? ?? 0;
-                                final qty = itemMap['quantity'] as int? ?? 1;
-                                return s + (price * qty).toInt();
+                                final price = i.price ?? 0;
+                                final qty = i.quantity ?? 1;
+                                return s + (price * qty);
                               }),
                             ),
                             style: const TextStyle(
@@ -518,6 +522,45 @@ class CustomerDetailOrderScreen extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
+              if (tx.status == 'received') ...[
+                SizedBox(
+                  width: double.infinity,
+                  height: 50,
+                  child: ElevatedButton.icon(
+                    onPressed: () async {
+                      final result = await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              CustomerReviewOrderScreen(order: tx),
+                        ),
+                      );
+                      if (result == true) {
+                        context.read<CustomerDetailOrderBloc>().add(
+                          CustomerDetailOrderFetchStarted(tx),
+                        );
+                      }
+                    },
+                    icon: const Icon(Icons.star_outline, size: 20),
+                    label: const Text(
+                      'Selesaikan Pesanan & Review',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w700,
+                        fontSize: 15,
+                      ),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.orange,
+                      foregroundColor: Colors.white,
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 12),
+              ],
               // Lacak Pesanan
               SizedBox(
                 width: double.infinity,
@@ -699,9 +742,9 @@ class CustomerDetailOrderScreen extends StatelessWidget {
         doneCount = 2;
         break;
       case 'shipped':
+      case 'received':
         doneCount = 3;
         break;
-      case 'received':
       case 'completed':
         doneCount = 4;
         break;

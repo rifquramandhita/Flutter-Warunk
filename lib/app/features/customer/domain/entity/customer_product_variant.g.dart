@@ -11,6 +11,7 @@ CustomerProductVariantEntity _$CustomerProductVariantEntityFromJson(
 ) => CustomerProductVariantEntity(
   id: json['id'] as String,
   productId: json['product_id'] as String,
+  name: json['name'] as String?,
   variantCombination: Map<String, String>.from(
     json['variant_combination'] as Map,
   ),
@@ -31,6 +32,7 @@ Map<String, dynamic> _$CustomerProductVariantEntityToJson(
 ) => <String, dynamic>{
   'id': instance.id,
   'product_id': instance.productId,
+  'name': ?instance.name,
   'variant_combination': instance.variantCombination,
   'sku': ?instance.sku,
   'price': instance.price,

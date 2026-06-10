@@ -56,6 +56,46 @@ Map<String, dynamic> _$CustomerOrderGetPromotionParamToJson(
   'runtimeType': instance.$type,
 };
 
+CustomerOrderCompleteParam _$CustomerOrderCompleteParamFromJson(
+  Map<String, dynamic> json,
+) => CustomerOrderCompleteParam(
+  orderId: json['orderId'] as String,
+  reviews: (json['reviews'] as List<dynamic>)
+      .map(
+        (e) => CustomerOrderCompleteReviewParam.fromJson(
+          e as Map<String, dynamic>,
+        ),
+      )
+      .toList(),
+  $type: json['runtimeType'] as String?,
+);
+
+Map<String, dynamic> _$CustomerOrderCompleteParamToJson(
+  CustomerOrderCompleteParam instance,
+) => <String, dynamic>{
+  'orderId': instance.orderId,
+  'reviews': instance.reviews,
+  'runtimeType': instance.$type,
+};
+
+CustomerOrderCompleteReviewParam _$CustomerOrderCompleteReviewParamFromJson(
+  Map<String, dynamic> json,
+) => CustomerOrderCompleteReviewParam(
+  orderItemId: json['orderItemId'] as String,
+  rating: (json['rating'] as num).toInt(),
+  review: json['review'] as String?,
+  $type: json['runtimeType'] as String?,
+);
+
+Map<String, dynamic> _$CustomerOrderCompleteReviewParamToJson(
+  CustomerOrderCompleteReviewParam instance,
+) => <String, dynamic>{
+  'orderItemId': instance.orderItemId,
+  'rating': instance.rating,
+  'review': instance.review,
+  'runtimeType': instance.$type,
+};
+
 CustomerOrderEntity _$CustomerOrderEntityFromJson(Map<String, dynamic> json) =>
     CustomerOrderEntity(
       id: json['id'] as String?,
@@ -91,7 +131,11 @@ CustomerOrderEntity _$CustomerOrderEntityFromJson(Map<String, dynamic> json) =>
       customerAddress: json['customer_address'],
       merchantAccount: json['merchant_account'],
       merchant: json['merchant'],
-      items: json['items'] as List<dynamic>?,
+      items: (json['items'] as List<dynamic>?)
+          ?.map(
+            (e) => CustomerOrderItemEntity.fromJson(e as Map<String, dynamic>),
+          )
+          .toList(),
       reviews: json['reviews'] as List<dynamic>?,
       needsReview: json['needs_review'] as bool?,
       shipping: json['shipping'] == null

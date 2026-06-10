@@ -37,4 +37,10 @@ abstract class CustomerOrderApiService {
 
   @GET('/api/orders')
   Future<HttpResponse<dynamic>> getOrders();
+
+  @POST('/api/orders/{id}/complete')
+  Future<HttpResponse<dynamic>> completeOrder(
+    @Path('id') String id,
+    @Body() FormData body,
+  );
 }

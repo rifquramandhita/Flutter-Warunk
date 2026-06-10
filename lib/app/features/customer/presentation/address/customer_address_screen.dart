@@ -12,7 +12,6 @@ import 'package:warunk/core/widgets/custom_dotted_divider.dart';
 import 'package:warunk/core/widgets/outline_button_custom.dart';
 import 'package:warunk/core/widgets/primary_button.dart';
 import 'package:warunk/core/widgets/shadow_card.dart';
-import 'package:warunk/core/widgets/sticky_bottom_bar.dart';
 import 'package:warunk/main.dart';
 
 class CustomerAddressScreen extends StatelessWidget {

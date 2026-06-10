@@ -22,7 +22,7 @@ CustomerProduct _$CustomerProductFromJson(
 /// @nodoc
 mixin _$CustomerProduct {
 
- String get id; String get name; String get slug; String get merchantId; String get productCategoryId; String get category; String? get branch; String? get description; int get stock; int get orderCount; int get minPurchase; int get price; bool get isPublished; bool get hasVariant; bool get isSameDimension; String? get sku; int? get weight; int? get length; int? get width; int? get height; CustomerMerchantEntity? get merchant; CustomerProductCategoryEntity? get productCategory; List<CustomerProductVariantEntity>? get variants; List<CustomerProductImageEntity>? get images; double get rating; int get reviewsCount; List<dynamic>? get reviews; String? get createdAt; String? get updatedAt;
+ String get id; String get name; String? get slug; String? get merchantId; String get category; String? get branch; String? get description; int? get stock; int? get minPurchase; int get price; bool? get isPublished; bool? get hasVariant; bool? get isSameDimension; String? get sku; int? get weight; int? get length; int? get width; int? get height; CustomerMerchantEntity? get merchant; CustomerProductCategoryEntity? get productCategory; List<CustomerProductVariantEntity>? get variants; List<CustomerProductImageEntity>? get images; double? get rating; int? get reviewsCount; List<dynamic>? get reviews; String? get createdAt; String? get updatedAt;
 /// Create a copy of CustomerProduct
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -35,16 +35,16 @@ $CustomerProductCopyWith<CustomerProduct> get copyWith => _$CustomerProductCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CustomerProduct&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.slug, slug) || other.slug == slug)&&(identical(other.merchantId, merchantId) || other.merchantId == merchantId)&&(identical(other.productCategoryId, productCategoryId) || other.productCategoryId == productCategoryId)&&(identical(other.category, category) || other.category == category)&&(identical(other.branch, branch) || other.branch == branch)&&(identical(other.description, description) || other.description == description)&&(identical(other.stock, stock) || other.stock == stock)&&(identical(other.orderCount, orderCount) || other.orderCount == orderCount)&&(identical(other.minPurchase, minPurchase) || other.minPurchase == minPurchase)&&(identical(other.price, price) || other.price == price)&&(identical(other.isPublished, isPublished) || other.isPublished == isPublished)&&(identical(other.hasVariant, hasVariant) || other.hasVariant == hasVariant)&&(identical(other.isSameDimension, isSameDimension) || other.isSameDimension == isSameDimension)&&(identical(other.sku, sku) || other.sku == sku)&&(identical(other.weight, weight) || other.weight == weight)&&(identical(other.length, length) || other.length == length)&&(identical(other.width, width) || other.width == width)&&(identical(other.height, height) || other.height == height)&&const DeepCollectionEquality().equals(other.merchant, merchant)&&const DeepCollectionEquality().equals(other.productCategory, productCategory)&&const DeepCollectionEquality().equals(other.variants, variants)&&const DeepCollectionEquality().equals(other.images, images)&&(identical(other.rating, rating) || other.rating == rating)&&(identical(other.reviewsCount, reviewsCount) || other.reviewsCount == reviewsCount)&&const DeepCollectionEquality().equals(other.reviews, reviews)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CustomerProduct&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.slug, slug) || other.slug == slug)&&(identical(other.merchantId, merchantId) || other.merchantId == merchantId)&&(identical(other.category, category) || other.category == category)&&(identical(other.branch, branch) || other.branch == branch)&&(identical(other.description, description) || other.description == description)&&(identical(other.stock, stock) || other.stock == stock)&&(identical(other.minPurchase, minPurchase) || other.minPurchase == minPurchase)&&(identical(other.price, price) || other.price == price)&&(identical(other.isPublished, isPublished) || other.isPublished == isPublished)&&(identical(other.hasVariant, hasVariant) || other.hasVariant == hasVariant)&&(identical(other.isSameDimension, isSameDimension) || other.isSameDimension == isSameDimension)&&(identical(other.sku, sku) || other.sku == sku)&&(identical(other.weight, weight) || other.weight == weight)&&(identical(other.length, length) || other.length == length)&&(identical(other.width, width) || other.width == width)&&(identical(other.height, height) || other.height == height)&&const DeepCollectionEquality().equals(other.merchant, merchant)&&const DeepCollectionEquality().equals(other.productCategory, productCategory)&&const DeepCollectionEquality().equals(other.variants, variants)&&const DeepCollectionEquality().equals(other.images, images)&&(identical(other.rating, rating) || other.rating == rating)&&(identical(other.reviewsCount, reviewsCount) || other.reviewsCount == reviewsCount)&&const DeepCollectionEquality().equals(other.reviews, reviews)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hashAll([runtimeType,id,name,slug,merchantId,productCategoryId,category,branch,description,stock,orderCount,minPurchase,price,isPublished,hasVariant,isSameDimension,sku,weight,length,width,height,const DeepCollectionEquality().hash(merchant),const DeepCollectionEquality().hash(productCategory),const DeepCollectionEquality().hash(variants),const DeepCollectionEquality().hash(images),rating,reviewsCount,const DeepCollectionEquality().hash(reviews),createdAt,updatedAt]);
+int get hashCode => Object.hashAll([runtimeType,id,name,slug,merchantId,category,branch,description,stock,minPurchase,price,isPublished,hasVariant,isSameDimension,sku,weight,length,width,height,const DeepCollectionEquality().hash(merchant),const DeepCollectionEquality().hash(productCategory),const DeepCollectionEquality().hash(variants),const DeepCollectionEquality().hash(images),rating,reviewsCount,const DeepCollectionEquality().hash(reviews),createdAt,updatedAt]);
 
 @override
 String toString() {
-  return 'CustomerProduct(id: $id, name: $name, slug: $slug, merchantId: $merchantId, productCategoryId: $productCategoryId, category: $category, branch: $branch, description: $description, stock: $stock, orderCount: $orderCount, minPurchase: $minPurchase, price: $price, isPublished: $isPublished, hasVariant: $hasVariant, isSameDimension: $isSameDimension, sku: $sku, weight: $weight, length: $length, width: $width, height: $height, merchant: $merchant, productCategory: $productCategory, variants: $variants, images: $images, rating: $rating, reviewsCount: $reviewsCount, reviews: $reviews, createdAt: $createdAt, updatedAt: $updatedAt)';
+  return 'CustomerProduct(id: $id, name: $name, slug: $slug, merchantId: $merchantId, category: $category, branch: $branch, description: $description, stock: $stock, minPurchase: $minPurchase, price: $price, isPublished: $isPublished, hasVariant: $hasVariant, isSameDimension: $isSameDimension, sku: $sku, weight: $weight, length: $length, width: $width, height: $height, merchant: $merchant, productCategory: $productCategory, variants: $variants, images: $images, rating: $rating, reviewsCount: $reviewsCount, reviews: $reviews, createdAt: $createdAt, updatedAt: $updatedAt)';
 }
 
 
@@ -55,7 +55,7 @@ abstract mixin class $CustomerProductCopyWith<$Res>  {
   factory $CustomerProductCopyWith(CustomerProduct value, $Res Function(CustomerProduct) _then) = _$CustomerProductCopyWithImpl;
 @useResult
 $Res call({
- String id, String name, String slug, String merchantId, String productCategoryId, String category, String? branch, String? description, int stock, int orderCount, int minPurchase, int price, bool isPublished, bool hasVariant, bool isSameDimension, String? sku, int? weight, int? length, int? width, int? height, CustomerMerchantEntity? merchant, CustomerProductCategoryEntity? productCategory, List<CustomerProductVariantEntity>? variants, List<CustomerProductImageEntity>? images, double rating, int reviewsCount, List<dynamic>? reviews, String? createdAt, String? updatedAt
+ String id, String name, String? slug, String? merchantId, String category, String? branch, String? description, int? stock, int? minPurchase, int price, bool? isPublished, bool? hasVariant, bool? isSameDimension, String? sku, int? weight, int? length, int? width, int? height, CustomerMerchantEntity? merchant, CustomerProductCategoryEntity? productCategory, List<CustomerProductVariantEntity>? variants, List<CustomerProductImageEntity>? images, double? rating, int? reviewsCount, List<dynamic>? reviews, String? createdAt, String? updatedAt
 });
 
 
@@ -72,24 +72,22 @@ class _$CustomerProductCopyWithImpl<$Res>
 
 /// Create a copy of CustomerProduct
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? slug = null,Object? merchantId = null,Object? productCategoryId = null,Object? category = null,Object? branch = freezed,Object? description = freezed,Object? stock = null,Object? orderCount = null,Object? minPurchase = null,Object? price = null,Object? isPublished = null,Object? hasVariant = null,Object? isSameDimension = null,Object? sku = freezed,Object? weight = freezed,Object? length = freezed,Object? width = freezed,Object? height = freezed,Object? merchant = freezed,Object? productCategory = freezed,Object? variants = freezed,Object? images = freezed,Object? rating = null,Object? reviewsCount = null,Object? reviews = freezed,Object? createdAt = freezed,Object? updatedAt = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? slug = freezed,Object? merchantId = freezed,Object? category = null,Object? branch = freezed,Object? description = freezed,Object? stock = freezed,Object? minPurchase = freezed,Object? price = null,Object? isPublished = freezed,Object? hasVariant = freezed,Object? isSameDimension = freezed,Object? sku = freezed,Object? weight = freezed,Object? length = freezed,Object? width = freezed,Object? height = freezed,Object? merchant = freezed,Object? productCategory = freezed,Object? variants = freezed,Object? images = freezed,Object? rating = freezed,Object? reviewsCount = freezed,Object? reviews = freezed,Object? createdAt = freezed,Object? updatedAt = freezed,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
-as String,slug: null == slug ? _self.slug : slug // ignore: cast_nullable_to_non_nullable
-as String,merchantId: null == merchantId ? _self.merchantId : merchantId // ignore: cast_nullable_to_non_nullable
-as String,productCategoryId: null == productCategoryId ? _self.productCategoryId : productCategoryId // ignore: cast_nullable_to_non_nullable
-as String,category: null == category ? _self.category : category // ignore: cast_nullable_to_non_nullable
+as String,slug: freezed == slug ? _self.slug : slug // ignore: cast_nullable_to_non_nullable
+as String?,merchantId: freezed == merchantId ? _self.merchantId : merchantId // ignore: cast_nullable_to_non_nullable
+as String?,category: null == category ? _self.category : category // ignore: cast_nullable_to_non_nullable
 as String,branch: freezed == branch ? _self.branch : branch // ignore: cast_nullable_to_non_nullable
 as String?,description: freezed == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
-as String?,stock: null == stock ? _self.stock : stock // ignore: cast_nullable_to_non_nullable
-as int,orderCount: null == orderCount ? _self.orderCount : orderCount // ignore: cast_nullable_to_non_nullable
-as int,minPurchase: null == minPurchase ? _self.minPurchase : minPurchase // ignore: cast_nullable_to_non_nullable
-as int,price: null == price ? _self.price : price // ignore: cast_nullable_to_non_nullable
-as int,isPublished: null == isPublished ? _self.isPublished : isPublished // ignore: cast_nullable_to_non_nullable
-as bool,hasVariant: null == hasVariant ? _self.hasVariant : hasVariant // ignore: cast_nullable_to_non_nullable
-as bool,isSameDimension: null == isSameDimension ? _self.isSameDimension : isSameDimension // ignore: cast_nullable_to_non_nullable
-as bool,sku: freezed == sku ? _self.sku : sku // ignore: cast_nullable_to_non_nullable
+as String?,stock: freezed == stock ? _self.stock : stock // ignore: cast_nullable_to_non_nullable
+as int?,minPurchase: freezed == minPurchase ? _self.minPurchase : minPurchase // ignore: cast_nullable_to_non_nullable
+as int?,price: null == price ? _self.price : price // ignore: cast_nullable_to_non_nullable
+as int,isPublished: freezed == isPublished ? _self.isPublished : isPublished // ignore: cast_nullable_to_non_nullable
+as bool?,hasVariant: freezed == hasVariant ? _self.hasVariant : hasVariant // ignore: cast_nullable_to_non_nullable
+as bool?,isSameDimension: freezed == isSameDimension ? _self.isSameDimension : isSameDimension // ignore: cast_nullable_to_non_nullable
+as bool?,sku: freezed == sku ? _self.sku : sku // ignore: cast_nullable_to_non_nullable
 as String?,weight: freezed == weight ? _self.weight : weight // ignore: cast_nullable_to_non_nullable
 as int?,length: freezed == length ? _self.length : length // ignore: cast_nullable_to_non_nullable
 as int?,width: freezed == width ? _self.width : width // ignore: cast_nullable_to_non_nullable
@@ -98,9 +96,9 @@ as int?,merchant: freezed == merchant ? _self.merchant : merchant // ignore: cas
 as CustomerMerchantEntity?,productCategory: freezed == productCategory ? _self.productCategory : productCategory // ignore: cast_nullable_to_non_nullable
 as CustomerProductCategoryEntity?,variants: freezed == variants ? _self.variants : variants // ignore: cast_nullable_to_non_nullable
 as List<CustomerProductVariantEntity>?,images: freezed == images ? _self.images : images // ignore: cast_nullable_to_non_nullable
-as List<CustomerProductImageEntity>?,rating: null == rating ? _self.rating : rating // ignore: cast_nullable_to_non_nullable
-as double,reviewsCount: null == reviewsCount ? _self.reviewsCount : reviewsCount // ignore: cast_nullable_to_non_nullable
-as int,reviews: freezed == reviews ? _self.reviews : reviews // ignore: cast_nullable_to_non_nullable
+as List<CustomerProductImageEntity>?,rating: freezed == rating ? _self.rating : rating // ignore: cast_nullable_to_non_nullable
+as double?,reviewsCount: freezed == reviewsCount ? _self.reviewsCount : reviewsCount // ignore: cast_nullable_to_non_nullable
+as int?,reviews: freezed == reviews ? _self.reviews : reviews // ignore: cast_nullable_to_non_nullable
 as List<dynamic>?,createdAt: freezed == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as String?,updatedAt: freezed == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
 as String?,
@@ -185,10 +183,10 @@ return entity(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String id,  String name,  String slug,  String merchantId,  String productCategoryId,  String category,  String? branch,  String? description,  int stock,  int orderCount,  int minPurchase,  int price,  bool isPublished,  bool hasVariant,  bool isSameDimension,  String? sku,  int? weight,  int? length,  int? width,  int? height,  CustomerMerchantEntity? merchant,  CustomerProductCategoryEntity? productCategory,  List<CustomerProductVariantEntity>? variants,  List<CustomerProductImageEntity>? images,  double rating,  int reviewsCount,  List<dynamic>? reviews,  String? createdAt,  String? updatedAt)?  entity,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String id,  String name,  String? slug,  String? merchantId,  String category,  String? branch,  String? description,  int? stock,  int? minPurchase,  int price,  bool? isPublished,  bool? hasVariant,  bool? isSameDimension,  String? sku,  int? weight,  int? length,  int? width,  int? height,  CustomerMerchantEntity? merchant,  CustomerProductCategoryEntity? productCategory,  List<CustomerProductVariantEntity>? variants,  List<CustomerProductImageEntity>? images,  double? rating,  int? reviewsCount,  List<dynamic>? reviews,  String? createdAt,  String? updatedAt)?  entity,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case CustomerProductEntity() when entity != null:
-return entity(_that.id,_that.name,_that.slug,_that.merchantId,_that.productCategoryId,_that.category,_that.branch,_that.description,_that.stock,_that.orderCount,_that.minPurchase,_that.price,_that.isPublished,_that.hasVariant,_that.isSameDimension,_that.sku,_that.weight,_that.length,_that.width,_that.height,_that.merchant,_that.productCategory,_that.variants,_that.images,_that.rating,_that.reviewsCount,_that.reviews,_that.createdAt,_that.updatedAt);case _:
+return entity(_that.id,_that.name,_that.slug,_that.merchantId,_that.category,_that.branch,_that.description,_that.stock,_that.minPurchase,_that.price,_that.isPublished,_that.hasVariant,_that.isSameDimension,_that.sku,_that.weight,_that.length,_that.width,_that.height,_that.merchant,_that.productCategory,_that.variants,_that.images,_that.rating,_that.reviewsCount,_that.reviews,_that.createdAt,_that.updatedAt);case _:
   return orElse();
 
 }
@@ -206,10 +204,10 @@ return entity(_that.id,_that.name,_that.slug,_that.merchantId,_that.productCateg
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String id,  String name,  String slug,  String merchantId,  String productCategoryId,  String category,  String? branch,  String? description,  int stock,  int orderCount,  int minPurchase,  int price,  bool isPublished,  bool hasVariant,  bool isSameDimension,  String? sku,  int? weight,  int? length,  int? width,  int? height,  CustomerMerchantEntity? merchant,  CustomerProductCategoryEntity? productCategory,  List<CustomerProductVariantEntity>? variants,  List<CustomerProductImageEntity>? images,  double rating,  int reviewsCount,  List<dynamic>? reviews,  String? createdAt,  String? updatedAt)  entity,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String id,  String name,  String? slug,  String? merchantId,  String category,  String? branch,  String? description,  int? stock,  int? minPurchase,  int price,  bool? isPublished,  bool? hasVariant,  bool? isSameDimension,  String? sku,  int? weight,  int? length,  int? width,  int? height,  CustomerMerchantEntity? merchant,  CustomerProductCategoryEntity? productCategory,  List<CustomerProductVariantEntity>? variants,  List<CustomerProductImageEntity>? images,  double? rating,  int? reviewsCount,  List<dynamic>? reviews,  String? createdAt,  String? updatedAt)  entity,}) {final _that = this;
 switch (_that) {
 case CustomerProductEntity():
-return entity(_that.id,_that.name,_that.slug,_that.merchantId,_that.productCategoryId,_that.category,_that.branch,_that.description,_that.stock,_that.orderCount,_that.minPurchase,_that.price,_that.isPublished,_that.hasVariant,_that.isSameDimension,_that.sku,_that.weight,_that.length,_that.width,_that.height,_that.merchant,_that.productCategory,_that.variants,_that.images,_that.rating,_that.reviewsCount,_that.reviews,_that.createdAt,_that.updatedAt);}
+return entity(_that.id,_that.name,_that.slug,_that.merchantId,_that.category,_that.branch,_that.description,_that.stock,_that.minPurchase,_that.price,_that.isPublished,_that.hasVariant,_that.isSameDimension,_that.sku,_that.weight,_that.length,_that.width,_that.height,_that.merchant,_that.productCategory,_that.variants,_that.images,_that.rating,_that.reviewsCount,_that.reviews,_that.createdAt,_that.updatedAt);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -223,10 +221,10 @@ return entity(_that.id,_that.name,_that.slug,_that.merchantId,_that.productCateg
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String id,  String name,  String slug,  String merchantId,  String productCategoryId,  String category,  String? branch,  String? description,  int stock,  int orderCount,  int minPurchase,  int price,  bool isPublished,  bool hasVariant,  bool isSameDimension,  String? sku,  int? weight,  int? length,  int? width,  int? height,  CustomerMerchantEntity? merchant,  CustomerProductCategoryEntity? productCategory,  List<CustomerProductVariantEntity>? variants,  List<CustomerProductImageEntity>? images,  double rating,  int reviewsCount,  List<dynamic>? reviews,  String? createdAt,  String? updatedAt)?  entity,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String id,  String name,  String? slug,  String? merchantId,  String category,  String? branch,  String? description,  int? stock,  int? minPurchase,  int price,  bool? isPublished,  bool? hasVariant,  bool? isSameDimension,  String? sku,  int? weight,  int? length,  int? width,  int? height,  CustomerMerchantEntity? merchant,  CustomerProductCategoryEntity? productCategory,  List<CustomerProductVariantEntity>? variants,  List<CustomerProductImageEntity>? images,  double? rating,  int? reviewsCount,  List<dynamic>? reviews,  String? createdAt,  String? updatedAt)?  entity,}) {final _that = this;
 switch (_that) {
 case CustomerProductEntity() when entity != null:
-return entity(_that.id,_that.name,_that.slug,_that.merchantId,_that.productCategoryId,_that.category,_that.branch,_that.description,_that.stock,_that.orderCount,_that.minPurchase,_that.price,_that.isPublished,_that.hasVariant,_that.isSameDimension,_that.sku,_that.weight,_that.length,_that.width,_that.height,_that.merchant,_that.productCategory,_that.variants,_that.images,_that.rating,_that.reviewsCount,_that.reviews,_that.createdAt,_that.updatedAt);case _:
+return entity(_that.id,_that.name,_that.slug,_that.merchantId,_that.category,_that.branch,_that.description,_that.stock,_that.minPurchase,_that.price,_that.isPublished,_that.hasVariant,_that.isSameDimension,_that.sku,_that.weight,_that.length,_that.width,_that.height,_that.merchant,_that.productCategory,_that.variants,_that.images,_that.rating,_that.reviewsCount,_that.reviews,_that.createdAt,_that.updatedAt);case _:
   return null;
 
 }
@@ -238,24 +236,22 @@ return entity(_that.id,_that.name,_that.slug,_that.merchantId,_that.productCateg
 
 @JsonSerializable(fieldRename: FieldRename.snake, includeIfNull: false)
 class CustomerProductEntity implements CustomerProduct {
-  const CustomerProductEntity({required this.id, required this.name, required this.slug, required this.merchantId, required this.productCategoryId, required this.category, this.branch, this.description, required this.stock, required this.orderCount, required this.minPurchase, required this.price, required this.isPublished, required this.hasVariant, required this.isSameDimension, this.sku, this.weight, this.length, this.width, this.height, this.merchant, this.productCategory, final  List<CustomerProductVariantEntity>? variants, final  List<CustomerProductImageEntity>? images, required this.rating, required this.reviewsCount, final  List<dynamic>? reviews, this.createdAt, this.updatedAt}): _variants = variants,_images = images,_reviews = reviews;
+  const CustomerProductEntity({required this.id, required this.name, this.slug, this.merchantId, required this.category, this.branch, this.description, this.stock, this.minPurchase, required this.price, this.isPublished, this.hasVariant, this.isSameDimension, this.sku, this.weight, this.length, this.width, this.height, this.merchant, this.productCategory, final  List<CustomerProductVariantEntity>? variants, final  List<CustomerProductImageEntity>? images, this.rating, this.reviewsCount, final  List<dynamic>? reviews, this.createdAt, this.updatedAt}): _variants = variants,_images = images,_reviews = reviews;
   factory CustomerProductEntity.fromJson(Map<String, dynamic> json) => _$CustomerProductEntityFromJson(json);
 
 @override final  String id;
 @override final  String name;
-@override final  String slug;
-@override final  String merchantId;
-@override final  String productCategoryId;
+@override final  String? slug;
+@override final  String? merchantId;
 @override final  String category;
 @override final  String? branch;
 @override final  String? description;
-@override final  int stock;
-@override final  int orderCount;
-@override final  int minPurchase;
+@override final  int? stock;
+@override final  int? minPurchase;
 @override final  int price;
-@override final  bool isPublished;
-@override final  bool hasVariant;
-@override final  bool isSameDimension;
+@override final  bool? isPublished;
+@override final  bool? hasVariant;
+@override final  bool? isSameDimension;
 @override final  String? sku;
 @override final  int? weight;
 @override final  int? length;
@@ -281,8 +277,8 @@ class CustomerProductEntity implements CustomerProduct {
   return EqualUnmodifiableListView(value);
 }
 
-@override final  double rating;
-@override final  int reviewsCount;
+@override final  double? rating;
+@override final  int? reviewsCount;
  final  List<dynamic>? _reviews;
 @override List<dynamic>? get reviews {
   final value = _reviews;
@@ -308,16 +304,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CustomerProductEntity&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.slug, slug) || other.slug == slug)&&(identical(other.merchantId, merchantId) || other.merchantId == merchantId)&&(identical(other.productCategoryId, productCategoryId) || other.productCategoryId == productCategoryId)&&(identical(other.category, category) || other.category == category)&&(identical(other.branch, branch) || other.branch == branch)&&(identical(other.description, description) || other.description == description)&&(identical(other.stock, stock) || other.stock == stock)&&(identical(other.orderCount, orderCount) || other.orderCount == orderCount)&&(identical(other.minPurchase, minPurchase) || other.minPurchase == minPurchase)&&(identical(other.price, price) || other.price == price)&&(identical(other.isPublished, isPublished) || other.isPublished == isPublished)&&(identical(other.hasVariant, hasVariant) || other.hasVariant == hasVariant)&&(identical(other.isSameDimension, isSameDimension) || other.isSameDimension == isSameDimension)&&(identical(other.sku, sku) || other.sku == sku)&&(identical(other.weight, weight) || other.weight == weight)&&(identical(other.length, length) || other.length == length)&&(identical(other.width, width) || other.width == width)&&(identical(other.height, height) || other.height == height)&&const DeepCollectionEquality().equals(other.merchant, merchant)&&const DeepCollectionEquality().equals(other.productCategory, productCategory)&&const DeepCollectionEquality().equals(other._variants, _variants)&&const DeepCollectionEquality().equals(other._images, _images)&&(identical(other.rating, rating) || other.rating == rating)&&(identical(other.reviewsCount, reviewsCount) || other.reviewsCount == reviewsCount)&&const DeepCollectionEquality().equals(other._reviews, _reviews)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CustomerProductEntity&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.slug, slug) || other.slug == slug)&&(identical(other.merchantId, merchantId) || other.merchantId == merchantId)&&(identical(other.category, category) || other.category == category)&&(identical(other.branch, branch) || other.branch == branch)&&(identical(other.description, description) || other.description == description)&&(identical(other.stock, stock) || other.stock == stock)&&(identical(other.minPurchase, minPurchase) || other.minPurchase == minPurchase)&&(identical(other.price, price) || other.price == price)&&(identical(other.isPublished, isPublished) || other.isPublished == isPublished)&&(identical(other.hasVariant, hasVariant) || other.hasVariant == hasVariant)&&(identical(other.isSameDimension, isSameDimension) || other.isSameDimension == isSameDimension)&&(identical(other.sku, sku) || other.sku == sku)&&(identical(other.weight, weight) || other.weight == weight)&&(identical(other.length, length) || other.length == length)&&(identical(other.width, width) || other.width == width)&&(identical(other.height, height) || other.height == height)&&const DeepCollectionEquality().equals(other.merchant, merchant)&&const DeepCollectionEquality().equals(other.productCategory, productCategory)&&const DeepCollectionEquality().equals(other._variants, _variants)&&const DeepCollectionEquality().equals(other._images, _images)&&(identical(other.rating, rating) || other.rating == rating)&&(identical(other.reviewsCount, reviewsCount) || other.reviewsCount == reviewsCount)&&const DeepCollectionEquality().equals(other._reviews, _reviews)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hashAll([runtimeType,id,name,slug,merchantId,productCategoryId,category,branch,description,stock,orderCount,minPurchase,price,isPublished,hasVariant,isSameDimension,sku,weight,length,width,height,const DeepCollectionEquality().hash(merchant),const DeepCollectionEquality().hash(productCategory),const DeepCollectionEquality().hash(_variants),const DeepCollectionEquality().hash(_images),rating,reviewsCount,const DeepCollectionEquality().hash(_reviews),createdAt,updatedAt]);
+int get hashCode => Object.hashAll([runtimeType,id,name,slug,merchantId,category,branch,description,stock,minPurchase,price,isPublished,hasVariant,isSameDimension,sku,weight,length,width,height,const DeepCollectionEquality().hash(merchant),const DeepCollectionEquality().hash(productCategory),const DeepCollectionEquality().hash(_variants),const DeepCollectionEquality().hash(_images),rating,reviewsCount,const DeepCollectionEquality().hash(_reviews),createdAt,updatedAt]);
 
 @override
 String toString() {
-  return 'CustomerProduct.entity(id: $id, name: $name, slug: $slug, merchantId: $merchantId, productCategoryId: $productCategoryId, category: $category, branch: $branch, description: $description, stock: $stock, orderCount: $orderCount, minPurchase: $minPurchase, price: $price, isPublished: $isPublished, hasVariant: $hasVariant, isSameDimension: $isSameDimension, sku: $sku, weight: $weight, length: $length, width: $width, height: $height, merchant: $merchant, productCategory: $productCategory, variants: $variants, images: $images, rating: $rating, reviewsCount: $reviewsCount, reviews: $reviews, createdAt: $createdAt, updatedAt: $updatedAt)';
+  return 'CustomerProduct.entity(id: $id, name: $name, slug: $slug, merchantId: $merchantId, category: $category, branch: $branch, description: $description, stock: $stock, minPurchase: $minPurchase, price: $price, isPublished: $isPublished, hasVariant: $hasVariant, isSameDimension: $isSameDimension, sku: $sku, weight: $weight, length: $length, width: $width, height: $height, merchant: $merchant, productCategory: $productCategory, variants: $variants, images: $images, rating: $rating, reviewsCount: $reviewsCount, reviews: $reviews, createdAt: $createdAt, updatedAt: $updatedAt)';
 }
 
 
@@ -328,7 +324,7 @@ abstract mixin class $CustomerProductEntityCopyWith<$Res> implements $CustomerPr
   factory $CustomerProductEntityCopyWith(CustomerProductEntity value, $Res Function(CustomerProductEntity) _then) = _$CustomerProductEntityCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String name, String slug, String merchantId, String productCategoryId, String category, String? branch, String? description, int stock, int orderCount, int minPurchase, int price, bool isPublished, bool hasVariant, bool isSameDimension, String? sku, int? weight, int? length, int? width, int? height, CustomerMerchantEntity? merchant, CustomerProductCategoryEntity? productCategory, List<CustomerProductVariantEntity>? variants, List<CustomerProductImageEntity>? images, double rating, int reviewsCount, List<dynamic>? reviews, String? createdAt, String? updatedAt
+ String id, String name, String? slug, String? merchantId, String category, String? branch, String? description, int? stock, int? minPurchase, int price, bool? isPublished, bool? hasVariant, bool? isSameDimension, String? sku, int? weight, int? length, int? width, int? height, CustomerMerchantEntity? merchant, CustomerProductCategoryEntity? productCategory, List<CustomerProductVariantEntity>? variants, List<CustomerProductImageEntity>? images, double? rating, int? reviewsCount, List<dynamic>? reviews, String? createdAt, String? updatedAt
 });
 
 
@@ -345,24 +341,22 @@ class _$CustomerProductEntityCopyWithImpl<$Res>
 
 /// Create a copy of CustomerProduct
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? slug = null,Object? merchantId = null,Object? productCategoryId = null,Object? category = null,Object? branch = freezed,Object? description = freezed,Object? stock = null,Object? orderCount = null,Object? minPurchase = null,Object? price = null,Object? isPublished = null,Object? hasVariant = null,Object? isSameDimension = null,Object? sku = freezed,Object? weight = freezed,Object? length = freezed,Object? width = freezed,Object? height = freezed,Object? merchant = freezed,Object? productCategory = freezed,Object? variants = freezed,Object? images = freezed,Object? rating = null,Object? reviewsCount = null,Object? reviews = freezed,Object? createdAt = freezed,Object? updatedAt = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? slug = freezed,Object? merchantId = freezed,Object? category = null,Object? branch = freezed,Object? description = freezed,Object? stock = freezed,Object? minPurchase = freezed,Object? price = null,Object? isPublished = freezed,Object? hasVariant = freezed,Object? isSameDimension = freezed,Object? sku = freezed,Object? weight = freezed,Object? length = freezed,Object? width = freezed,Object? height = freezed,Object? merchant = freezed,Object? productCategory = freezed,Object? variants = freezed,Object? images = freezed,Object? rating = freezed,Object? reviewsCount = freezed,Object? reviews = freezed,Object? createdAt = freezed,Object? updatedAt = freezed,}) {
   return _then(CustomerProductEntity(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
-as String,slug: null == slug ? _self.slug : slug // ignore: cast_nullable_to_non_nullable
-as String,merchantId: null == merchantId ? _self.merchantId : merchantId // ignore: cast_nullable_to_non_nullable
-as String,productCategoryId: null == productCategoryId ? _self.productCategoryId : productCategoryId // ignore: cast_nullable_to_non_nullable
-as String,category: null == category ? _self.category : category // ignore: cast_nullable_to_non_nullable
+as String,slug: freezed == slug ? _self.slug : slug // ignore: cast_nullable_to_non_nullable
+as String?,merchantId: freezed == merchantId ? _self.merchantId : merchantId // ignore: cast_nullable_to_non_nullable
+as String?,category: null == category ? _self.category : category // ignore: cast_nullable_to_non_nullable
 as String,branch: freezed == branch ? _self.branch : branch // ignore: cast_nullable_to_non_nullable
 as String?,description: freezed == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
-as String?,stock: null == stock ? _self.stock : stock // ignore: cast_nullable_to_non_nullable
-as int,orderCount: null == orderCount ? _self.orderCount : orderCount // ignore: cast_nullable_to_non_nullable
-as int,minPurchase: null == minPurchase ? _self.minPurchase : minPurchase // ignore: cast_nullable_to_non_nullable
-as int,price: null == price ? _self.price : price // ignore: cast_nullable_to_non_nullable
-as int,isPublished: null == isPublished ? _self.isPublished : isPublished // ignore: cast_nullable_to_non_nullable
-as bool,hasVariant: null == hasVariant ? _self.hasVariant : hasVariant // ignore: cast_nullable_to_non_nullable
-as bool,isSameDimension: null == isSameDimension ? _self.isSameDimension : isSameDimension // ignore: cast_nullable_to_non_nullable
-as bool,sku: freezed == sku ? _self.sku : sku // ignore: cast_nullable_to_non_nullable
+as String?,stock: freezed == stock ? _self.stock : stock // ignore: cast_nullable_to_non_nullable
+as int?,minPurchase: freezed == minPurchase ? _self.minPurchase : minPurchase // ignore: cast_nullable_to_non_nullable
+as int?,price: null == price ? _self.price : price // ignore: cast_nullable_to_non_nullable
+as int,isPublished: freezed == isPublished ? _self.isPublished : isPublished // ignore: cast_nullable_to_non_nullable
+as bool?,hasVariant: freezed == hasVariant ? _self.hasVariant : hasVariant // ignore: cast_nullable_to_non_nullable
+as bool?,isSameDimension: freezed == isSameDimension ? _self.isSameDimension : isSameDimension // ignore: cast_nullable_to_non_nullable
+as bool?,sku: freezed == sku ? _self.sku : sku // ignore: cast_nullable_to_non_nullable
 as String?,weight: freezed == weight ? _self.weight : weight // ignore: cast_nullable_to_non_nullable
 as int?,length: freezed == length ? _self.length : length // ignore: cast_nullable_to_non_nullable
 as int?,width: freezed == width ? _self.width : width // ignore: cast_nullable_to_non_nullable
@@ -371,9 +365,9 @@ as int?,merchant: freezed == merchant ? _self.merchant : merchant // ignore: cas
 as CustomerMerchantEntity?,productCategory: freezed == productCategory ? _self.productCategory : productCategory // ignore: cast_nullable_to_non_nullable
 as CustomerProductCategoryEntity?,variants: freezed == variants ? _self._variants : variants // ignore: cast_nullable_to_non_nullable
 as List<CustomerProductVariantEntity>?,images: freezed == images ? _self._images : images // ignore: cast_nullable_to_non_nullable
-as List<CustomerProductImageEntity>?,rating: null == rating ? _self.rating : rating // ignore: cast_nullable_to_non_nullable
-as double,reviewsCount: null == reviewsCount ? _self.reviewsCount : reviewsCount // ignore: cast_nullable_to_non_nullable
-as int,reviews: freezed == reviews ? _self._reviews : reviews // ignore: cast_nullable_to_non_nullable
+as List<CustomerProductImageEntity>?,rating: freezed == rating ? _self.rating : rating // ignore: cast_nullable_to_non_nullable
+as double?,reviewsCount: freezed == reviewsCount ? _self.reviewsCount : reviewsCount // ignore: cast_nullable_to_non_nullable
+as int?,reviews: freezed == reviews ? _self._reviews : reviews // ignore: cast_nullable_to_non_nullable
 as List<dynamic>?,createdAt: freezed == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as String?,updatedAt: freezed == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
 as String?,

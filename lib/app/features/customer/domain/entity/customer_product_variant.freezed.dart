@@ -22,7 +22,7 @@ CustomerProductVariant _$CustomerProductVariantFromJson(
 /// @nodoc
 mixin _$CustomerProductVariant {
 
- String get id; String get productId; Map<String, String> get variantCombination; String? get sku; int get price; int get stock; int get minPurchase; int? get weight; int? get length; int? get width; int? get height; String? get createdAt; String? get updatedAt;
+ String get id; String get productId; String? get name; Map<String, String> get variantCombination; String? get sku; int get price; int get stock; int get minPurchase; int? get weight; int? get length; int? get width; int? get height; String? get createdAt; String? get updatedAt;
 /// Create a copy of CustomerProductVariant
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -35,16 +35,16 @@ $CustomerProductVariantCopyWith<CustomerProductVariant> get copyWith => _$Custom
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CustomerProductVariant&&(identical(other.id, id) || other.id == id)&&(identical(other.productId, productId) || other.productId == productId)&&const DeepCollectionEquality().equals(other.variantCombination, variantCombination)&&(identical(other.sku, sku) || other.sku == sku)&&(identical(other.price, price) || other.price == price)&&(identical(other.stock, stock) || other.stock == stock)&&(identical(other.minPurchase, minPurchase) || other.minPurchase == minPurchase)&&(identical(other.weight, weight) || other.weight == weight)&&(identical(other.length, length) || other.length == length)&&(identical(other.width, width) || other.width == width)&&(identical(other.height, height) || other.height == height)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CustomerProductVariant&&(identical(other.id, id) || other.id == id)&&(identical(other.productId, productId) || other.productId == productId)&&(identical(other.name, name) || other.name == name)&&const DeepCollectionEquality().equals(other.variantCombination, variantCombination)&&(identical(other.sku, sku) || other.sku == sku)&&(identical(other.price, price) || other.price == price)&&(identical(other.stock, stock) || other.stock == stock)&&(identical(other.minPurchase, minPurchase) || other.minPurchase == minPurchase)&&(identical(other.weight, weight) || other.weight == weight)&&(identical(other.length, length) || other.length == length)&&(identical(other.width, width) || other.width == width)&&(identical(other.height, height) || other.height == height)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,productId,const DeepCollectionEquality().hash(variantCombination),sku,price,stock,minPurchase,weight,length,width,height,createdAt,updatedAt);
+int get hashCode => Object.hash(runtimeType,id,productId,name,const DeepCollectionEquality().hash(variantCombination),sku,price,stock,minPurchase,weight,length,width,height,createdAt,updatedAt);
 
 @override
 String toString() {
-  return 'CustomerProductVariant(id: $id, productId: $productId, variantCombination: $variantCombination, sku: $sku, price: $price, stock: $stock, minPurchase: $minPurchase, weight: $weight, length: $length, width: $width, height: $height, createdAt: $createdAt, updatedAt: $updatedAt)';
+  return 'CustomerProductVariant(id: $id, productId: $productId, name: $name, variantCombination: $variantCombination, sku: $sku, price: $price, stock: $stock, minPurchase: $minPurchase, weight: $weight, length: $length, width: $width, height: $height, createdAt: $createdAt, updatedAt: $updatedAt)';
 }
 
 
@@ -55,7 +55,7 @@ abstract mixin class $CustomerProductVariantCopyWith<$Res>  {
   factory $CustomerProductVariantCopyWith(CustomerProductVariant value, $Res Function(CustomerProductVariant) _then) = _$CustomerProductVariantCopyWithImpl;
 @useResult
 $Res call({
- String id, String productId, Map<String, String> variantCombination, String? sku, int price, int stock, int minPurchase, int? weight, int? length, int? width, int? height, String? createdAt, String? updatedAt
+ String id, String productId, String? name, Map<String, String> variantCombination, String? sku, int price, int stock, int minPurchase, int? weight, int? length, int? width, int? height, String? createdAt, String? updatedAt
 });
 
 
@@ -72,11 +72,12 @@ class _$CustomerProductVariantCopyWithImpl<$Res>
 
 /// Create a copy of CustomerProductVariant
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? productId = null,Object? variantCombination = null,Object? sku = freezed,Object? price = null,Object? stock = null,Object? minPurchase = null,Object? weight = freezed,Object? length = freezed,Object? width = freezed,Object? height = freezed,Object? createdAt = freezed,Object? updatedAt = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? productId = null,Object? name = freezed,Object? variantCombination = null,Object? sku = freezed,Object? price = null,Object? stock = null,Object? minPurchase = null,Object? weight = freezed,Object? length = freezed,Object? width = freezed,Object? height = freezed,Object? createdAt = freezed,Object? updatedAt = freezed,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,productId: null == productId ? _self.productId : productId // ignore: cast_nullable_to_non_nullable
-as String,variantCombination: null == variantCombination ? _self.variantCombination : variantCombination // ignore: cast_nullable_to_non_nullable
+as String,name: freezed == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+as String?,variantCombination: null == variantCombination ? _self.variantCombination : variantCombination // ignore: cast_nullable_to_non_nullable
 as Map<String, String>,sku: freezed == sku ? _self.sku : sku // ignore: cast_nullable_to_non_nullable
 as String?,price: null == price ? _self.price : price // ignore: cast_nullable_to_non_nullable
 as int,stock: null == stock ? _self.stock : stock // ignore: cast_nullable_to_non_nullable
@@ -169,10 +170,10 @@ return entity(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String id,  String productId,  Map<String, String> variantCombination,  String? sku,  int price,  int stock,  int minPurchase,  int? weight,  int? length,  int? width,  int? height,  String? createdAt,  String? updatedAt)?  entity,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String id,  String productId,  String? name,  Map<String, String> variantCombination,  String? sku,  int price,  int stock,  int minPurchase,  int? weight,  int? length,  int? width,  int? height,  String? createdAt,  String? updatedAt)?  entity,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case CustomerProductVariantEntity() when entity != null:
-return entity(_that.id,_that.productId,_that.variantCombination,_that.sku,_that.price,_that.stock,_that.minPurchase,_that.weight,_that.length,_that.width,_that.height,_that.createdAt,_that.updatedAt);case _:
+return entity(_that.id,_that.productId,_that.name,_that.variantCombination,_that.sku,_that.price,_that.stock,_that.minPurchase,_that.weight,_that.length,_that.width,_that.height,_that.createdAt,_that.updatedAt);case _:
   return orElse();
 
 }
@@ -190,10 +191,10 @@ return entity(_that.id,_that.productId,_that.variantCombination,_that.sku,_that.
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String id,  String productId,  Map<String, String> variantCombination,  String? sku,  int price,  int stock,  int minPurchase,  int? weight,  int? length,  int? width,  int? height,  String? createdAt,  String? updatedAt)  entity,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String id,  String productId,  String? name,  Map<String, String> variantCombination,  String? sku,  int price,  int stock,  int minPurchase,  int? weight,  int? length,  int? width,  int? height,  String? createdAt,  String? updatedAt)  entity,}) {final _that = this;
 switch (_that) {
 case CustomerProductVariantEntity():
-return entity(_that.id,_that.productId,_that.variantCombination,_that.sku,_that.price,_that.stock,_that.minPurchase,_that.weight,_that.length,_that.width,_that.height,_that.createdAt,_that.updatedAt);}
+return entity(_that.id,_that.productId,_that.name,_that.variantCombination,_that.sku,_that.price,_that.stock,_that.minPurchase,_that.weight,_that.length,_that.width,_that.height,_that.createdAt,_that.updatedAt);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -207,10 +208,10 @@ return entity(_that.id,_that.productId,_that.variantCombination,_that.sku,_that.
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String id,  String productId,  Map<String, String> variantCombination,  String? sku,  int price,  int stock,  int minPurchase,  int? weight,  int? length,  int? width,  int? height,  String? createdAt,  String? updatedAt)?  entity,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String id,  String productId,  String? name,  Map<String, String> variantCombination,  String? sku,  int price,  int stock,  int minPurchase,  int? weight,  int? length,  int? width,  int? height,  String? createdAt,  String? updatedAt)?  entity,}) {final _that = this;
 switch (_that) {
 case CustomerProductVariantEntity() when entity != null:
-return entity(_that.id,_that.productId,_that.variantCombination,_that.sku,_that.price,_that.stock,_that.minPurchase,_that.weight,_that.length,_that.width,_that.height,_that.createdAt,_that.updatedAt);case _:
+return entity(_that.id,_that.productId,_that.name,_that.variantCombination,_that.sku,_that.price,_that.stock,_that.minPurchase,_that.weight,_that.length,_that.width,_that.height,_that.createdAt,_that.updatedAt);case _:
   return null;
 
 }
@@ -222,11 +223,12 @@ return entity(_that.id,_that.productId,_that.variantCombination,_that.sku,_that.
 
 @JsonSerializable(fieldRename: FieldRename.snake, includeIfNull: false)
 class CustomerProductVariantEntity implements CustomerProductVariant {
-  const CustomerProductVariantEntity({required this.id, required this.productId, required final  Map<String, String> variantCombination, this.sku, required this.price, required this.stock, required this.minPurchase, this.weight, this.length, this.width, this.height, this.createdAt, this.updatedAt}): _variantCombination = variantCombination;
+  const CustomerProductVariantEntity({required this.id, required this.productId, this.name, required final  Map<String, String> variantCombination, this.sku, required this.price, required this.stock, required this.minPurchase, this.weight, this.length, this.width, this.height, this.createdAt, this.updatedAt}): _variantCombination = variantCombination;
   factory CustomerProductVariantEntity.fromJson(Map<String, dynamic> json) => _$CustomerProductVariantEntityFromJson(json);
 
 @override final  String id;
 @override final  String productId;
+@override final  String? name;
  final  Map<String, String> _variantCombination;
 @override Map<String, String> get variantCombination {
   if (_variantCombination is EqualUnmodifiableMapView) return _variantCombination;
@@ -258,16 +260,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CustomerProductVariantEntity&&(identical(other.id, id) || other.id == id)&&(identical(other.productId, productId) || other.productId == productId)&&const DeepCollectionEquality().equals(other._variantCombination, _variantCombination)&&(identical(other.sku, sku) || other.sku == sku)&&(identical(other.price, price) || other.price == price)&&(identical(other.stock, stock) || other.stock == stock)&&(identical(other.minPurchase, minPurchase) || other.minPurchase == minPurchase)&&(identical(other.weight, weight) || other.weight == weight)&&(identical(other.length, length) || other.length == length)&&(identical(other.width, width) || other.width == width)&&(identical(other.height, height) || other.height == height)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CustomerProductVariantEntity&&(identical(other.id, id) || other.id == id)&&(identical(other.productId, productId) || other.productId == productId)&&(identical(other.name, name) || other.name == name)&&const DeepCollectionEquality().equals(other._variantCombination, _variantCombination)&&(identical(other.sku, sku) || other.sku == sku)&&(identical(other.price, price) || other.price == price)&&(identical(other.stock, stock) || other.stock == stock)&&(identical(other.minPurchase, minPurchase) || other.minPurchase == minPurchase)&&(identical(other.weight, weight) || other.weight == weight)&&(identical(other.length, length) || other.length == length)&&(identical(other.width, width) || other.width == width)&&(identical(other.height, height) || other.height == height)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,productId,const DeepCollectionEquality().hash(_variantCombination),sku,price,stock,minPurchase,weight,length,width,height,createdAt,updatedAt);
+int get hashCode => Object.hash(runtimeType,id,productId,name,const DeepCollectionEquality().hash(_variantCombination),sku,price,stock,minPurchase,weight,length,width,height,createdAt,updatedAt);
 
 @override
 String toString() {
-  return 'CustomerProductVariant.entity(id: $id, productId: $productId, variantCombination: $variantCombination, sku: $sku, price: $price, stock: $stock, minPurchase: $minPurchase, weight: $weight, length: $length, width: $width, height: $height, createdAt: $createdAt, updatedAt: $updatedAt)';
+  return 'CustomerProductVariant.entity(id: $id, productId: $productId, name: $name, variantCombination: $variantCombination, sku: $sku, price: $price, stock: $stock, minPurchase: $minPurchase, weight: $weight, length: $length, width: $width, height: $height, createdAt: $createdAt, updatedAt: $updatedAt)';
 }
 
 
@@ -278,7 +280,7 @@ abstract mixin class $CustomerProductVariantEntityCopyWith<$Res> implements $Cus
   factory $CustomerProductVariantEntityCopyWith(CustomerProductVariantEntity value, $Res Function(CustomerProductVariantEntity) _then) = _$CustomerProductVariantEntityCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String productId, Map<String, String> variantCombination, String? sku, int price, int stock, int minPurchase, int? weight, int? length, int? width, int? height, String? createdAt, String? updatedAt
+ String id, String productId, String? name, Map<String, String> variantCombination, String? sku, int price, int stock, int minPurchase, int? weight, int? length, int? width, int? height, String? createdAt, String? updatedAt
 });
 
 
@@ -295,11 +297,12 @@ class _$CustomerProductVariantEntityCopyWithImpl<$Res>
 
 /// Create a copy of CustomerProductVariant
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? productId = null,Object? variantCombination = null,Object? sku = freezed,Object? price = null,Object? stock = null,Object? minPurchase = null,Object? weight = freezed,Object? length = freezed,Object? width = freezed,Object? height = freezed,Object? createdAt = freezed,Object? updatedAt = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? productId = null,Object? name = freezed,Object? variantCombination = null,Object? sku = freezed,Object? price = null,Object? stock = null,Object? minPurchase = null,Object? weight = freezed,Object? length = freezed,Object? width = freezed,Object? height = freezed,Object? createdAt = freezed,Object? updatedAt = freezed,}) {
   return _then(CustomerProductVariantEntity(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,productId: null == productId ? _self.productId : productId // ignore: cast_nullable_to_non_nullable
-as String,variantCombination: null == variantCombination ? _self._variantCombination : variantCombination // ignore: cast_nullable_to_non_nullable
+as String,name: freezed == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+as String?,variantCombination: null == variantCombination ? _self._variantCombination : variantCombination // ignore: cast_nullable_to_non_nullable
 as Map<String, String>,sku: freezed == sku ? _self.sku : sku // ignore: cast_nullable_to_non_nullable
 as String?,price: null == price ? _self.price : price // ignore: cast_nullable_to_non_nullable
 as int,stock: null == stock ? _self.stock : stock // ignore: cast_nullable_to_non_nullable

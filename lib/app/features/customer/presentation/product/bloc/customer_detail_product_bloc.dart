@@ -74,7 +74,7 @@ class CustomerDetailProductBloc
         if (state.selectedVariant != null) {
           maxStock = state.selectedVariant!.stock;
         } else {
-          maxStock = product.stock;
+          maxStock = product.stock ?? 0;
         }
       }
 
@@ -103,7 +103,7 @@ class CustomerDetailProductBloc
     final product = state.product;
     if (product == null) return;
 
-    if (product.hasVariant && state.selectedVariant == null) {
+    if ((product.hasVariant ?? false) && state.selectedVariant == null) {
       emit(
         state.copyWith(
           errorMessage: 'Silakan pilih varian produk terlebih dahulu',
@@ -160,7 +160,8 @@ class CustomerDetailProductBloc
     if (matchedVariant != null && state.quantity > matchedVariant.stock) {
       newQuantity = matchedVariant.stock;
       if (newQuantity < 1) {
-        newQuantity = 1; // Keep at least 1, but they won't be able to add to cart due to backend validation or Add to Cart validation
+        newQuantity =
+            1; // Keep at least 1, but they won't be able to add to cart due to backend validation or Add to Cart validation
       }
     }
 

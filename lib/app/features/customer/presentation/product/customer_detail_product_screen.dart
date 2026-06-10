@@ -120,7 +120,8 @@ class CustomerDetailProductScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     _infoLayout(context, product, price),
-                    if (dimensions.isNotEmpty) _variantsLayout(context, dimensions),
+                    if (dimensions.isNotEmpty)
+                      _variantsLayout(context, dimensions),
                     _quantityLayout(context),
                     _notesLayout(context, noteCtrl),
                     const SizedBox(height: 100),
@@ -159,7 +160,9 @@ class CustomerDetailProductScreen extends StatelessWidget {
               : Icon(
                   Icons.inventory_2_rounded,
                   size: 110,
-                  color: GlobalHelper.getColorSchema(context).primary.withValues(alpha: 0.5),
+                  color: GlobalHelper.getColorSchema(
+                    context,
+                  ).primary.withValues(alpha: 0.5),
                 ),
         ),
       ),
@@ -176,13 +179,14 @@ class CustomerDetailProductScreen extends StatelessWidget {
             Expanded(
               child: Text(
                 product.name,
-                style: GlobalHelper.getTextTheme(
-                  context,
-                  appTextStyle: AppTextStyle.TITLE_LARGE,
-                )?.copyWith(
-                  fontWeight: FontWeight.w800,
-                  color: GlobalHelper.getColorSchema(context).onSurface,
-                ),
+                style:
+                    GlobalHelper.getTextTheme(
+                      context,
+                      appTextStyle: AppTextStyle.TITLE_LARGE,
+                    )?.copyWith(
+                      fontWeight: FontWeight.w800,
+                      color: GlobalHelper.getColorSchema(context).onSurface,
+                    ),
               ),
             ),
           ],
@@ -192,18 +196,21 @@ class CustomerDetailProductScreen extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
             decoration: BoxDecoration(
-              color: GlobalHelper.getColorSchema(context).primary.withValues(alpha: 0.1),
+              color: GlobalHelper.getColorSchema(
+                context,
+              ).primary.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(6),
             ),
             child: Text(
               product.category,
-              style: GlobalHelper.getTextTheme(
-                context,
-                appTextStyle: AppTextStyle.LABEL_SMALL,
-              )?.copyWith(
-                fontWeight: FontWeight.w600,
-                color: GlobalHelper.getColorSchema(context).primary,
-              ),
+              style:
+                  GlobalHelper.getTextTheme(
+                    context,
+                    appTextStyle: AppTextStyle.LABEL_SMALL,
+                  )?.copyWith(
+                    fontWeight: FontWeight.w600,
+                    color: GlobalHelper.getColorSchema(context).primary,
+                  ),
             ),
           ),
         const SizedBox(height: 10),
@@ -212,26 +219,28 @@ class CustomerDetailProductScreen extends StatelessWidget {
             const Icon(Icons.star_rounded, color: Color(0xFFFBBC05), size: 16),
             const SizedBox(width: 4),
             Text(
-              '${product.rating} (${product.reviewsCount} ulasan)',
-              style: GlobalHelper.getTextTheme(
-                context,
-                appTextStyle: AppTextStyle.BODY_SMALL,
-              )?.copyWith(
-                color: GlobalHelper.getColorSchema(context).onSurface,
-              ),
+              '${product.rating ?? 0.0} (${product.reviewsCount ?? 0} ulasan)',
+              style:
+                  GlobalHelper.getTextTheme(
+                    context,
+                    appTextStyle: AppTextStyle.BODY_SMALL,
+                  )?.copyWith(
+                    color: GlobalHelper.getColorSchema(context).onSurface,
+                  ),
             ),
           ],
         ),
         const SizedBox(height: 10),
         Text(
           price,
-          style: GlobalHelper.getTextTheme(
-            context,
-            appTextStyle: AppTextStyle.HEADLINE_SMALL,
-          )?.copyWith(
-            fontWeight: FontWeight.w900,
-            color: GlobalHelper.getColorSchema(context).primary,
-          ),
+          style:
+              GlobalHelper.getTextTheme(
+                context,
+                appTextStyle: AppTextStyle.HEADLINE_SMALL,
+              )?.copyWith(
+                fontWeight: FontWeight.w900,
+                color: GlobalHelper.getColorSchema(context).primary,
+              ),
         ),
         Divider(
           height: 28,
@@ -239,26 +248,30 @@ class CustomerDetailProductScreen extends StatelessWidget {
         ),
         Text(
           'Deskripsi',
-          style: GlobalHelper.getTextTheme(
-            context,
-            appTextStyle: AppTextStyle.BODY_LARGE,
-          )?.copyWith(
-            fontWeight: FontWeight.w700,
-            color: GlobalHelper.getColorSchema(context).onSurface,
-          ),
+          style:
+              GlobalHelper.getTextTheme(
+                context,
+                appTextStyle: AppTextStyle.BODY_LARGE,
+              )?.copyWith(
+                fontWeight: FontWeight.w700,
+                color: GlobalHelper.getColorSchema(context).onSurface,
+              ),
         ),
         const SizedBox(height: 6),
         Text(
           product.description?.isNotEmpty == true
               ? product.description!
               : 'Tidak ada deskripsi',
-          style: GlobalHelper.getTextTheme(
-            context,
-            appTextStyle: AppTextStyle.BODY_SMALL,
-          )?.copyWith(
-            color: GlobalHelper.getColorSchema(context).onSurface.withValues(alpha: 0.6),
-            height: 1.5,
-          ),
+          style:
+              GlobalHelper.getTextTheme(
+                context,
+                appTextStyle: AppTextStyle.BODY_SMALL,
+              )?.copyWith(
+                color: GlobalHelper.getColorSchema(
+                  context,
+                ).onSurface.withValues(alpha: 0.6),
+                height: 1.5,
+              ),
         ),
         Divider(
           height: 28,
@@ -268,7 +281,10 @@ class CustomerDetailProductScreen extends StatelessWidget {
     );
   }
 
-  Widget _variantsLayout(BuildContext context, Map<String, Set<String>> dimensions) {
+  Widget _variantsLayout(
+    BuildContext context,
+    Map<String, Set<String>> dimensions,
+  ) {
     final state = context.watch<CustomerDetailProductBloc>().state;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -281,13 +297,14 @@ class CustomerDetailProductScreen extends StatelessWidget {
             children: [
               Text(
                 dimensionName,
-                style: GlobalHelper.getTextTheme(
-                  context,
-                  appTextStyle: AppTextStyle.BODY_LARGE,
-                )?.copyWith(
-                  fontWeight: FontWeight.w700,
-                  color: GlobalHelper.getColorSchema(context).onSurface,
-                ),
+                style:
+                    GlobalHelper.getTextTheme(
+                      context,
+                      appTextStyle: AppTextStyle.BODY_LARGE,
+                    )?.copyWith(
+                      fontWeight: FontWeight.w700,
+                      color: GlobalHelper.getColorSchema(context).onSurface,
+                    ),
               ),
               const SizedBox(height: 8),
               Wrap(
@@ -307,7 +324,10 @@ class CustomerDetailProductScreen extends StatelessWidget {
                       );
                     },
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 8,
+                      ),
                       decoration: BoxDecoration(
                         color: isSelected
                             ? GlobalHelper.getColorSchema(context).primary
@@ -316,20 +336,29 @@ class CustomerDetailProductScreen extends StatelessWidget {
                         border: Border.all(
                           color: isSelected
                               ? GlobalHelper.getColorSchema(context).primary
-                              : GlobalHelper.getColorSchema(context).outlineVariant,
+                              : GlobalHelper.getColorSchema(
+                                  context,
+                                ).outlineVariant,
                         ),
                       ),
                       child: Text(
                         value,
-                        style: GlobalHelper.getTextTheme(
-                          context,
-                          appTextStyle: AppTextStyle.BODY_SMALL,
-                        )?.copyWith(
-                          fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
-                          color: isSelected
-                              ? GlobalHelper.getColorSchema(context).onPrimary
-                              : GlobalHelper.getColorSchema(context).onSurface,
-                        ),
+                        style:
+                            GlobalHelper.getTextTheme(
+                              context,
+                              appTextStyle: AppTextStyle.BODY_SMALL,
+                            )?.copyWith(
+                              fontWeight: isSelected
+                                  ? FontWeight.w700
+                                  : FontWeight.w500,
+                              color: isSelected
+                                  ? GlobalHelper.getColorSchema(
+                                      context,
+                                    ).onPrimary
+                                  : GlobalHelper.getColorSchema(
+                                      context,
+                                    ).onSurface,
+                            ),
                       ),
                     ),
                   );
@@ -350,13 +379,13 @@ class CustomerDetailProductScreen extends StatelessWidget {
   Widget _quantityLayout(BuildContext context) {
     final state = context.watch<CustomerDetailProductBloc>().state;
     final product = state.product;
-    
+
     int maxStock = 0;
     if (product != null) {
       if (state.selectedVariant != null) {
         maxStock = state.selectedVariant!.stock;
       } else {
-        maxStock = product.stock;
+        maxStock = product.stock ?? 0;
       }
     }
 
@@ -367,40 +396,58 @@ class CustomerDetailProductScreen extends StatelessWidget {
           children: [
             Text(
               'Jumlah',
-              style: GlobalHelper.getTextTheme(
-                context,
-                appTextStyle: AppTextStyle.BODY_LARGE,
-              )?.copyWith(
-                fontWeight: FontWeight.w700,
-                color: GlobalHelper.getColorSchema(context).onSurface,
-              ),
+              style:
+                  GlobalHelper.getTextTheme(
+                    context,
+                    appTextStyle: AppTextStyle.BODY_LARGE,
+                  )?.copyWith(
+                    fontWeight: FontWeight.w700,
+                    color: GlobalHelper.getColorSchema(context).onSurface,
+                  ),
             ),
             Row(
               children: [
-                _qtyButton(context, Icons.remove, state.quantity > 1 ? () {
-                  context.read<CustomerDetailProductBloc>().add(
-                    CustomerDetailProductEventQuantityChanged(state.quantity - 1),
-                  );
-                } : null),
+                _qtyButton(
+                  context,
+                  Icons.remove,
+                  state.quantity > 1
+                      ? () {
+                          context.read<CustomerDetailProductBloc>().add(
+                            CustomerDetailProductEventQuantityChanged(
+                              state.quantity - 1,
+                            ),
+                          );
+                        }
+                      : null,
+                ),
                 Container(
                   width: 42,
                   alignment: Alignment.center,
                   child: Text(
                     '${state.quantity}',
-                    style: GlobalHelper.getTextTheme(
-                      context,
-                      appTextStyle: AppTextStyle.BODY_LARGE,
-                    )?.copyWith(
-                      fontWeight: FontWeight.w700,
-                      color: GlobalHelper.getColorSchema(context).onSurface,
-                    ),
+                    style:
+                        GlobalHelper.getTextTheme(
+                          context,
+                          appTextStyle: AppTextStyle.BODY_LARGE,
+                        )?.copyWith(
+                          fontWeight: FontWeight.w700,
+                          color: GlobalHelper.getColorSchema(context).onSurface,
+                        ),
                   ),
                 ),
-                _qtyButton(context, Icons.add, state.quantity < maxStock ? () {
-                  context.read<CustomerDetailProductBloc>().add(
-                    CustomerDetailProductEventQuantityChanged(state.quantity + 1),
-                  );
-                } : null),
+                _qtyButton(
+                  context,
+                  Icons.add,
+                  state.quantity < maxStock
+                      ? () {
+                          context.read<CustomerDetailProductBloc>().add(
+                            CustomerDetailProductEventQuantityChanged(
+                              state.quantity + 1,
+                            ),
+                          );
+                        }
+                      : null,
+                ),
               ],
             ),
           ],
@@ -422,22 +469,26 @@ class CustomerDetailProductScreen extends StatelessWidget {
             children: [
               TextSpan(
                 text: 'Catatan untuk penjual ',
-                style: GlobalHelper.getTextTheme(
-                  context,
-                  appTextStyle: AppTextStyle.BODY_MEDIUM,
-                )?.copyWith(
-                  fontWeight: FontWeight.w700,
-                  color: GlobalHelper.getColorSchema(context).onSurface,
-                ),
+                style:
+                    GlobalHelper.getTextTheme(
+                      context,
+                      appTextStyle: AppTextStyle.BODY_MEDIUM,
+                    )?.copyWith(
+                      fontWeight: FontWeight.w700,
+                      color: GlobalHelper.getColorSchema(context).onSurface,
+                    ),
               ),
               TextSpan(
                 text: '(Opsional)',
-                style: GlobalHelper.getTextTheme(
-                  context,
-                  appTextStyle: AppTextStyle.BODY_MEDIUM,
-                )?.copyWith(
-                  color: GlobalHelper.getColorSchema(context).onSurface.withValues(alpha: 0.6),
-                ),
+                style:
+                    GlobalHelper.getTextTheme(
+                      context,
+                      appTextStyle: AppTextStyle.BODY_MEDIUM,
+                    )?.copyWith(
+                      color: GlobalHelper.getColorSchema(
+                        context,
+                      ).onSurface.withValues(alpha: 0.6),
+                    ),
               ),
             ],
           ),
@@ -450,24 +501,29 @@ class CustomerDetailProductScreen extends StatelessWidget {
           style: GlobalHelper.getTextTheme(
             context,
             appTextStyle: AppTextStyle.BODY_SMALL,
-          )?.copyWith(
-            color: GlobalHelper.getColorSchema(context).onSurface,
-          ),
+          )?.copyWith(color: GlobalHelper.getColorSchema(context).onSurface),
           decoration: InputDecoration(
-            hintText: 'Contoh: Tidak usah pakai sendok, tolong dipilihkan yang exp lama, dll.',
-            hintStyle: GlobalHelper.getTextTheme(
-              context,
-              appTextStyle: AppTextStyle.BODY_SMALL,
-            )?.copyWith(
-              color: GlobalHelper.getColorSchema(context).onSurface.withValues(alpha: 0.6),
-              height: 1.4,
-            ),
-            counterStyle: GlobalHelper.getTextTheme(
-              context,
-              appTextStyle: AppTextStyle.LABEL_SMALL,
-            )?.copyWith(
-              color: GlobalHelper.getColorSchema(context).onSurface.withValues(alpha: 0.6),
-            ),
+            hintText:
+                'Contoh: Tidak usah pakai sendok, tolong dipilihkan yang exp lama, dll.',
+            hintStyle:
+                GlobalHelper.getTextTheme(
+                  context,
+                  appTextStyle: AppTextStyle.BODY_SMALL,
+                )?.copyWith(
+                  color: GlobalHelper.getColorSchema(
+                    context,
+                  ).onSurface.withValues(alpha: 0.6),
+                  height: 1.4,
+                ),
+            counterStyle:
+                GlobalHelper.getTextTheme(
+                  context,
+                  appTextStyle: AppTextStyle.LABEL_SMALL,
+                )?.copyWith(
+                  color: GlobalHelper.getColorSchema(
+                    context,
+                  ).onSurface.withValues(alpha: 0.6),
+                ),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
               borderSide: BorderSide(
@@ -495,7 +551,12 @@ class CustomerDetailProductScreen extends StatelessWidget {
     );
   }
 
-  Widget _bottomBarLayout(BuildContext context, String totalPrice, TextEditingController noteCtrl) {    return Positioned(
+  Widget _bottomBarLayout(
+    BuildContext context,
+    String totalPrice,
+    TextEditingController noteCtrl,
+  ) {
+    return Positioned(
       bottom: 0,
       left: 0,
       right: 0,
@@ -518,22 +579,26 @@ class CustomerDetailProductScreen extends StatelessWidget {
               children: [
                 Text(
                   'Total Harga',
-                  style: GlobalHelper.getTextTheme(
-                    context,
-                    appTextStyle: AppTextStyle.LABEL_SMALL,
-                  )?.copyWith(
-                    color: GlobalHelper.getColorSchema(context).onSurface.withValues(alpha: 0.6),
-                  ),
+                  style:
+                      GlobalHelper.getTextTheme(
+                        context,
+                        appTextStyle: AppTextStyle.LABEL_SMALL,
+                      )?.copyWith(
+                        color: GlobalHelper.getColorSchema(
+                          context,
+                        ).onSurface.withValues(alpha: 0.6),
+                      ),
                 ),
                 Text(
                   totalPrice,
-                  style: GlobalHelper.getTextTheme(
-                    context,
-                    appTextStyle: AppTextStyle.BODY_LARGE,
-                  )?.copyWith(
-                    fontWeight: FontWeight.w900,
-                    color: GlobalHelper.getColorSchema(context).primary,
-                  ),
+                  style:
+                      GlobalHelper.getTextTheme(
+                        context,
+                        appTextStyle: AppTextStyle.BODY_LARGE,
+                      )?.copyWith(
+                        fontWeight: FontWeight.w900,
+                        color: GlobalHelper.getColorSchema(context).primary,
+                      ),
                 ),
               ],
             ),
@@ -552,14 +617,13 @@ class CustomerDetailProductScreen extends StatelessWidget {
                 icon: const Icon(Icons.shopping_cart_outlined, size: 18),
                 label: const Text(
                   'Tambah ke Keranjang',
-                  style: TextStyle(
-                    fontWeight: FontWeight.w700,
-                    fontSize: 14,
-                  ),
+                  style: TextStyle(fontWeight: FontWeight.w700, fontSize: 14),
                 ),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: GlobalHelper.getColorSchema(context).primary,
-                  foregroundColor: GlobalHelper.getColorSchema(context).onPrimary,
+                  foregroundColor: GlobalHelper.getColorSchema(
+                    context,
+                  ).onPrimary,
                   elevation: 0,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
@@ -582,12 +646,16 @@ class CustomerDetailProductScreen extends StatelessWidget {
         width: 32,
         height: 32,
         decoration: BoxDecoration(
-          color: GlobalHelper.getColorSchema(context).primary.withValues(alpha: isDisabled ? 0.05 : 0.1),
+          color: GlobalHelper.getColorSchema(
+            context,
+          ).primary.withValues(alpha: isDisabled ? 0.05 : 0.1),
           borderRadius: BorderRadius.circular(8),
         ),
         child: Icon(
           icon,
-          color: GlobalHelper.getColorSchema(context).primary.withValues(alpha: isDisabled ? 0.3 : 1.0),
+          color: GlobalHelper.getColorSchema(
+            context,
+          ).primary.withValues(alpha: isDisabled ? 0.3 : 1.0),
           size: 18,
         ),
       ),
