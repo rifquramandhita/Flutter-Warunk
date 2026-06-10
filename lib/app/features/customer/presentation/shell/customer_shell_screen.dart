@@ -5,7 +5,7 @@ import 'package:warunk/app/features/customer/presentation/home/customer_home_scr
 import 'package:warunk/app/features/customer/presentation/map/customer_map_screen.dart';
 import 'package:warunk/app/features/customer/presentation/notification/customer_notification_screen.dart';
 import 'package:warunk/app/features/customer/presentation/profil/customer_profile_screen.dart';
-import 'package:warunk/app/features/customer/presentation/transaction/customer_transaction_screen.dart';
+import 'package:warunk/app/features/customer/presentation/order/customer_order_screen.dart';
 import 'package:warunk/theme/app_colors.dart';
 
 /// CustomerShellScreen mengelola bottom navigation dan menampilkan
@@ -16,7 +16,7 @@ class CustomerShellScreen extends StatelessWidget {
   static const List<Widget> _pages = [
     CustomerHomeScreen(),
     CustomerMapScreen(),
-    CustomerTransactionScreen(),
+    CustomerOrderScreen(),
     CustomerNotificationScreen(),
     CustomerProfileScreen(),
   ];

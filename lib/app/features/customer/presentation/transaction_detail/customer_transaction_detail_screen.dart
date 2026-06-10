@@ -1,7 +1,7 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:warunk/app/features/customer/presentation/transaction/bloc/customer_transaction_bloc.dart';
+import 'package:warunk/app/features/customer/presentation/order/bloc/customer_order_bloc.dart';
 import 'package:warunk/app/features/customer/presentation/transaction_detail/bloc/customer_transaction_detail_bloc.dart';
 import 'package:warunk/theme/app_colors.dart';
 
@@ -23,7 +23,7 @@ class _OrderItem {
 
 // ── Entry point ────────────────────────────────────────────────────────────
 class CustomerTransactionDetailScreen extends StatelessWidget {
-  final CustomerTransactionEntity transaction;
+  final CustomerOrderEntity transaction;
   const CustomerTransactionDetailScreen({super.key, required this.transaction});
 
   @override
@@ -108,7 +108,7 @@ class _DetailView extends StatelessWidget {
                             children: [
                               Expanded(
                                 child: Text(
-                                  tx.orderId ?? '#WRK-240128-018',
+                                  tx.invoiceNumber ?? '#WRK-240128-018',
                                   style: const TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.w900,
@@ -117,7 +117,7 @@ class _DetailView extends StatelessWidget {
                                 ),
                               ),
                               const SizedBox(width: 8),
-                              _statusBadge(tx.status),
+                              _statusBadge(tx.status ?? ''),
                             ],
                           ),
                           const SizedBox(height: 8),
@@ -131,7 +131,7 @@ class _DetailView extends StatelessWidget {
                               ),
                               const SizedBox(width: 6),
                               Text(
-                                tx.storeName,
+                                tx.merchant?['name'] ?? 'Toko',
                                 style: const TextStyle(
                                   fontSize: 13,
                                   fontWeight: FontWeight.w600,
@@ -151,7 +151,9 @@ class _DetailView extends StatelessWidget {
                               ),
                               const SizedBox(width: 6),
                               Text(
-                                tx.dateLabel,
+                                tx.createdAt != null
+                                    ? tx.createdAt!.split('T').first
+                                    : '-',
                                 style: const TextStyle(
                                   fontSize: 12,
                                   color: AppColors.greyText,
@@ -619,40 +621,64 @@ class _DetailView extends StatelessWidget {
     ],
   );
 
-  Widget _statusBadge(TxStatus status) {
+  Widget _statusBadge(String status) {
     late String label;
     late Color bg;
     late Color fg;
     late bool outlined;
     switch (status) {
-      case TxStatus.diproses:
+      case 'waiting_payment':
+        label = 'Menunggu Pembayaran';
+        bg = const Color(0xFFFFF3E0);
+        fg = const Color(0xFFF59E0B);
+        outlined = false;
+        break;
+      case 'waiting_payment_confirmation':
+        label = 'Menunggu Konfirmasi Pembayaran';
+        bg = const Color(0xFFFFF3E0);
+        fg = const Color(0xFFF59E0B);
+        outlined = false;
+        break;
+      case 'waiting_cancel':
+        label = 'Menunggu Pembatalan';
+        bg = const Color(0xFFFFEBEE);
+        fg = Colors.red;
+        outlined = false;
+        break;
+      case 'processing':
         label = 'Diproses';
         bg = AppColors.primary;
         fg = Colors.white;
         outlined = false;
         break;
-      case TxStatus.menungguBayar:
-        label = 'Menunggu Bayar';
-        bg = const Color(0xFFFFF3E0);
-        fg = const Color(0xFFF59E0B);
-        outlined = false;
-        break;
-      case TxStatus.dikirim:
+      case 'shipped':
         label = 'Dikirim';
         bg = const Color(0xFFE3F2FD);
         fg = const Color(0xFF1976D2);
         outlined = false;
         break;
-      case TxStatus.selesai:
+      case 'received':
+        label = 'Diterima';
+        bg = const Color(0xFFE8F5E9);
+        fg = const Color(0xFF2E7D32);
+        outlined = false;
+        break;
+      case 'completed':
         label = 'Selesai';
         bg = Colors.transparent;
         fg = AppColors.primary;
         outlined = true;
         break;
-      case TxStatus.dibatalkan:
+      case 'cancelled':
         label = 'Dibatalkan';
         bg = const Color(0xFFFFEBEE);
         fg = Colors.red;
+        outlined = false;
+        break;
+      default:
+        label = status;
+        bg = Colors.grey.shade200;
+        fg = Colors.black54;
         outlined = false;
         break;
     }
@@ -672,20 +698,24 @@ class _DetailView extends StatelessWidget {
     );
   }
 
-  static List<_StepData> _getSteps(TxStatus status) {
+  static List<_StepData> _getSteps(String? status) {
     const labels = ['Pesanan\ndibuat', 'Diproses', 'Dikirim', 'Selesai'];
     int doneCount;
     switch (status) {
-      case TxStatus.menungguBayar:
+      case 'waiting_payment':
+      case 'waiting_payment_confirmation':
+      case 'waiting_cancel':
+      case 'pending':
         doneCount = 1;
         break;
-      case TxStatus.diproses:
+      case 'processing':
         doneCount = 2;
         break;
-      case TxStatus.dikirim:
+      case 'shipped':
         doneCount = 3;
         break;
-      case TxStatus.selesai:
+      case 'received':
+      case 'completed':
         doneCount = 4;
         break;
       default:

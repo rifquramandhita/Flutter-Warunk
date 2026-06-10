@@ -70,4 +70,14 @@ class CustomerOrderRepositoryImpl implements CustomerOrderRepository {
       (json) => CustomerOrderEntity.fromJson(json['order'] as Map<String, dynamic>),
     );
   }
+
+  @override
+  Future<DataState<List<CustomerOrderEntity>>> getOrders() {
+    return handleResponse(
+      () => _apiService.getOrders(),
+      (json) => List.from(
+        json['orders'].map((e) => CustomerOrderEntity.fromJson(e)),
+      ),
+    );
+  }
 }

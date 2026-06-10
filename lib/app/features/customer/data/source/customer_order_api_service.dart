@@ -34,4 +34,7 @@ abstract class CustomerOrderApiService {
 
   @GET('/api/orders/{id}')
   Future<HttpResponse<dynamic>> getOrderById(@Path('id') String id);
+
+  @GET('/api/orders')
+  Future<HttpResponse<dynamic>> getOrders();
 }
