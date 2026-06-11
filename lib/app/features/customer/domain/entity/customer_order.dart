@@ -45,6 +45,15 @@ sealed class CustomerOrder with _$CustomerOrder {
   }) = CustomerOrderCompleteReviewParam;
 
   @JsonSerializable(fieldRename: FieldRename.snake, includeIfNull: false)
+  const factory CustomerOrder.cancelParam({
+    required String orderId,
+    required String reason,
+    String? customerBank,
+    String? customerAccountNumber,
+    String? customerAccountName,
+  }) = CustomerOrderCancelParam;
+
+  @JsonSerializable(fieldRename: FieldRename.snake, includeIfNull: false)
   const factory CustomerOrder.entity({
     String? id,
     String? invoiceNumber,

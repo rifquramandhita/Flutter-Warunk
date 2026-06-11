@@ -10,6 +10,8 @@ import 'package:warunk/core/widgets/loading_app_widget.dart';
 import 'package:warunk/core/helper/global_helper.dart';
 import 'package:warunk/core/enum/delivery_method.dart';
 import 'package:warunk/app/features/customer/presentation/review_order/customer_review_order_screen.dart';
+import 'package:warunk/app/features/customer/presentation/cancel_order/customer_cancel_order_screen.dart';
+import 'package:warunk/core/enum/order_status.dart';
 
 // ── Entry point ────────────────────────────────────────────────────────────
 class CustomerDetailOrderScreen extends StatelessWidget {
@@ -146,9 +148,18 @@ class CustomerDetailOrderScreen extends StatelessWidget {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 18),
                       // Progress tracker
-                      _ProgressTracker(steps: steps),
+                      if (OrderStatus.fromString(tx.status) ==
+                              OrderStatus.processing ||
+                          OrderStatus.fromString(tx.status) ==
+                              OrderStatus.shipped ||
+                          OrderStatus.fromString(tx.status) ==
+                              OrderStatus.received ||
+                          OrderStatus.fromString(tx.status) ==
+                              OrderStatus.completed) ...[
+                        const SizedBox(height: 18),
+                        _ProgressTracker(steps: steps),
+                      ],
                     ],
                   ),
                 ),
@@ -522,6 +533,47 @@ class CustomerDetailOrderScreen extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
+              if (OrderStatus.fromString(tx.status) ==
+                  OrderStatus.waitingPaymentConfirmation) ...[
+                SizedBox(
+                  width: double.infinity,
+                  height: 50,
+                  child: ElevatedButton.icon(
+                    onPressed: () async {
+                      final result = await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              CustomerCancelOrderScreen(order: tx),
+                        ),
+                      );
+                      if (result == true) {
+                        context.read<CustomerDetailOrderBloc>().add(
+                          CustomerDetailOrderFetchStarted(tx),
+                        );
+                      }
+                    },
+                    icon: const Icon(Icons.cancel_outlined, size: 20),
+                    label: const Text(
+                      'Batalkan Pesanan',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w700,
+                        fontSize: 15,
+                      ),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      foregroundColor: Colors.red,
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(14),
+                        side: const BorderSide(color: Colors.red),
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 12),
+              ],
               if (tx.status == 'received') ...[
                 SizedBox(
                   width: double.infinity,

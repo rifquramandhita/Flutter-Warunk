@@ -96,6 +96,28 @@ Map<String, dynamic> _$CustomerOrderCompleteReviewParamToJson(
   'runtimeType': instance.$type,
 };
 
+CustomerOrderCancelParam _$CustomerOrderCancelParamFromJson(
+  Map<String, dynamic> json,
+) => CustomerOrderCancelParam(
+  orderId: json['order_id'] as String,
+  reason: json['reason'] as String,
+  customerBank: json['customer_bank'] as String?,
+  customerAccountNumber: json['customer_account_number'] as String?,
+  customerAccountName: json['customer_account_name'] as String?,
+  $type: json['runtimeType'] as String?,
+);
+
+Map<String, dynamic> _$CustomerOrderCancelParamToJson(
+  CustomerOrderCancelParam instance,
+) => <String, dynamic>{
+  'order_id': instance.orderId,
+  'reason': instance.reason,
+  'customer_bank': ?instance.customerBank,
+  'customer_account_number': ?instance.customerAccountNumber,
+  'customer_account_name': ?instance.customerAccountName,
+  'runtimeType': instance.$type,
+};
+
 CustomerOrderEntity _$CustomerOrderEntityFromJson(Map<String, dynamic> json) =>
     CustomerOrderEntity(
       id: json['id'] as String?,

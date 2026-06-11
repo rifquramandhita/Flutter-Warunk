@@ -19,4 +19,5 @@ abstract class CustomerOrderRepository {
   Future<DataState<CustomerOrderEntity>> completeOrder(
     CustomerOrderCompleteParam param,
   );
+  Future<DataState<String>> cancelOrder(CustomerOrderCancelParam param);
 }

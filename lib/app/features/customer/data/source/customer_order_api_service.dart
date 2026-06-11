@@ -43,4 +43,10 @@ abstract class CustomerOrderApiService {
     @Path('id') String id,
     @Body() FormData body,
   );
+
+  @POST('/api/orders/{id}/cancel-request')
+  Future<HttpResponse<dynamic>> cancelOrder(
+    @Path('id') String id,
+    @Body() Map<String, dynamic> body,
+  );
 }

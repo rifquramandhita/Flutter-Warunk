@@ -94,4 +94,12 @@ class CustomerOrderRepositoryImpl implements CustomerOrderRepository {
       },
     );
   }
+
+  @override
+  Future<DataState<String>> cancelOrder(CustomerOrderCancelParam param) {
+    return handleResponse(
+      () => _apiService.cancelOrder(param.orderId, param.toJson()),
+      (json) => json['message'] as String? ?? 'Success',
+    );
+  }
 }

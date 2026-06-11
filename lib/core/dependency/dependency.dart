@@ -130,6 +130,7 @@ import 'package:warunk/app/features/customer/domain/repository/customer_order_re
 import 'package:warunk/app/features/customer/data/repository/customer_order_repository_impl.dart';
 import 'package:warunk/app/features/customer/domain/use_case/customer_checkout_get_option_use_case.dart';
 import 'package:warunk/app/features/customer/domain/use_case/customer_order_create_use_case.dart';
+import 'package:warunk/app/features/customer/domain/use_case/customer_order_cancel_use_case.dart';
 import 'package:warunk/app/features/customer/domain/use_case/customer_order_get_promotion_use_case.dart';
 import 'package:warunk/app/features/merchant/domain/use_case/merchant_merchant_get_history_balance_use_case.dart';
 import 'package:warunk/app/features/merchant/presentation/balance_history/bloc/merchant_balance_history_bloc.dart';
@@ -138,6 +139,7 @@ import 'package:warunk/app/features/merchant/domain/use_case/merchant_merchant_t
 
 import 'package:warunk/app/features/merchant/presentation/input_topup/bloc/merchant_input_topup_bloc.dart';
 import 'package:warunk/app/features/customer/presentation/detail_order/bloc/customer_detail_order_bloc.dart';
+import 'package:warunk/app/features/customer/presentation/cancel_order/bloc/customer_cancel_order_bloc.dart';
 
 final sl = GetIt.instance;
 
@@ -309,6 +311,7 @@ Future<void> initDependency() async {
   sl.registerLazySingleton(() => CustomerOrderGetByIdUseCase(sl()));
   sl.registerLazySingleton(() => CustomerOrderGetUseCase(sl()));
   sl.registerLazySingleton(() => CustomerOrderCompleteUseCase(sl()));
+  sl.registerLazySingleton(() => CustomerOrderCancelUseCase(sl()));
 
   //bloc
   sl.registerLazySingleton(() => AuthBloc());
@@ -416,4 +419,5 @@ Future<void> initDependency() async {
   sl.registerFactory(() => CustomerAddressMapsBloc(sl()));
   sl.registerFactory(() => CustomerOrderBloc(getOrdersUseCase: sl()));
   sl.registerFactory(() => CustomerDetailOrderBloc(sl()));
+  sl.registerFactory(() => CustomerCancelOrderBloc(cancelUseCase: sl()));
 }
