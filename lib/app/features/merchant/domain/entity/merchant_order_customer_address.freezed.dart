@@ -22,7 +22,7 @@ MerchantOrderCustomerAddress _$MerchantOrderCustomerAddressFromJson(
 /// @nodoc
 mixin _$MerchantOrderCustomerAddress {
 
- String? get id; String? get city; String? get label; String? get notes; String? get phone; String? get address; String? get district; String? get latitude; String? get province; String? get longitude; String? get postalCode; String? get recipientName;
+ String? get id; String? get city; String? get label; String? get notes; String? get phone; String? get address; String? get district; double? get latitude; String? get province; double? get longitude; String? get postalCode; String? get recipientName; int? get userId; bool? get isDefault; String? get fullAddress; String? get createdAt; String? get updatedAt;
 /// Create a copy of MerchantOrderCustomerAddress
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -35,16 +35,16 @@ $MerchantOrderCustomerAddressCopyWith<MerchantOrderCustomerAddress> get copyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MerchantOrderCustomerAddress&&(identical(other.id, id) || other.id == id)&&(identical(other.city, city) || other.city == city)&&(identical(other.label, label) || other.label == label)&&(identical(other.notes, notes) || other.notes == notes)&&(identical(other.phone, phone) || other.phone == phone)&&(identical(other.address, address) || other.address == address)&&(identical(other.district, district) || other.district == district)&&(identical(other.latitude, latitude) || other.latitude == latitude)&&(identical(other.province, province) || other.province == province)&&(identical(other.longitude, longitude) || other.longitude == longitude)&&(identical(other.postalCode, postalCode) || other.postalCode == postalCode)&&(identical(other.recipientName, recipientName) || other.recipientName == recipientName));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MerchantOrderCustomerAddress&&(identical(other.id, id) || other.id == id)&&(identical(other.city, city) || other.city == city)&&(identical(other.label, label) || other.label == label)&&(identical(other.notes, notes) || other.notes == notes)&&(identical(other.phone, phone) || other.phone == phone)&&(identical(other.address, address) || other.address == address)&&(identical(other.district, district) || other.district == district)&&(identical(other.latitude, latitude) || other.latitude == latitude)&&(identical(other.province, province) || other.province == province)&&(identical(other.longitude, longitude) || other.longitude == longitude)&&(identical(other.postalCode, postalCode) || other.postalCode == postalCode)&&(identical(other.recipientName, recipientName) || other.recipientName == recipientName)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.isDefault, isDefault) || other.isDefault == isDefault)&&(identical(other.fullAddress, fullAddress) || other.fullAddress == fullAddress)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,city,label,notes,phone,address,district,latitude,province,longitude,postalCode,recipientName);
+int get hashCode => Object.hash(runtimeType,id,city,label,notes,phone,address,district,latitude,province,longitude,postalCode,recipientName,userId,isDefault,fullAddress,createdAt,updatedAt);
 
 @override
 String toString() {
-  return 'MerchantOrderCustomerAddress(id: $id, city: $city, label: $label, notes: $notes, phone: $phone, address: $address, district: $district, latitude: $latitude, province: $province, longitude: $longitude, postalCode: $postalCode, recipientName: $recipientName)';
+  return 'MerchantOrderCustomerAddress(id: $id, city: $city, label: $label, notes: $notes, phone: $phone, address: $address, district: $district, latitude: $latitude, province: $province, longitude: $longitude, postalCode: $postalCode, recipientName: $recipientName, userId: $userId, isDefault: $isDefault, fullAddress: $fullAddress, createdAt: $createdAt, updatedAt: $updatedAt)';
 }
 
 
@@ -55,7 +55,7 @@ abstract mixin class $MerchantOrderCustomerAddressCopyWith<$Res>  {
   factory $MerchantOrderCustomerAddressCopyWith(MerchantOrderCustomerAddress value, $Res Function(MerchantOrderCustomerAddress) _then) = _$MerchantOrderCustomerAddressCopyWithImpl;
 @useResult
 $Res call({
- String? id, String? city, String? label, String? notes, String? phone, String? address, String? district, String? latitude, String? province, String? longitude, String? postalCode, String? recipientName
+ String? id, String? city, String? label, String? notes, String? phone, String? address, String? district, double? latitude, String? province, double? longitude, String? postalCode, String? recipientName, int? userId, bool? isDefault, String? fullAddress, String? createdAt, String? updatedAt
 });
 
 
@@ -72,7 +72,7 @@ class _$MerchantOrderCustomerAddressCopyWithImpl<$Res>
 
 /// Create a copy of MerchantOrderCustomerAddress
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = freezed,Object? city = freezed,Object? label = freezed,Object? notes = freezed,Object? phone = freezed,Object? address = freezed,Object? district = freezed,Object? latitude = freezed,Object? province = freezed,Object? longitude = freezed,Object? postalCode = freezed,Object? recipientName = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = freezed,Object? city = freezed,Object? label = freezed,Object? notes = freezed,Object? phone = freezed,Object? address = freezed,Object? district = freezed,Object? latitude = freezed,Object? province = freezed,Object? longitude = freezed,Object? postalCode = freezed,Object? recipientName = freezed,Object? userId = freezed,Object? isDefault = freezed,Object? fullAddress = freezed,Object? createdAt = freezed,Object? updatedAt = freezed,}) {
   return _then(_self.copyWith(
 id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String?,city: freezed == city ? _self.city : city // ignore: cast_nullable_to_non_nullable
@@ -82,10 +82,15 @@ as String?,phone: freezed == phone ? _self.phone : phone // ignore: cast_nullabl
 as String?,address: freezed == address ? _self.address : address // ignore: cast_nullable_to_non_nullable
 as String?,district: freezed == district ? _self.district : district // ignore: cast_nullable_to_non_nullable
 as String?,latitude: freezed == latitude ? _self.latitude : latitude // ignore: cast_nullable_to_non_nullable
-as String?,province: freezed == province ? _self.province : province // ignore: cast_nullable_to_non_nullable
+as double?,province: freezed == province ? _self.province : province // ignore: cast_nullable_to_non_nullable
 as String?,longitude: freezed == longitude ? _self.longitude : longitude // ignore: cast_nullable_to_non_nullable
-as String?,postalCode: freezed == postalCode ? _self.postalCode : postalCode // ignore: cast_nullable_to_non_nullable
+as double?,postalCode: freezed == postalCode ? _self.postalCode : postalCode // ignore: cast_nullable_to_non_nullable
 as String?,recipientName: freezed == recipientName ? _self.recipientName : recipientName // ignore: cast_nullable_to_non_nullable
+as String?,userId: freezed == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
+as int?,isDefault: freezed == isDefault ? _self.isDefault : isDefault // ignore: cast_nullable_to_non_nullable
+as bool?,fullAddress: freezed == fullAddress ? _self.fullAddress : fullAddress // ignore: cast_nullable_to_non_nullable
+as String?,createdAt: freezed == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
+as String?,updatedAt: freezed == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }
@@ -168,10 +173,10 @@ return entity(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String? id,  String? city,  String? label,  String? notes,  String? phone,  String? address,  String? district,  String? latitude,  String? province,  String? longitude,  String? postalCode,  String? recipientName)?  entity,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String? id,  String? city,  String? label,  String? notes,  String? phone,  String? address,  String? district,  double? latitude,  String? province,  double? longitude,  String? postalCode,  String? recipientName,  int? userId,  bool? isDefault,  String? fullAddress,  String? createdAt,  String? updatedAt)?  entity,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case MerchantOrderCustomerAddressEntity() when entity != null:
-return entity(_that.id,_that.city,_that.label,_that.notes,_that.phone,_that.address,_that.district,_that.latitude,_that.province,_that.longitude,_that.postalCode,_that.recipientName);case _:
+return entity(_that.id,_that.city,_that.label,_that.notes,_that.phone,_that.address,_that.district,_that.latitude,_that.province,_that.longitude,_that.postalCode,_that.recipientName,_that.userId,_that.isDefault,_that.fullAddress,_that.createdAt,_that.updatedAt);case _:
   return orElse();
 
 }
@@ -189,10 +194,10 @@ return entity(_that.id,_that.city,_that.label,_that.notes,_that.phone,_that.addr
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String? id,  String? city,  String? label,  String? notes,  String? phone,  String? address,  String? district,  String? latitude,  String? province,  String? longitude,  String? postalCode,  String? recipientName)  entity,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String? id,  String? city,  String? label,  String? notes,  String? phone,  String? address,  String? district,  double? latitude,  String? province,  double? longitude,  String? postalCode,  String? recipientName,  int? userId,  bool? isDefault,  String? fullAddress,  String? createdAt,  String? updatedAt)  entity,}) {final _that = this;
 switch (_that) {
 case MerchantOrderCustomerAddressEntity():
-return entity(_that.id,_that.city,_that.label,_that.notes,_that.phone,_that.address,_that.district,_that.latitude,_that.province,_that.longitude,_that.postalCode,_that.recipientName);}
+return entity(_that.id,_that.city,_that.label,_that.notes,_that.phone,_that.address,_that.district,_that.latitude,_that.province,_that.longitude,_that.postalCode,_that.recipientName,_that.userId,_that.isDefault,_that.fullAddress,_that.createdAt,_that.updatedAt);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -206,10 +211,10 @@ return entity(_that.id,_that.city,_that.label,_that.notes,_that.phone,_that.addr
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String? id,  String? city,  String? label,  String? notes,  String? phone,  String? address,  String? district,  String? latitude,  String? province,  String? longitude,  String? postalCode,  String? recipientName)?  entity,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String? id,  String? city,  String? label,  String? notes,  String? phone,  String? address,  String? district,  double? latitude,  String? province,  double? longitude,  String? postalCode,  String? recipientName,  int? userId,  bool? isDefault,  String? fullAddress,  String? createdAt,  String? updatedAt)?  entity,}) {final _that = this;
 switch (_that) {
 case MerchantOrderCustomerAddressEntity() when entity != null:
-return entity(_that.id,_that.city,_that.label,_that.notes,_that.phone,_that.address,_that.district,_that.latitude,_that.province,_that.longitude,_that.postalCode,_that.recipientName);case _:
+return entity(_that.id,_that.city,_that.label,_that.notes,_that.phone,_that.address,_that.district,_that.latitude,_that.province,_that.longitude,_that.postalCode,_that.recipientName,_that.userId,_that.isDefault,_that.fullAddress,_that.createdAt,_that.updatedAt);case _:
   return null;
 
 }
@@ -221,7 +226,7 @@ return entity(_that.id,_that.city,_that.label,_that.notes,_that.phone,_that.addr
 
 @JsonSerializable(fieldRename: FieldRename.snake, includeIfNull: false)
 class MerchantOrderCustomerAddressEntity implements MerchantOrderCustomerAddress {
-  const MerchantOrderCustomerAddressEntity({this.id, this.city, this.label, this.notes, this.phone, this.address, this.district, this.latitude, this.province, this.longitude, this.postalCode, this.recipientName});
+  const MerchantOrderCustomerAddressEntity({this.id, this.city, this.label, this.notes, this.phone, this.address, this.district, this.latitude, this.province, this.longitude, this.postalCode, this.recipientName, this.userId, this.isDefault, this.fullAddress, this.createdAt, this.updatedAt});
   factory MerchantOrderCustomerAddressEntity.fromJson(Map<String, dynamic> json) => _$MerchantOrderCustomerAddressEntityFromJson(json);
 
 @override final  String? id;
@@ -231,11 +236,16 @@ class MerchantOrderCustomerAddressEntity implements MerchantOrderCustomerAddress
 @override final  String? phone;
 @override final  String? address;
 @override final  String? district;
-@override final  String? latitude;
+@override final  double? latitude;
 @override final  String? province;
-@override final  String? longitude;
+@override final  double? longitude;
 @override final  String? postalCode;
 @override final  String? recipientName;
+@override final  int? userId;
+@override final  bool? isDefault;
+@override final  String? fullAddress;
+@override final  String? createdAt;
+@override final  String? updatedAt;
 
 /// Create a copy of MerchantOrderCustomerAddress
 /// with the given fields replaced by the non-null parameter values.
@@ -250,16 +260,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MerchantOrderCustomerAddressEntity&&(identical(other.id, id) || other.id == id)&&(identical(other.city, city) || other.city == city)&&(identical(other.label, label) || other.label == label)&&(identical(other.notes, notes) || other.notes == notes)&&(identical(other.phone, phone) || other.phone == phone)&&(identical(other.address, address) || other.address == address)&&(identical(other.district, district) || other.district == district)&&(identical(other.latitude, latitude) || other.latitude == latitude)&&(identical(other.province, province) || other.province == province)&&(identical(other.longitude, longitude) || other.longitude == longitude)&&(identical(other.postalCode, postalCode) || other.postalCode == postalCode)&&(identical(other.recipientName, recipientName) || other.recipientName == recipientName));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MerchantOrderCustomerAddressEntity&&(identical(other.id, id) || other.id == id)&&(identical(other.city, city) || other.city == city)&&(identical(other.label, label) || other.label == label)&&(identical(other.notes, notes) || other.notes == notes)&&(identical(other.phone, phone) || other.phone == phone)&&(identical(other.address, address) || other.address == address)&&(identical(other.district, district) || other.district == district)&&(identical(other.latitude, latitude) || other.latitude == latitude)&&(identical(other.province, province) || other.province == province)&&(identical(other.longitude, longitude) || other.longitude == longitude)&&(identical(other.postalCode, postalCode) || other.postalCode == postalCode)&&(identical(other.recipientName, recipientName) || other.recipientName == recipientName)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.isDefault, isDefault) || other.isDefault == isDefault)&&(identical(other.fullAddress, fullAddress) || other.fullAddress == fullAddress)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,city,label,notes,phone,address,district,latitude,province,longitude,postalCode,recipientName);
+int get hashCode => Object.hash(runtimeType,id,city,label,notes,phone,address,district,latitude,province,longitude,postalCode,recipientName,userId,isDefault,fullAddress,createdAt,updatedAt);
 
 @override
 String toString() {
-  return 'MerchantOrderCustomerAddress.entity(id: $id, city: $city, label: $label, notes: $notes, phone: $phone, address: $address, district: $district, latitude: $latitude, province: $province, longitude: $longitude, postalCode: $postalCode, recipientName: $recipientName)';
+  return 'MerchantOrderCustomerAddress.entity(id: $id, city: $city, label: $label, notes: $notes, phone: $phone, address: $address, district: $district, latitude: $latitude, province: $province, longitude: $longitude, postalCode: $postalCode, recipientName: $recipientName, userId: $userId, isDefault: $isDefault, fullAddress: $fullAddress, createdAt: $createdAt, updatedAt: $updatedAt)';
 }
 
 
@@ -270,7 +280,7 @@ abstract mixin class $MerchantOrderCustomerAddressEntityCopyWith<$Res> implement
   factory $MerchantOrderCustomerAddressEntityCopyWith(MerchantOrderCustomerAddressEntity value, $Res Function(MerchantOrderCustomerAddressEntity) _then) = _$MerchantOrderCustomerAddressEntityCopyWithImpl;
 @override @useResult
 $Res call({
- String? id, String? city, String? label, String? notes, String? phone, String? address, String? district, String? latitude, String? province, String? longitude, String? postalCode, String? recipientName
+ String? id, String? city, String? label, String? notes, String? phone, String? address, String? district, double? latitude, String? province, double? longitude, String? postalCode, String? recipientName, int? userId, bool? isDefault, String? fullAddress, String? createdAt, String? updatedAt
 });
 
 
@@ -287,7 +297,7 @@ class _$MerchantOrderCustomerAddressEntityCopyWithImpl<$Res>
 
 /// Create a copy of MerchantOrderCustomerAddress
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = freezed,Object? city = freezed,Object? label = freezed,Object? notes = freezed,Object? phone = freezed,Object? address = freezed,Object? district = freezed,Object? latitude = freezed,Object? province = freezed,Object? longitude = freezed,Object? postalCode = freezed,Object? recipientName = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = freezed,Object? city = freezed,Object? label = freezed,Object? notes = freezed,Object? phone = freezed,Object? address = freezed,Object? district = freezed,Object? latitude = freezed,Object? province = freezed,Object? longitude = freezed,Object? postalCode = freezed,Object? recipientName = freezed,Object? userId = freezed,Object? isDefault = freezed,Object? fullAddress = freezed,Object? createdAt = freezed,Object? updatedAt = freezed,}) {
   return _then(MerchantOrderCustomerAddressEntity(
 id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String?,city: freezed == city ? _self.city : city // ignore: cast_nullable_to_non_nullable
@@ -297,10 +307,15 @@ as String?,phone: freezed == phone ? _self.phone : phone // ignore: cast_nullabl
 as String?,address: freezed == address ? _self.address : address // ignore: cast_nullable_to_non_nullable
 as String?,district: freezed == district ? _self.district : district // ignore: cast_nullable_to_non_nullable
 as String?,latitude: freezed == latitude ? _self.latitude : latitude // ignore: cast_nullable_to_non_nullable
-as String?,province: freezed == province ? _self.province : province // ignore: cast_nullable_to_non_nullable
+as double?,province: freezed == province ? _self.province : province // ignore: cast_nullable_to_non_nullable
 as String?,longitude: freezed == longitude ? _self.longitude : longitude // ignore: cast_nullable_to_non_nullable
-as String?,postalCode: freezed == postalCode ? _self.postalCode : postalCode // ignore: cast_nullable_to_non_nullable
+as double?,postalCode: freezed == postalCode ? _self.postalCode : postalCode // ignore: cast_nullable_to_non_nullable
 as String?,recipientName: freezed == recipientName ? _self.recipientName : recipientName // ignore: cast_nullable_to_non_nullable
+as String?,userId: freezed == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
+as int?,isDefault: freezed == isDefault ? _self.isDefault : isDefault // ignore: cast_nullable_to_non_nullable
+as bool?,fullAddress: freezed == fullAddress ? _self.fullAddress : fullAddress // ignore: cast_nullable_to_non_nullable
+as String?,createdAt: freezed == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
+as String?,updatedAt: freezed == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }

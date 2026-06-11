@@ -24,11 +24,11 @@ class MerchantDetailOrderBloc
     required MerchantOrderAcceptUseCase acceptUseCase,
     required MerchantOrderRejectUseCase rejectUseCase,
     required MerchantOrderReceivedUseCase receivedUseCase,
-  })  : _getByIdUseCase = getByIdUseCase,
-        _acceptUseCase = acceptUseCase,
-        _rejectUseCase = rejectUseCase,
-        _receivedUseCase = receivedUseCase,
-        super(const MerchantDetailOrderState()) {
+  }) : _getByIdUseCase = getByIdUseCase,
+       _acceptUseCase = acceptUseCase,
+       _rejectUseCase = rejectUseCase,
+       _receivedUseCase = receivedUseCase,
+       super(const MerchantDetailOrderState()) {
     on<MerchantDetailOrderEventFetchStarted>(_onFetchStarted);
     on<MerchantDetailOrderEventMapsTapped>(_onMapsTapped);
     on<MerchantDetailOrderEventAccept>(_onAccept);
@@ -46,10 +46,7 @@ class MerchantDetailOrderBloc
     final response = await _getByIdUseCase.call(params: event.orderId);
 
     if (response is SuccessState) {
-      emit(state.copyWith(
-        isSuccess: true,
-        order: response.data,
-      ));
+      emit(state.copyWith(isSuccess: true, order: response.data));
     } else {
       emit(state.copyWith(errorMessage: response.message));
     }
@@ -65,8 +62,10 @@ class MerchantDetailOrderBloc
     final lng = state.order?.customerAddress?.longitude;
     final address = state.order?.customerAddress?.address;
 
-    if (lat != null && lng != null && lat.isNotEmpty && lng.isNotEmpty) {
-      final url = Uri.parse('https://www.google.com/maps/search/?api=1&query=$lat,$lng');
+    if (lat != null && lng != null) {
+      final url = Uri.parse(
+        'https://www.google.com/maps/search/?api=1&query=$lat,$lng',
+      );
       try {
         await launchUrl(url, mode: LaunchMode.externalApplication);
       } catch (e) {
@@ -74,7 +73,9 @@ class MerchantDetailOrderBloc
       }
     } else if (address != null && address.isNotEmpty) {
       final encodedAddress = Uri.encodeComponent(address);
-      final url = Uri.parse('https://www.google.com/maps/search/?api=1&query=$encodedAddress');
+      final url = Uri.parse(
+        'https://www.google.com/maps/search/?api=1&query=$encodedAddress',
+      );
       try {
         await launchUrl(url, mode: LaunchMode.externalApplication);
       } catch (e) {

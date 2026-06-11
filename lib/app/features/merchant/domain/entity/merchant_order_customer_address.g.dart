@@ -16,11 +16,16 @@ MerchantOrderCustomerAddressEntity _$MerchantOrderCustomerAddressEntityFromJson(
   phone: json['phone'] as String?,
   address: json['address'] as String?,
   district: json['district'] as String?,
-  latitude: json['latitude'] as String?,
+  latitude: (json['latitude'] as num?)?.toDouble(),
   province: json['province'] as String?,
-  longitude: json['longitude'] as String?,
+  longitude: (json['longitude'] as num?)?.toDouble(),
   postalCode: json['postal_code'] as String?,
   recipientName: json['recipient_name'] as String?,
+  userId: (json['user_id'] as num?)?.toInt(),
+  isDefault: json['is_default'] as bool?,
+  fullAddress: json['full_address'] as String?,
+  createdAt: json['created_at'] as String?,
+  updatedAt: json['updated_at'] as String?,
 );
 
 Map<String, dynamic> _$MerchantOrderCustomerAddressEntityToJson(
@@ -38,4 +43,9 @@ Map<String, dynamic> _$MerchantOrderCustomerAddressEntityToJson(
   'longitude': ?instance.longitude,
   'postal_code': ?instance.postalCode,
   'recipient_name': ?instance.recipientName,
+  'user_id': ?instance.userId,
+  'is_default': ?instance.isDefault,
+  'full_address': ?instance.fullAddress,
+  'created_at': ?instance.createdAt,
+  'updated_at': ?instance.updatedAt,
 };

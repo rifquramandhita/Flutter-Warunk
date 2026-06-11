@@ -14,11 +14,16 @@ sealed class MerchantOrderCustomerAddress with _$MerchantOrderCustomerAddress {
     String? phone,
     String? address,
     String? district,
-    String? latitude,
+    double? latitude,
     String? province,
-    String? longitude,
+    double? longitude,
     String? postalCode,
     String? recipientName,
+    int? userId,
+    bool? isDefault,
+    String? fullAddress,
+    String? createdAt,
+    String? updatedAt,
   }) = MerchantOrderCustomerAddressEntity;
 
   factory MerchantOrderCustomerAddress.fromJson(Map<String, dynamic> json) =>
