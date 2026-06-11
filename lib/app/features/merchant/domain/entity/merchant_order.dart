@@ -4,6 +4,7 @@ import 'merchant_order_customer.dart';
 import 'merchant_order_customer_address.dart';
 import 'merchant_order_item.dart';
 import 'merchant_order_shipping.dart';
+import 'package:warunk/core/enum/order_status.dart';
 
 part 'merchant_order.freezed.dart';
 part 'merchant_order.g.dart';
@@ -26,7 +27,7 @@ sealed class MerchantOrder with _$MerchantOrder {
     num? paidAmount,
     String? paymentProof,
     String? type,
-    String? status,
+    OrderStatus? status,
     String? statusLabel,
     String? notes,
     MerchantOrderCustomerEntity? customer,

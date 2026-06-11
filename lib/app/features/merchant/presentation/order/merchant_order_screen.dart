@@ -83,7 +83,7 @@ class MerchantOrderScreen extends StatelessWidget {
           final isSelected = state.selectedTab == tabStatus;
 
           final orderForLabel = state.allOrders.firstWhere(
-            (o) => o.status == tabStatus,
+            (o) => o.status?.value == tabStatus,
             orElse: () => const MerchantOrderEntity(id: ''),
           );
           final tabLabel = tabStatus.isEmpty
@@ -202,7 +202,7 @@ class MerchantOrderScreen extends StatelessWidget {
         itemBuilder: (context, index) => _orderCard(
           context,
           orders[index],
-          orders[index].status ?? '',
+          orders[index].status?.value ?? '',
           orders[index].statusLabel,
         ),
       ),

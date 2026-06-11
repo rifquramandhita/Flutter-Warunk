@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:warunk/app/features/customer/presentation/order/bloc/customer_order_bloc.dart';
 import 'package:warunk/app/features/customer/presentation/detail_order/customer_detail_order_screen.dart';
+import 'package:warunk/core/enum/order_status.dart';
 import 'package:warunk/theme/app_colors.dart';
 import 'package:warunk/core/helper/global_helper.dart';
 
@@ -84,7 +85,7 @@ class CustomerOrderScreen extends StatelessWidget {
             _filterChip(
               context,
               icon: Icons.tune_rounded,
-              label: state.statusFilter,
+              label: state.statusFilter?.label ?? 'Semua',
               onTap: () => _showStatusFilter(context),
             ),
           ],
@@ -222,7 +223,7 @@ class CustomerOrderScreen extends StatelessWidget {
               SizedBox(height: 12),
               ..._statusOptions.map(
                 (opt) => ListTile(
-                  title: Text(opt),
+                  title: Text(opt?.label ?? 'Semua'),
                   onTap: () {
                     bloc.add(CustomerOrderStatusFilterChanged(opt));
                     Navigator.pop(context);
@@ -237,16 +238,9 @@ class CustomerOrderScreen extends StatelessWidget {
     );
   }
 
-  static const _statusOptions = [
-    'Semua',
-    'Menunggu Pembayaran',
-    'Menunggu Konfirmasi Pembayaran',
-    'Menunggu Pembatalan',
-    'Diproses',
-    'Dikirim',
-    'Diterima',
-    'Selesai',
-    'Dibatalkan',
+  static final _statusOptions = [
+    null,
+    ...OrderStatus.values,
   ];
 
   // ── Transaction list ──────────────────────────────────────────────────────
@@ -366,7 +360,7 @@ class CustomerOrderScreen extends StatelessWidget {
         ? tx.createdAt!.split('T').first
         : '-';
     final orderId = tx.invoiceNumber;
-    final status = tx.status ?? '';
+    final status = tx.status;
 
     return Container(
       decoration: BoxDecoration(
@@ -597,63 +591,63 @@ class CustomerOrderScreen extends StatelessWidget {
   }
 
   // ── Status badge ──────────────────────────────────────────────────────────
-  Widget _statusBadge(BuildContext context, String status) {
+  Widget _statusBadge(BuildContext context, OrderStatus? status) {
     late String label;
     late Color bgColor;
     late Color textColor;
     late bool outlined;
 
     switch (status) {
-      case 'waiting_payment':
+      case OrderStatus.waitingPayment:
         label = 'Menunggu Pembayaran';
         bgColor = const Color(0xFFFFF3E0);
         textColor = const Color(0xFFF59E0B);
         outlined = false;
         break;
-      case 'waiting_payment_confirmation':
+      case OrderStatus.waitingPaymentConfirmation:
         label = 'Menunggu Konfirmasi Pembayaran';
         bgColor = const Color(0xFFFFF3E0);
         textColor = const Color(0xFFF59E0B);
         outlined = false;
         break;
-      case 'waiting_cancel':
+      case OrderStatus.waitingCancel:
         label = 'Menunggu Pembatalan';
         bgColor = const Color(0xFFFFEBEE);
         textColor = Colors.red;
         outlined = false;
         break;
-      case 'processing':
+      case OrderStatus.processing:
         label = 'Diproses';
         bgColor = GlobalHelper.getColorSchema(context).primary;
         textColor = Colors.white;
         outlined = false;
         break;
-      case 'shipped':
+      case OrderStatus.shipped:
         label = 'Dikirim';
         bgColor = const Color(0xFFE3F2FD);
         textColor = const Color(0xFF1976D2);
         outlined = false;
         break;
-      case 'received':
+      case OrderStatus.received:
         label = 'Diterima';
         bgColor = const Color(0xFFE8F5E9);
         textColor = const Color(0xFF2E7D32);
         outlined = false;
         break;
-      case 'completed':
+      case OrderStatus.completed:
         label = 'Selesai';
         bgColor = Colors.transparent;
         textColor = GlobalHelper.getColorSchema(context).primary;
         outlined = true;
         break;
-      case 'cancelled':
+      case OrderStatus.cancelled:
         label = 'Dibatalkan';
         bgColor = const Color(0xFFFFEBEE);
         textColor = Colors.red;
         outlined = false;
         break;
       default:
-        label = status;
+        label = status?.label ?? '-';
         bgColor = Colors.grey.shade200;
         textColor = Colors.black54;
         outlined = false;

@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:warunk/app/features/customer/domain/entity/customer_order.dart';
 import 'package:warunk/app/features/customer/domain/use_case/customer_order_get_use_case.dart';
 import 'package:warunk/core/network/data_state.dart';
+import 'package:warunk/core/enum/order_status.dart';
 
 export 'package:warunk/app/features/customer/domain/entity/customer_order.dart';
 

@@ -20,7 +20,7 @@ class MerchantOrderState extends Equatable {
   List<MerchantOrderEntity> get filteredOrders {
     if (selectedTab.isEmpty) return allOrders;
     return allOrders.where((order) {
-      return order.status == selectedTab;
+      return order.status?.value == selectedTab;
     }).toList();
   }
 

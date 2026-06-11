@@ -10,6 +10,6 @@ class CustomerOrderDateRangeFilterChanged extends CustomerOrderEvent {
 }
 
 class CustomerOrderStatusFilterChanged extends CustomerOrderEvent {
-  final String filter;
+  final OrderStatus? filter;
   CustomerOrderStatusFilterChanged(this.filter);
 }

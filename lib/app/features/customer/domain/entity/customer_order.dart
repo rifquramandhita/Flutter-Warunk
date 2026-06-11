@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:warunk/app/features/customer/domain/entity/customer_shipping.dart';
 import 'package:warunk/app/features/customer/domain/entity/customer_order_item.dart';
+import 'package:warunk/core/enum/order_status.dart';
 
 part 'customer_order.g.dart';
 part 'customer_order.freezed.dart';
@@ -76,7 +77,7 @@ sealed class CustomerOrder with _$CustomerOrder {
     int? paidAmount,
     String? paymentProof,
     String? type,
-    String? status,
+    OrderStatus? status,
     String? statusLabel,
     String? notes,
     String? cancelReason,

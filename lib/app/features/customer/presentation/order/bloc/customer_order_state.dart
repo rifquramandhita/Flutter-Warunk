@@ -5,35 +5,22 @@ class CustomerOrderState {
   final String? errorMessage;
   final List<CustomerOrderEntity> orders;
   final DateTimeRange? dateRangeFilter;
-  final String statusFilter;
+  final OrderStatus? statusFilter;
 
   const CustomerOrderState({
     this.isLoading = false,
     this.errorMessage,
     this.orders = const [],
     this.dateRangeFilter,
-    this.statusFilter = 'Semua',
+    this.statusFilter,
   });
 
   List<CustomerOrderEntity> get filteredTransactions {
     return orders.where((t) {
-      final status = t.status ?? '';
+      final status = t.status;
       
-      if (statusFilter != 'Semua' && statusFilter != 'Semua Status') {
-        String expectedRawStatus = '';
-        switch(statusFilter) {
-          case 'Menunggu Pembayaran': expectedRawStatus = 'waiting_payment'; break;
-          case 'Menunggu Konfirmasi Pembayaran': expectedRawStatus = 'waiting_payment_confirmation'; break;
-          case 'Menunggu Pembatalan': expectedRawStatus = 'waiting_cancel'; break;
-          case 'Diproses': expectedRawStatus = 'processing'; break;
-          case 'Dikirim': expectedRawStatus = 'shipped'; break;
-          case 'Diterima': expectedRawStatus = 'received'; break;
-          case 'Selesai': expectedRawStatus = 'completed'; break;
-          case 'Dibatalkan': expectedRawStatus = 'cancelled'; break;
-        }
-        if (expectedRawStatus.isNotEmpty && status != expectedRawStatus) {
-          return false;
-        }
+      if (statusFilter != null && status != statusFilter) {
+        return false;
       }
 
       if (dateRangeFilter != null && t.createdAt != null) {
@@ -60,7 +47,7 @@ class CustomerOrderState {
     List<CustomerOrderEntity>? orders,
     DateTimeRange? dateRangeFilter,
     bool clearDateRange = false,
-    String? statusFilter,
+    OrderStatus? statusFilter,
   }) =>
       CustomerOrderState(
         isLoading: isLoading ?? this.isLoading,

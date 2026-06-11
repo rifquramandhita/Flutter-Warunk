@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:warunk/core/enum/order_status.dart';
 import 'package:warunk/main.dart';
 import 'package:warunk/app/features/merchant/domain/entity/merchant_order.dart';
 import 'package:warunk/app/features/merchant/presentation/detail_order/bloc/merchant_detail_order_bloc.dart';
@@ -101,11 +102,11 @@ class MerchantDetailOrderScreen extends StatelessWidget {
   }
 
   Widget _buildBottomActions(BuildContext context, MerchantOrderEntity order) {
-    if (order.status == 'waiting_payment_confirmation') {
+    if (order.status == OrderStatus.waitingPaymentConfirmation) {
       return _buildAcceptRejectButtons(context);
-    } else if (order.status == 'processing') {
+    } else if (order.status == OrderStatus.processing) {
       return _buildShipButton(context, order);
-    } else if (order.status == 'shipped') {
+    } else if (order.status == OrderStatus.shipped) {
       return _buildReceiveButton(context);
     }
     return SizedBox();
@@ -363,7 +364,7 @@ class MerchantDetailOrderScreen extends StatelessWidget {
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Text(
-                  order.statusLabel ?? order.status ?? 'Baru',
+                  order.statusLabel ?? order.status?.label ?? 'Baru',
                   style:
                       GlobalHelper.getTextTheme(
                         context,

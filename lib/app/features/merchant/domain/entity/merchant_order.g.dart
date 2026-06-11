@@ -22,7 +22,7 @@ MerchantOrderEntity _$MerchantOrderEntityFromJson(Map<String, dynamic> json) =>
       paidAmount: json['paid_amount'] as num?,
       paymentProof: json['payment_proof'] as String?,
       type: json['type'] as String?,
-      status: json['status'] as String?,
+      status: $enumDecodeNullable(_$OrderStatusEnumMap, json['status']),
       statusLabel: json['status_label'] as String?,
       notes: json['notes'] as String?,
       customer: json['customer'] == null
@@ -77,7 +77,7 @@ Map<String, dynamic> _$MerchantOrderEntityToJson(
   'paid_amount': ?instance.paidAmount,
   'payment_proof': ?instance.paymentProof,
   'type': ?instance.type,
-  'status': ?instance.status,
+  'status': ?_$OrderStatusEnumMap[instance.status],
   'status_label': ?instance.statusLabel,
   'notes': ?instance.notes,
   'customer': ?instance.customer,
@@ -90,4 +90,15 @@ Map<String, dynamic> _$MerchantOrderEntityToJson(
   'completed_at': ?instance.completedAt,
   'created_at': ?instance.createdAt,
   'updated_at': ?instance.updatedAt,
+};
+
+const _$OrderStatusEnumMap = {
+  OrderStatus.waitingPayment: 'waiting_payment',
+  OrderStatus.waitingPaymentConfirmation: 'waiting_payment_confirmation',
+  OrderStatus.waitingCancel: 'waiting_cancel',
+  OrderStatus.processing: 'processing',
+  OrderStatus.shipped: 'shipped',
+  OrderStatus.received: 'received',
+  OrderStatus.completed: 'completed',
+  OrderStatus.cancelled: 'cancelled',
 };

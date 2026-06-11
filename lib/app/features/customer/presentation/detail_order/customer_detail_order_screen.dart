@@ -79,7 +79,7 @@ class CustomerDetailOrderScreen extends StatelessWidget {
                     children: [
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
-                        children: [_statusBadge(tx.status ?? '')],
+                        children: [_statusBadge(tx.status)],
                       ),
                       Text(
                         tx.invoiceNumber ?? '-',
@@ -149,14 +149,10 @@ class CustomerDetailOrderScreen extends StatelessWidget {
                         ],
                       ),
                       // Progress tracker
-                      if (OrderStatus.fromString(tx.status) ==
-                              OrderStatus.processing ||
-                          OrderStatus.fromString(tx.status) ==
-                              OrderStatus.shipped ||
-                          OrderStatus.fromString(tx.status) ==
-                              OrderStatus.received ||
-                          OrderStatus.fromString(tx.status) ==
-                              OrderStatus.completed) ...[
+                      if (tx.status == OrderStatus.processing ||
+                          tx.status == OrderStatus.shipped ||
+                          tx.status == OrderStatus.received ||
+                          tx.status == OrderStatus.completed) ...[
                         const SizedBox(height: 18),
                         _ProgressTracker(steps: steps),
                       ],
@@ -533,8 +529,7 @@ class CustomerDetailOrderScreen extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              if (OrderStatus.fromString(tx.status) ==
-                  OrderStatus.waitingPaymentConfirmation) ...[
+              if (tx.status == OrderStatus.waitingPaymentConfirmation) ...[
                 SizedBox(
                   width: double.infinity,
                   height: 50,
@@ -574,7 +569,7 @@ class CustomerDetailOrderScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 12),
               ],
-              if (tx.status == 'received') ...[
+              if (tx.status == OrderStatus.received) ...[
                 SizedBox(
                   width: double.infinity,
                   height: 50,
@@ -703,62 +698,62 @@ class CustomerDetailOrderScreen extends StatelessWidget {
     ],
   );
 
-  Widget _statusBadge(String status) {
+  Widget _statusBadge(OrderStatus? status) {
     late String label;
     late Color bg;
     late Color fg;
     late bool outlined;
     switch (status) {
-      case 'waiting_payment':
+      case OrderStatus.waitingPayment:
         label = 'Menunggu Pembayaran';
         bg = const Color(0xFFFFF3E0);
         fg = const Color(0xFFF59E0B);
         outlined = false;
         break;
-      case 'waiting_payment_confirmation':
+      case OrderStatus.waitingPaymentConfirmation:
         label = 'Menunggu Konfirmasi Pembayaran';
         bg = const Color(0xFFFFF3E0);
         fg = const Color(0xFFF59E0B);
         outlined = false;
         break;
-      case 'waiting_cancel':
+      case OrderStatus.waitingCancel:
         label = 'Menunggu Pembatalan';
         bg = const Color(0xFFFFEBEE);
         fg = Colors.red;
         outlined = false;
         break;
-      case 'processing':
+      case OrderStatus.processing:
         label = 'Diproses';
         bg = AppColors.primary;
         fg = Colors.white;
         outlined = false;
         break;
-      case 'shipped':
+      case OrderStatus.shipped:
         label = 'Dikirim';
         bg = const Color(0xFFE3F2FD);
         fg = const Color(0xFF1976D2);
         outlined = false;
         break;
-      case 'received':
+      case OrderStatus.received:
         label = 'Diterima';
         bg = const Color(0xFFE8F5E9);
         fg = const Color(0xFF2E7D32);
         outlined = false;
         break;
-      case 'completed':
+      case OrderStatus.completed:
         label = 'Selesai';
         bg = Colors.transparent;
         fg = AppColors.primary;
         outlined = true;
         break;
-      case 'cancelled':
+      case OrderStatus.cancelled:
         label = 'Dibatalkan';
         bg = const Color(0xFFFFEBEE);
         fg = Colors.red;
         outlined = false;
         break;
       default:
-        label = status;
+        label = status?.label ?? '-';
         bg = Colors.grey.shade200;
         fg = Colors.black54;
         outlined = false;
@@ -780,24 +775,23 @@ class CustomerDetailOrderScreen extends StatelessWidget {
     );
   }
 
-  static List<_StepData> _getSteps(String? status) {
+  static List<_StepData> _getSteps(OrderStatus? status) {
     const labels = ['Pesanan\ndibuat', 'Diproses', 'Dikirim', 'Selesai'];
     int doneCount;
     switch (status) {
-      case 'waiting_payment':
-      case 'waiting_payment_confirmation':
-      case 'waiting_cancel':
-      case 'pending':
+      case OrderStatus.waitingPayment:
+      case OrderStatus.waitingPaymentConfirmation:
+      case OrderStatus.waitingCancel:
         doneCount = 1;
         break;
-      case 'processing':
+      case OrderStatus.processing:
         doneCount = 2;
         break;
-      case 'shipped':
-      case 'received':
+      case OrderStatus.shipped:
+      case OrderStatus.received:
         doneCount = 3;
         break;
-      case 'completed':
+      case OrderStatus.completed:
         doneCount = 4;
         break;
       default:

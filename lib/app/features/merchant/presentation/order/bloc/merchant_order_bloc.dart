@@ -28,7 +28,7 @@ class MerchantOrderBloc extends Bloc<MerchantOrderEvent, MerchantOrderState> {
     if (response is SuccessState) {
       final orders = response.data ?? [];
       final tabs = orders
-          .map((e) => e.status ?? '')
+          .map((e) => e.status?.value ?? '')
           .where((s) => s.isNotEmpty)
           .toSet()
           .toList();

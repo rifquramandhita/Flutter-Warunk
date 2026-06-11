@@ -22,7 +22,7 @@ MerchantOrder _$MerchantOrderFromJson(
 /// @nodoc
 mixin _$MerchantOrder {
 
- String get id; String? get invoiceNumber; String? get invoiceUrl; String? get merchantId; int? get customerId; String? get customerAddressId; String? get merchantAccountId; num? get subtotal; num? get shippingCost; num? get serviceFee; num? get total; num? get paidAmount; String? get paymentProof; String? get type; String? get status; String? get statusLabel; String? get notes; MerchantOrderCustomerEntity? get customer; MerchantOrderCustomerAddressEntity? get customerAddress; MerchantAccountEntity? get merchantAccount; List<MerchantOrderItemEntity> get items; MerchantOrderShippingEntity? get shipping; String? get paidAt; String? get cancelledAt; String? get completedAt; String? get createdAt; String? get updatedAt;
+ String get id; String? get invoiceNumber; String? get invoiceUrl; String? get merchantId; int? get customerId; String? get customerAddressId; String? get merchantAccountId; num? get subtotal; num? get shippingCost; num? get serviceFee; num? get total; num? get paidAmount; String? get paymentProof; String? get type; OrderStatus? get status; String? get statusLabel; String? get notes; MerchantOrderCustomerEntity? get customer; MerchantOrderCustomerAddressEntity? get customerAddress; MerchantAccountEntity? get merchantAccount; List<MerchantOrderItemEntity> get items; MerchantOrderShippingEntity? get shipping; String? get paidAt; String? get cancelledAt; String? get completedAt; String? get createdAt; String? get updatedAt;
 /// Create a copy of MerchantOrder
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -55,7 +55,7 @@ abstract mixin class $MerchantOrderCopyWith<$Res>  {
   factory $MerchantOrderCopyWith(MerchantOrder value, $Res Function(MerchantOrder) _then) = _$MerchantOrderCopyWithImpl;
 @useResult
 $Res call({
- String id, String? invoiceNumber, String? invoiceUrl, String? merchantId, int? customerId, String? customerAddressId, String? merchantAccountId, num? subtotal, num? shippingCost, num? serviceFee, num? total, num? paidAmount, String? paymentProof, String? type, String? status, String? statusLabel, String? notes, MerchantOrderCustomerEntity? customer, MerchantOrderCustomerAddressEntity? customerAddress, MerchantAccountEntity? merchantAccount, List<MerchantOrderItemEntity> items, MerchantOrderShippingEntity? shipping, String? paidAt, String? cancelledAt, String? completedAt, String? createdAt, String? updatedAt
+ String id, String? invoiceNumber, String? invoiceUrl, String? merchantId, int? customerId, String? customerAddressId, String? merchantAccountId, num? subtotal, num? shippingCost, num? serviceFee, num? total, num? paidAmount, String? paymentProof, String? type, OrderStatus? status, String? statusLabel, String? notes, MerchantOrderCustomerEntity? customer, MerchantOrderCustomerAddressEntity? customerAddress, MerchantAccountEntity? merchantAccount, List<MerchantOrderItemEntity> items, MerchantOrderShippingEntity? shipping, String? paidAt, String? cancelledAt, String? completedAt, String? createdAt, String? updatedAt
 });
 
 
@@ -89,7 +89,7 @@ as num?,paidAmount: freezed == paidAmount ? _self.paidAmount : paidAmount // ign
 as num?,paymentProof: freezed == paymentProof ? _self.paymentProof : paymentProof // ignore: cast_nullable_to_non_nullable
 as String?,type: freezed == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
 as String?,status: freezed == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
-as String?,statusLabel: freezed == statusLabel ? _self.statusLabel : statusLabel // ignore: cast_nullable_to_non_nullable
+as OrderStatus?,statusLabel: freezed == statusLabel ? _self.statusLabel : statusLabel // ignore: cast_nullable_to_non_nullable
 as String?,notes: freezed == notes ? _self.notes : notes // ignore: cast_nullable_to_non_nullable
 as String?,customer: freezed == customer ? _self.customer : customer // ignore: cast_nullable_to_non_nullable
 as MerchantOrderCustomerEntity?,customerAddress: freezed == customerAddress ? _self.customerAddress : customerAddress // ignore: cast_nullable_to_non_nullable
@@ -183,7 +183,7 @@ return entity(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String id,  String? invoiceNumber,  String? invoiceUrl,  String? merchantId,  int? customerId,  String? customerAddressId,  String? merchantAccountId,  num? subtotal,  num? shippingCost,  num? serviceFee,  num? total,  num? paidAmount,  String? paymentProof,  String? type,  String? status,  String? statusLabel,  String? notes,  MerchantOrderCustomerEntity? customer,  MerchantOrderCustomerAddressEntity? customerAddress,  MerchantAccountEntity? merchantAccount,  List<MerchantOrderItemEntity> items,  MerchantOrderShippingEntity? shipping,  String? paidAt,  String? cancelledAt,  String? completedAt,  String? createdAt,  String? updatedAt)?  entity,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String id,  String? invoiceNumber,  String? invoiceUrl,  String? merchantId,  int? customerId,  String? customerAddressId,  String? merchantAccountId,  num? subtotal,  num? shippingCost,  num? serviceFee,  num? total,  num? paidAmount,  String? paymentProof,  String? type,  OrderStatus? status,  String? statusLabel,  String? notes,  MerchantOrderCustomerEntity? customer,  MerchantOrderCustomerAddressEntity? customerAddress,  MerchantAccountEntity? merchantAccount,  List<MerchantOrderItemEntity> items,  MerchantOrderShippingEntity? shipping,  String? paidAt,  String? cancelledAt,  String? completedAt,  String? createdAt,  String? updatedAt)?  entity,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case MerchantOrderEntity() when entity != null:
 return entity(_that.id,_that.invoiceNumber,_that.invoiceUrl,_that.merchantId,_that.customerId,_that.customerAddressId,_that.merchantAccountId,_that.subtotal,_that.shippingCost,_that.serviceFee,_that.total,_that.paidAmount,_that.paymentProof,_that.type,_that.status,_that.statusLabel,_that.notes,_that.customer,_that.customerAddress,_that.merchantAccount,_that.items,_that.shipping,_that.paidAt,_that.cancelledAt,_that.completedAt,_that.createdAt,_that.updatedAt);case _:
@@ -204,7 +204,7 @@ return entity(_that.id,_that.invoiceNumber,_that.invoiceUrl,_that.merchantId,_th
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String id,  String? invoiceNumber,  String? invoiceUrl,  String? merchantId,  int? customerId,  String? customerAddressId,  String? merchantAccountId,  num? subtotal,  num? shippingCost,  num? serviceFee,  num? total,  num? paidAmount,  String? paymentProof,  String? type,  String? status,  String? statusLabel,  String? notes,  MerchantOrderCustomerEntity? customer,  MerchantOrderCustomerAddressEntity? customerAddress,  MerchantAccountEntity? merchantAccount,  List<MerchantOrderItemEntity> items,  MerchantOrderShippingEntity? shipping,  String? paidAt,  String? cancelledAt,  String? completedAt,  String? createdAt,  String? updatedAt)  entity,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String id,  String? invoiceNumber,  String? invoiceUrl,  String? merchantId,  int? customerId,  String? customerAddressId,  String? merchantAccountId,  num? subtotal,  num? shippingCost,  num? serviceFee,  num? total,  num? paidAmount,  String? paymentProof,  String? type,  OrderStatus? status,  String? statusLabel,  String? notes,  MerchantOrderCustomerEntity? customer,  MerchantOrderCustomerAddressEntity? customerAddress,  MerchantAccountEntity? merchantAccount,  List<MerchantOrderItemEntity> items,  MerchantOrderShippingEntity? shipping,  String? paidAt,  String? cancelledAt,  String? completedAt,  String? createdAt,  String? updatedAt)  entity,}) {final _that = this;
 switch (_that) {
 case MerchantOrderEntity():
 return entity(_that.id,_that.invoiceNumber,_that.invoiceUrl,_that.merchantId,_that.customerId,_that.customerAddressId,_that.merchantAccountId,_that.subtotal,_that.shippingCost,_that.serviceFee,_that.total,_that.paidAmount,_that.paymentProof,_that.type,_that.status,_that.statusLabel,_that.notes,_that.customer,_that.customerAddress,_that.merchantAccount,_that.items,_that.shipping,_that.paidAt,_that.cancelledAt,_that.completedAt,_that.createdAt,_that.updatedAt);}
@@ -221,7 +221,7 @@ return entity(_that.id,_that.invoiceNumber,_that.invoiceUrl,_that.merchantId,_th
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String id,  String? invoiceNumber,  String? invoiceUrl,  String? merchantId,  int? customerId,  String? customerAddressId,  String? merchantAccountId,  num? subtotal,  num? shippingCost,  num? serviceFee,  num? total,  num? paidAmount,  String? paymentProof,  String? type,  String? status,  String? statusLabel,  String? notes,  MerchantOrderCustomerEntity? customer,  MerchantOrderCustomerAddressEntity? customerAddress,  MerchantAccountEntity? merchantAccount,  List<MerchantOrderItemEntity> items,  MerchantOrderShippingEntity? shipping,  String? paidAt,  String? cancelledAt,  String? completedAt,  String? createdAt,  String? updatedAt)?  entity,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String id,  String? invoiceNumber,  String? invoiceUrl,  String? merchantId,  int? customerId,  String? customerAddressId,  String? merchantAccountId,  num? subtotal,  num? shippingCost,  num? serviceFee,  num? total,  num? paidAmount,  String? paymentProof,  String? type,  OrderStatus? status,  String? statusLabel,  String? notes,  MerchantOrderCustomerEntity? customer,  MerchantOrderCustomerAddressEntity? customerAddress,  MerchantAccountEntity? merchantAccount,  List<MerchantOrderItemEntity> items,  MerchantOrderShippingEntity? shipping,  String? paidAt,  String? cancelledAt,  String? completedAt,  String? createdAt,  String? updatedAt)?  entity,}) {final _that = this;
 switch (_that) {
 case MerchantOrderEntity() when entity != null:
 return entity(_that.id,_that.invoiceNumber,_that.invoiceUrl,_that.merchantId,_that.customerId,_that.customerAddressId,_that.merchantAccountId,_that.subtotal,_that.shippingCost,_that.serviceFee,_that.total,_that.paidAmount,_that.paymentProof,_that.type,_that.status,_that.statusLabel,_that.notes,_that.customer,_that.customerAddress,_that.merchantAccount,_that.items,_that.shipping,_that.paidAt,_that.cancelledAt,_that.completedAt,_that.createdAt,_that.updatedAt);case _:
@@ -253,7 +253,7 @@ class MerchantOrderEntity implements MerchantOrder {
 @override final  num? paidAmount;
 @override final  String? paymentProof;
 @override final  String? type;
-@override final  String? status;
+@override final  OrderStatus? status;
 @override final  String? statusLabel;
 @override final  String? notes;
 @override final  MerchantOrderCustomerEntity? customer;
@@ -306,7 +306,7 @@ abstract mixin class $MerchantOrderEntityCopyWith<$Res> implements $MerchantOrde
   factory $MerchantOrderEntityCopyWith(MerchantOrderEntity value, $Res Function(MerchantOrderEntity) _then) = _$MerchantOrderEntityCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String? invoiceNumber, String? invoiceUrl, String? merchantId, int? customerId, String? customerAddressId, String? merchantAccountId, num? subtotal, num? shippingCost, num? serviceFee, num? total, num? paidAmount, String? paymentProof, String? type, String? status, String? statusLabel, String? notes, MerchantOrderCustomerEntity? customer, MerchantOrderCustomerAddressEntity? customerAddress, MerchantAccountEntity? merchantAccount, List<MerchantOrderItemEntity> items, MerchantOrderShippingEntity? shipping, String? paidAt, String? cancelledAt, String? completedAt, String? createdAt, String? updatedAt
+ String id, String? invoiceNumber, String? invoiceUrl, String? merchantId, int? customerId, String? customerAddressId, String? merchantAccountId, num? subtotal, num? shippingCost, num? serviceFee, num? total, num? paidAmount, String? paymentProof, String? type, OrderStatus? status, String? statusLabel, String? notes, MerchantOrderCustomerEntity? customer, MerchantOrderCustomerAddressEntity? customerAddress, MerchantAccountEntity? merchantAccount, List<MerchantOrderItemEntity> items, MerchantOrderShippingEntity? shipping, String? paidAt, String? cancelledAt, String? completedAt, String? createdAt, String? updatedAt
 });
 
 
@@ -340,7 +340,7 @@ as num?,paidAmount: freezed == paidAmount ? _self.paidAmount : paidAmount // ign
 as num?,paymentProof: freezed == paymentProof ? _self.paymentProof : paymentProof // ignore: cast_nullable_to_non_nullable
 as String?,type: freezed == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
 as String?,status: freezed == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
-as String?,statusLabel: freezed == statusLabel ? _self.statusLabel : statusLabel // ignore: cast_nullable_to_non_nullable
+as OrderStatus?,statusLabel: freezed == statusLabel ? _self.statusLabel : statusLabel // ignore: cast_nullable_to_non_nullable
 as String?,notes: freezed == notes ? _self.notes : notes // ignore: cast_nullable_to_non_nullable
 as String?,customer: freezed == customer ? _self.customer : customer // ignore: cast_nullable_to_non_nullable
 as MerchantOrderCustomerEntity?,customerAddress: freezed == customerAddress ? _self.customerAddress : customerAddress // ignore: cast_nullable_to_non_nullable
