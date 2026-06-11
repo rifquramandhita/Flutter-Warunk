@@ -138,15 +138,38 @@ class _MerchantOrderApiService implements MerchantOrderApiService {
   @override
   Future<HttpResponse<dynamic>> rejectOrder(
     String id,
-    Map<String, dynamic> body,
+    String reason,
+    String customerBank,
+    String customerAccountNumber,
+    String customerAccountName,
+    File refundProof,
   ) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
-    final _data = <String, dynamic>{};
-    _data.addAll(body);
+    final _data = FormData();
+    _data.fields.add(MapEntry('reason', reason));
+    _data.fields.add(MapEntry('customer_bank', customerBank));
+    _data.fields.add(
+      MapEntry('customer_account_number', customerAccountNumber),
+    );
+    _data.fields.add(MapEntry('customer_account_name', customerAccountName));
+    _data.files.add(
+      MapEntry(
+        'refund_proof',
+        MultipartFile.fromFileSync(
+          refundProof.path,
+          filename: refundProof.path.split(Platform.pathSeparator).last,
+        ),
+      ),
+    );
     final _options = _setStreamType<HttpResponse<dynamic>>(
-      Options(method: 'POST', headers: _headers, extra: _extra)
+      Options(
+            method: 'POST',
+            headers: _headers,
+            extra: _extra,
+            contentType: 'multipart/form-data',
+          )
           .compose(
             _dio.options,
             '/api/seller/orders/${id}/reject',

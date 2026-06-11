@@ -50,8 +50,15 @@ class MerchantOrderRepositoryImpl implements MerchantOrderRepository {
   }
 
   @override
-  Future<DataState<MerchantOrderEntity>> rejectOrder(String id, Map<String, dynamic> body) async {
-    return handleResponse(() => _apiService.rejectOrder(id, body), (responseData) {
+  Future<DataState<MerchantOrderEntity>> rejectOrder(String id, MerchantOrderRejectParam param) async {
+    return handleResponse(() => _apiService.rejectOrder(
+      id,
+      param.reason,
+      param.customerBank,
+      param.customerAccountNumber,
+      param.customerAccountName,
+      param.refundProof!,
+    ), (responseData) {
       final data = responseData['order'];
       return MerchantOrderEntity.fromJson(data);
     });

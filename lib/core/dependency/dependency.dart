@@ -59,6 +59,7 @@ import 'package:warunk/app/features/merchant/domain/use_case/merchant_product_un
 import 'package:warunk/app/features/merchant/presentation/input_product/bloc/merchant_input_product_bloc.dart';
 import 'package:warunk/app/features/merchant/presentation/product/bloc/merchant_product_bloc.dart';
 import 'package:warunk/app/features/merchant/presentation/ship_order/bloc/merchant_ship_order_bloc.dart';
+import 'package:warunk/app/features/merchant/presentation/reject_order/bloc/merchant_reject_order_bloc.dart';
 import 'package:warunk/app/features/merchant/presentation/profil/bloc/merchant_profil_bloc.dart';
 import 'package:warunk/app/features/merchant/domain/use_case/merchant_merchant_update_location_use_case.dart';
 import 'package:warunk/app/features/merchant/presentation/input_address/bloc/merchant_input_address_bloc.dart';
@@ -412,6 +413,9 @@ Future<void> initDependency() async {
   sl.registerFactory(() => MerchantInputPromotionBloc(sl(), sl(), sl()));
   sl.registerFactoryParam<MerchantShipOrderBloc, String, void>(
     (orderId, _) => MerchantShipOrderBloc(shipUseCase: sl(), orderId: orderId),
+  );
+  sl.registerFactoryParam<MerchantRejectOrderBloc, String, void>(
+    (orderId, _) => MerchantRejectOrderBloc(rejectUseCase: sl(), orderId: orderId),
   );
   sl.registerFactory(() => CustomerOrderSuccessBloc(getOrderByIdUseCase: sl()));
   sl.registerFactory(() => CustomerReviewOrderBloc(sl()));

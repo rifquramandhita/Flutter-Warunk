@@ -6,6 +6,26 @@ part of 'merchant_order.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
+MerchantOrderRejectParam _$MerchantOrderRejectParamFromJson(
+  Map<String, dynamic> json,
+) => MerchantOrderRejectParam(
+  reason: json['reason'] as String,
+  customerBank: json['customer_bank'] as String,
+  customerAccountNumber: json['customer_account_number'] as String,
+  customerAccountName: json['customer_account_name'] as String,
+  $type: json['runtimeType'] as String?,
+);
+
+Map<String, dynamic> _$MerchantOrderRejectParamToJson(
+  MerchantOrderRejectParam instance,
+) => <String, dynamic>{
+  'reason': instance.reason,
+  'customer_bank': instance.customerBank,
+  'customer_account_number': instance.customerAccountNumber,
+  'customer_account_name': instance.customerAccountName,
+  'runtimeType': instance.$type,
+};
+
 MerchantOrderEntity _$MerchantOrderEntityFromJson(Map<String, dynamic> json) =>
     MerchantOrderEntity(
       id: json['id'] as String,
@@ -70,6 +90,7 @@ MerchantOrderEntity _$MerchantOrderEntityFromJson(Map<String, dynamic> json) =>
       completedAt: json['completed_at'] as String?,
       createdAt: json['created_at'] as String?,
       updatedAt: json['updated_at'] as String?,
+      $type: json['runtimeType'] as String?,
     );
 
 Map<String, dynamic> _$MerchantOrderEntityToJson(
@@ -114,6 +135,7 @@ Map<String, dynamic> _$MerchantOrderEntityToJson(
   'completed_at': ?instance.completedAt,
   'created_at': ?instance.createdAt,
   'updated_at': ?instance.updatedAt,
+  'runtimeType': instance.$type,
 };
 
 const _$OrderStatusEnumMap = {

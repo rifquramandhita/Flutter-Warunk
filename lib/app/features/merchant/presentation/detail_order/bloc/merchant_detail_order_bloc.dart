@@ -1,7 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:warunk/app/features/merchant/domain/entity/merchant_order.dart';
-import 'package:warunk/app/features/merchant/domain/entity/merchant_order_reject_param.dart';
 import 'package:warunk/app/features/merchant/domain/use_case/merchant_order_accept_use_case.dart';
 import 'package:warunk/app/features/merchant/domain/use_case/merchant_order_reject_use_case.dart';
 import 'package:warunk/app/features/merchant/domain/use_case/merchant_order_received_use_case.dart';
@@ -119,7 +118,13 @@ class MerchantDetailOrderBloc
   ) async {
     if (state.order?.id == null) return;
     emit(state.copyWith(isLoading: true));
-    final param = MerchantOrderRejectSendParam(reason: event.reason);
+    final param = MerchantOrderRejectParam(
+      reason: event.reason,
+      customerBank: '',
+      customerAccountNumber: '',
+      customerAccountName: '',
+      refundProof: null,
+    );
     final response = await _rejectUseCase.call(
       id: state.order!.id!,
       param: param,

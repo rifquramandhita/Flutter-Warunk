@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:warunk/app/features/merchant/domain/entity/merchant_account.dart';
 import 'merchant_order_customer.dart';
@@ -11,6 +12,15 @@ part 'merchant_order.g.dart';
 
 @freezed
 sealed class MerchantOrder with _$MerchantOrder {
+  @JsonSerializable(fieldRename: FieldRename.snake, includeIfNull: false)
+  const factory MerchantOrder.rejectParam({
+    required String reason,
+    required String customerBank,
+    required String customerAccountNumber,
+    required String customerAccountName,
+    @JsonKey(includeFromJson: false, includeToJson: false) File? refundProof,
+  }) = MerchantOrderRejectParam;
+
   @JsonSerializable(fieldRename: FieldRename.snake, includeIfNull: false)
   const factory MerchantOrder.entity({
     required String id,

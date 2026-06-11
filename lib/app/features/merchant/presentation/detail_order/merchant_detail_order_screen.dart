@@ -6,6 +6,7 @@ import 'package:warunk/main.dart';
 import 'package:warunk/app/features/merchant/domain/entity/merchant_order.dart';
 import 'package:warunk/app/features/merchant/presentation/detail_order/bloc/merchant_detail_order_bloc.dart';
 import 'package:warunk/app/features/merchant/presentation/ship_order/merchant_ship_order_screen.dart';
+import 'package:warunk/app/features/merchant/presentation/reject_order/merchant_order_reject_screen.dart';
 import 'package:warunk/core/dependency/dependency.dart';
 import 'package:warunk/core/helper/dialog_helper.dart';
 import 'package:warunk/core/widgets/loading_app_widget.dart';
@@ -103,7 +104,7 @@ class MerchantDetailOrderScreen extends StatelessWidget {
 
   Widget _buildBottomActions(BuildContext context, MerchantOrderEntity order) {
     if (order.status == OrderStatus.waitingPaymentConfirmation) {
-      return _buildAcceptRejectButtons(context);
+      return _buildAcceptRejectButtons(context, order);
     } else if (order.status == OrderStatus.processing) {
       return _buildShipButton(context, order);
     } else if (order.status == OrderStatus.shipped) {
@@ -112,7 +113,7 @@ class MerchantDetailOrderScreen extends StatelessWidget {
     return SizedBox();
   }
 
-  Widget _buildAcceptRejectButtons(BuildContext context) {
+  Widget _buildAcceptRejectButtons(BuildContext context, MerchantOrderEntity order) {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -129,7 +130,19 @@ class MerchantDetailOrderScreen extends StatelessWidget {
         children: [
           Expanded(
             child: OutlinedButton(
-              onPressed: () => _showRejectDialog(context),
+              onPressed: () async {
+                final result = await navigatorKey.currentState?.push(
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        MerchantOrderRejectScreen(orderId: order.id!),
+                  ),
+                );
+                if (result == true && context.mounted) {
+                  context.read<MerchantDetailOrderBloc>().add(
+                    MerchantDetailOrderEventFetchStarted(order.id!),
+                  );
+                }
+              },
               style: OutlinedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(vertical: 14),
                 side: BorderSide(
@@ -274,58 +287,7 @@ class MerchantDetailOrderScreen extends StatelessWidget {
     );
   }
 
-  void _showRejectDialog(BuildContext context) {
-    final reasonController = TextEditingController();
-    DialogHelper.showBottomSheetDialog(
-      context: context,
-      title: 'Tolak Pesanan',
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          TextField(
-            controller: reasonController,
-            decoration: const InputDecoration(
-              hintText: 'Alasan penolakan',
-              border: OutlineInputBorder(),
-            ),
-            maxLines: 3,
-          ),
-          const SizedBox(height: 16),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              TextButton(
-                onPressed: () => navigatorKey.currentState?.pop(),
-                child: const Text('Batal'),
-              ),
-              const SizedBox(width: 8),
-              ElevatedButton(
-                onPressed: () {
-                  final reason = reasonController.text.trim();
-                  if (reason.isNotEmpty) {
-                    navigatorKey.currentState?.pop();
-                    context.read<MerchantDetailOrderBloc>().add(
-                      MerchantDetailOrderEventReject(reason),
-                    );
-                  }
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: GlobalHelper.getColorSchema(context).error,
-                ),
-                child: Text(
-                  'Tolak',
-                  style: TextStyle(
-                    color: GlobalHelper.getColorSchema(context).onError,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
+
 
   AppBar _buildAppBar(BuildContext context) {
     return AppBar(title: const Text('Detail Order'));

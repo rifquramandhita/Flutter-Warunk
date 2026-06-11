@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
 import 'package:warunk/core/constants/constant.dart';
@@ -27,9 +29,14 @@ abstract class MerchantOrderApiService {
   @POST('$MERCHANT_ORDERS/{id}/received')
   Future<HttpResponse<dynamic>> receivedOrder(@Path('id') String id);
 
+  @MultiPart()
   @POST('$MERCHANT_ORDERS/{id}/reject')
   Future<HttpResponse<dynamic>> rejectOrder(
     @Path('id') String id,
-    @Body() Map<String, dynamic> body,
+    @Part(name: 'reason') String reason,
+    @Part(name: 'customer_bank') String customerBank,
+    @Part(name: 'customer_account_number') String customerAccountNumber,
+    @Part(name: 'customer_account_name') String customerAccountName,
+    @Part(name: 'refund_proof') File refundProof,
   );
 }

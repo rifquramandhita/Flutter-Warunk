@@ -1,5 +1,4 @@
 import 'package:warunk/app/features/merchant/domain/entity/merchant_order.dart';
-import 'package:warunk/app/features/merchant/domain/entity/merchant_order_reject_param.dart';
 import 'package:warunk/app/features/merchant/domain/repository/merchant_order_repository.dart';
 import 'package:warunk/core/network/data_state.dart';
 
@@ -10,8 +9,8 @@ class MerchantOrderRejectUseCase {
 
   Future<DataState<MerchantOrderEntity>> call({
     required String id,
-    required MerchantOrderRejectSendParam param,
+    required MerchantOrderRejectParam param,
   }) {
-    return _repository.rejectOrder(id, param.toJson());
+    return _repository.rejectOrder(id, param);
   }
 }
