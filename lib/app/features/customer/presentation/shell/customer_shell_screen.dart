@@ -13,12 +13,12 @@ import 'package:warunk/theme/app_colors.dart';
 class CustomerShellScreen extends StatelessWidget {
   const CustomerShellScreen({super.key});
 
-  static const List<Widget> _pages = [
-    CustomerHomeScreen(),
-    CustomerMapScreen(),
-    CustomerOrderScreen(),
-    CustomerNotificationScreen(),
-    CustomerProfileScreen(),
+  static final List<Widget> _pages = [
+    const CustomerHomeScreen(),
+    const CustomerMapScreen(),
+    const CustomerOrderScreen(),
+    const CustomerNotificationScreen(),
+    const CustomerProfileScreen(),
   ];
 
   @override
@@ -28,17 +28,14 @@ class CustomerShellScreen extends StatelessWidget {
       child: BlocBuilder<CustomerShellBloc, CustomerShellState>(
         builder: (context, state) {
           return Scaffold(
-            body: IndexedStack(index: state.currentIndex, children: _pages),
+            body: _pages[state.currentIndex],
             bottomNavigationBar: NavigationBar(
-              selectedIndex: state.currentIndex,
               backgroundColor: AppColors.white,
               indicatorColor: AppColors.primary.withValues(alpha: 0.15),
-              labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
-              onDestinationSelected: (index) {
-                context.read<CustomerShellBloc>().add(
-                  CustomerShellTabChanged(index),
-                );
-              },
+              selectedIndex: state.currentIndex,
+              onDestinationSelected: (index) => context
+                  .read<CustomerShellBloc>()
+                  .add(CustomerShellTabChanged(index)),
               destinations: const [
                 NavigationDestination(
                   selectedIcon: Icon(
