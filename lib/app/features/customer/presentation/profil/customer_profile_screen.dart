@@ -4,6 +4,7 @@ import 'package:warunk/app/features/auth/presentation/logout/auth_logout_screen.
 import 'package:warunk/app/features/customer/presentation/address/customer_address_screen.dart';
 import 'package:warunk/app/features/customer/presentation/notification/customer_notification_screen.dart';
 import 'package:warunk/app/features/customer/presentation/edit_profil/customer_edit_profile_screen.dart';
+import 'package:warunk/app/features/customer/presentation/wishlist/customer_wishlist_screen.dart';
 import 'package:warunk/app/features/customer/presentation/profil/bloc/customer_profil_bloc.dart';
 import 'package:warunk/app/features/customer/presentation/profil/bloc/customer_profil_event.dart';
 import 'package:warunk/app/features/customer/presentation/profil/bloc/customer_profil_state.dart';
@@ -235,6 +236,17 @@ class CustomerProfileScreen extends StatelessWidget {
             iconBgColor: const Color(0xFFEFF6FF),
             label: 'Favorit',
             value: '${state.favoriteCount}',
+            onTap: () {
+              navigatorKey.currentState?.push(
+                MaterialPageRoute(
+                  builder: (_) => const CustomerWishlistScreen(),
+                ),
+              ).then((_) {
+                if (context.mounted) {
+                  context.read<CustomerProfilBloc>().add(CustomerLoadProfilData());
+                }
+              });
+            },
           ),
         ],
       ),
@@ -248,11 +260,15 @@ class CustomerProfileScreen extends StatelessWidget {
     required Color iconBgColor,
     required String label,
     required String value,
+    VoidCallback? onTap,
   }) {
     return Expanded(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
+      child: GestureDetector(
+        onTap: onTap,
+        behavior: HitTestBehavior.opaque,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
           Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
@@ -289,8 +305,9 @@ class CustomerProfileScreen extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
+    ),
+  );
+}
 
   Widget _verticalDivider(BuildContext context) {
     return Container(

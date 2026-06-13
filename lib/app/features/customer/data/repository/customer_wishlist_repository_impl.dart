@@ -11,6 +11,18 @@ class CustomerWishlistRepositoryImpl implements CustomerWishlistRepository {
   }) : _apiService = apiService;
 
   @override
+  Future<DataState<List<CustomerWishlistEntity>>> getWishlists() {
+    return handleResponse(() => _apiService.getWishlists(), (json) {
+      if (json is Map<String, dynamic> && json['wishlists'] is List) {
+        return (json['wishlists'] as List)
+            .map((e) => CustomerWishlistEntity.fromJson(e as Map<String, dynamic>))
+            .toList();
+      }
+      return [];
+    });
+  }
+
+  @override
   Future<DataState<dynamic>> addWishlist(CustomerWishlistAddParam param) {
     return handleResponse(
       () => _apiService.addWishlist(param.toJson()),

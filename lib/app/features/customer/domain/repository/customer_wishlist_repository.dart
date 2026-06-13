@@ -2,6 +2,7 @@ import 'package:warunk/app/features/customer/domain/entity/customer_wishlist.dar
 import 'package:warunk/core/network/data_state.dart';
 
 abstract class CustomerWishlistRepository {
+  Future<DataState<List<CustomerWishlistEntity>>> getWishlists();
   Future<DataState<dynamic>> addWishlist(CustomerWishlistAddParam param);
   Future<DataState<dynamic>> removeWishlist(String productId);
 }

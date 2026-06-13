@@ -7,6 +7,9 @@ part 'customer_wishlist_api_service.g.dart';
 abstract class CustomerWishlistApiService {
   factory CustomerWishlistApiService(Dio dio, {String baseUrl}) = _CustomerWishlistApiService;
 
+  @GET('/api/wishlists')
+  Future<HttpResponse<dynamic>> getWishlists();
+
   @POST('/api/wishlists')
   Future<HttpResponse<dynamic>> addWishlist(@Body() Map<String, dynamic> body);
 
