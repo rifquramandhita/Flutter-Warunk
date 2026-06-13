@@ -1,4 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:warunk/app/features/customer/domain/entity/customer_wishlist.dart';
+import 'package:warunk/app/features/customer/domain/use_case/customer_wishlist_add_use_case.dart';
 import 'package:warunk/app/features/customer/domain/entity/customer_product_variant.dart';
 import 'package:warunk/app/features/customer/domain/entity/customer_cart_add_param.dart';
 import 'package:warunk/app/features/customer/domain/use_case/customer_cart_add_use_case.dart';
@@ -11,17 +13,21 @@ class CustomerDetailProductBloc
     extends Bloc<CustomerDetailProductEvent, CustomerDetailProductState> {
   final CustomerProductGetByIdUseCase _useCase;
   final CustomerCartAddUseCase _addCartUseCase;
+  final CustomerWishlistAddUseCase _addWishlistUseCase;
 
   CustomerDetailProductBloc({
     required CustomerProductGetByIdUseCase useCase,
     required CustomerCartAddUseCase addCartUseCase,
+    required CustomerWishlistAddUseCase addWishlistUseCase,
   }) : _useCase = useCase,
        _addCartUseCase = addCartUseCase,
+       _addWishlistUseCase = addWishlistUseCase,
        super(const CustomerDetailProductState()) {
     on<CustomerDetailProductEventStarted>(_onStarted);
     on<CustomerDetailProductEventQuantityChanged>(_onQuantityChanged);
     on<CustomerDetailProductEventVariantChanged>(_onVariantChanged);
     on<CustomerDetailProductEventAddToCart>(_onAddToCart);
+    on<CustomerDetailProductEventAddToWishlist>(_onAddToWishlist);
   }
 
   Future<void> _onStarted(
@@ -126,6 +132,28 @@ class CustomerDetailProductBloc
 
     if (response is SuccessState) {
       emit(state.copyWith(isLoading: false, isSuccess: true));
+    } else {
+      emit(state.copyWith(isLoading: false, errorMessage: response.message));
+    }
+  }
+
+  Future<void> _onAddToWishlist(
+    CustomerDetailProductEventAddToWishlist event,
+    Emitter<CustomerDetailProductState> emit,
+  ) async {
+    final product = state.product;
+    if (product == null) return;
+
+    emit(state.copyWith(isLoading: true));
+
+    final param = CustomerWishlistAddParam(productId: product.id);
+    final response = await _addWishlistUseCase.call(param);
+
+    if (response is SuccessState) {
+      emit(state.copyWith(isLoading: false, isWishlistSuccess: true));
+      add(
+        CustomerDetailProductEventStarted(productId: state.product?.id ?? ''),
+      );
     } else {
       emit(state.copyWith(isLoading: false, errorMessage: response.message));
     }

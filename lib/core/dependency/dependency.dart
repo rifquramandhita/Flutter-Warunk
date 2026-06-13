@@ -145,6 +145,10 @@ import 'package:warunk/app/features/customer/presentation/detail_order/bloc/cust
 import 'package:warunk/app/features/customer/presentation/cancel_order/bloc/customer_cancel_order_bloc.dart';
 import 'package:warunk/app/features/merchant/presentation/reject_cancel_order/bloc/merchant_reject_cancel_order_bloc.dart';
 import 'package:warunk/app/features/merchant/presentation/accept_cancel_order/bloc/merchant_accept_cancel_order_bloc.dart';
+import 'package:warunk/app/features/customer/data/source/customer_wishlist_api_service.dart';
+import 'package:warunk/app/features/customer/domain/repository/customer_wishlist_repository.dart';
+import 'package:warunk/app/features/customer/data/repository/customer_wishlist_repository_impl.dart';
+import 'package:warunk/app/features/customer/domain/use_case/customer_wishlist_add_use_case.dart';
 
 final sl = GetIt.instance;
 
@@ -177,7 +181,7 @@ Future<void> initDependency() async {
   sl.registerLazySingleton(() => CustomerProductApiService(dio));
   sl.registerLazySingleton(() => CustomerCartApiService(dio));
   sl.registerLazySingleton(() => CustomerOrderApiService(dio));
-
+  sl.registerLazySingleton(() => CustomerWishlistApiService(dio));
   //repository
   sl.registerLazySingleton<MerchantLocationRepository>(
     () => MerchantLocationRepositoryImpl(),
@@ -212,6 +216,9 @@ Future<void> initDependency() async {
   );
   sl.registerLazySingleton<CustomerOrderRepository>(
     () => CustomerOrderRepositoryImpl(apiService: sl()),
+  );
+  sl.registerLazySingleton<CustomerWishlistRepository>(
+    () => CustomerWishlistRepositoryImpl(apiService: sl()),
   );
   sl.registerLazySingleton<CustomerLocationRepository>(
     () => CustomerLocationRepositoryImpl(),
@@ -319,7 +326,7 @@ Future<void> initDependency() async {
   sl.registerLazySingleton(() => CustomerOrderGetUseCase(sl()));
   sl.registerLazySingleton(() => CustomerOrderCompleteUseCase(sl()));
   sl.registerLazySingleton(() => CustomerOrderCancelUseCase(sl()));
-
+  sl.registerLazySingleton(() => CustomerWishlistAddUseCase(repository: sl()));
   //bloc
   sl.registerLazySingleton(() => AuthBloc());
   sl.registerFactory(() => AuthLoginBloc(authBloc: sl(), useCase: sl()));
@@ -376,7 +383,11 @@ Future<void> initDependency() async {
     ),
   );
   sl.registerFactory(
-    () => CustomerDetailProductBloc(useCase: sl(), addCartUseCase: sl()),
+    () => CustomerDetailProductBloc(
+      useCase: sl(),
+      addCartUseCase: sl(),
+      addWishlistUseCase: sl(),
+    ),
   );
   sl.registerFactory(() => MerchantProfilBloc(useCase: sl()));
   sl.registerFactory(

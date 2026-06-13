@@ -34,11 +34,16 @@ class CustomerDetailProductScreen extends StatelessWidget {
                   text: 'Berhasil menambahkan ke keranjang',
                 );
                 navigatorKey.currentState?.pop();
+              } else if (state.isWishlistSuccess) {
+                DialogHelper.showSnackBar(
+                  context: context,
+                  text: 'Berhasil menambahkan ke wishlist',
+                );
               }
             },
             builder: (context, state) {
               return Scaffold(
-                appBar: _appBarBuild(),
+                appBar: _appBarBuild(context),
                 body: _bodyBuild(context),
               );
             },
@@ -46,14 +51,24 @@ class CustomerDetailProductScreen extends StatelessWidget {
     );
   }
 
-  AppBar _appBarBuild() {
+  AppBar _appBarBuild(BuildContext context) {
+    final state = context.read<CustomerDetailProductBloc>().state;
     return AppBar(
       title: Text('Detail Produk'),
       actions: [
         IconButton(
           padding: EdgeInsets.zero,
-          icon: Icon(Icons.favorite_border_rounded, size: 20),
-          onPressed: () {},
+          icon: Icon(
+            (state.product?.isWishlisted ?? false)
+                ? Icons.favorite_rounded
+                : Icons.favorite_border_rounded,
+            size: 20,
+          ),
+          onPressed: () {
+            context.read<CustomerDetailProductBloc>().add(
+              const CustomerDetailProductEventAddToWishlist(),
+            );
+          },
         ),
       ],
     );

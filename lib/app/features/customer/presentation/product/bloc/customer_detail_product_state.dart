@@ -10,6 +10,7 @@ class CustomerDetailProductState extends Equatable {
   final Map<String, String>? selectedVariantCombination;
   final CustomerProductVariantEntity? selectedVariant;
   final bool isSuccess;
+  final bool isWishlistSuccess;
 
   const CustomerDetailProductState({
     this.isLoading = false,
@@ -19,6 +20,7 @@ class CustomerDetailProductState extends Equatable {
     this.selectedVariantCombination,
     this.selectedVariant,
     this.isSuccess = false,
+    this.isWishlistSuccess = false,
   });
 
   CustomerDetailProductState copyWith({
@@ -29,6 +31,7 @@ class CustomerDetailProductState extends Equatable {
     Map<String, String>? selectedVariantCombination,
     CustomerProductVariantEntity? selectedVariant,
     bool? isSuccess,
+    bool? isWishlistSuccess,
   }) {
     return CustomerDetailProductState(
       isLoading: isLoading ?? this.isLoading,
@@ -39,6 +42,7 @@ class CustomerDetailProductState extends Equatable {
           selectedVariantCombination ?? this.selectedVariantCombination,
       selectedVariant: selectedVariant ?? this.selectedVariant,
       isSuccess: isSuccess ?? false,
+      isWishlistSuccess: isWishlistSuccess ?? false,
     );
   }
 
@@ -51,5 +55,6 @@ class CustomerDetailProductState extends Equatable {
     selectedVariantCombination,
     selectedVariant,
     isSuccess,
+    isWishlistSuccess,
   ];
 }

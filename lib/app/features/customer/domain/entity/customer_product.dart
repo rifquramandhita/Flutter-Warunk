@@ -36,6 +36,7 @@ sealed class CustomerProduct with _$CustomerProduct {
     double? rating,
     int? reviewsCount,
     List<dynamic>? reviews,
+    bool? isWishlisted,
     String? createdAt,
     String? updatedAt,
   }) = CustomerProductEntity;

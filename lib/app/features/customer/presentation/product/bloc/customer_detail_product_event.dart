@@ -44,3 +44,7 @@ class CustomerDetailProductEventAddToCart extends CustomerDetailProductEvent {
   @override
   List<Object?> get props => [notes];
 }
+
+class CustomerDetailProductEventAddToWishlist extends CustomerDetailProductEvent {
+  const CustomerDetailProductEventAddToWishlist();
+}

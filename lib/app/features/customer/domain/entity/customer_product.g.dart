@@ -50,6 +50,7 @@ CustomerProductEntity _$CustomerProductEntityFromJson(
   rating: (json['rating'] as num?)?.toDouble(),
   reviewsCount: (json['reviews_count'] as num?)?.toInt(),
   reviews: json['reviews'] as List<dynamic>?,
+  isWishlisted: json['is_wishlisted'] as bool?,
   createdAt: json['created_at'] as String?,
   updatedAt: json['updated_at'] as String?,
 );
@@ -82,6 +83,7 @@ Map<String, dynamic> _$CustomerProductEntityToJson(
   'rating': ?instance.rating,
   'reviews_count': ?instance.reviewsCount,
   'reviews': ?instance.reviews,
+  'is_wishlisted': ?instance.isWishlisted,
   'created_at': ?instance.createdAt,
   'updated_at': ?instance.updatedAt,
 };
