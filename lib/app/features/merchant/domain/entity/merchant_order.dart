@@ -22,6 +22,18 @@ sealed class MerchantOrder with _$MerchantOrder {
   }) = MerchantOrderRejectParam;
 
   @JsonSerializable(fieldRename: FieldRename.snake, includeIfNull: false)
+  const factory MerchantOrder.acceptCancelParam({
+    required String id,
+    @JsonKey(includeFromJson: false, includeToJson: false) File? refundProof,
+  }) = MerchantOrderAcceptCancelParam;
+
+  @JsonSerializable(fieldRename: FieldRename.snake, includeIfNull: false)
+  const factory MerchantOrder.rejectCancelParam({
+    required String id,
+    required String reason,
+  }) = MerchantOrderRejectCancelParam;
+
+  @JsonSerializable(fieldRename: FieldRename.snake, includeIfNull: false)
   const factory MerchantOrder.entity({
     required String id,
     String? invoiceNumber,

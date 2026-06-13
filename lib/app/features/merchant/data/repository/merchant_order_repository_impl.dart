@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:warunk/app/features/merchant/data/source/merchant_order_api_service.dart';
 import 'package:warunk/app/features/merchant/domain/entity/merchant_order.dart';
 import 'package:warunk/app/features/merchant/domain/repository/merchant_order_repository.dart';
@@ -58,6 +60,28 @@ class MerchantOrderRepositoryImpl implements MerchantOrderRepository {
       param.customerAccountNumber,
       param.customerAccountName,
       param.refundProof!,
+    ), (responseData) {
+      final data = responseData['order'];
+      return MerchantOrderEntity.fromJson(data);
+    });
+  }
+
+  @override
+  Future<DataState<MerchantOrderEntity>> acceptCancelOrder(String id, File refundProof) async {
+    return handleResponse(() => _apiService.acceptCancelOrder(
+      id,
+      refundProof,
+    ), (responseData) {
+      final data = responseData['order'];
+      return MerchantOrderEntity.fromJson(data);
+    });
+  }
+
+  @override
+  Future<DataState<MerchantOrderEntity>> rejectCancelOrder(String id, String reason) async {
+    return handleResponse(() => _apiService.rejectCancelOrder(
+      id,
+      {'reason': reason},
     ), (responseData) {
       final data = responseData['order'];
       return MerchantOrderEntity.fromJson(data);

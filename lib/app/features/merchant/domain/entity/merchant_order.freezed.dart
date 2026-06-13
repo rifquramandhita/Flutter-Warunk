@@ -19,6 +19,14 @@ MerchantOrder _$MerchantOrderFromJson(
           return MerchantOrderRejectParam.fromJson(
             json
           );
+                case 'acceptCancelParam':
+          return MerchantOrderAcceptCancelParam.fromJson(
+            json
+          );
+                case 'rejectCancelParam':
+          return MerchantOrderRejectCancelParam.fromJson(
+            json
+          );
                 case 'entity':
           return MerchantOrderEntity.fromJson(
             json
@@ -38,12 +46,7 @@ MerchantOrder _$MerchantOrderFromJson(
 /// @nodoc
 mixin _$MerchantOrder {
 
- String? get customerBank; String? get customerAccountNumber; String? get customerAccountName;@JsonKey(includeFromJson: false, includeToJson: false) Object? get refundProof;
-/// Create a copy of MerchantOrder
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-$MerchantOrderCopyWith<MerchantOrder> get copyWith => _$MerchantOrderCopyWithImpl<MerchantOrder>(this as MerchantOrder, _$identity);
+
 
   /// Serializes this MerchantOrder to a JSON map.
   Map<String, dynamic> toJson();
@@ -51,52 +54,24 @@ $MerchantOrderCopyWith<MerchantOrder> get copyWith => _$MerchantOrderCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MerchantOrder&&(identical(other.customerBank, customerBank) || other.customerBank == customerBank)&&(identical(other.customerAccountNumber, customerAccountNumber) || other.customerAccountNumber == customerAccountNumber)&&(identical(other.customerAccountName, customerAccountName) || other.customerAccountName == customerAccountName)&&const DeepCollectionEquality().equals(other.refundProof, refundProof));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MerchantOrder);
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,customerBank,customerAccountNumber,customerAccountName,const DeepCollectionEquality().hash(refundProof));
+int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'MerchantOrder(customerBank: $customerBank, customerAccountNumber: $customerAccountNumber, customerAccountName: $customerAccountName, refundProof: $refundProof)';
+  return 'MerchantOrder()';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class $MerchantOrderCopyWith<$Res>  {
-  factory $MerchantOrderCopyWith(MerchantOrder value, $Res Function(MerchantOrder) _then) = _$MerchantOrderCopyWithImpl;
-@useResult
-$Res call({
- String customerBank, String customerAccountNumber, String customerAccountName
-});
-
-
-
-
-}
-/// @nodoc
-class _$MerchantOrderCopyWithImpl<$Res>
-    implements $MerchantOrderCopyWith<$Res> {
-  _$MerchantOrderCopyWithImpl(this._self, this._then);
-
-  final MerchantOrder _self;
-  final $Res Function(MerchantOrder) _then;
-
-/// Create a copy of MerchantOrder
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? customerBank = null,Object? customerAccountNumber = null,Object? customerAccountName = null,}) {
-  return _then(_self.copyWith(
-customerBank: null == customerBank ? _self.customerBank! : customerBank // ignore: cast_nullable_to_non_nullable
-as String,customerAccountNumber: null == customerAccountNumber ? _self.customerAccountNumber! : customerAccountNumber // ignore: cast_nullable_to_non_nullable
-as String,customerAccountName: null == customerAccountName ? _self.customerAccountName! : customerAccountName // ignore: cast_nullable_to_non_nullable
-as String,
-  ));
-}
-
+class $MerchantOrderCopyWith<$Res>  {
+$MerchantOrderCopyWith(MerchantOrder _, $Res Function(MerchantOrder) __);
 }
 
 
@@ -114,11 +89,13 @@ extension MerchantOrderPatterns on MerchantOrder {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( MerchantOrderRejectParam value)?  rejectParam,TResult Function( MerchantOrderEntity value)?  entity,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( MerchantOrderRejectParam value)?  rejectParam,TResult Function( MerchantOrderAcceptCancelParam value)?  acceptCancelParam,TResult Function( MerchantOrderRejectCancelParam value)?  rejectCancelParam,TResult Function( MerchantOrderEntity value)?  entity,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case MerchantOrderRejectParam() when rejectParam != null:
-return rejectParam(_that);case MerchantOrderEntity() when entity != null:
+return rejectParam(_that);case MerchantOrderAcceptCancelParam() when acceptCancelParam != null:
+return acceptCancelParam(_that);case MerchantOrderRejectCancelParam() when rejectCancelParam != null:
+return rejectCancelParam(_that);case MerchantOrderEntity() when entity != null:
 return entity(_that);case _:
   return orElse();
 
@@ -137,11 +114,13 @@ return entity(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( MerchantOrderRejectParam value)  rejectParam,required TResult Function( MerchantOrderEntity value)  entity,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( MerchantOrderRejectParam value)  rejectParam,required TResult Function( MerchantOrderAcceptCancelParam value)  acceptCancelParam,required TResult Function( MerchantOrderRejectCancelParam value)  rejectCancelParam,required TResult Function( MerchantOrderEntity value)  entity,}){
 final _that = this;
 switch (_that) {
 case MerchantOrderRejectParam():
-return rejectParam(_that);case MerchantOrderEntity():
+return rejectParam(_that);case MerchantOrderAcceptCancelParam():
+return acceptCancelParam(_that);case MerchantOrderRejectCancelParam():
+return rejectCancelParam(_that);case MerchantOrderEntity():
 return entity(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
@@ -156,11 +135,13 @@ return entity(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( MerchantOrderRejectParam value)?  rejectParam,TResult? Function( MerchantOrderEntity value)?  entity,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( MerchantOrderRejectParam value)?  rejectParam,TResult? Function( MerchantOrderAcceptCancelParam value)?  acceptCancelParam,TResult? Function( MerchantOrderRejectCancelParam value)?  rejectCancelParam,TResult? Function( MerchantOrderEntity value)?  entity,}){
 final _that = this;
 switch (_that) {
 case MerchantOrderRejectParam() when rejectParam != null:
-return rejectParam(_that);case MerchantOrderEntity() when entity != null:
+return rejectParam(_that);case MerchantOrderAcceptCancelParam() when acceptCancelParam != null:
+return acceptCancelParam(_that);case MerchantOrderRejectCancelParam() when rejectCancelParam != null:
+return rejectCancelParam(_that);case MerchantOrderEntity() when entity != null:
 return entity(_that);case _:
   return null;
 
@@ -178,10 +159,12 @@ return entity(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String reason,  String customerBank,  String customerAccountNumber,  String customerAccountName, @JsonKey(includeFromJson: false, includeToJson: false)  File? refundProof)?  rejectParam,TResult Function( String id,  String? invoiceNumber,  String? invoiceUrl,  String? merchantId,  int? customerId,  String? customerAddressId,  String? merchantAccountId,  int? subtotal,  int? shippingCost,  int? serviceFee,  String? promotionId,  String? promotionCode,  String? promotionTitle,  String? promotionType,  int? promotionDiscount,  dynamic promotion,  List<dynamic>? promotions,  int? total,  int? paidAmount,  String? paymentProof,  String? type,  OrderStatus? status,  String? statusLabel,  String? notes,  String? cancelReason,  String? customerBank,  String? customerAccountNumber,  String? customerAccountName,  String? refundProof,  MerchantOrderCustomerEntity? customer,  MerchantOrderCustomerAddressEntity? customerAddress,  MerchantAccountEntity? merchantAccount,  List<MerchantOrderItemEntity> items,  MerchantOrderShippingEntity? shipping,  String? paidAt,  String? cancelledAt,  String? completedAt,  String? createdAt,  String? updatedAt)?  entity,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String reason,  String customerBank,  String customerAccountNumber,  String customerAccountName, @JsonKey(includeFromJson: false, includeToJson: false)  File? refundProof)?  rejectParam,TResult Function( String id, @JsonKey(includeFromJson: false, includeToJson: false)  File? refundProof)?  acceptCancelParam,TResult Function( String id,  String reason)?  rejectCancelParam,TResult Function( String id,  String? invoiceNumber,  String? invoiceUrl,  String? merchantId,  int? customerId,  String? customerAddressId,  String? merchantAccountId,  int? subtotal,  int? shippingCost,  int? serviceFee,  String? promotionId,  String? promotionCode,  String? promotionTitle,  String? promotionType,  int? promotionDiscount,  dynamic promotion,  List<dynamic>? promotions,  int? total,  int? paidAmount,  String? paymentProof,  String? type,  OrderStatus? status,  String? statusLabel,  String? notes,  String? cancelReason,  String? customerBank,  String? customerAccountNumber,  String? customerAccountName,  String? refundProof,  MerchantOrderCustomerEntity? customer,  MerchantOrderCustomerAddressEntity? customerAddress,  MerchantAccountEntity? merchantAccount,  List<MerchantOrderItemEntity> items,  MerchantOrderShippingEntity? shipping,  String? paidAt,  String? cancelledAt,  String? completedAt,  String? createdAt,  String? updatedAt)?  entity,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case MerchantOrderRejectParam() when rejectParam != null:
-return rejectParam(_that.reason,_that.customerBank,_that.customerAccountNumber,_that.customerAccountName,_that.refundProof);case MerchantOrderEntity() when entity != null:
+return rejectParam(_that.reason,_that.customerBank,_that.customerAccountNumber,_that.customerAccountName,_that.refundProof);case MerchantOrderAcceptCancelParam() when acceptCancelParam != null:
+return acceptCancelParam(_that.id,_that.refundProof);case MerchantOrderRejectCancelParam() when rejectCancelParam != null:
+return rejectCancelParam(_that.id,_that.reason);case MerchantOrderEntity() when entity != null:
 return entity(_that.id,_that.invoiceNumber,_that.invoiceUrl,_that.merchantId,_that.customerId,_that.customerAddressId,_that.merchantAccountId,_that.subtotal,_that.shippingCost,_that.serviceFee,_that.promotionId,_that.promotionCode,_that.promotionTitle,_that.promotionType,_that.promotionDiscount,_that.promotion,_that.promotions,_that.total,_that.paidAmount,_that.paymentProof,_that.type,_that.status,_that.statusLabel,_that.notes,_that.cancelReason,_that.customerBank,_that.customerAccountNumber,_that.customerAccountName,_that.refundProof,_that.customer,_that.customerAddress,_that.merchantAccount,_that.items,_that.shipping,_that.paidAt,_that.cancelledAt,_that.completedAt,_that.createdAt,_that.updatedAt);case _:
   return orElse();
 
@@ -200,10 +183,12 @@ return entity(_that.id,_that.invoiceNumber,_that.invoiceUrl,_that.merchantId,_th
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String reason,  String customerBank,  String customerAccountNumber,  String customerAccountName, @JsonKey(includeFromJson: false, includeToJson: false)  File? refundProof)  rejectParam,required TResult Function( String id,  String? invoiceNumber,  String? invoiceUrl,  String? merchantId,  int? customerId,  String? customerAddressId,  String? merchantAccountId,  int? subtotal,  int? shippingCost,  int? serviceFee,  String? promotionId,  String? promotionCode,  String? promotionTitle,  String? promotionType,  int? promotionDiscount,  dynamic promotion,  List<dynamic>? promotions,  int? total,  int? paidAmount,  String? paymentProof,  String? type,  OrderStatus? status,  String? statusLabel,  String? notes,  String? cancelReason,  String? customerBank,  String? customerAccountNumber,  String? customerAccountName,  String? refundProof,  MerchantOrderCustomerEntity? customer,  MerchantOrderCustomerAddressEntity? customerAddress,  MerchantAccountEntity? merchantAccount,  List<MerchantOrderItemEntity> items,  MerchantOrderShippingEntity? shipping,  String? paidAt,  String? cancelledAt,  String? completedAt,  String? createdAt,  String? updatedAt)  entity,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String reason,  String customerBank,  String customerAccountNumber,  String customerAccountName, @JsonKey(includeFromJson: false, includeToJson: false)  File? refundProof)  rejectParam,required TResult Function( String id, @JsonKey(includeFromJson: false, includeToJson: false)  File? refundProof)  acceptCancelParam,required TResult Function( String id,  String reason)  rejectCancelParam,required TResult Function( String id,  String? invoiceNumber,  String? invoiceUrl,  String? merchantId,  int? customerId,  String? customerAddressId,  String? merchantAccountId,  int? subtotal,  int? shippingCost,  int? serviceFee,  String? promotionId,  String? promotionCode,  String? promotionTitle,  String? promotionType,  int? promotionDiscount,  dynamic promotion,  List<dynamic>? promotions,  int? total,  int? paidAmount,  String? paymentProof,  String? type,  OrderStatus? status,  String? statusLabel,  String? notes,  String? cancelReason,  String? customerBank,  String? customerAccountNumber,  String? customerAccountName,  String? refundProof,  MerchantOrderCustomerEntity? customer,  MerchantOrderCustomerAddressEntity? customerAddress,  MerchantAccountEntity? merchantAccount,  List<MerchantOrderItemEntity> items,  MerchantOrderShippingEntity? shipping,  String? paidAt,  String? cancelledAt,  String? completedAt,  String? createdAt,  String? updatedAt)  entity,}) {final _that = this;
 switch (_that) {
 case MerchantOrderRejectParam():
-return rejectParam(_that.reason,_that.customerBank,_that.customerAccountNumber,_that.customerAccountName,_that.refundProof);case MerchantOrderEntity():
+return rejectParam(_that.reason,_that.customerBank,_that.customerAccountNumber,_that.customerAccountName,_that.refundProof);case MerchantOrderAcceptCancelParam():
+return acceptCancelParam(_that.id,_that.refundProof);case MerchantOrderRejectCancelParam():
+return rejectCancelParam(_that.id,_that.reason);case MerchantOrderEntity():
 return entity(_that.id,_that.invoiceNumber,_that.invoiceUrl,_that.merchantId,_that.customerId,_that.customerAddressId,_that.merchantAccountId,_that.subtotal,_that.shippingCost,_that.serviceFee,_that.promotionId,_that.promotionCode,_that.promotionTitle,_that.promotionType,_that.promotionDiscount,_that.promotion,_that.promotions,_that.total,_that.paidAmount,_that.paymentProof,_that.type,_that.status,_that.statusLabel,_that.notes,_that.cancelReason,_that.customerBank,_that.customerAccountNumber,_that.customerAccountName,_that.refundProof,_that.customer,_that.customerAddress,_that.merchantAccount,_that.items,_that.shipping,_that.paidAt,_that.cancelledAt,_that.completedAt,_that.createdAt,_that.updatedAt);}
 }
 /// A variant of `when` that fallback to returning `null`
@@ -218,10 +203,12 @@ return entity(_that.id,_that.invoiceNumber,_that.invoiceUrl,_that.merchantId,_th
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String reason,  String customerBank,  String customerAccountNumber,  String customerAccountName, @JsonKey(includeFromJson: false, includeToJson: false)  File? refundProof)?  rejectParam,TResult? Function( String id,  String? invoiceNumber,  String? invoiceUrl,  String? merchantId,  int? customerId,  String? customerAddressId,  String? merchantAccountId,  int? subtotal,  int? shippingCost,  int? serviceFee,  String? promotionId,  String? promotionCode,  String? promotionTitle,  String? promotionType,  int? promotionDiscount,  dynamic promotion,  List<dynamic>? promotions,  int? total,  int? paidAmount,  String? paymentProof,  String? type,  OrderStatus? status,  String? statusLabel,  String? notes,  String? cancelReason,  String? customerBank,  String? customerAccountNumber,  String? customerAccountName,  String? refundProof,  MerchantOrderCustomerEntity? customer,  MerchantOrderCustomerAddressEntity? customerAddress,  MerchantAccountEntity? merchantAccount,  List<MerchantOrderItemEntity> items,  MerchantOrderShippingEntity? shipping,  String? paidAt,  String? cancelledAt,  String? completedAt,  String? createdAt,  String? updatedAt)?  entity,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String reason,  String customerBank,  String customerAccountNumber,  String customerAccountName, @JsonKey(includeFromJson: false, includeToJson: false)  File? refundProof)?  rejectParam,TResult? Function( String id, @JsonKey(includeFromJson: false, includeToJson: false)  File? refundProof)?  acceptCancelParam,TResult? Function( String id,  String reason)?  rejectCancelParam,TResult? Function( String id,  String? invoiceNumber,  String? invoiceUrl,  String? merchantId,  int? customerId,  String? customerAddressId,  String? merchantAccountId,  int? subtotal,  int? shippingCost,  int? serviceFee,  String? promotionId,  String? promotionCode,  String? promotionTitle,  String? promotionType,  int? promotionDiscount,  dynamic promotion,  List<dynamic>? promotions,  int? total,  int? paidAmount,  String? paymentProof,  String? type,  OrderStatus? status,  String? statusLabel,  String? notes,  String? cancelReason,  String? customerBank,  String? customerAccountNumber,  String? customerAccountName,  String? refundProof,  MerchantOrderCustomerEntity? customer,  MerchantOrderCustomerAddressEntity? customerAddress,  MerchantAccountEntity? merchantAccount,  List<MerchantOrderItemEntity> items,  MerchantOrderShippingEntity? shipping,  String? paidAt,  String? cancelledAt,  String? completedAt,  String? createdAt,  String? updatedAt)?  entity,}) {final _that = this;
 switch (_that) {
 case MerchantOrderRejectParam() when rejectParam != null:
-return rejectParam(_that.reason,_that.customerBank,_that.customerAccountNumber,_that.customerAccountName,_that.refundProof);case MerchantOrderEntity() when entity != null:
+return rejectParam(_that.reason,_that.customerBank,_that.customerAccountNumber,_that.customerAccountName,_that.refundProof);case MerchantOrderAcceptCancelParam() when acceptCancelParam != null:
+return acceptCancelParam(_that.id,_that.refundProof);case MerchantOrderRejectCancelParam() when rejectCancelParam != null:
+return rejectCancelParam(_that.id,_that.reason);case MerchantOrderEntity() when entity != null:
 return entity(_that.id,_that.invoiceNumber,_that.invoiceUrl,_that.merchantId,_that.customerId,_that.customerAddressId,_that.merchantAccountId,_that.subtotal,_that.shippingCost,_that.serviceFee,_that.promotionId,_that.promotionCode,_that.promotionTitle,_that.promotionType,_that.promotionDiscount,_that.promotion,_that.promotions,_that.total,_that.paidAmount,_that.paymentProof,_that.type,_that.status,_that.statusLabel,_that.notes,_that.cancelReason,_that.customerBank,_that.customerAccountNumber,_that.customerAccountName,_that.refundProof,_that.customer,_that.customerAddress,_that.merchantAccount,_that.items,_that.shipping,_that.paidAt,_that.cancelledAt,_that.completedAt,_that.createdAt,_that.updatedAt);case _:
   return null;
 
@@ -238,10 +225,10 @@ class MerchantOrderRejectParam implements MerchantOrder {
   factory MerchantOrderRejectParam.fromJson(Map<String, dynamic> json) => _$MerchantOrderRejectParamFromJson(json);
 
  final  String reason;
-@override final  String customerBank;
-@override final  String customerAccountNumber;
-@override final  String customerAccountName;
-@override@JsonKey(includeFromJson: false, includeToJson: false) final  File? refundProof;
+ final  String customerBank;
+ final  String customerAccountNumber;
+ final  String customerAccountName;
+@JsonKey(includeFromJson: false, includeToJson: false) final  File? refundProof;
 
 @JsonKey(name: 'runtimeType')
 final String $type;
@@ -249,7 +236,7 @@ final String $type;
 
 /// Create a copy of MerchantOrder
 /// with the given fields replaced by the non-null parameter values.
-@override @JsonKey(includeFromJson: false, includeToJson: false)
+@JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
 $MerchantOrderRejectParamCopyWith<MerchantOrderRejectParam> get copyWith => _$MerchantOrderRejectParamCopyWithImpl<MerchantOrderRejectParam>(this, _$identity);
 
@@ -278,7 +265,7 @@ String toString() {
 /// @nodoc
 abstract mixin class $MerchantOrderRejectParamCopyWith<$Res> implements $MerchantOrderCopyWith<$Res> {
   factory $MerchantOrderRejectParamCopyWith(MerchantOrderRejectParam value, $Res Function(MerchantOrderRejectParam) _then) = _$MerchantOrderRejectParamCopyWithImpl;
-@override @useResult
+@useResult
 $Res call({
  String reason, String customerBank, String customerAccountNumber, String customerAccountName,@JsonKey(includeFromJson: false, includeToJson: false) File? refundProof
 });
@@ -297,7 +284,7 @@ class _$MerchantOrderRejectParamCopyWithImpl<$Res>
 
 /// Create a copy of MerchantOrder
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? reason = null,Object? customerBank = null,Object? customerAccountNumber = null,Object? customerAccountName = null,Object? refundProof = freezed,}) {
+@pragma('vm:prefer-inline') $Res call({Object? reason = null,Object? customerBank = null,Object? customerAccountNumber = null,Object? customerAccountName = null,Object? refundProof = freezed,}) {
   return _then(MerchantOrderRejectParam(
 reason: null == reason ? _self.reason : reason // ignore: cast_nullable_to_non_nullable
 as String,customerBank: null == customerBank ? _self.customerBank : customerBank // ignore: cast_nullable_to_non_nullable
@@ -305,6 +292,156 @@ as String,customerAccountNumber: null == customerAccountNumber ? _self.customerA
 as String,customerAccountName: null == customerAccountName ? _self.customerAccountName : customerAccountName // ignore: cast_nullable_to_non_nullable
 as String,refundProof: freezed == refundProof ? _self.refundProof : refundProof // ignore: cast_nullable_to_non_nullable
 as File?,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+@JsonSerializable(fieldRename: FieldRename.snake, includeIfNull: false)
+class MerchantOrderAcceptCancelParam implements MerchantOrder {
+  const MerchantOrderAcceptCancelParam({required this.id, @JsonKey(includeFromJson: false, includeToJson: false) this.refundProof, final  String? $type}): $type = $type ?? 'acceptCancelParam';
+  factory MerchantOrderAcceptCancelParam.fromJson(Map<String, dynamic> json) => _$MerchantOrderAcceptCancelParamFromJson(json);
+
+ final  String id;
+@JsonKey(includeFromJson: false, includeToJson: false) final  File? refundProof;
+
+@JsonKey(name: 'runtimeType')
+final String $type;
+
+
+/// Create a copy of MerchantOrder
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$MerchantOrderAcceptCancelParamCopyWith<MerchantOrderAcceptCancelParam> get copyWith => _$MerchantOrderAcceptCancelParamCopyWithImpl<MerchantOrderAcceptCancelParam>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$MerchantOrderAcceptCancelParamToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MerchantOrderAcceptCancelParam&&(identical(other.id, id) || other.id == id)&&(identical(other.refundProof, refundProof) || other.refundProof == refundProof));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,id,refundProof);
+
+@override
+String toString() {
+  return 'MerchantOrder.acceptCancelParam(id: $id, refundProof: $refundProof)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $MerchantOrderAcceptCancelParamCopyWith<$Res> implements $MerchantOrderCopyWith<$Res> {
+  factory $MerchantOrderAcceptCancelParamCopyWith(MerchantOrderAcceptCancelParam value, $Res Function(MerchantOrderAcceptCancelParam) _then) = _$MerchantOrderAcceptCancelParamCopyWithImpl;
+@useResult
+$Res call({
+ String id,@JsonKey(includeFromJson: false, includeToJson: false) File? refundProof
+});
+
+
+
+
+}
+/// @nodoc
+class _$MerchantOrderAcceptCancelParamCopyWithImpl<$Res>
+    implements $MerchantOrderAcceptCancelParamCopyWith<$Res> {
+  _$MerchantOrderAcceptCancelParamCopyWithImpl(this._self, this._then);
+
+  final MerchantOrderAcceptCancelParam _self;
+  final $Res Function(MerchantOrderAcceptCancelParam) _then;
+
+/// Create a copy of MerchantOrder
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? id = null,Object? refundProof = freezed,}) {
+  return _then(MerchantOrderAcceptCancelParam(
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String,refundProof: freezed == refundProof ? _self.refundProof : refundProof // ignore: cast_nullable_to_non_nullable
+as File?,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+@JsonSerializable(fieldRename: FieldRename.snake, includeIfNull: false)
+class MerchantOrderRejectCancelParam implements MerchantOrder {
+  const MerchantOrderRejectCancelParam({required this.id, required this.reason, final  String? $type}): $type = $type ?? 'rejectCancelParam';
+  factory MerchantOrderRejectCancelParam.fromJson(Map<String, dynamic> json) => _$MerchantOrderRejectCancelParamFromJson(json);
+
+ final  String id;
+ final  String reason;
+
+@JsonKey(name: 'runtimeType')
+final String $type;
+
+
+/// Create a copy of MerchantOrder
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$MerchantOrderRejectCancelParamCopyWith<MerchantOrderRejectCancelParam> get copyWith => _$MerchantOrderRejectCancelParamCopyWithImpl<MerchantOrderRejectCancelParam>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$MerchantOrderRejectCancelParamToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MerchantOrderRejectCancelParam&&(identical(other.id, id) || other.id == id)&&(identical(other.reason, reason) || other.reason == reason));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,id,reason);
+
+@override
+String toString() {
+  return 'MerchantOrder.rejectCancelParam(id: $id, reason: $reason)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $MerchantOrderRejectCancelParamCopyWith<$Res> implements $MerchantOrderCopyWith<$Res> {
+  factory $MerchantOrderRejectCancelParamCopyWith(MerchantOrderRejectCancelParam value, $Res Function(MerchantOrderRejectCancelParam) _then) = _$MerchantOrderRejectCancelParamCopyWithImpl;
+@useResult
+$Res call({
+ String id, String reason
+});
+
+
+
+
+}
+/// @nodoc
+class _$MerchantOrderRejectCancelParamCopyWithImpl<$Res>
+    implements $MerchantOrderRejectCancelParamCopyWith<$Res> {
+  _$MerchantOrderRejectCancelParamCopyWithImpl(this._self, this._then);
+
+  final MerchantOrderRejectCancelParam _self;
+  final $Res Function(MerchantOrderRejectCancelParam) _then;
+
+/// Create a copy of MerchantOrder
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? id = null,Object? reason = null,}) {
+  return _then(MerchantOrderRejectCancelParam(
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String,reason: null == reason ? _self.reason : reason // ignore: cast_nullable_to_non_nullable
+as String,
   ));
 }
 
@@ -351,10 +488,10 @@ class MerchantOrderEntity implements MerchantOrder {
  final  String? statusLabel;
  final  String? notes;
  final  String? cancelReason;
-@override final  String? customerBank;
-@override final  String? customerAccountNumber;
-@override final  String? customerAccountName;
-@override final  String? refundProof;
+ final  String? customerBank;
+ final  String? customerAccountNumber;
+ final  String? customerAccountName;
+ final  String? refundProof;
  final  MerchantOrderCustomerEntity? customer;
  final  MerchantOrderCustomerAddressEntity? customerAddress;
  final  MerchantAccountEntity? merchantAccount;
@@ -378,7 +515,7 @@ final String $type;
 
 /// Create a copy of MerchantOrder
 /// with the given fields replaced by the non-null parameter values.
-@override @JsonKey(includeFromJson: false, includeToJson: false)
+@JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
 $MerchantOrderEntityCopyWith<MerchantOrderEntity> get copyWith => _$MerchantOrderEntityCopyWithImpl<MerchantOrderEntity>(this, _$identity);
 
@@ -407,7 +544,7 @@ String toString() {
 /// @nodoc
 abstract mixin class $MerchantOrderEntityCopyWith<$Res> implements $MerchantOrderCopyWith<$Res> {
   factory $MerchantOrderEntityCopyWith(MerchantOrderEntity value, $Res Function(MerchantOrderEntity) _then) = _$MerchantOrderEntityCopyWithImpl;
-@override @useResult
+@useResult
 $Res call({
  String id, String? invoiceNumber, String? invoiceUrl, String? merchantId, int? customerId, String? customerAddressId, String? merchantAccountId, int? subtotal, int? shippingCost, int? serviceFee, String? promotionId, String? promotionCode, String? promotionTitle, String? promotionType, int? promotionDiscount, dynamic promotion, List<dynamic>? promotions, int? total, int? paidAmount, String? paymentProof, String? type, OrderStatus? status, String? statusLabel, String? notes, String? cancelReason, String? customerBank, String? customerAccountNumber, String? customerAccountName, String? refundProof, MerchantOrderCustomerEntity? customer, MerchantOrderCustomerAddressEntity? customerAddress, MerchantAccountEntity? merchantAccount, List<MerchantOrderItemEntity> items, MerchantOrderShippingEntity? shipping, String? paidAt, String? cancelledAt, String? completedAt, String? createdAt, String? updatedAt
 });
@@ -426,7 +563,7 @@ class _$MerchantOrderEntityCopyWithImpl<$Res>
 
 /// Create a copy of MerchantOrder
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? invoiceNumber = freezed,Object? invoiceUrl = freezed,Object? merchantId = freezed,Object? customerId = freezed,Object? customerAddressId = freezed,Object? merchantAccountId = freezed,Object? subtotal = freezed,Object? shippingCost = freezed,Object? serviceFee = freezed,Object? promotionId = freezed,Object? promotionCode = freezed,Object? promotionTitle = freezed,Object? promotionType = freezed,Object? promotionDiscount = freezed,Object? promotion = freezed,Object? promotions = freezed,Object? total = freezed,Object? paidAmount = freezed,Object? paymentProof = freezed,Object? type = freezed,Object? status = freezed,Object? statusLabel = freezed,Object? notes = freezed,Object? cancelReason = freezed,Object? customerBank = freezed,Object? customerAccountNumber = freezed,Object? customerAccountName = freezed,Object? refundProof = freezed,Object? customer = freezed,Object? customerAddress = freezed,Object? merchantAccount = freezed,Object? items = null,Object? shipping = freezed,Object? paidAt = freezed,Object? cancelledAt = freezed,Object? completedAt = freezed,Object? createdAt = freezed,Object? updatedAt = freezed,}) {
+@pragma('vm:prefer-inline') $Res call({Object? id = null,Object? invoiceNumber = freezed,Object? invoiceUrl = freezed,Object? merchantId = freezed,Object? customerId = freezed,Object? customerAddressId = freezed,Object? merchantAccountId = freezed,Object? subtotal = freezed,Object? shippingCost = freezed,Object? serviceFee = freezed,Object? promotionId = freezed,Object? promotionCode = freezed,Object? promotionTitle = freezed,Object? promotionType = freezed,Object? promotionDiscount = freezed,Object? promotion = freezed,Object? promotions = freezed,Object? total = freezed,Object? paidAmount = freezed,Object? paymentProof = freezed,Object? type = freezed,Object? status = freezed,Object? statusLabel = freezed,Object? notes = freezed,Object? cancelReason = freezed,Object? customerBank = freezed,Object? customerAccountNumber = freezed,Object? customerAccountName = freezed,Object? refundProof = freezed,Object? customer = freezed,Object? customerAddress = freezed,Object? merchantAccount = freezed,Object? items = null,Object? shipping = freezed,Object? paidAt = freezed,Object? cancelledAt = freezed,Object? completedAt = freezed,Object? createdAt = freezed,Object? updatedAt = freezed,}) {
   return _then(MerchantOrderEntity(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,invoiceNumber: freezed == invoiceNumber ? _self.invoiceNumber : invoiceNumber // ignore: cast_nullable_to_non_nullable

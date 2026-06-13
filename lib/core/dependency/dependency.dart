@@ -91,6 +91,8 @@ import 'package:warunk/app/features/merchant/domain/use_case/merchant_order_acce
 import 'package:warunk/app/features/merchant/domain/use_case/merchant_order_ship_use_case.dart';
 import 'package:warunk/app/features/merchant/domain/use_case/merchant_order_received_use_case.dart';
 import 'package:warunk/app/features/merchant/domain/use_case/merchant_order_reject_use_case.dart';
+import 'package:warunk/app/features/merchant/domain/use_case/merchant_order_accept_cancel_use_case.dart';
+import 'package:warunk/app/features/merchant/domain/use_case/merchant_order_reject_cancel_use_case.dart';
 import 'package:warunk/app/features/merchant/data/source/merchant_promotion_api_service.dart';
 import 'package:warunk/app/features/merchant/domain/repository/merchant_promotion_repository.dart';
 import 'package:warunk/app/features/merchant/data/repository/merchant_promotion_repository_impl.dart';
@@ -141,6 +143,8 @@ import 'package:warunk/app/features/merchant/domain/use_case/merchant_merchant_t
 import 'package:warunk/app/features/merchant/presentation/input_topup/bloc/merchant_input_topup_bloc.dart';
 import 'package:warunk/app/features/customer/presentation/detail_order/bloc/customer_detail_order_bloc.dart';
 import 'package:warunk/app/features/customer/presentation/cancel_order/bloc/customer_cancel_order_bloc.dart';
+import 'package:warunk/app/features/merchant/presentation/reject_cancel_order/bloc/merchant_reject_cancel_order_bloc.dart';
+import 'package:warunk/app/features/merchant/presentation/accept_cancel_order/bloc/merchant_accept_cancel_order_bloc.dart';
 
 final sl = GetIt.instance;
 
@@ -271,6 +275,8 @@ Future<void> initDependency() async {
   sl.registerLazySingleton(() => MerchantOrderShipUseCase(sl()));
   sl.registerLazySingleton(() => MerchantOrderReceivedUseCase(sl()));
   sl.registerLazySingleton(() => MerchantOrderRejectUseCase(sl()));
+  sl.registerLazySingleton(() => MerchantOrderAcceptCancelUseCase(sl()));
+  sl.registerLazySingleton(() => MerchantOrderRejectCancelUseCase(sl()));
   sl.registerLazySingleton(() => MerchantPromotionAddUseCase(repository: sl()));
   sl.registerLazySingleton(() => MerchantPromotionSendUseCase(sl()));
   sl.registerLazySingleton(() => MerchantPromotionGetByIdUseCase(sl()));
@@ -405,6 +411,8 @@ Future<void> initDependency() async {
       acceptUseCase: sl(),
       rejectUseCase: sl(),
       receivedUseCase: sl(),
+      acceptCancelUseCase: sl(),
+      rejectCancelUseCase: sl(),
     ),
   );
   sl.registerFactory(
@@ -416,6 +424,12 @@ Future<void> initDependency() async {
   );
   sl.registerFactoryParam<MerchantRejectOrderBloc, String, void>(
     (orderId, _) => MerchantRejectOrderBloc(rejectUseCase: sl(), orderId: orderId),
+  );
+  sl.registerFactoryParam<MerchantRejectCancelOrderBloc, String, void>(
+    (orderId, _) => MerchantRejectCancelOrderBloc(rejectCancelUseCase: sl(), orderId: orderId),
+  );
+  sl.registerFactoryParam<MerchantAcceptCancelOrderBloc, String, void>(
+    (orderId, _) => MerchantAcceptCancelOrderBloc(acceptCancelUseCase: sl(), orderId: orderId),
   );
   sl.registerFactory(() => CustomerOrderSuccessBloc(getOrderByIdUseCase: sl()));
   sl.registerFactory(() => CustomerReviewOrderBloc(sl()));

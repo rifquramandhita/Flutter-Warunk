@@ -7,6 +7,8 @@ import 'package:warunk/app/features/merchant/domain/entity/merchant_order.dart';
 import 'package:warunk/app/features/merchant/presentation/detail_order/bloc/merchant_detail_order_bloc.dart';
 import 'package:warunk/app/features/merchant/presentation/ship_order/merchant_ship_order_screen.dart';
 import 'package:warunk/app/features/merchant/presentation/reject_order/merchant_order_reject_screen.dart';
+import 'package:warunk/app/features/merchant/presentation/reject_cancel_order/merchant_reject_cancel_order_screen.dart';
+import 'package:warunk/app/features/merchant/presentation/accept_cancel_order/merchant_accept_cancel_order_screen.dart';
 import 'package:warunk/core/dependency/dependency.dart';
 import 'package:warunk/core/helper/dialog_helper.dart';
 import 'package:warunk/core/widgets/loading_app_widget.dart';
@@ -109,6 +111,8 @@ class MerchantDetailOrderScreen extends StatelessWidget {
       return _buildShipButton(context, order);
     } else if (order.status == OrderStatus.shipped) {
       return _buildReceiveButton(context);
+    } else if (order.status == OrderStatus.waitingCancel) {
+      return _buildApproveRejectCancelButtons(context, order);
     }
     return SizedBox();
   }
@@ -286,6 +290,108 @@ class MerchantDetailOrderScreen extends StatelessWidget {
                 color: GlobalHelper.getColorSchema(context).onPrimary,
               ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildApproveRejectCancelButtons(
+    BuildContext context,
+    MerchantOrderEntity order,
+  ) {
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: GlobalHelper.getColorSchema(context).surface,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 10,
+            offset: const Offset(0, -5),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: OutlinedButton(
+              onPressed: () async {
+                final result = await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder:
+                        (context) => MerchantRejectCancelOrderScreen(
+                          orderId: order.id!,
+                        ),
+                  ),
+                );
+                if (result == true && context.mounted) {
+                  context.read<MerchantDetailOrderBloc>().add(
+                    MerchantDetailOrderEventFetchStarted(order.id!),
+                  );
+                }
+              },
+              style: OutlinedButton.styleFrom(
+                padding: const EdgeInsets.symmetric(vertical: 14),
+                side: BorderSide(
+                  color: GlobalHelper.getColorSchema(context).error,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+              child: Text(
+                'Tolak Pembatalan',
+                style:
+                    GlobalHelper.getTextTheme(
+                      context,
+                      appTextStyle: AppTextStyle.BODY_SMALL,
+                    )?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: GlobalHelper.getColorSchema(context).error,
+                    ),
+              ),
+            ),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: ElevatedButton(
+              onPressed: () async {
+                final result = await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder:
+                        (context) => MerchantAcceptCancelOrderScreen(
+                          orderId: order.id!,
+                        ),
+                  ),
+                );
+                if (result == true && context.mounted) {
+                  context.read<MerchantDetailOrderBloc>().add(
+                    MerchantDetailOrderEventFetchStarted(order.id!),
+                  );
+                }
+              },
+              style: ElevatedButton.styleFrom(
+                padding: const EdgeInsets.symmetric(vertical: 14),
+                backgroundColor: GlobalHelper.getColorSchema(context).primary,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+              child: Text(
+                'Setujui Pembatalan',
+                style:
+                    GlobalHelper.getTextTheme(
+                      context,
+                      appTextStyle: AppTextStyle.BODY_SMALL,
+                    )?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: GlobalHelper.getColorSchema(context).onPrimary,
+                    ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

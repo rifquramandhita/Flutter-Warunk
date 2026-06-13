@@ -7,6 +7,8 @@ import 'package:warunk/app/features/merchant/domain/use_case/merchant_order_rece
 import 'package:warunk/app/features/merchant/domain/use_case/merchant_order_get_by_id_use_case.dart';
 import 'package:warunk/core/network/data_state.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:warunk/app/features/merchant/domain/use_case/merchant_order_accept_cancel_use_case.dart';
+import 'package:warunk/app/features/merchant/domain/use_case/merchant_order_reject_cancel_use_case.dart';
 
 part 'merchant_detail_order_event.dart';
 part 'merchant_detail_order_state.dart';
@@ -17,16 +19,22 @@ class MerchantDetailOrderBloc
   final MerchantOrderAcceptUseCase _acceptUseCase;
   final MerchantOrderRejectUseCase _rejectUseCase;
   final MerchantOrderReceivedUseCase _receivedUseCase;
+  final MerchantOrderAcceptCancelUseCase _acceptCancelUseCase;
+  final MerchantOrderRejectCancelUseCase _rejectCancelUseCase;
 
   MerchantDetailOrderBloc({
     required MerchantOrderGetByIdUseCase getByIdUseCase,
     required MerchantOrderAcceptUseCase acceptUseCase,
     required MerchantOrderRejectUseCase rejectUseCase,
     required MerchantOrderReceivedUseCase receivedUseCase,
+    required MerchantOrderAcceptCancelUseCase acceptCancelUseCase,
+    required MerchantOrderRejectCancelUseCase rejectCancelUseCase,
   }) : _getByIdUseCase = getByIdUseCase,
        _acceptUseCase = acceptUseCase,
        _rejectUseCase = rejectUseCase,
        _receivedUseCase = receivedUseCase,
+       _acceptCancelUseCase = acceptCancelUseCase,
+       _rejectCancelUseCase = rejectCancelUseCase,
        super(const MerchantDetailOrderState()) {
     on<MerchantDetailOrderEventFetchStarted>(_onFetchStarted);
     on<MerchantDetailOrderEventMapsTapped>(_onMapsTapped);

@@ -26,6 +26,33 @@ Map<String, dynamic> _$MerchantOrderRejectParamToJson(
   'runtimeType': instance.$type,
 };
 
+MerchantOrderAcceptCancelParam _$MerchantOrderAcceptCancelParamFromJson(
+  Map<String, dynamic> json,
+) => MerchantOrderAcceptCancelParam(
+  id: json['id'] as String,
+  $type: json['runtimeType'] as String?,
+);
+
+Map<String, dynamic> _$MerchantOrderAcceptCancelParamToJson(
+  MerchantOrderAcceptCancelParam instance,
+) => <String, dynamic>{'id': instance.id, 'runtimeType': instance.$type};
+
+MerchantOrderRejectCancelParam _$MerchantOrderRejectCancelParamFromJson(
+  Map<String, dynamic> json,
+) => MerchantOrderRejectCancelParam(
+  id: json['id'] as String,
+  reason: json['reason'] as String,
+  $type: json['runtimeType'] as String?,
+);
+
+Map<String, dynamic> _$MerchantOrderRejectCancelParamToJson(
+  MerchantOrderRejectCancelParam instance,
+) => <String, dynamic>{
+  'id': instance.id,
+  'reason': instance.reason,
+  'runtimeType': instance.$type,
+};
+
 MerchantOrderEntity _$MerchantOrderEntityFromJson(Map<String, dynamic> json) =>
     MerchantOrderEntity(
       id: json['id'] as String,

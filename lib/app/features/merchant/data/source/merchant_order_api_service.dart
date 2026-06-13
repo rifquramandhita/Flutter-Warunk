@@ -39,4 +39,17 @@ abstract class MerchantOrderApiService {
     @Part(name: 'customer_account_name') String customerAccountName,
     @Part(name: 'refund_proof') File refundProof,
   );
+
+  @MultiPart()
+  @POST('$MERCHANT_ORDERS/{id}/cancel-request/accept')
+  Future<HttpResponse<dynamic>> acceptCancelOrder(
+    @Path('id') String id,
+    @Part(name: 'refund_proof') File refundProof,
+  );
+
+  @POST('$MERCHANT_ORDERS/{id}/cancel-request/reject')
+  Future<HttpResponse<dynamic>> rejectCancelOrder(
+    @Path('id') String id,
+    @Body() Map<String, dynamic> body,
+  );
 }
