@@ -113,7 +113,10 @@ class MerchantDetailOrderScreen extends StatelessWidget {
     return SizedBox();
   }
 
-  Widget _buildAcceptRejectButtons(BuildContext context, MerchantOrderEntity order) {
+  Widget _buildAcceptRejectButtons(
+    BuildContext context,
+    MerchantOrderEntity order,
+  ) {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -286,8 +289,6 @@ class MerchantDetailOrderScreen extends StatelessWidget {
       ),
     );
   }
-
-
 
   AppBar _buildAppBar(BuildContext context) {
     return AppBar(title: const Text('Detail Order'));
@@ -772,7 +773,7 @@ class MerchantDetailOrderScreen extends StatelessWidget {
                     SizedBox(
                       width: 70,
                       child: Text(
-                        NumberHelper.formatIDR((item.total ?? 0).toInt()),
+                        NumberHelper.formatIDR(item.price ?? 0),
                         textAlign: TextAlign.right,
                         style:
                             GlobalHelper.getTextTheme(
@@ -834,34 +835,34 @@ class MerchantDetailOrderScreen extends StatelessWidget {
           _buildInfoRow(
             context,
             'Subtotal',
-            NumberHelper.formatIDR((order.subtotal ?? 0).toInt()),
+            NumberHelper.formatIDR(order.subtotal ?? 0),
           ),
           const SizedBox(height: 8),
           _buildInfoRow(
             context,
             'Ongkir',
-            NumberHelper.formatIDR((order.shippingCost ?? 0).toInt()),
+            NumberHelper.formatIDR(order.shippingCost ?? 0),
           ),
           const SizedBox(height: 8),
           _buildInfoRow(
             context,
             'Biaya Layanan',
-            NumberHelper.formatIDR((order.serviceFee ?? 0).toInt()),
+            NumberHelper.formatIDR(order.serviceFee ?? 0),
           ),
-          const SizedBox(height: 8),
-          _buildInfoRow(context, 'Promo', '-'),
-          const SizedBox(height: 8),
-          _buildInfoRow(
-            context,
-            'Diskon Promo',
-            NumberHelper.formatIDR(0),
-            isRed: true,
-          ),
+          if ((order.promotionDiscount ?? 0) > 0) ...[
+            const SizedBox(height: 12),
+            _buildInfoRow(
+              context,
+              'Diskon',
+              '-${NumberHelper.formatIDR(order.promotionDiscount ?? 0)}',
+              isRed: true,
+            ),
+          ],
           const SizedBox(height: 8),
           _buildInfoRow(
             context,
             'Total',
-            NumberHelper.formatIDR((order.total ?? 0).toInt()),
+            NumberHelper.formatIDR(order.total ?? 0),
             isBold: true,
           ),
           const SizedBox(height: 8),
