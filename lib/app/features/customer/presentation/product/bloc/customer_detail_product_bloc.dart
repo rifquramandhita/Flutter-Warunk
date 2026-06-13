@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:warunk/app/features/customer/domain/entity/customer_wishlist.dart';
 import 'package:warunk/app/features/customer/domain/use_case/customer_wishlist_add_use_case.dart';
+import 'package:warunk/app/features/customer/domain/use_case/customer_wishlist_remove_use_case.dart';
 import 'package:warunk/app/features/customer/domain/entity/customer_product_variant.dart';
 import 'package:warunk/app/features/customer/domain/entity/customer_cart_add_param.dart';
 import 'package:warunk/app/features/customer/domain/use_case/customer_cart_add_use_case.dart';
@@ -14,20 +15,24 @@ class CustomerDetailProductBloc
   final CustomerProductGetByIdUseCase _useCase;
   final CustomerCartAddUseCase _addCartUseCase;
   final CustomerWishlistAddUseCase _addWishlistUseCase;
+  final CustomerWishlistRemoveUseCase _removeWishlistUseCase;
 
   CustomerDetailProductBloc({
     required CustomerProductGetByIdUseCase useCase,
     required CustomerCartAddUseCase addCartUseCase,
     required CustomerWishlistAddUseCase addWishlistUseCase,
+    required CustomerWishlistRemoveUseCase removeWishlistUseCase,
   }) : _useCase = useCase,
        _addCartUseCase = addCartUseCase,
        _addWishlistUseCase = addWishlistUseCase,
+       _removeWishlistUseCase = removeWishlistUseCase,
        super(const CustomerDetailProductState()) {
     on<CustomerDetailProductEventStarted>(_onStarted);
     on<CustomerDetailProductEventQuantityChanged>(_onQuantityChanged);
     on<CustomerDetailProductEventVariantChanged>(_onVariantChanged);
     on<CustomerDetailProductEventAddToCart>(_onAddToCart);
     on<CustomerDetailProductEventAddToWishlist>(_onAddToWishlist);
+    on<CustomerDetailProductEventRemoveFromWishlist>(_onRemoveFromWishlist);
   }
 
   Future<void> _onStarted(
@@ -58,11 +63,7 @@ class CustomerDetailProductBloc
         ),
       );
     } else {
-      emit(
-        state.copyWith(
-          errorMessage: response.message ?? 'Gagal memuat detail produk',
-        ),
-      );
+      emit(state.copyWith(errorMessage: response.message));
     }
 
     emit(state.copyWith(isLoading: false));
@@ -151,6 +152,27 @@ class CustomerDetailProductBloc
 
     if (response is SuccessState) {
       emit(state.copyWith(isLoading: false, isWishlistSuccess: true));
+      add(
+        CustomerDetailProductEventStarted(productId: state.product?.id ?? ''),
+      );
+    } else {
+      emit(state.copyWith(isLoading: false, errorMessage: response.message));
+    }
+  }
+
+  Future<void> _onRemoveFromWishlist(
+    CustomerDetailProductEventRemoveFromWishlist event,
+    Emitter<CustomerDetailProductState> emit,
+  ) async {
+    final product = state.product;
+    if (product == null) return;
+
+    emit(state.copyWith(isLoading: true));
+
+    final response = await _removeWishlistUseCase.call(product.id);
+
+    if (response is SuccessState) {
+      emit(state.copyWith(isLoading: false, isWishlistRemoveSuccess: true));
       add(
         CustomerDetailProductEventStarted(productId: state.product?.id ?? ''),
       );

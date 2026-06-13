@@ -17,4 +17,12 @@ class CustomerWishlistRepositoryImpl implements CustomerWishlistRepository {
       (json) => json,
     );
   }
+
+  @override
+  Future<DataState<dynamic>> removeWishlist(String productId) {
+    return handleResponse(
+      () => _apiService.removeWishlist(productId),
+      (json) => json,
+    );
+  }
 }

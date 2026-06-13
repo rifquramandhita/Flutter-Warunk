@@ -48,3 +48,7 @@ class CustomerDetailProductEventAddToCart extends CustomerDetailProductEvent {
 class CustomerDetailProductEventAddToWishlist extends CustomerDetailProductEvent {
   const CustomerDetailProductEventAddToWishlist();
 }
+
+class CustomerDetailProductEventRemoveFromWishlist extends CustomerDetailProductEvent {
+  const CustomerDetailProductEventRemoveFromWishlist();
+}

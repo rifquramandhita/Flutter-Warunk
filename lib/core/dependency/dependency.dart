@@ -149,6 +149,7 @@ import 'package:warunk/app/features/customer/data/source/customer_wishlist_api_s
 import 'package:warunk/app/features/customer/domain/repository/customer_wishlist_repository.dart';
 import 'package:warunk/app/features/customer/data/repository/customer_wishlist_repository_impl.dart';
 import 'package:warunk/app/features/customer/domain/use_case/customer_wishlist_add_use_case.dart';
+import 'package:warunk/app/features/customer/domain/use_case/customer_wishlist_remove_use_case.dart';
 
 final sl = GetIt.instance;
 
@@ -327,6 +328,7 @@ Future<void> initDependency() async {
   sl.registerLazySingleton(() => CustomerOrderCompleteUseCase(sl()));
   sl.registerLazySingleton(() => CustomerOrderCancelUseCase(sl()));
   sl.registerLazySingleton(() => CustomerWishlistAddUseCase(repository: sl()));
+  sl.registerLazySingleton(() => CustomerWishlistRemoveUseCase(repository: sl()));
   //bloc
   sl.registerLazySingleton(() => AuthBloc());
   sl.registerFactory(() => AuthLoginBloc(authBloc: sl(), useCase: sl()));
@@ -387,6 +389,7 @@ Future<void> initDependency() async {
       useCase: sl(),
       addCartUseCase: sl(),
       addWishlistUseCase: sl(),
+      removeWishlistUseCase: sl(),
     ),
   );
   sl.registerFactory(() => MerchantProfilBloc(useCase: sl()));

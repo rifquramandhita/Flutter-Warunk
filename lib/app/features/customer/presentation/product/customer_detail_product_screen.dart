@@ -39,11 +39,16 @@ class CustomerDetailProductScreen extends StatelessWidget {
                   context: context,
                   text: 'Berhasil menambahkan ke wishlist',
                 );
+              } else if (state.isWishlistRemoveSuccess) {
+                DialogHelper.showSnackBar(
+                  context: context,
+                  text: 'Berhasil menghapus dari wishlist',
+                );
               }
             },
             builder: (context, state) {
               return Scaffold(
-                appBar: _appBarBuild(context),
+                appBar: _appBarBuild(context, state),
                 body: _bodyBuild(context),
               );
             },
@@ -51,23 +56,28 @@ class CustomerDetailProductScreen extends StatelessWidget {
     );
   }
 
-  AppBar _appBarBuild(BuildContext context) {
-    final state = context.read<CustomerDetailProductBloc>().state;
+  AppBar _appBarBuild(BuildContext context, CustomerDetailProductState state) {
+    final isWishlisted = state.product?.isWishlisted ?? false;
     return AppBar(
-      title: Text('Detail Produk'),
+      title: const Text('Detail Produk'),
       actions: [
         IconButton(
           padding: EdgeInsets.zero,
           icon: Icon(
-            (state.product?.isWishlisted ?? false)
-                ? Icons.favorite_rounded
-                : Icons.favorite_border_rounded,
+            isWishlisted ? Icons.favorite_rounded : Icons.favorite_border_rounded,
             size: 20,
+            color: isWishlisted ? Colors.red : null,
           ),
           onPressed: () {
-            context.read<CustomerDetailProductBloc>().add(
-              const CustomerDetailProductEventAddToWishlist(),
-            );
+            if (isWishlisted) {
+              context.read<CustomerDetailProductBloc>().add(
+                const CustomerDetailProductEventRemoveFromWishlist(),
+              );
+            } else {
+              context.read<CustomerDetailProductBloc>().add(
+                const CustomerDetailProductEventAddToWishlist(),
+              );
+            }
           },
         ),
       ],

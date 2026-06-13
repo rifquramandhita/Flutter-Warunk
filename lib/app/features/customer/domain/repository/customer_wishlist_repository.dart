@@ -3,4 +3,5 @@ import 'package:warunk/core/network/data_state.dart';
 
 abstract class CustomerWishlistRepository {
   Future<DataState<dynamic>> addWishlist(CustomerWishlistAddParam param);
+  Future<DataState<dynamic>> removeWishlist(String productId);
 }

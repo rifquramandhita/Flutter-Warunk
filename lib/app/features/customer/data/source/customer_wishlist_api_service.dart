@@ -9,4 +9,7 @@ abstract class CustomerWishlistApiService {
 
   @POST('/api/wishlists')
   Future<HttpResponse<dynamic>> addWishlist(@Body() Map<String, dynamic> body);
+
+  @DELETE('/api/wishlists')
+  Future<HttpResponse<dynamic>> removeWishlist(@Query('product_id') String productId);
 }
