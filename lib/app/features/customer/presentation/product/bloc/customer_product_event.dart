@@ -1,13 +1,13 @@
 import 'package:equatable/equatable.dart';
 
-sealed class CustomerDetailProductEvent extends Equatable {
-  const CustomerDetailProductEvent();
+sealed class CustomerProductEvent extends Equatable {
+  const CustomerProductEvent();
 
   @override
   List<Object?> get props => [];
 }
 
-class CustomerDetailProductEventStarted extends CustomerDetailProductEvent {
+class CustomerDetailProductEventStarted extends CustomerProductEvent {
   final String productId;
 
   const CustomerDetailProductEventStarted({required this.productId});
@@ -16,8 +16,7 @@ class CustomerDetailProductEventStarted extends CustomerDetailProductEvent {
   List<Object?> get props => [productId];
 }
 
-class CustomerDetailProductEventQuantityChanged
-    extends CustomerDetailProductEvent {
+class CustomerDetailProductEventQuantityChanged extends CustomerProductEvent {
   final int quantity;
 
   const CustomerDetailProductEventQuantityChanged(this.quantity);
@@ -26,8 +25,7 @@ class CustomerDetailProductEventQuantityChanged
   List<Object?> get props => [quantity];
 }
 
-class CustomerDetailProductEventVariantChanged
-    extends CustomerDetailProductEvent {
+class CustomerDetailProductEventVariantChanged extends CustomerProductEvent {
   final Map<String, String> selectedCombination;
 
   const CustomerDetailProductEventVariantChanged(this.selectedCombination);
@@ -36,7 +34,7 @@ class CustomerDetailProductEventVariantChanged
   List<Object?> get props => [selectedCombination];
 }
 
-class CustomerDetailProductEventAddToCart extends CustomerDetailProductEvent {
+class CustomerDetailProductEventAddToCart extends CustomerProductEvent {
   final String? notes;
 
   const CustomerDetailProductEventAddToCart({this.notes});
@@ -45,10 +43,11 @@ class CustomerDetailProductEventAddToCart extends CustomerDetailProductEvent {
   List<Object?> get props => [notes];
 }
 
-class CustomerDetailProductEventAddToWishlist extends CustomerDetailProductEvent {
+class CustomerDetailProductEventAddToWishlist extends CustomerProductEvent {
   const CustomerDetailProductEventAddToWishlist();
 }
 
-class CustomerDetailProductEventRemoveFromWishlist extends CustomerDetailProductEvent {
+class CustomerDetailProductEventRemoveFromWishlist
+    extends CustomerProductEvent {
   const CustomerDetailProductEventRemoveFromWishlist();
 }

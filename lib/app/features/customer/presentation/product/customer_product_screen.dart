@@ -4,88 +4,63 @@ import 'package:warunk/core/dependency/dependency.dart';
 import 'package:warunk/core/helper/dialog_helper.dart';
 import 'package:warunk/core/helper/global_helper.dart';
 import 'package:warunk/core/widgets/loading_app_widget.dart';
-import 'package:warunk/app/features/customer/presentation/product/bloc/customer_detail_product_bloc.dart';
-import 'package:warunk/app/features/customer/presentation/product/bloc/customer_detail_product_event.dart';
-import 'package:warunk/app/features/customer/presentation/product/bloc/customer_detail_product_state.dart';
+import 'package:warunk/app/features/customer/presentation/product/bloc/customer_product_bloc.dart';
+import 'package:warunk/app/features/customer/presentation/product/bloc/customer_product_event.dart';
+import 'package:warunk/app/features/customer/presentation/product/bloc/customer_product_state.dart';
 import 'package:warunk/main.dart';
 
-class CustomerDetailProductScreen extends StatelessWidget {
+class CustomerProductScreen extends StatelessWidget {
   final String productId;
 
-  const CustomerDetailProductScreen({super.key, required this.productId});
+  const CustomerProductScreen({super.key, required this.productId});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) =>
-          sl<CustomerDetailProductBloc>()
+          sl<CustomerProductBloc>()
             ..add(CustomerDetailProductEventStarted(productId: productId)),
-      child:
-          BlocConsumer<CustomerDetailProductBloc, CustomerDetailProductState>(
-            listener: (context, state) {
-              if (state.errorMessage != null) {
-                DialogHelper.showErrorSnackBar(
-                  context: context,
-                  text: state.errorMessage!,
-                );
-              } else if (state.isSuccess) {
-                DialogHelper.showSnackBar(
-                  context: context,
-                  text: 'Berhasil menambahkan ke keranjang',
-                );
-                navigatorKey.currentState?.pop();
-              } else if (state.isWishlistSuccess) {
-                DialogHelper.showSnackBar(
-                  context: context,
-                  text: 'Berhasil menambahkan ke wishlist',
-                );
-              } else if (state.isWishlistRemoveSuccess) {
-                DialogHelper.showSnackBar(
-                  context: context,
-                  text: 'Berhasil menghapus dari wishlist',
-                );
-              }
-            },
-            builder: (context, state) {
-              return Scaffold(
-                appBar: _appBarBuild(context, state),
-                body: _bodyBuild(context),
-              );
-            },
-          ),
+      child: BlocConsumer<CustomerProductBloc, CustomerProductState>(
+        listener: (context, state) {
+          if (state.errorMessage != null) {
+            DialogHelper.showErrorSnackBar(
+              context: context,
+              text: state.errorMessage!,
+            );
+          } else if (state.isSuccess) {
+            DialogHelper.showSnackBar(
+              context: context,
+              text: 'Berhasil menambahkan ke keranjang',
+            );
+            navigatorKey.currentState?.pop();
+          } else if (state.isWishlistSuccess) {
+            DialogHelper.showSnackBar(
+              context: context,
+              text: 'Berhasil menambahkan ke wishlist',
+            );
+          } else if (state.isWishlistRemoveSuccess) {
+            DialogHelper.showSnackBar(
+              context: context,
+              text: 'Berhasil menghapus dari wishlist',
+            );
+          }
+        },
+        builder: (context, state) {
+          return Scaffold(
+            appBar: _appBarBuild(context, state),
+            body: _bodyBuild(context),
+          );
+        },
+      ),
     );
   }
 
-  AppBar _appBarBuild(BuildContext context, CustomerDetailProductState state) {
-    final isWishlisted = state.product?.isWishlisted ?? false;
-    return AppBar(
-      title: const Text('Detail Produk'),
-      actions: [
-        IconButton(
-          padding: EdgeInsets.zero,
-          icon: Icon(
-            isWishlisted ? Icons.favorite_rounded : Icons.favorite_border_rounded,
-            size: 20,
-            color: isWishlisted ? Colors.red : null,
-          ),
-          onPressed: () {
-            if (isWishlisted) {
-              context.read<CustomerDetailProductBloc>().add(
-                const CustomerDetailProductEventRemoveFromWishlist(),
-              );
-            } else {
-              context.read<CustomerDetailProductBloc>().add(
-                const CustomerDetailProductEventAddToWishlist(),
-              );
-            }
-          },
-        ),
-      ],
-    );
+  AppBar _appBarBuild(BuildContext context, CustomerProductState state) {
+    return AppBar(title: const Text('Detail Produk'));
   }
 
   Widget _bodyBuild(BuildContext context) {
-    final state = context.watch<CustomerDetailProductBloc>().state;
+    final state = context.watch<CustomerProductBloc>().state;
     return SafeArea(
       child: Stack(
         children: [
@@ -97,7 +72,7 @@ class CustomerDetailProductScreen extends StatelessWidget {
   }
 
   Widget _bodyLayout(BuildContext context) {
-    final state = context.watch<CustomerDetailProductBloc>().state;
+    final state = context.watch<CustomerProductBloc>().state;
     final product = state.product;
     final noteCtrl = TextEditingController();
 
@@ -195,6 +170,8 @@ class CustomerDetailProductScreen extends StatelessWidget {
   }
 
   Widget _infoLayout(BuildContext context, dynamic product, String price) {
+    final state = context.read<CustomerProductBloc>().state;
+    final isWishlisted = state.product?.isWishlisted ?? false;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -253,6 +230,29 @@ class CustomerDetailProductScreen extends StatelessWidget {
                     color: GlobalHelper.getColorSchema(context).onSurface,
                   ),
             ),
+            Spacer(),
+
+            IconButton(
+              padding: EdgeInsets.zero,
+              icon: Icon(
+                isWishlisted
+                    ? Icons.favorite_rounded
+                    : Icons.favorite_border_rounded,
+                size: 20,
+                color: isWishlisted ? Colors.red : null,
+              ),
+              onPressed: () {
+                if (isWishlisted) {
+                  context.read<CustomerProductBloc>().add(
+                    const CustomerDetailProductEventRemoveFromWishlist(),
+                  );
+                } else {
+                  context.read<CustomerProductBloc>().add(
+                    const CustomerDetailProductEventAddToWishlist(),
+                  );
+                }
+              },
+            ),
           ],
         ),
         const SizedBox(height: 10),
@@ -310,7 +310,7 @@ class CustomerDetailProductScreen extends StatelessWidget {
     BuildContext context,
     Map<String, Set<String>> dimensions,
   ) {
-    final state = context.watch<CustomerDetailProductBloc>().state;
+    final state = context.watch<CustomerProductBloc>().state;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -344,7 +344,7 @@ class CustomerDetailProductScreen extends StatelessWidget {
                         state.selectedVariantCombination ?? {},
                       );
                       currentCombo[dimensionName] = value;
-                      context.read<CustomerDetailProductBloc>().add(
+                      context.read<CustomerProductBloc>().add(
                         CustomerDetailProductEventVariantChanged(currentCombo),
                       );
                     },
@@ -402,7 +402,7 @@ class CustomerDetailProductScreen extends StatelessWidget {
   }
 
   Widget _quantityLayout(BuildContext context) {
-    final state = context.watch<CustomerDetailProductBloc>().state;
+    final state = context.watch<CustomerProductBloc>().state;
     final product = state.product;
 
     int maxStock = 0;
@@ -437,7 +437,7 @@ class CustomerDetailProductScreen extends StatelessWidget {
                   Icons.remove,
                   state.quantity > 1
                       ? () {
-                          context.read<CustomerDetailProductBloc>().add(
+                          context.read<CustomerProductBloc>().add(
                             CustomerDetailProductEventQuantityChanged(
                               state.quantity - 1,
                             ),
@@ -465,7 +465,7 @@ class CustomerDetailProductScreen extends StatelessWidget {
                   Icons.add,
                   state.quantity < maxStock
                       ? () {
-                          context.read<CustomerDetailProductBloc>().add(
+                          context.read<CustomerProductBloc>().add(
                             CustomerDetailProductEventQuantityChanged(
                               state.quantity + 1,
                             ),
@@ -633,7 +633,7 @@ class CustomerDetailProductScreen extends StatelessWidget {
               child: ElevatedButton.icon(
                 onPressed: () {
                   final notes = noteCtrl.text.trim();
-                  context.read<CustomerDetailProductBloc>().add(
+                  context.read<CustomerProductBloc>().add(
                     CustomerDetailProductEventAddToCart(
                       notes: notes.isNotEmpty ? notes : null,
                     ),

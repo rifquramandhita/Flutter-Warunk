@@ -29,7 +29,7 @@ import 'package:warunk/app/features/customer/presentation/address/bloc/customer_
 import 'package:warunk/app/features/customer/presentation/input_address/bloc/customer_input_address_bloc.dart';
 import 'package:warunk/app/features/customer/presentation/search/bloc/customer_search_bloc.dart';
 import 'package:warunk/app/features/customer/presentation/store/bloc/customer_merchant_bloc.dart';
-import 'package:warunk/app/features/customer/presentation/product/bloc/customer_detail_product_bloc.dart';
+import 'package:warunk/app/features/customer/presentation/product/bloc/customer_product_bloc.dart';
 import 'package:warunk/app/features/customer/presentation/order/bloc/customer_order_bloc.dart';
 import 'package:warunk/app/features/customer/domain/use_case/customer_product_get_by_id_use_case.dart';
 import 'package:warunk/app/features/auth/presentation/login/bloc/auth_login_bloc.dart';
@@ -328,7 +328,9 @@ Future<void> initDependency() async {
   sl.registerLazySingleton(() => CustomerOrderCompleteUseCase(sl()));
   sl.registerLazySingleton(() => CustomerOrderCancelUseCase(sl()));
   sl.registerLazySingleton(() => CustomerWishlistAddUseCase(repository: sl()));
-  sl.registerLazySingleton(() => CustomerWishlistRemoveUseCase(repository: sl()));
+  sl.registerLazySingleton(
+    () => CustomerWishlistRemoveUseCase(repository: sl()),
+  );
   //bloc
   sl.registerLazySingleton(() => AuthBloc());
   sl.registerFactory(() => AuthLoginBloc(authBloc: sl(), useCase: sl()));
@@ -385,7 +387,7 @@ Future<void> initDependency() async {
     ),
   );
   sl.registerFactory(
-    () => CustomerDetailProductBloc(
+    () => CustomerProductBloc(
       useCase: sl(),
       addCartUseCase: sl(),
       addWishlistUseCase: sl(),
@@ -437,13 +439,20 @@ Future<void> initDependency() async {
     (orderId, _) => MerchantShipOrderBloc(shipUseCase: sl(), orderId: orderId),
   );
   sl.registerFactoryParam<MerchantRejectOrderBloc, String, void>(
-    (orderId, _) => MerchantRejectOrderBloc(rejectUseCase: sl(), orderId: orderId),
+    (orderId, _) =>
+        MerchantRejectOrderBloc(rejectUseCase: sl(), orderId: orderId),
   );
   sl.registerFactoryParam<MerchantRejectCancelOrderBloc, String, void>(
-    (orderId, _) => MerchantRejectCancelOrderBloc(rejectCancelUseCase: sl(), orderId: orderId),
+    (orderId, _) => MerchantRejectCancelOrderBloc(
+      rejectCancelUseCase: sl(),
+      orderId: orderId,
+    ),
   );
   sl.registerFactoryParam<MerchantAcceptCancelOrderBloc, String, void>(
-    (orderId, _) => MerchantAcceptCancelOrderBloc(acceptCancelUseCase: sl(), orderId: orderId),
+    (orderId, _) => MerchantAcceptCancelOrderBloc(
+      acceptCancelUseCase: sl(),
+      orderId: orderId,
+    ),
   );
   sl.registerFactory(() => CustomerOrderSuccessBloc(getOrderByIdUseCase: sl()));
   sl.registerFactory(() => CustomerReviewOrderBloc(sl()));

@@ -3,7 +3,7 @@ import 'package:warunk/app/features/customer/domain/entity/customer_product.dart
 import 'package:warunk/core/dependency/dependency.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:warunk/app/features/customer/presentation/cart/customer_cart_screen.dart';
-import 'package:warunk/app/features/customer/presentation/product/customer_detail_product_screen.dart';
+import 'package:warunk/app/features/customer/presentation/product/customer_product_screen.dart';
 import 'package:warunk/app/features/customer/presentation/store/bloc/customer_merchant_bloc.dart';
 import 'package:warunk/app/features/customer/presentation/store/bloc/customer_merchant_event.dart';
 import 'package:warunk/app/features/customer/presentation/store/bloc/customer_merchant_state.dart';
@@ -620,7 +620,7 @@ class CustomerMerchantScreen extends StatelessWidget {
   void _onPressItem(BuildContext context, CustomerProductEntity item) async {
     await navigatorKey.currentState?.push(
       MaterialPageRoute(
-        builder: (_) => CustomerDetailProductScreen(productId: item.id),
+        builder: (_) => CustomerProductScreen(productId: item.id),
       ),
     );
     context.read<CustomerMerchantBloc>().add(

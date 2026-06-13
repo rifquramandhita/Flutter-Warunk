@@ -2,7 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:warunk/app/features/customer/domain/entity/customer_product.dart';
 import 'package:warunk/app/features/customer/domain/entity/customer_product_variant.dart';
 
-class CustomerDetailProductState extends Equatable {
+class CustomerProductState extends Equatable {
   final bool isLoading;
   final String? errorMessage;
   final CustomerProductEntity? product;
@@ -13,7 +13,7 @@ class CustomerDetailProductState extends Equatable {
   final bool isWishlistSuccess;
   final bool isWishlistRemoveSuccess;
 
-  const CustomerDetailProductState({
+  const CustomerProductState({
     this.isLoading = false,
     this.errorMessage,
     this.product,
@@ -25,7 +25,7 @@ class CustomerDetailProductState extends Equatable {
     this.isWishlistRemoveSuccess = false,
   });
 
-  CustomerDetailProductState copyWith({
+  CustomerProductState copyWith({
     bool? isLoading,
     String? errorMessage,
     CustomerProductEntity? product,
@@ -36,7 +36,7 @@ class CustomerDetailProductState extends Equatable {
     bool? isWishlistSuccess,
     bool? isWishlistRemoveSuccess,
   }) {
-    return CustomerDetailProductState(
+    return CustomerProductState(
       isLoading: isLoading ?? this.isLoading,
       errorMessage: errorMessage,
       product: product ?? this.product,

@@ -11,7 +11,7 @@ import 'package:warunk/core/widgets/loading_app_widget.dart';
 import 'package:warunk/core/widgets/primary_button.dart';
 import 'package:warunk/main.dart';
 import 'package:warunk/app/features/customer/presentation/store/customer_merchant_screen.dart';
-import 'package:warunk/app/features/customer/presentation/product/customer_detail_product_screen.dart';
+import 'package:warunk/app/features/customer/presentation/product/customer_product_screen.dart';
 
 class CustomerCartScreen extends StatelessWidget {
   const CustomerCartScreen({super.key});
@@ -627,7 +627,7 @@ class CustomerCartScreen extends StatelessWidget {
     }
     await navigatorKey.currentState?.push(
       MaterialPageRoute(
-        builder: (_) => CustomerDetailProductScreen(productId: productId),
+        builder: (_) => CustomerProductScreen(productId: productId),
       ),
     );
     context.read<CustomerCartBloc>().add(CustomerCartEventGet());

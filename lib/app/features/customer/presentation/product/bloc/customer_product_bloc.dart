@@ -7,17 +7,17 @@ import 'package:warunk/app/features/customer/domain/entity/customer_cart_add_par
 import 'package:warunk/app/features/customer/domain/use_case/customer_cart_add_use_case.dart';
 import 'package:warunk/app/features/customer/domain/use_case/customer_product_get_by_id_use_case.dart';
 import 'package:warunk/core/network/data_state.dart';
-import 'customer_detail_product_event.dart';
-import 'customer_detail_product_state.dart';
+import 'customer_product_event.dart';
+import 'customer_product_state.dart';
 
-class CustomerDetailProductBloc
-    extends Bloc<CustomerDetailProductEvent, CustomerDetailProductState> {
+class CustomerProductBloc
+    extends Bloc<CustomerProductEvent, CustomerProductState> {
   final CustomerProductGetByIdUseCase _useCase;
   final CustomerCartAddUseCase _addCartUseCase;
   final CustomerWishlistAddUseCase _addWishlistUseCase;
   final CustomerWishlistRemoveUseCase _removeWishlistUseCase;
 
-  CustomerDetailProductBloc({
+  CustomerProductBloc({
     required CustomerProductGetByIdUseCase useCase,
     required CustomerCartAddUseCase addCartUseCase,
     required CustomerWishlistAddUseCase addWishlistUseCase,
@@ -26,7 +26,7 @@ class CustomerDetailProductBloc
        _addCartUseCase = addCartUseCase,
        _addWishlistUseCase = addWishlistUseCase,
        _removeWishlistUseCase = removeWishlistUseCase,
-       super(const CustomerDetailProductState()) {
+       super(const CustomerProductState()) {
     on<CustomerDetailProductEventStarted>(_onStarted);
     on<CustomerDetailProductEventQuantityChanged>(_onQuantityChanged);
     on<CustomerDetailProductEventVariantChanged>(_onVariantChanged);
@@ -37,7 +37,7 @@ class CustomerDetailProductBloc
 
   Future<void> _onStarted(
     CustomerDetailProductEventStarted event,
-    Emitter<CustomerDetailProductState> emit,
+    Emitter<CustomerProductState> emit,
   ) async {
     emit(state.copyWith(isLoading: true, errorMessage: null));
 
@@ -71,7 +71,7 @@ class CustomerDetailProductBloc
 
   void _onQuantityChanged(
     CustomerDetailProductEventQuantityChanged event,
-    Emitter<CustomerDetailProductState> emit,
+    Emitter<CustomerProductState> emit,
   ) {
     if (event.quantity > 0) {
       final product = state.product;
@@ -105,7 +105,7 @@ class CustomerDetailProductBloc
 
   Future<void> _onAddToCart(
     CustomerDetailProductEventAddToCart event,
-    Emitter<CustomerDetailProductState> emit,
+    Emitter<CustomerProductState> emit,
   ) async {
     final product = state.product;
     if (product == null) return;
@@ -140,7 +140,7 @@ class CustomerDetailProductBloc
 
   Future<void> _onAddToWishlist(
     CustomerDetailProductEventAddToWishlist event,
-    Emitter<CustomerDetailProductState> emit,
+    Emitter<CustomerProductState> emit,
   ) async {
     final product = state.product;
     if (product == null) return;
@@ -162,7 +162,7 @@ class CustomerDetailProductBloc
 
   Future<void> _onRemoveFromWishlist(
     CustomerDetailProductEventRemoveFromWishlist event,
-    Emitter<CustomerDetailProductState> emit,
+    Emitter<CustomerProductState> emit,
   ) async {
     final product = state.product;
     if (product == null) return;
@@ -183,7 +183,7 @@ class CustomerDetailProductBloc
 
   void _onVariantChanged(
     CustomerDetailProductEventVariantChanged event,
-    Emitter<CustomerDetailProductState> emit,
+    Emitter<CustomerProductState> emit,
   ) {
     final product = state.product;
     if (product == null || product.variants == null) return;
