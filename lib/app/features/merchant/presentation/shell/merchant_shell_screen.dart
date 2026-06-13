@@ -59,7 +59,7 @@ class MerchantShellScreen extends StatelessWidget {
                     Icons.receipt_long_rounded,
                     color: AppColors.primary,
                   ),
-                  label: 'Order',
+                  label: 'Pesanan',
                 ),
                 NavigationDestination(
                   icon: Icon(Icons.campaign_outlined),
