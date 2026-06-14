@@ -25,7 +25,24 @@ class AuthRegisterScreen extends StatelessWidget {
               text: state.errorMessage!,
             );
           } else if (state.isSuccess) {
-            navigatorKey.currentState?.pop();
+            DialogHelper.showBottomSheetDialog(
+              canDismiss: false,
+              context: context,
+              title: 'Sukses',
+              content: Column(
+                children: [
+                  Text('Silahkan cek inbox email untuk verifikasi email.'),
+                  SizedBox(height: 16),
+                  PrimaryButton(
+                    label: 'Tutup',
+                    onPressed: () {
+                      navigatorKey.currentState?.pop();
+                      navigatorKey.currentState?.pop();
+                    },
+                  ),
+                ],
+              ),
+            );
           }
         },
         builder: (context, state) {
