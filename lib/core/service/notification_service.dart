@@ -24,7 +24,7 @@ class NotificationService {
         FlutterLocalNotificationsPlugin();
 
     const AndroidInitializationSettings initializationSettingsAndroid =
-        AndroidInitializationSettings('@mipmap/ic_launcher');
+        AndroidInitializationSettings('@drawable/ic_notification');
 
     const DarwinInitializationSettings initializationSettingsIOS =
         DarwinInitializationSettings(
@@ -65,7 +65,7 @@ class NotificationService {
             android: AndroidNotificationDetails(
               'channel_id',
               'channel_name',
-              icon: '@mipmap/ic_launcher',
+              icon: '@drawable/ic_notification',
             ),
           ),
           payload: jsonEncode(message.data),
