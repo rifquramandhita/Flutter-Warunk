@@ -208,6 +208,7 @@ class MerchantDetailOrderScreen extends StatelessWidget {
   Widget _buildShipButton(BuildContext context, MerchantOrderEntity order) {
     return Container(
       padding: const EdgeInsets.all(20),
+      width: double.maxFinite,
       decoration: BoxDecoration(
         color: GlobalHelper.getColorSchema(context).surface,
         boxShadow: [
@@ -318,10 +319,8 @@ class MerchantDetailOrderScreen extends StatelessWidget {
                 final result = await Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder:
-                        (context) => MerchantRejectCancelOrderScreen(
-                          orderId: order.id!,
-                        ),
+                    builder: (context) =>
+                        MerchantRejectCancelOrderScreen(orderId: order.id!),
                   ),
                 );
                 if (result == true && context.mounted) {
@@ -359,10 +358,8 @@ class MerchantDetailOrderScreen extends StatelessWidget {
                 final result = await Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder:
-                        (context) => MerchantAcceptCancelOrderScreen(
-                          orderId: order.id!,
-                        ),
+                    builder: (context) =>
+                        MerchantAcceptCancelOrderScreen(orderId: order.id!),
                   ),
                 );
                 if (result == true && context.mounted) {
