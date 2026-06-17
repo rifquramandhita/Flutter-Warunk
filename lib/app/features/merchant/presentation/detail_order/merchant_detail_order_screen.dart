@@ -256,6 +256,7 @@ class MerchantDetailOrderScreen extends StatelessWidget {
 
   Widget _buildReceiveButton(BuildContext context) {
     return Container(
+      width: double.maxFinite,
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: GlobalHelper.getColorSchema(context).surface,
