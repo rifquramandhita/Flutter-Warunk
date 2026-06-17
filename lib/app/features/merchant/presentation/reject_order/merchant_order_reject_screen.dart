@@ -8,6 +8,9 @@ import 'package:warunk/core/dependency/dependency.dart';
 import 'package:warunk/core/helper/dialog_helper.dart';
 import 'package:warunk/core/helper/global_helper.dart';
 import 'package:warunk/core/widgets/loading_app_widget.dart';
+import 'package:warunk/core/widgets/error_button.dart';
+import 'package:warunk/core/widgets/outline_button_custom.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class MerchantOrderRejectScreen extends StatelessWidget {
   final String orderId;
@@ -196,26 +199,25 @@ class MerchantOrderRejectScreen extends StatelessWidget {
           decoration: BoxDecoration(
             color: GlobalHelper.getColorSchema(context).surface,
           ),
-          child: ElevatedButton(
-            onPressed: state.isLoading ? null : () => _submit(context, state),
-            style: ElevatedButton.styleFrom(
-              padding: const EdgeInsets.symmetric(vertical: 14),
-              backgroundColor: GlobalHelper.getColorSchema(context).error,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              OutlineButtonCustom(
+                label: 'Hubungi Customer Service',
+                onPressed: () async {
+                  final url = Uri.parse('https://wa.me/6281345678900');
+                  if (await canLaunchUrl(url)) {
+                    await launchUrl(url, mode: LaunchMode.externalApplication);
+                  }
+                },
               ),
-            ),
-            child: Text(
-              'Tolak',
-              style:
-                  GlobalHelper.getTextTheme(
-                    context,
-                    appTextStyle: AppTextStyle.LABEL_LARGE,
-                  )?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: GlobalHelper.getColorSchema(context).onError,
-                  ),
-            ),
+              const SizedBox(height: 12),
+              ErrorButton(
+                label: 'Tolak',
+                onPressed: () => _submit(context, state),
+                isLoading: state.isLoading,
+              ),
+            ],
           ),
         ),
       ],
