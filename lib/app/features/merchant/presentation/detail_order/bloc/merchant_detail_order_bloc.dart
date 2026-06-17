@@ -42,6 +42,7 @@ class MerchantDetailOrderBloc
     on<MerchantDetailOrderEventReject>(_onReject);
     on<MerchantDetailOrderEventReceived>(_onReceived);
     on<MerchantDetailOrderEventPaymentProofTapped>(_onPaymentProofTapped);
+    on<MerchantDetailOrderEventTrackDeliveryTapped>(_onTrackDeliveryTapped);
   }
 
   Future<void> _onFetchStarted(
@@ -100,6 +101,21 @@ class MerchantDetailOrderBloc
       final url = Uri.parse(paymentProofUrl);
       try {
         await launchUrl(url, mode: LaunchMode.externalApplication);
+      } catch (e) {
+        // Handle error silently
+      }
+    }
+  }
+
+  Future<void> _onTrackDeliveryTapped(
+    MerchantDetailOrderEventTrackDeliveryTapped event,
+    Emitter<MerchantDetailOrderState> emit,
+  ) async {
+    final trackingUrl = state.order?.shipping?.biteshipResponse?.courier?.link;
+    if (trackingUrl != null && trackingUrl.isNotEmpty) {
+      final url = Uri.parse(trackingUrl);
+      try {
+        await launchUrl(url, mode: LaunchMode.inAppWebView);
       } catch (e) {
         // Handle error silently
       }

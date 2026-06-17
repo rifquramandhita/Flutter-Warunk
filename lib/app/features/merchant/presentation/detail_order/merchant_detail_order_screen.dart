@@ -12,6 +12,7 @@ import 'package:warunk/app/features/merchant/presentation/accept_cancel_order/me
 import 'package:warunk/core/dependency/dependency.dart';
 import 'package:warunk/core/helper/dialog_helper.dart';
 import 'package:warunk/core/widgets/loading_app_widget.dart';
+import 'package:warunk/core/widgets/outline_button_custom.dart';
 import 'package:warunk/core/helper/global_helper.dart';
 import 'package:warunk/core/widgets/custom_dotted_divider.dart';
 import 'package:warunk/core/helper/number_helper.dart';
@@ -110,7 +111,7 @@ class MerchantDetailOrderScreen extends StatelessWidget {
     } else if (order.status == OrderStatus.processing) {
       return _buildShipButton(context, order);
     } else if (order.status == OrderStatus.shipped) {
-      return _buildReceiveButton(context);
+      return _buildReceiveButton(context, order);
     } else if (order.status == OrderStatus.waitingCancel) {
       return _buildApproveRejectCancelButtons(context, order);
     }
@@ -254,45 +255,70 @@ class MerchantDetailOrderScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildReceiveButton(BuildContext context) {
-    return Container(
-      width: double.maxFinite,
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: GlobalHelper.getColorSchema(context).surface,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, -5),
-          ),
-        ],
-      ),
-      child: ElevatedButton(
-        onPressed: () {
-          context.read<MerchantDetailOrderBloc>().add(
-            MerchantDetailOrderEventReceived(),
-          );
-        },
-        style: ElevatedButton.styleFrom(
-          padding: const EdgeInsets.symmetric(vertical: 14),
-          backgroundColor: GlobalHelper.getColorSchema(context).primary,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
-        ),
-        child: Text(
-          'Pesanan Diterima',
-          style:
-              GlobalHelper.getTextTheme(
-                context,
-                appTextStyle: AppTextStyle.BODY_SMALL,
-              )?.copyWith(
-                fontWeight: FontWeight.bold,
-                color: GlobalHelper.getColorSchema(context).onPrimary,
+  Widget _buildReceiveButton(BuildContext context, MerchantOrderEntity order) {
+    final trackingLink = order.shipping?.biteshipResponse?.courier?.link;
+    final hasTrackingLink = trackingLink != null && trackingLink.isNotEmpty;
+
+    return Column(
+      children: [
+        Container(
+          width: double.maxFinite,
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            color: GlobalHelper.getColorSchema(context).surface,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.05),
+                blurRadius: 10,
+                offset: const Offset(0, -5),
               ),
+            ],
+          ),
+          child: Column(
+            children: [
+              if (hasTrackingLink) ...[
+                OutlineButtonCustom(
+                  label: 'Lacak Pengiriman',
+                  onPressed: () {
+                    context.read<MerchantDetailOrderBloc>().add(
+                      MerchantDetailOrderEventTrackDeliveryTapped(),
+                    );
+                  },
+                ),
+                const SizedBox(height: 12),
+              ],
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () {
+                    context.read<MerchantDetailOrderBloc>().add(
+                      MerchantDetailOrderEventReceived(),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    backgroundColor: GlobalHelper.getColorSchema(context).primary,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  child: Text(
+                    'Pesanan Diterima',
+                    style:
+                        GlobalHelper.getTextTheme(
+                          context,
+                          appTextStyle: AppTextStyle.BODY_SMALL,
+                        )?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: GlobalHelper.getColorSchema(context).onPrimary,
+                        ),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
-      ),
+      ],
     );
   }
 

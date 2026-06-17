@@ -1,4 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:warunk/app/features/merchant/domain/entity/merchant_biteship_response.dart';
 
 part 'merchant_order_shipping.freezed.dart';
 part 'merchant_order_shipping.g.dart';
@@ -27,7 +28,7 @@ sealed class MerchantOrderShipping with _$MerchantOrderShipping {
     String? biteshipOrderId,
     num? shippingCost,
     Map<String, dynamic>? biteshipPayload,
-    Map<String, dynamic>? biteshipResponse,
+    MerchantBiteshipResponseEntity? biteshipResponse,
     String? notes,
     String? shippedAt,
     String? deliveredAt,

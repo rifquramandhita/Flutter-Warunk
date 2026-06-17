@@ -22,7 +22,7 @@ MerchantOrderShipping _$MerchantOrderShippingFromJson(
 /// @nodoc
 mixin _$MerchantOrderShipping {
 
- String? get id; String? get orderId; String? get type; String? get status; MerchantOrderShippingAddressEntity? get originAddress; MerchantOrderShippingAddressEntity? get destinationAddress; String? get courier; String? get courierCode; String? get service; String? get serviceCode; String? get driverName; String? get driverPhone; String? get driverVehicleNumber; String? get trackingNumber; bool? get isInstant; String? get pickupPhoto; String? get deliveryPhoto; String? get biteshipOrderId; num? get shippingCost; Map<String, dynamic>? get biteshipPayload; Map<String, dynamic>? get biteshipResponse; String? get notes; String? get shippedAt; String? get deliveredAt; String? get cancelledAt; String? get createdAt; String? get updatedAt;
+ String? get id; String? get orderId; String? get type; String? get status; MerchantOrderShippingAddressEntity? get originAddress; MerchantOrderShippingAddressEntity? get destinationAddress; String? get courier; String? get courierCode; String? get service; String? get serviceCode; String? get driverName; String? get driverPhone; String? get driverVehicleNumber; String? get trackingNumber; bool? get isInstant; String? get pickupPhoto; String? get deliveryPhoto; String? get biteshipOrderId; num? get shippingCost; Map<String, dynamic>? get biteshipPayload; MerchantBiteshipResponseEntity? get biteshipResponse; String? get notes; String? get shippedAt; String? get deliveredAt; String? get cancelledAt; String? get createdAt; String? get updatedAt;
 /// Create a copy of MerchantOrderShipping
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -55,7 +55,7 @@ abstract mixin class $MerchantOrderShippingCopyWith<$Res>  {
   factory $MerchantOrderShippingCopyWith(MerchantOrderShipping value, $Res Function(MerchantOrderShipping) _then) = _$MerchantOrderShippingCopyWithImpl;
 @useResult
 $Res call({
- String? id, String? orderId, String? type, String? status, MerchantOrderShippingAddressEntity? originAddress, MerchantOrderShippingAddressEntity? destinationAddress, String? courier, String? courierCode, String? service, String? serviceCode, String? driverName, String? driverPhone, String? driverVehicleNumber, String? trackingNumber, bool? isInstant, String? pickupPhoto, String? deliveryPhoto, String? biteshipOrderId, num? shippingCost, Map<String, dynamic>? biteshipPayload, Map<String, dynamic>? biteshipResponse, String? notes, String? shippedAt, String? deliveredAt, String? cancelledAt, String? createdAt, String? updatedAt
+ String? id, String? orderId, String? type, String? status, MerchantOrderShippingAddressEntity? originAddress, MerchantOrderShippingAddressEntity? destinationAddress, String? courier, String? courierCode, String? service, String? serviceCode, String? driverName, String? driverPhone, String? driverVehicleNumber, String? trackingNumber, bool? isInstant, String? pickupPhoto, String? deliveryPhoto, String? biteshipOrderId, num? shippingCost, Map<String, dynamic>? biteshipPayload, MerchantBiteshipResponseEntity? biteshipResponse, String? notes, String? shippedAt, String? deliveredAt, String? cancelledAt, String? createdAt, String? updatedAt
 });
 
 
@@ -95,7 +95,7 @@ as String?,biteshipOrderId: freezed == biteshipOrderId ? _self.biteshipOrderId :
 as String?,shippingCost: freezed == shippingCost ? _self.shippingCost : shippingCost // ignore: cast_nullable_to_non_nullable
 as num?,biteshipPayload: freezed == biteshipPayload ? _self.biteshipPayload : biteshipPayload // ignore: cast_nullable_to_non_nullable
 as Map<String, dynamic>?,biteshipResponse: freezed == biteshipResponse ? _self.biteshipResponse : biteshipResponse // ignore: cast_nullable_to_non_nullable
-as Map<String, dynamic>?,notes: freezed == notes ? _self.notes : notes // ignore: cast_nullable_to_non_nullable
+as MerchantBiteshipResponseEntity?,notes: freezed == notes ? _self.notes : notes // ignore: cast_nullable_to_non_nullable
 as String?,shippedAt: freezed == shippedAt ? _self.shippedAt : shippedAt // ignore: cast_nullable_to_non_nullable
 as String?,deliveredAt: freezed == deliveredAt ? _self.deliveredAt : deliveredAt // ignore: cast_nullable_to_non_nullable
 as String?,cancelledAt: freezed == cancelledAt ? _self.cancelledAt : cancelledAt // ignore: cast_nullable_to_non_nullable
@@ -183,7 +183,7 @@ return entity(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String? id,  String? orderId,  String? type,  String? status,  MerchantOrderShippingAddressEntity? originAddress,  MerchantOrderShippingAddressEntity? destinationAddress,  String? courier,  String? courierCode,  String? service,  String? serviceCode,  String? driverName,  String? driverPhone,  String? driverVehicleNumber,  String? trackingNumber,  bool? isInstant,  String? pickupPhoto,  String? deliveryPhoto,  String? biteshipOrderId,  num? shippingCost,  Map<String, dynamic>? biteshipPayload,  Map<String, dynamic>? biteshipResponse,  String? notes,  String? shippedAt,  String? deliveredAt,  String? cancelledAt,  String? createdAt,  String? updatedAt)?  entity,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String? id,  String? orderId,  String? type,  String? status,  MerchantOrderShippingAddressEntity? originAddress,  MerchantOrderShippingAddressEntity? destinationAddress,  String? courier,  String? courierCode,  String? service,  String? serviceCode,  String? driverName,  String? driverPhone,  String? driverVehicleNumber,  String? trackingNumber,  bool? isInstant,  String? pickupPhoto,  String? deliveryPhoto,  String? biteshipOrderId,  num? shippingCost,  Map<String, dynamic>? biteshipPayload,  MerchantBiteshipResponseEntity? biteshipResponse,  String? notes,  String? shippedAt,  String? deliveredAt,  String? cancelledAt,  String? createdAt,  String? updatedAt)?  entity,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case MerchantOrderShippingEntity() when entity != null:
 return entity(_that.id,_that.orderId,_that.type,_that.status,_that.originAddress,_that.destinationAddress,_that.courier,_that.courierCode,_that.service,_that.serviceCode,_that.driverName,_that.driverPhone,_that.driverVehicleNumber,_that.trackingNumber,_that.isInstant,_that.pickupPhoto,_that.deliveryPhoto,_that.biteshipOrderId,_that.shippingCost,_that.biteshipPayload,_that.biteshipResponse,_that.notes,_that.shippedAt,_that.deliveredAt,_that.cancelledAt,_that.createdAt,_that.updatedAt);case _:
@@ -204,7 +204,7 @@ return entity(_that.id,_that.orderId,_that.type,_that.status,_that.originAddress
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String? id,  String? orderId,  String? type,  String? status,  MerchantOrderShippingAddressEntity? originAddress,  MerchantOrderShippingAddressEntity? destinationAddress,  String? courier,  String? courierCode,  String? service,  String? serviceCode,  String? driverName,  String? driverPhone,  String? driverVehicleNumber,  String? trackingNumber,  bool? isInstant,  String? pickupPhoto,  String? deliveryPhoto,  String? biteshipOrderId,  num? shippingCost,  Map<String, dynamic>? biteshipPayload,  Map<String, dynamic>? biteshipResponse,  String? notes,  String? shippedAt,  String? deliveredAt,  String? cancelledAt,  String? createdAt,  String? updatedAt)  entity,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String? id,  String? orderId,  String? type,  String? status,  MerchantOrderShippingAddressEntity? originAddress,  MerchantOrderShippingAddressEntity? destinationAddress,  String? courier,  String? courierCode,  String? service,  String? serviceCode,  String? driverName,  String? driverPhone,  String? driverVehicleNumber,  String? trackingNumber,  bool? isInstant,  String? pickupPhoto,  String? deliveryPhoto,  String? biteshipOrderId,  num? shippingCost,  Map<String, dynamic>? biteshipPayload,  MerchantBiteshipResponseEntity? biteshipResponse,  String? notes,  String? shippedAt,  String? deliveredAt,  String? cancelledAt,  String? createdAt,  String? updatedAt)  entity,}) {final _that = this;
 switch (_that) {
 case MerchantOrderShippingEntity():
 return entity(_that.id,_that.orderId,_that.type,_that.status,_that.originAddress,_that.destinationAddress,_that.courier,_that.courierCode,_that.service,_that.serviceCode,_that.driverName,_that.driverPhone,_that.driverVehicleNumber,_that.trackingNumber,_that.isInstant,_that.pickupPhoto,_that.deliveryPhoto,_that.biteshipOrderId,_that.shippingCost,_that.biteshipPayload,_that.biteshipResponse,_that.notes,_that.shippedAt,_that.deliveredAt,_that.cancelledAt,_that.createdAt,_that.updatedAt);}
@@ -221,7 +221,7 @@ return entity(_that.id,_that.orderId,_that.type,_that.status,_that.originAddress
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String? id,  String? orderId,  String? type,  String? status,  MerchantOrderShippingAddressEntity? originAddress,  MerchantOrderShippingAddressEntity? destinationAddress,  String? courier,  String? courierCode,  String? service,  String? serviceCode,  String? driverName,  String? driverPhone,  String? driverVehicleNumber,  String? trackingNumber,  bool? isInstant,  String? pickupPhoto,  String? deliveryPhoto,  String? biteshipOrderId,  num? shippingCost,  Map<String, dynamic>? biteshipPayload,  Map<String, dynamic>? biteshipResponse,  String? notes,  String? shippedAt,  String? deliveredAt,  String? cancelledAt,  String? createdAt,  String? updatedAt)?  entity,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String? id,  String? orderId,  String? type,  String? status,  MerchantOrderShippingAddressEntity? originAddress,  MerchantOrderShippingAddressEntity? destinationAddress,  String? courier,  String? courierCode,  String? service,  String? serviceCode,  String? driverName,  String? driverPhone,  String? driverVehicleNumber,  String? trackingNumber,  bool? isInstant,  String? pickupPhoto,  String? deliveryPhoto,  String? biteshipOrderId,  num? shippingCost,  Map<String, dynamic>? biteshipPayload,  MerchantBiteshipResponseEntity? biteshipResponse,  String? notes,  String? shippedAt,  String? deliveredAt,  String? cancelledAt,  String? createdAt,  String? updatedAt)?  entity,}) {final _that = this;
 switch (_that) {
 case MerchantOrderShippingEntity() when entity != null:
 return entity(_that.id,_that.orderId,_that.type,_that.status,_that.originAddress,_that.destinationAddress,_that.courier,_that.courierCode,_that.service,_that.serviceCode,_that.driverName,_that.driverPhone,_that.driverVehicleNumber,_that.trackingNumber,_that.isInstant,_that.pickupPhoto,_that.deliveryPhoto,_that.biteshipOrderId,_that.shippingCost,_that.biteshipPayload,_that.biteshipResponse,_that.notes,_that.shippedAt,_that.deliveredAt,_that.cancelledAt,_that.createdAt,_that.updatedAt);case _:
@@ -236,7 +236,7 @@ return entity(_that.id,_that.orderId,_that.type,_that.status,_that.originAddress
 
 @JsonSerializable(fieldRename: FieldRename.snake, includeIfNull: false)
 class MerchantOrderShippingEntity implements MerchantOrderShipping {
-  const MerchantOrderShippingEntity({this.id, this.orderId, this.type, this.status, this.originAddress, this.destinationAddress, this.courier, this.courierCode, this.service, this.serviceCode, this.driverName, this.driverPhone, this.driverVehicleNumber, this.trackingNumber, this.isInstant, this.pickupPhoto, this.deliveryPhoto, this.biteshipOrderId, this.shippingCost, final  Map<String, dynamic>? biteshipPayload, final  Map<String, dynamic>? biteshipResponse, this.notes, this.shippedAt, this.deliveredAt, this.cancelledAt, this.createdAt, this.updatedAt}): _biteshipPayload = biteshipPayload,_biteshipResponse = biteshipResponse;
+  const MerchantOrderShippingEntity({this.id, this.orderId, this.type, this.status, this.originAddress, this.destinationAddress, this.courier, this.courierCode, this.service, this.serviceCode, this.driverName, this.driverPhone, this.driverVehicleNumber, this.trackingNumber, this.isInstant, this.pickupPhoto, this.deliveryPhoto, this.biteshipOrderId, this.shippingCost, final  Map<String, dynamic>? biteshipPayload, this.biteshipResponse, this.notes, this.shippedAt, this.deliveredAt, this.cancelledAt, this.createdAt, this.updatedAt}): _biteshipPayload = biteshipPayload;
   factory MerchantOrderShippingEntity.fromJson(Map<String, dynamic> json) => _$MerchantOrderShippingEntityFromJson(json);
 
 @override final  String? id;
@@ -267,15 +267,7 @@ class MerchantOrderShippingEntity implements MerchantOrderShipping {
   return EqualUnmodifiableMapView(value);
 }
 
- final  Map<String, dynamic>? _biteshipResponse;
-@override Map<String, dynamic>? get biteshipResponse {
-  final value = _biteshipResponse;
-  if (value == null) return null;
-  if (_biteshipResponse is EqualUnmodifiableMapView) return _biteshipResponse;
-  // ignore: implicit_dynamic_type
-  return EqualUnmodifiableMapView(value);
-}
-
+@override final  MerchantBiteshipResponseEntity? biteshipResponse;
 @override final  String? notes;
 @override final  String? shippedAt;
 @override final  String? deliveredAt;
@@ -296,12 +288,12 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MerchantOrderShippingEntity&&(identical(other.id, id) || other.id == id)&&(identical(other.orderId, orderId) || other.orderId == orderId)&&(identical(other.type, type) || other.type == type)&&(identical(other.status, status) || other.status == status)&&const DeepCollectionEquality().equals(other.originAddress, originAddress)&&const DeepCollectionEquality().equals(other.destinationAddress, destinationAddress)&&(identical(other.courier, courier) || other.courier == courier)&&(identical(other.courierCode, courierCode) || other.courierCode == courierCode)&&(identical(other.service, service) || other.service == service)&&(identical(other.serviceCode, serviceCode) || other.serviceCode == serviceCode)&&(identical(other.driverName, driverName) || other.driverName == driverName)&&(identical(other.driverPhone, driverPhone) || other.driverPhone == driverPhone)&&(identical(other.driverVehicleNumber, driverVehicleNumber) || other.driverVehicleNumber == driverVehicleNumber)&&(identical(other.trackingNumber, trackingNumber) || other.trackingNumber == trackingNumber)&&(identical(other.isInstant, isInstant) || other.isInstant == isInstant)&&(identical(other.pickupPhoto, pickupPhoto) || other.pickupPhoto == pickupPhoto)&&(identical(other.deliveryPhoto, deliveryPhoto) || other.deliveryPhoto == deliveryPhoto)&&(identical(other.biteshipOrderId, biteshipOrderId) || other.biteshipOrderId == biteshipOrderId)&&(identical(other.shippingCost, shippingCost) || other.shippingCost == shippingCost)&&const DeepCollectionEquality().equals(other._biteshipPayload, _biteshipPayload)&&const DeepCollectionEquality().equals(other._biteshipResponse, _biteshipResponse)&&(identical(other.notes, notes) || other.notes == notes)&&(identical(other.shippedAt, shippedAt) || other.shippedAt == shippedAt)&&(identical(other.deliveredAt, deliveredAt) || other.deliveredAt == deliveredAt)&&(identical(other.cancelledAt, cancelledAt) || other.cancelledAt == cancelledAt)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MerchantOrderShippingEntity&&(identical(other.id, id) || other.id == id)&&(identical(other.orderId, orderId) || other.orderId == orderId)&&(identical(other.type, type) || other.type == type)&&(identical(other.status, status) || other.status == status)&&const DeepCollectionEquality().equals(other.originAddress, originAddress)&&const DeepCollectionEquality().equals(other.destinationAddress, destinationAddress)&&(identical(other.courier, courier) || other.courier == courier)&&(identical(other.courierCode, courierCode) || other.courierCode == courierCode)&&(identical(other.service, service) || other.service == service)&&(identical(other.serviceCode, serviceCode) || other.serviceCode == serviceCode)&&(identical(other.driverName, driverName) || other.driverName == driverName)&&(identical(other.driverPhone, driverPhone) || other.driverPhone == driverPhone)&&(identical(other.driverVehicleNumber, driverVehicleNumber) || other.driverVehicleNumber == driverVehicleNumber)&&(identical(other.trackingNumber, trackingNumber) || other.trackingNumber == trackingNumber)&&(identical(other.isInstant, isInstant) || other.isInstant == isInstant)&&(identical(other.pickupPhoto, pickupPhoto) || other.pickupPhoto == pickupPhoto)&&(identical(other.deliveryPhoto, deliveryPhoto) || other.deliveryPhoto == deliveryPhoto)&&(identical(other.biteshipOrderId, biteshipOrderId) || other.biteshipOrderId == biteshipOrderId)&&(identical(other.shippingCost, shippingCost) || other.shippingCost == shippingCost)&&const DeepCollectionEquality().equals(other._biteshipPayload, _biteshipPayload)&&const DeepCollectionEquality().equals(other.biteshipResponse, biteshipResponse)&&(identical(other.notes, notes) || other.notes == notes)&&(identical(other.shippedAt, shippedAt) || other.shippedAt == shippedAt)&&(identical(other.deliveredAt, deliveredAt) || other.deliveredAt == deliveredAt)&&(identical(other.cancelledAt, cancelledAt) || other.cancelledAt == cancelledAt)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hashAll([runtimeType,id,orderId,type,status,const DeepCollectionEquality().hash(originAddress),const DeepCollectionEquality().hash(destinationAddress),courier,courierCode,service,serviceCode,driverName,driverPhone,driverVehicleNumber,trackingNumber,isInstant,pickupPhoto,deliveryPhoto,biteshipOrderId,shippingCost,const DeepCollectionEquality().hash(_biteshipPayload),const DeepCollectionEquality().hash(_biteshipResponse),notes,shippedAt,deliveredAt,cancelledAt,createdAt,updatedAt]);
+int get hashCode => Object.hashAll([runtimeType,id,orderId,type,status,const DeepCollectionEquality().hash(originAddress),const DeepCollectionEquality().hash(destinationAddress),courier,courierCode,service,serviceCode,driverName,driverPhone,driverVehicleNumber,trackingNumber,isInstant,pickupPhoto,deliveryPhoto,biteshipOrderId,shippingCost,const DeepCollectionEquality().hash(_biteshipPayload),const DeepCollectionEquality().hash(biteshipResponse),notes,shippedAt,deliveredAt,cancelledAt,createdAt,updatedAt]);
 
 @override
 String toString() {
@@ -316,7 +308,7 @@ abstract mixin class $MerchantOrderShippingEntityCopyWith<$Res> implements $Merc
   factory $MerchantOrderShippingEntityCopyWith(MerchantOrderShippingEntity value, $Res Function(MerchantOrderShippingEntity) _then) = _$MerchantOrderShippingEntityCopyWithImpl;
 @override @useResult
 $Res call({
- String? id, String? orderId, String? type, String? status, MerchantOrderShippingAddressEntity? originAddress, MerchantOrderShippingAddressEntity? destinationAddress, String? courier, String? courierCode, String? service, String? serviceCode, String? driverName, String? driverPhone, String? driverVehicleNumber, String? trackingNumber, bool? isInstant, String? pickupPhoto, String? deliveryPhoto, String? biteshipOrderId, num? shippingCost, Map<String, dynamic>? biteshipPayload, Map<String, dynamic>? biteshipResponse, String? notes, String? shippedAt, String? deliveredAt, String? cancelledAt, String? createdAt, String? updatedAt
+ String? id, String? orderId, String? type, String? status, MerchantOrderShippingAddressEntity? originAddress, MerchantOrderShippingAddressEntity? destinationAddress, String? courier, String? courierCode, String? service, String? serviceCode, String? driverName, String? driverPhone, String? driverVehicleNumber, String? trackingNumber, bool? isInstant, String? pickupPhoto, String? deliveryPhoto, String? biteshipOrderId, num? shippingCost, Map<String, dynamic>? biteshipPayload, MerchantBiteshipResponseEntity? biteshipResponse, String? notes, String? shippedAt, String? deliveredAt, String? cancelledAt, String? createdAt, String? updatedAt
 });
 
 
@@ -355,8 +347,8 @@ as String?,deliveryPhoto: freezed == deliveryPhoto ? _self.deliveryPhoto : deliv
 as String?,biteshipOrderId: freezed == biteshipOrderId ? _self.biteshipOrderId : biteshipOrderId // ignore: cast_nullable_to_non_nullable
 as String?,shippingCost: freezed == shippingCost ? _self.shippingCost : shippingCost // ignore: cast_nullable_to_non_nullable
 as num?,biteshipPayload: freezed == biteshipPayload ? _self._biteshipPayload : biteshipPayload // ignore: cast_nullable_to_non_nullable
-as Map<String, dynamic>?,biteshipResponse: freezed == biteshipResponse ? _self._biteshipResponse : biteshipResponse // ignore: cast_nullable_to_non_nullable
-as Map<String, dynamic>?,notes: freezed == notes ? _self.notes : notes // ignore: cast_nullable_to_non_nullable
+as Map<String, dynamic>?,biteshipResponse: freezed == biteshipResponse ? _self.biteshipResponse : biteshipResponse // ignore: cast_nullable_to_non_nullable
+as MerchantBiteshipResponseEntity?,notes: freezed == notes ? _self.notes : notes // ignore: cast_nullable_to_non_nullable
 as String?,shippedAt: freezed == shippedAt ? _self.shippedAt : shippedAt // ignore: cast_nullable_to_non_nullable
 as String?,deliveredAt: freezed == deliveredAt ? _self.deliveredAt : deliveredAt // ignore: cast_nullable_to_non_nullable
 as String?,cancelledAt: freezed == cancelledAt ? _self.cancelledAt : cancelledAt // ignore: cast_nullable_to_non_nullable

@@ -37,7 +37,11 @@ MerchantOrderShippingEntity _$MerchantOrderShippingEntityFromJson(
   biteshipOrderId: json['biteship_order_id'] as String?,
   shippingCost: json['shipping_cost'] as num?,
   biteshipPayload: json['biteship_payload'] as Map<String, dynamic>?,
-  biteshipResponse: json['biteship_response'] as Map<String, dynamic>?,
+  biteshipResponse: json['biteship_response'] == null
+      ? null
+      : MerchantBiteshipResponseEntity.fromJson(
+          json['biteship_response'] as Map<String, dynamic>,
+        ),
   notes: json['notes'] as String?,
   shippedAt: json['shipped_at'] as String?,
   deliveredAt: json['delivered_at'] as String?,
