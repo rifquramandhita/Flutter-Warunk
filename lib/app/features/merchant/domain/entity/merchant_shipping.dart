@@ -8,6 +8,7 @@ sealed class MerchantShipping with _$MerchantShipping {
   @JsonSerializable(fieldRename: FieldRename.snake, includeIfNull: false)
   const factory MerchantShipping.updateParam({
     required bool internalCourier,
+    required int internalCourierShippingCost,
     required bool instantCourier,
     required bool pickupAtStore,
     required int maxDistanceInternalCourier,

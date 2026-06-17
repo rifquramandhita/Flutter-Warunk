@@ -178,6 +178,10 @@ class MerchantShippingScreen extends StatelessWidget {
                         _MaxDistanceInput(
                           initialValue: state.maxDistanceInternalCourier,
                         ),
+                        Divider(height: 1, color: colorSchema.outlineVariant),
+                        _InternalCourierCostInput(
+                          initialValue: state.internalCourierShippingCost,
+                        ),
                       ],
                     ],
                   ),
@@ -366,6 +370,94 @@ class _MaxDistanceInputState extends State<_MaxDistanceInput> {
               final distance = int.tryParse(value) ?? 0;
               context.read<MerchantShippingBloc>().add(
                 MerchantShippingUpdateMaxDistance(distance),
+              );
+            },
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Internal Courier Cost Input
+// ─────────────────────────────────────────────────────────────────────────────
+class _InternalCourierCostInput extends StatefulWidget {
+  final int initialValue;
+  const _InternalCourierCostInput({required this.initialValue});
+
+  @override
+  State<_InternalCourierCostInput> createState() => _InternalCourierCostInputState();
+}
+
+class _InternalCourierCostInputState extends State<_InternalCourierCostInput> {
+  late TextEditingController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController(
+      text: widget.initialValue > 0 ? widget.initialValue.toString() : '',
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final colorSchema = GlobalHelper.getColorSchema(context);
+    final textTheme = GlobalHelper.getTextTheme(
+      context,
+      appTextStyle: AppTextStyle.BODY_SMALL,
+    );
+
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Biaya Ongkir Kurir Toko',
+            style: textTheme?.copyWith(fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 8),
+          TextField(
+            controller: _controller,
+            keyboardType: TextInputType.number,
+            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+            style: textTheme,
+            decoration: InputDecoration(
+              hintText: 'Misal: 10000',
+              hintStyle: textTheme?.copyWith(
+                color: colorSchema.onSurfaceVariant,
+              ),
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 12,
+              ),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+                borderSide: BorderSide(color: colorSchema.outlineVariant),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+                borderSide: BorderSide(color: colorSchema.outlineVariant),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+                borderSide: BorderSide(color: colorSchema.primary),
+              ),
+              prefixText: 'Rp ',
+              prefixStyle: textTheme,
+            ),
+            onChanged: (value) {
+              final cost = int.tryParse(value) ?? 0;
+              context.read<MerchantShippingBloc>().add(
+                MerchantShippingUpdateInternalCourierCost(cost),
               );
             },
           ),

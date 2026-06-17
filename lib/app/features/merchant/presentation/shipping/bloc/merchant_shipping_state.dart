@@ -3,6 +3,7 @@ part of 'merchant_shipping_bloc.dart';
 class MerchantShippingState {
   final bool pickupAtStore;
   final bool internalCourier;
+  final int internalCourierShippingCost;
   final bool instantCourier;
   final int maxDistanceInternalCourier;
   final List<String> availableCouriers;
@@ -16,6 +17,7 @@ class MerchantShippingState {
   const MerchantShippingState({
     this.pickupAtStore = false,
     this.internalCourier = false,
+    this.internalCourierShippingCost = 0,
     this.instantCourier = false,
     this.maxDistanceInternalCourier = 0,
     this.availableCouriers = const [],
@@ -29,6 +31,7 @@ class MerchantShippingState {
   MerchantShippingState copyWith({
     bool? pickupAtStore,
     bool? internalCourier,
+    int? internalCourierShippingCost,
     bool? instantCourier,
     int? maxDistanceInternalCourier,
     List<String>? availableCouriers,
@@ -41,6 +44,7 @@ class MerchantShippingState {
     return MerchantShippingState(
       pickupAtStore: pickupAtStore ?? this.pickupAtStore,
       internalCourier: internalCourier ?? this.internalCourier,
+      internalCourierShippingCost: internalCourierShippingCost ?? this.internalCourierShippingCost,
       instantCourier: instantCourier ?? this.instantCourier,
       maxDistanceInternalCourier: maxDistanceInternalCourier ?? this.maxDistanceInternalCourier,
       availableCouriers: availableCouriers ?? this.availableCouriers,

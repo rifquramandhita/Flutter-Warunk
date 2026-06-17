@@ -25,6 +25,7 @@ sealed class MerchantMerchant with _$MerchantMerchant {
     String? timeOpen,
     String? timeClose,
     bool? internalCourier,
+    int? internalCourierShippingCost,
     bool? instantCourier,
     bool? pickupAtStore,
     int? maxDistanceInternalCourier,

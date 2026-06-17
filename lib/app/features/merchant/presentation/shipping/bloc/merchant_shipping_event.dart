@@ -14,6 +14,11 @@ class MerchantShippingUpdateMaxDistance extends MerchantShippingEvent {
   MerchantShippingUpdateMaxDistance(this.maxDistance);
 }
 
+class MerchantShippingUpdateInternalCourierCost extends MerchantShippingEvent {
+  final int cost;
+  MerchantShippingUpdateInternalCourierCost(this.cost);
+}
+
 class MerchantShippingToggleCourier extends MerchantShippingEvent {
   final String courierCode;
   MerchantShippingToggleCourier(this.courierCode);

@@ -36,6 +36,7 @@ class MerchantShippingBloc
             availableCouriers: courierResult.data,
             pickupAtStore: merchant.pickupAtStore ?? false,
             internalCourier: merchant.internalCourier ?? false,
+            internalCourierShippingCost: merchant.internalCourierShippingCost ?? 0,
             instantCourier: merchant.instantCourier ?? false,
             maxDistanceInternalCourier: merchant.maxDistanceInternalCourier ?? 0,
             selectedCouriers: merchant.courierCodeAvailable,
@@ -69,6 +70,10 @@ class MerchantShippingBloc
       emit(state.copyWith(maxDistanceInternalCourier: event.maxDistance));
     });
 
+    on<MerchantShippingUpdateInternalCourierCost>((event, emit) {
+      emit(state.copyWith(internalCourierShippingCost: event.cost));
+    });
+
     on<MerchantShippingToggleCourier>((event, emit) {
       final currentSelected = List<String>.from(state.selectedCouriers);
       if (currentSelected.contains(event.courierCode)) {
@@ -84,6 +89,7 @@ class MerchantShippingBloc
 
       final param = MerchantShippingUpdateParam(
         internalCourier: state.internalCourier,
+        internalCourierShippingCost: state.internalCourierShippingCost,
         instantCourier: state.instantCourier,
         pickupAtStore: state.pickupAtStore,
         maxDistanceInternalCourier: state.maxDistanceInternalCourier,

@@ -23,6 +23,8 @@ MerchantMerchantEntity _$MerchantMerchantEntityFromJson(
   timeOpen: json['time_open'] as String?,
   timeClose: json['time_close'] as String?,
   internalCourier: json['internal_courier'] as bool?,
+  internalCourierShippingCost: (json['internal_courier_shipping_cost'] as num?)
+      ?.toInt(),
   instantCourier: json['instant_courier'] as bool?,
   pickupAtStore: json['pickup_at_store'] as bool?,
   maxDistanceInternalCourier: (json['max_distance_internal_courier'] as num?)
@@ -79,6 +81,7 @@ Map<String, dynamic> _$MerchantMerchantEntityToJson(
   'time_open': ?instance.timeOpen,
   'time_close': ?instance.timeClose,
   'internal_courier': ?instance.internalCourier,
+  'internal_courier_shipping_cost': ?instance.internalCourierShippingCost,
   'instant_courier': ?instance.instantCourier,
   'pickup_at_store': ?instance.pickupAtStore,
   'max_distance_internal_courier': ?instance.maxDistanceInternalCourier,
