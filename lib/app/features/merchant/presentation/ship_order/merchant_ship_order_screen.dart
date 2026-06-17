@@ -5,13 +5,19 @@ import 'package:warunk/app/features/merchant/domain/entity/merchant_order_ship_p
 import 'package:warunk/app/features/merchant/presentation/ship_order/bloc/merchant_ship_order_bloc.dart';
 import 'package:warunk/core/dependency/dependency.dart';
 import 'package:warunk/core/helper/dialog_helper.dart';
+import 'package:warunk/core/helper/global_helper.dart';
 import 'package:warunk/core/widgets/loading_app_widget.dart';
-import 'package:warunk/theme/app_colors.dart';
+import 'package:warunk/core/widgets/primary_button.dart';
 
 class MerchantShipOrderScreen extends StatelessWidget {
   final String orderId;
 
-  const MerchantShipOrderScreen({super.key, required this.orderId});
+  final TextEditingController _driverNameCtrl = TextEditingController();
+  final TextEditingController _driverPhoneCtrl = TextEditingController();
+  final TextEditingController _trackingNumberCtrl = TextEditingController();
+  final TextEditingController _notesCtrl = TextEditingController();
+
+  MerchantShipOrderScreen({super.key, required this.orderId});
 
   @override
   Widget build(BuildContext context) {
@@ -26,92 +32,59 @@ class MerchantShipOrderScreen extends StatelessWidget {
             );
           }
           if (state.isSuccess) {
-            navigatorKey.currentState?.pop(true); // true indicates success
+            navigatorKey.currentState?.pop(true);
           }
         },
         builder: (context, state) {
-          return const _MerchantShipOrderView();
+          return Scaffold(
+            backgroundColor: GlobalHelper.getColorSchema(context).surface,
+            appBar: AppBar(
+              backgroundColor: GlobalHelper.getColorSchema(context).surface,
+              elevation: 0,
+              centerTitle: true,
+              title: Text(
+                'Kirim Pesanan',
+                style:
+                    GlobalHelper.getTextTheme(
+                      context,
+                      appTextStyle: AppTextStyle.TITLE_MEDIUM,
+                    )?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: GlobalHelper.getColorSchema(context).onSurface,
+                    ),
+              ),
+            ),
+            body: _bodyBuild(context),
+          );
         },
       ),
     );
   }
-}
 
-class _MerchantShipOrderView extends StatefulWidget {
-  const _MerchantShipOrderView();
-
-  @override
-  State<_MerchantShipOrderView> createState() => _MerchantShipOrderViewState();
-}
-
-class _MerchantShipOrderViewState extends State<_MerchantShipOrderView> {
-  final _driverNameCtrl = TextEditingController();
-  final _driverPhoneCtrl = TextEditingController();
-  final _trackingNumberCtrl = TextEditingController();
-  final _notesCtrl = TextEditingController();
-
-  @override
-  void dispose() {
-    _driverNameCtrl.dispose();
-    _driverPhoneCtrl.dispose();
-    _trackingNumberCtrl.dispose();
-    _notesCtrl.dispose();
-    super.dispose();
-  }
-
-  void _submit() {
-    final param = MerchantOrderShipSendParam(
-      driverName: _driverNameCtrl.text.trim().isEmpty ? null : _driverNameCtrl.text.trim(),
-      driverPhone: _driverPhoneCtrl.text.trim().isEmpty ? null : _driverPhoneCtrl.text.trim(),
-      trackingNumber: _trackingNumberCtrl.text.trim().isEmpty ? null : _trackingNumberCtrl.text.trim(),
-      notes: _notesCtrl.text.trim().isEmpty ? null : _notesCtrl.text.trim(),
+  Widget _bodyBuild(BuildContext context) {
+    final state = context.watch<MerchantShipOrderBloc>().state;
+    return SafeArea(
+      child: Stack(
+        children: [
+          _bodyLayout(context),
+          if (state.isLoading) const LoadingAppWidget(),
+        ],
+      ),
     );
-    context.read<MerchantShipOrderBloc>().add(MerchantShipOrderEventShip(param));
   }
 
-  @override
-  Widget build(BuildContext context) {
+  Widget _bodyLayout(BuildContext context) {
     final state = context.watch<MerchantShipOrderBloc>().state;
 
-    return Scaffold(
-      backgroundColor: AppColors.background,
-      appBar: AppBar(
-        backgroundColor: AppColors.background,
-        elevation: 0,
-        centerTitle: true,
-        leading: GestureDetector(
-          onTap: () => navigatorKey.currentState?.pop(),
-          child: Container(
-            margin: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              color: AppColors.white,
-              shape: BoxShape.circle,
-              border: Border.all(color: AppColors.greyBorder),
-            ),
-            child: const Icon(
-              Icons.arrow_back,
-              color: AppColors.textDark,
-              size: 18,
-            ),
-          ),
-        ),
-        title: const Text(
-          'Kirim Pesanan',
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-            color: AppColors.textDark,
-          ),
-        ),
-      ),
-      body: Stack(
-        children: [
-          SingleChildScrollView(
+    return Column(
+      children: [
+        Expanded(
+          child: SingleChildScrollView(
             padding: const EdgeInsets.all(20),
             child: Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
-                color: AppColors.white,
+                color: GlobalHelper.getColorSchema(context).surface,
                 borderRadius: BorderRadius.circular(16),
                 boxShadow: [
                   BoxShadow(
@@ -125,22 +98,26 @@ class _MerchantShipOrderViewState extends State<_MerchantShipOrderView> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   _buildTextField(
+                    context: context,
                     label: 'Nama Driver (opsional)',
                     controller: _driverNameCtrl,
                   ),
                   const SizedBox(height: 16),
                   _buildTextField(
+                    context: context,
                     label: 'No. HP Driver (opsional)',
                     controller: _driverPhoneCtrl,
                     keyboardType: TextInputType.phone,
                   ),
                   const SizedBox(height: 16),
                   _buildTextField(
+                    context: context,
                     label: 'No. Resi (opsional)',
                     controller: _trackingNumberCtrl,
                   ),
                   const SizedBox(height: 16),
                   _buildTextField(
+                    context: context,
                     label: 'Catatan (opsional)',
                     controller: _notesCtrl,
                     maxLines: 3,
@@ -149,44 +126,32 @@ class _MerchantShipOrderViewState extends State<_MerchantShipOrderView> {
               ),
             ),
           ),
-          if (state.isLoading) const LoadingAppWidget(),
-        ],
-      ),
-      bottomNavigationBar: Container(
-        padding: const EdgeInsets.all(20),
-        decoration: BoxDecoration(
-          color: AppColors.white,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.05),
-              blurRadius: 10,
-              offset: const Offset(0, -5),
-            ),
-          ],
         ),
-        child: ElevatedButton(
-          onPressed: state.isLoading ? null : _submit,
-          style: ElevatedButton.styleFrom(
-            padding: const EdgeInsets.symmetric(vertical: 14),
-            backgroundColor: AppColors.primary,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
+        Container(
+          padding: const EdgeInsets.all(20),
+          width: double.maxFinite,
+          decoration: BoxDecoration(
+            color: GlobalHelper.getColorSchema(context).surface,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.05),
+                blurRadius: 10,
+                offset: const Offset(0, -5),
+              ),
+            ],
           ),
-          child: const Text(
-            'Kirim',
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.bold,
-              color: AppColors.white,
-            ),
+          child: PrimaryButton(
+            label: 'Kirim',
+            isLoading: state.isLoading,
+            onPressed: () => _submit(context),
           ),
         ),
-      ),
+      ],
     );
   }
 
   Widget _buildTextField({
+    required BuildContext context,
     required String label,
     required TextEditingController controller,
     TextInputType? keyboardType,
@@ -196,23 +161,60 @@ class _MerchantShipOrderViewState extends State<_MerchantShipOrderView> {
       controller: controller,
       keyboardType: keyboardType,
       maxLines: maxLines,
+      style: GlobalHelper.getTextTheme(
+        context,
+        appTextStyle: AppTextStyle.BODY_MEDIUM,
+      )?.copyWith(color: GlobalHelper.getColorSchema(context).onSurface),
       decoration: InputDecoration(
         labelText: label,
-        labelStyle: const TextStyle(color: AppColors.greyText, fontSize: 13),
+        labelStyle:
+            GlobalHelper.getTextTheme(
+              context,
+              appTextStyle: AppTextStyle.BODY_SMALL,
+            )?.copyWith(
+              color: GlobalHelper.getColorSchema(context).onSurfaceVariant,
+            ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
-          borderSide: const BorderSide(color: AppColors.greyBorder),
+          borderSide: BorderSide(
+            color: GlobalHelper.getColorSchema(context).outline,
+          ),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
-          borderSide: const BorderSide(color: AppColors.greyBorder),
+          borderSide: BorderSide(
+            color: GlobalHelper.getColorSchema(context).outline,
+          ),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
-          borderSide: const BorderSide(color: AppColors.primary),
+          borderSide: BorderSide(
+            color: GlobalHelper.getColorSchema(context).primary,
+          ),
         ),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 14,
+        ),
       ),
+    );
+  }
+
+  void _submit(BuildContext context) {
+    final param = MerchantOrderShipSendParam(
+      driverName: _driverNameCtrl.text.trim().isEmpty
+          ? null
+          : _driverNameCtrl.text.trim(),
+      driverPhone: _driverPhoneCtrl.text.trim().isEmpty
+          ? null
+          : _driverPhoneCtrl.text.trim(),
+      trackingNumber: _trackingNumberCtrl.text.trim().isEmpty
+          ? null
+          : _trackingNumberCtrl.text.trim(),
+      notes: _notesCtrl.text.trim().isEmpty ? null : _notesCtrl.text.trim(),
+    );
+    context.read<MerchantShipOrderBloc>().add(
+      MerchantShipOrderEventShip(param),
     );
   }
 }
