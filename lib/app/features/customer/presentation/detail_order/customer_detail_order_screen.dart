@@ -15,15 +15,15 @@ import 'package:warunk/core/enum/order_status.dart';
 
 // ── Entry point ────────────────────────────────────────────────────────────
 class CustomerDetailOrderScreen extends StatelessWidget {
-  final CustomerOrderEntity transaction;
-  const CustomerDetailOrderScreen({super.key, required this.transaction});
+  final String orderId;
+  const CustomerDetailOrderScreen({super.key, required this.orderId});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) =>
           sl<CustomerDetailOrderBloc>()
-            ..add(CustomerDetailOrderFetchStarted(transaction)),
+            ..add(CustomerDetailOrderFetchStarted(orderId)),
       child: BlocConsumer<CustomerDetailOrderBloc, CustomerDetailOrderState>(
         listener: (context, state) {
           if (state.errorMessage != null) {
@@ -544,7 +544,7 @@ class CustomerDetailOrderScreen extends StatelessWidget {
                       );
                       if (result == true) {
                         context.read<CustomerDetailOrderBloc>().add(
-                          CustomerDetailOrderFetchStarted(tx),
+                          CustomerDetailOrderFetchStarted(tx.id!),
                         );
                       }
                     },
@@ -584,7 +584,7 @@ class CustomerDetailOrderScreen extends StatelessWidget {
                       );
                       if (result == true) {
                         context.read<CustomerDetailOrderBloc>().add(
-                          CustomerDetailOrderFetchStarted(tx),
+                          CustomerDetailOrderFetchStarted(tx.id!),
                         );
                       }
                     },

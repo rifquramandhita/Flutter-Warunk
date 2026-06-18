@@ -8,12 +8,12 @@ abstract class CustomerDetailOrderEvent extends Equatable {
 }
 
 class CustomerDetailOrderFetchStarted extends CustomerDetailOrderEvent {
-  final CustomerOrderEntity transaction;
+  final String orderId;
 
-  const CustomerDetailOrderFetchStarted(this.transaction);
+  const CustomerDetailOrderFetchStarted(this.orderId);
 
   @override
-  List<Object?> get props => [transaction];
+  List<Object?> get props => [orderId];
 }
 
 class CustomerDetailOrderTrackOrder extends CustomerDetailOrderEvent {}

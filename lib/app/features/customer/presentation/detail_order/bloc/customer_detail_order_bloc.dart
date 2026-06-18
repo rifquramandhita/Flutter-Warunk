@@ -22,13 +22,9 @@ class CustomerDetailOrderBloc
     CustomerDetailOrderFetchStarted event,
     Emitter<CustomerDetailOrderState> emit,
   ) async {
-    emit(state.copyWith(transaction: event.transaction, isLoading: true));
+    emit(state.copyWith(isLoading: true, errorMessage: null));
 
-    final id = event.transaction.id;
-    if (id == null) {
-      emit(state.copyWith(isLoading: false, errorMessage: 'ID Transaksi tidak ditemukan'));
-      return;
-    }
+    final id = event.orderId;
 
     final response = await _getByIdUseCase.call(id: id);
 

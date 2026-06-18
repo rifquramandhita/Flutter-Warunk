@@ -554,7 +554,7 @@ class CustomerOrderScreen extends StatelessWidget {
                   onTap: () => Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (_) =>
-                          CustomerDetailOrderScreen(transaction: tx),
+                          CustomerDetailOrderScreen(orderId: tx.id!),
                     ),
                   ),
                   child: Row(
