@@ -208,7 +208,7 @@ class AuthLoginScreen extends StatelessWidget {
           _dividerLayout(),
           const SizedBox(height: 16),
 
-          _googleButtonLayout(),
+          _googleButtonLayout(context),
           const SizedBox(height: 28),
 
           _registerLayout(context),
@@ -475,12 +475,12 @@ class AuthLoginScreen extends StatelessWidget {
     );
   }
 
-  Widget _googleButtonLayout() {
+  Widget _googleButtonLayout(BuildContext context) {
     return SizedBox(
       width: double.infinity,
       height: 52,
       child: OutlinedButton(
-        onPressed: () {},
+        onPressed: () => context.read<AuthLoginBloc>().add(AuthGoogleLoginSubmitted()),
         style: OutlinedButton.styleFrom(
           side: const BorderSide(color: AppColors.greyBorder, width: 1.5),
           shape: RoundedRectangleBorder(

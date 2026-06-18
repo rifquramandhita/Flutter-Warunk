@@ -8,7 +8,7 @@ part of 'login.dart';
 
 LoginParam _$LoginParamFromJson(Map<String, dynamic> json) => LoginParam(
   email: json['email'] as String,
-  password: json['password'] as String,
+  password: json['password'] as String?,
   fcmToken: json['fcm_token'] as String,
   apkVersion: json['apk_version'] as String,
   type: json['type'] as String,
@@ -20,7 +20,7 @@ LoginParam _$LoginParamFromJson(Map<String, dynamic> json) => LoginParam(
 Map<String, dynamic> _$LoginParamToJson(LoginParam instance) =>
     <String, dynamic>{
       'email': instance.email,
-      'password': instance.password,
+      'password': ?instance.password,
       'fcm_token': instance.fcmToken,
       'apk_version': instance.apkVersion,
       'type': instance.type,

@@ -22,7 +22,7 @@ Login _$LoginFromJson(
 /// @nodoc
 mixin _$Login {
 
- String get email; String get password; String get fcmToken; String get apkVersion; String get type; String get firebaseId; String get role; AuthDeviceEntity get device;
+ String get email; String? get password; String get fcmToken; String get apkVersion; String get type; String get firebaseId; String get role; AuthDeviceEntity get device;
 /// Create a copy of Login
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -55,7 +55,7 @@ abstract mixin class $LoginCopyWith<$Res>  {
   factory $LoginCopyWith(Login value, $Res Function(Login) _then) = _$LoginCopyWithImpl;
 @useResult
 $Res call({
- String email, String password, String fcmToken, String apkVersion, String type, String firebaseId, String role, AuthDeviceEntity device
+ String email, String? password, String fcmToken, String apkVersion, String type, String firebaseId, String role, AuthDeviceEntity device
 });
 
 
@@ -72,11 +72,11 @@ class _$LoginCopyWithImpl<$Res>
 
 /// Create a copy of Login
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? email = null,Object? password = null,Object? fcmToken = null,Object? apkVersion = null,Object? type = null,Object? firebaseId = null,Object? role = null,Object? device = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? email = null,Object? password = freezed,Object? fcmToken = null,Object? apkVersion = null,Object? type = null,Object? firebaseId = null,Object? role = null,Object? device = freezed,}) {
   return _then(_self.copyWith(
 email: null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
-as String,password: null == password ? _self.password : password // ignore: cast_nullable_to_non_nullable
-as String,fcmToken: null == fcmToken ? _self.fcmToken : fcmToken // ignore: cast_nullable_to_non_nullable
+as String,password: freezed == password ? _self.password : password // ignore: cast_nullable_to_non_nullable
+as String?,fcmToken: null == fcmToken ? _self.fcmToken : fcmToken // ignore: cast_nullable_to_non_nullable
 as String,apkVersion: null == apkVersion ? _self.apkVersion : apkVersion // ignore: cast_nullable_to_non_nullable
 as String,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
 as String,firebaseId: null == firebaseId ? _self.firebaseId : firebaseId // ignore: cast_nullable_to_non_nullable
@@ -164,7 +164,7 @@ return param(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String email,  String password,  String fcmToken,  String apkVersion,  String type,  String firebaseId,  String role,  AuthDeviceEntity device)?  param,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String email,  String? password,  String fcmToken,  String apkVersion,  String type,  String firebaseId,  String role,  AuthDeviceEntity device)?  param,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case LoginParam() when param != null:
 return param(_that.email,_that.password,_that.fcmToken,_that.apkVersion,_that.type,_that.firebaseId,_that.role,_that.device);case _:
@@ -185,7 +185,7 @@ return param(_that.email,_that.password,_that.fcmToken,_that.apkVersion,_that.ty
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String email,  String password,  String fcmToken,  String apkVersion,  String type,  String firebaseId,  String role,  AuthDeviceEntity device)  param,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String email,  String? password,  String fcmToken,  String apkVersion,  String type,  String firebaseId,  String role,  AuthDeviceEntity device)  param,}) {final _that = this;
 switch (_that) {
 case LoginParam():
 return param(_that.email,_that.password,_that.fcmToken,_that.apkVersion,_that.type,_that.firebaseId,_that.role,_that.device);}
@@ -202,7 +202,7 @@ return param(_that.email,_that.password,_that.fcmToken,_that.apkVersion,_that.ty
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String email,  String password,  String fcmToken,  String apkVersion,  String type,  String firebaseId,  String role,  AuthDeviceEntity device)?  param,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String email,  String? password,  String fcmToken,  String apkVersion,  String type,  String firebaseId,  String role,  AuthDeviceEntity device)?  param,}) {final _that = this;
 switch (_that) {
 case LoginParam() when param != null:
 return param(_that.email,_that.password,_that.fcmToken,_that.apkVersion,_that.type,_that.firebaseId,_that.role,_that.device);case _:
@@ -217,11 +217,11 @@ return param(_that.email,_that.password,_that.fcmToken,_that.apkVersion,_that.ty
 
 @JsonSerializable(includeIfNull: false, fieldRename: FieldRename.snake)
 class LoginParam implements Login {
-  const LoginParam({required this.email, required this.password, required this.fcmToken, required this.apkVersion, required this.type, required this.firebaseId, required this.role, required this.device});
+  const LoginParam({required this.email, this.password, required this.fcmToken, required this.apkVersion, required this.type, required this.firebaseId, required this.role, required this.device});
   factory LoginParam.fromJson(Map<String, dynamic> json) => _$LoginParamFromJson(json);
 
 @override final  String email;
-@override final  String password;
+@override final  String? password;
 @override final  String fcmToken;
 @override final  String apkVersion;
 @override final  String type;
@@ -262,7 +262,7 @@ abstract mixin class $LoginParamCopyWith<$Res> implements $LoginCopyWith<$Res> {
   factory $LoginParamCopyWith(LoginParam value, $Res Function(LoginParam) _then) = _$LoginParamCopyWithImpl;
 @override @useResult
 $Res call({
- String email, String password, String fcmToken, String apkVersion, String type, String firebaseId, String role, AuthDeviceEntity device
+ String email, String? password, String fcmToken, String apkVersion, String type, String firebaseId, String role, AuthDeviceEntity device
 });
 
 
@@ -279,11 +279,11 @@ class _$LoginParamCopyWithImpl<$Res>
 
 /// Create a copy of Login
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? email = null,Object? password = null,Object? fcmToken = null,Object? apkVersion = null,Object? type = null,Object? firebaseId = null,Object? role = null,Object? device = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? email = null,Object? password = freezed,Object? fcmToken = null,Object? apkVersion = null,Object? type = null,Object? firebaseId = null,Object? role = null,Object? device = freezed,}) {
   return _then(LoginParam(
 email: null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
-as String,password: null == password ? _self.password : password // ignore: cast_nullable_to_non_nullable
-as String,fcmToken: null == fcmToken ? _self.fcmToken : fcmToken // ignore: cast_nullable_to_non_nullable
+as String,password: freezed == password ? _self.password : password // ignore: cast_nullable_to_non_nullable
+as String?,fcmToken: null == fcmToken ? _self.fcmToken : fcmToken // ignore: cast_nullable_to_non_nullable
 as String,apkVersion: null == apkVersion ? _self.apkVersion : apkVersion // ignore: cast_nullable_to_non_nullable
 as String,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
 as String,firebaseId: null == firebaseId ? _self.firebaseId : firebaseId // ignore: cast_nullable_to_non_nullable

@@ -9,7 +9,7 @@ sealed class Login with _$Login {
   @JsonSerializable(includeIfNull: false, fieldRename: FieldRename.snake)
   const factory Login.param({
     required String email,
-    required String password,
+    String? password,
     required String fcmToken,
     required String apkVersion,
     required String type,

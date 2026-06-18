@@ -16,7 +16,7 @@ class AuthLoginUseCase {
 
   Future<DataState> call({
     required String email,
-    required String password,
+    String? password,
     required String role,
   }) async {
     final fcmToken = await FirebaseMessaging.instance.getToken() ?? '';
