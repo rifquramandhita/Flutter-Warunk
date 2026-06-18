@@ -4,110 +4,141 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:equatable/equatable.dart';
+import 'package:warunk/app/features/merchant/domain/entity/merchant_dashboard.dart';
+import 'package:warunk/app/features/merchant/domain/entity/merchant_order_item.dart';
 import 'package:warunk/app/features/merchant/presentation/dashboard/bloc/merchant_dashboard_bloc.dart';
-import 'package:warunk/theme/app_colors.dart';
+import 'package:warunk/app/features/merchant/presentation/detail_order/merchant_detail_order_screen.dart';
+import 'package:warunk/core/dependency/dependency.dart';
+import 'package:warunk/core/widgets/loading_app_widget.dart';
+import 'package:warunk/core/helper/global_helper.dart';
+import 'package:warunk/core/helper/dialog_helper.dart';
+import 'package:warunk/core/enum/order_status.dart';
+import 'package:warunk/main.dart';
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Entry point — provides BLoC
-// ─────────────────────────────────────────────────────────────────────────────
 class MerchantDashboardScreen extends StatelessWidget {
   const MerchantDashboardScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => MerchantDashboardBloc(),
-      child: const _MerchantDashboardView(),
-    );
-  }
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// Main view
-// ─────────────────────────────────────────────────────────────────────────────
-class _MerchantDashboardView extends StatelessWidget {
-  const _MerchantDashboardView();
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.background,
-      body: SafeArea(
-        child: BlocBuilder<MerchantDashboardBloc, MerchantDashboardState>(
-          builder: (context, state) {
-            return SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _DashboardHeader(state: state),
-                  const SizedBox(height: 16),
-                  _StatsGrid(state: state),
-                  const SizedBox(height: 16),
-                  _SalesChart(state: state),
-                  const SizedBox(height: 16),
-                  _RecentOrders(state: state),
-                  const SizedBox(height: 16),
-                  _QuickActions(),
-                  const SizedBox(height: 24),
-                ],
-              ),
+      create: (_) =>
+          sl<MerchantDashboardBloc>()..add(MerchantDashboardEventStarted()),
+      child: BlocConsumer<MerchantDashboardBloc, MerchantDashboardState>(
+        listener: (context, state) {
+          if (state.errorMessage != null) {
+            DialogHelper.showErrorSnackBar(
+              context: context,
+              text: state.errorMessage!,
             );
-          },
-        ),
+          }
+        },
+        builder: (context, state) {
+          return Scaffold(
+            backgroundColor: GlobalHelper.getColorSchema(context).surface,
+            body: _bodyBuild(context),
+          );
+        },
       ),
     );
   }
-}
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Header
-// ─────────────────────────────────────────────────────────────────────────────
-class _DashboardHeader extends StatelessWidget {
-  const _DashboardHeader({required this.state});
-  final MerchantDashboardState state;
+  Widget _bodyBuild(BuildContext context) {
+    final state = context.watch<MerchantDashboardBloc>().state;
+    return SafeArea(
+      child: Stack(
+        children: [
+          _bodyLayout(context),
+          if (state.isLoading) const LoadingAppWidget(),
+        ],
+      ),
+    );
+  }
 
-  @override
-  Widget build(BuildContext context) {
+  Widget _bodyLayout(BuildContext context) {
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _dashboardHeader(context),
+          const SizedBox(height: 16),
+          _statsGrid(context),
+          const SizedBox(height: 16),
+          _salesChart(context),
+          const SizedBox(height: 16),
+          _recentOrders(context),
+          const SizedBox(height: 24),
+        ],
+      ),
+    );
+  }
+
+  Widget _dashboardHeader(BuildContext context) {
+    final state = context.watch<MerchantDashboardBloc>().state;
+    final colorSchema = GlobalHelper.getColorSchema(context);
+
     return Container(
-      color: AppColors.background,
+      color: colorSchema.surface,
       padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              // Avatar warung
               Container(
                 width: 56,
                 height: 56,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(14),
-                  color: AppColors.primary.withValues(alpha: 0.15),
+                  color: colorSchema.primary.withValues(alpha: 0.15),
                   border: Border.all(
-                    color: AppColors.primary.withValues(alpha: 0.3),
+                    color: colorSchema.primary.withValues(alpha: 0.3),
                     width: 2,
                   ),
                 ),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(12),
-                  child: const Center(
-                    child: Text('🏪', style: TextStyle(fontSize: 28)),
-                  ),
+                  child: state.merchantPhoto.isNotEmpty
+                      ? Image.network(
+                          state.merchantPhoto,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) {
+                            return Center(
+                              child: Icon(
+                                Icons.storefront,
+                                color: colorSchema.primary,
+                              ),
+                            );
+                          },
+                        )
+                      : Center(
+                          child: Text(
+                            '🏪',
+                            style: GlobalHelper.getTextTheme(
+                              context,
+                              appTextStyle: AppTextStyle.DISPLAY_SMALL,
+                            )?.copyWith(fontSize: 28),
+                          ),
+                        ),
                 ),
               ),
               const SizedBox(width: 12),
-              // Info nama toko
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      'Warunk Bu Siti',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.textDark,
-                      ),
+                    Text(
+                      state.merchantName.isEmpty
+                          ? 'Warunk Bu Siti'
+                          : state.merchantName,
+                      style:
+                          GlobalHelper.getTextTheme(
+                            context,
+                            appTextStyle: AppTextStyle.TITLE_LARGE,
+                          )?.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: colorSchema.onSurface,
+                          ),
                     ),
                     const SizedBox(height: 4),
                     Container(
@@ -116,35 +147,39 @@ class _DashboardHeader extends StatelessWidget {
                         vertical: 3,
                       ),
                       decoration: BoxDecoration(
-                        color: AppColors.primary.withValues(alpha: 0.12),
+                        color: colorSchema.primary.withValues(alpha: 0.12),
                         borderRadius: BorderRadius.circular(20),
                       ),
-                      child: const Text(
-                        'Merchant',
-                        style: TextStyle(
-                          fontSize: 11,
-                          fontWeight: FontWeight.w600,
-                          color: AppColors.primary,
-                        ),
+                      child: Text(
+                        state.merchantCategory.isEmpty
+                            ? 'Merchant'
+                            : state.merchantCategory,
+                        style:
+                            GlobalHelper.getTextTheme(
+                              context,
+                              appTextStyle: AppTextStyle.LABEL_SMALL,
+                            )?.copyWith(
+                              fontWeight: FontWeight.w600,
+                              color: colorSchema.primary,
+                            ),
                       ),
                     ),
                   ],
                 ),
               ),
-              // Bell notifikasi
               Stack(
                 children: [
                   Container(
                     width: 40,
                     height: 40,
                     decoration: BoxDecoration(
-                      color: AppColors.white,
+                      color: colorSchema.surface,
                       shape: BoxShape.circle,
-                      border: Border.all(color: AppColors.greyBorder),
+                      border: Border.all(color: colorSchema.outlineVariant),
                     ),
-                    child: const Icon(
+                    child: Icon(
                       Icons.notifications_outlined,
-                      color: AppColors.textDark,
+                      color: colorSchema.onSurface,
                       size: 20,
                     ),
                   ),
@@ -154,8 +189,8 @@ class _DashboardHeader extends StatelessWidget {
                     child: Container(
                       width: 14,
                       height: 14,
-                      decoration: const BoxDecoration(
-                        color: Colors.red,
+                      decoration: BoxDecoration(
+                        color: colorSchema.error,
                         shape: BoxShape.circle,
                       ),
                     ),
@@ -176,13 +211,18 @@ class _DashboardHeader extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 6),
-              const Text(
-                'Toko buka  •  08:00 – 22:00',
-                style: TextStyle(
-                  fontSize: 12,
-                  color: AppColors.greyText,
-                  fontWeight: FontWeight.w500,
-                ),
+              Text(
+                state.merchantTime.isEmpty
+                    ? 'Toko buka  •  08:00 – 22:00'
+                    : state.merchantTime,
+                style:
+                    GlobalHelper.getTextTheme(
+                      context,
+                      appTextStyle: AppTextStyle.LABEL_MEDIUM,
+                    )?.copyWith(
+                      color: colorSchema.onSurfaceVariant,
+                      fontWeight: FontWeight.w500,
+                    ),
               ),
             ],
           ),
@@ -190,24 +230,17 @@ class _DashboardHeader extends StatelessWidget {
       ),
     );
   }
-}
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Stats Grid (2×2)
-// ─────────────────────────────────────────────────────────────────────────────
-class _StatsGrid extends StatelessWidget {
-  const _StatsGrid({required this.state});
-  final MerchantDashboardState state;
+  Widget _statsGrid(BuildContext context) {
+    final state = context.watch<MerchantDashboardBloc>().state;
+    final colorSchema = GlobalHelper.getColorSchema(context);
+    final fmt = NumberFormat.decimalPattern('id');
+    final currency = NumberFormat.currency(
+      locale: 'id',
+      symbol: 'Rp',
+      decimalDigits: 0,
+    );
 
-  static final _fmt = NumberFormat.decimalPattern('id');
-  static final _currency = NumberFormat.currency(
-    locale: 'id',
-    symbol: 'Rp',
-    decimalDigits: 0,
-  );
-
-  @override
-  Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Column(
@@ -215,29 +248,29 @@ class _StatsGrid extends StatelessWidget {
           Row(
             children: [
               Expanded(
-                child: _StatCard(
+                child: _statCard(
+                  context,
                   iconBg: const Color(0xFFE8F5F1),
                   icon: Icons.shopping_bag_outlined,
-                  iconColor: AppColors.primary,
+                  iconColor: colorSchema.primary,
                   label: 'Pesanan Baru',
-                  value: _fmt.format(state.newOrders),
-                  valueColor: AppColors.primary,
+                  value: fmt.format(state.newOrders),
+                  valueColor: colorSchema.primary,
                   subtitle: 'Perlu diproses',
-                  showArrow: true,
                 ),
               ),
               const SizedBox(width: 12),
               Expanded(
-                child: _StatCard(
+                child: _statCard(
+                  context,
                   iconBg: const Color(0xFFEEF2FF),
                   icon: Icons.bar_chart_rounded,
                   iconColor: const Color(0xFF4F46E5),
                   label: 'Penjualan Hari Ini',
-                  value: _currency.format(state.todaySales),
+                  value: currency.format(state.todaySales),
                   valueColor: const Color(0xFF4F46E5),
                   subtitle: '▲ ${state.salesGrowth}% dari kemarin',
                   subtitleColor: const Color(0xFF22C55E),
-                  showArrow: false,
                 ),
               ),
             ],
@@ -246,28 +279,28 @@ class _StatsGrid extends StatelessWidget {
           Row(
             children: [
               Expanded(
-                child: _StatCard(
+                child: _statCard(
+                  context,
                   iconBg: const Color(0xFFFFF7ED),
                   icon: Icons.inventory_2_outlined,
                   iconColor: const Color(0xFFF97316),
                   label: 'Produk Aktif',
-                  value: _fmt.format(state.activeProducts),
+                  value: fmt.format(state.activeProducts),
                   valueColor: const Color(0xFFF97316),
                   subtitle: 'Dari ${state.totalProducts} produk',
-                  showArrow: true,
                 ),
               ),
               const SizedBox(width: 12),
               Expanded(
-                child: _StatCard(
+                child: _statCard(
+                  context,
                   iconBg: const Color(0xFFF0FDF4),
                   icon: Icons.account_balance_wallet_outlined,
-                  iconColor: AppColors.primary,
+                  iconColor: colorSchema.primary,
                   label: 'Saldo Masuk',
-                  value: _currency.format(state.balance),
-                  valueColor: AppColors.primary,
+                  value: currency.format(state.balance),
+                  valueColor: colorSchema.primary,
                   subtitle: 'Dapat ditarik',
-                  showArrow: true,
                 ),
               ),
             ],
@@ -276,37 +309,24 @@ class _StatsGrid extends StatelessWidget {
       ),
     );
   }
-}
 
-class _StatCard extends StatelessWidget {
-  const _StatCard({
-    required this.iconBg,
-    required this.icon,
-    required this.iconColor,
-    required this.label,
-    required this.value,
-    required this.valueColor,
-    required this.subtitle,
-    this.subtitleColor,
-    this.showArrow = false,
-  });
-
-  final Color iconBg;
-  final IconData icon;
-  final Color iconColor;
-  final String label;
-  final String value;
-  final Color valueColor;
-  final String subtitle;
-  final Color? subtitleColor;
-  final bool showArrow;
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _statCard(
+    BuildContext context, {
+    required Color iconBg,
+    required IconData icon,
+    required Color iconColor,
+    required String label,
+    required String value,
+    required Color valueColor,
+    required String subtitle,
+    Color? subtitleColor,
+    bool showArrow = false,
+  }) {
+    final colorSchema = GlobalHelper.getColorSchema(context);
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: colorSchema.surface,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
@@ -336,16 +356,18 @@ class _StatCard extends StatelessWidget {
           const SizedBox(height: 10),
           Text(
             label,
-            style: const TextStyle(fontSize: 11, color: AppColors.greyText),
+            style: GlobalHelper.getTextTheme(
+              context,
+              appTextStyle: AppTextStyle.LABEL_SMALL,
+            )?.copyWith(color: colorSchema.onSurfaceVariant),
           ),
           const SizedBox(height: 4),
           Text(
             value,
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: valueColor,
-            ),
+            style: GlobalHelper.getTextTheme(
+              context,
+              appTextStyle: AppTextStyle.TITLE_MEDIUM,
+            )?.copyWith(fontWeight: FontWeight.bold, color: valueColor),
           ),
           const SizedBox(height: 4),
           Row(
@@ -353,17 +375,21 @@ class _StatCard extends StatelessWidget {
               Expanded(
                 child: Text(
                   subtitle,
-                  style: TextStyle(
-                    fontSize: 10,
-                    color: subtitleColor ?? AppColors.greyText,
-                    fontWeight: FontWeight.w500,
-                  ),
+                  style:
+                      GlobalHelper.getTextTheme(
+                        context,
+                        appTextStyle: AppTextStyle.LABEL_SMALL,
+                      )?.copyWith(
+                        fontSize: 10,
+                        color: subtitleColor ?? colorSchema.onSurfaceVariant,
+                        fontWeight: FontWeight.w500,
+                      ),
                 ),
               ),
               if (showArrow)
-                const Icon(
+                Icon(
                   Icons.chevron_right,
-                  color: AppColors.greyText,
+                  color: colorSchema.onSurfaceVariant,
                   size: 16,
                 ),
             ],
@@ -372,22 +398,18 @@ class _StatCard extends StatelessWidget {
       ),
     );
   }
-}
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Sales Chart
-// ─────────────────────────────────────────────────────────────────────────────
-class _SalesChart extends StatelessWidget {
-  const _SalesChart({required this.state});
-  final MerchantDashboardState state;
+  // ─────────────────────────────────────────────────────────────────────────────
+  // Sales Chart
+  Widget _salesChart(BuildContext context) {
+    final state = context.watch<MerchantDashboardBloc>().state;
+    final colorSchema = GlobalHelper.getColorSchema(context);
 
-  @override
-  Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 20),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: colorSchema.surface,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
@@ -400,88 +422,61 @@ class _SalesChart extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              const Expanded(
-                child: Text(
-                  'Penjualan 7 Hari Terakhir',
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.textDark,
-                  ),
+          Text(
+            'Penjualan 7 Hari Terakhir',
+            style:
+                GlobalHelper.getTextTheme(
+                  context,
+                  appTextStyle: AppTextStyle.TITLE_SMALL,
+                )?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: colorSchema.onSurface,
                 ),
-              ),
-              // Period dropdown
-              GestureDetector(
-                onTap: () {},
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 6,
-                  ),
-                  decoration: BoxDecoration(
-                    color: AppColors.background,
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: AppColors.greyBorder),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        state.selectedPeriod,
-                        style: const TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w500,
-                          color: AppColors.textDark,
-                        ),
-                      ),
-                      const SizedBox(width: 4),
-                      const Icon(
-                        Icons.keyboard_arrow_down,
-                        size: 16,
-                        color: AppColors.textDark,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
           ),
           const SizedBox(height: 16),
           SizedBox(
             height: 160,
-            child: _LineChart(data: state.salesData, labels: state.salesLabels),
+            child: _lineChart(
+              context,
+              data: state.salesData,
+              labels: state.salesLabels,
+            ),
           ),
         ],
       ),
     );
   }
-}
 
-class _LineChart extends StatelessWidget {
-  const _LineChart({required this.data, required this.labels});
-  final List<double> data;
-  final List<String> labels;
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _lineChart(
+    BuildContext context, {
+    required List<double> data,
+    required List<String> labels,
+  }) {
+    final colorSchema = GlobalHelper.getColorSchema(context);
     return Column(
       children: [
         Expanded(
           child: CustomPaint(
-            painter: _LineChartPainter(data: data),
+            painter: _LineChartPainter(
+              data: data,
+              primaryColor: colorSchema.primary,
+              greyTextColor: colorSchema.onSurfaceVariant,
+              greyBorderColor: colorSchema.outlineVariant,
+              whiteColor: colorSchema.surface,
+            ),
             child: const SizedBox.expand(),
           ),
         ),
         const SizedBox(height: 8),
-        // X-axis labels
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: labels.map((label) {
             return Text(
               label,
-              style: const TextStyle(fontSize: 10, color: AppColors.greyText),
+              style: GlobalHelper.getTextTheme(
+                context,
+                appTextStyle: AppTextStyle.LABEL_SMALL,
+              )?.copyWith(fontSize: 10, color: colorSchema.onSurfaceVariant),
             );
           }).toList(),
         ),
@@ -491,8 +486,18 @@ class _LineChart extends StatelessWidget {
 }
 
 class _LineChartPainter extends CustomPainter {
-  const _LineChartPainter({required this.data});
+  const _LineChartPainter({
+    required this.data,
+    required this.primaryColor,
+    required this.greyTextColor,
+    required this.greyBorderColor,
+    required this.whiteColor,
+  });
   final List<double> data;
+  final Color primaryColor;
+  final Color greyTextColor;
+  final Color greyBorderColor;
+  final Color whiteColor;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -522,8 +527,8 @@ class _LineChartPainter extends CustomPainter {
       begin: Alignment.topCenter,
       end: Alignment.bottomCenter,
       colors: [
-        AppColors.primary.withValues(alpha: 0.2),
-        AppColors.primary.withValues(alpha: 0.02),
+        primaryColor.withValues(alpha: 0.2),
+        primaryColor.withValues(alpha: 0.02),
       ],
     );
 
@@ -563,7 +568,7 @@ class _LineChartPainter extends CustomPainter {
       );
       textPainter.text = TextSpan(
         text: label,
-        style: const TextStyle(color: AppColors.greyText, fontSize: 9),
+        style: TextStyle(color: greyTextColor, fontSize: 9),
       );
       textPainter.layout();
       // skip painting labels (handled outside if needed)
@@ -571,7 +576,7 @@ class _LineChartPainter extends CustomPainter {
 
     // Draw line
     final linePaint = Paint()
-      ..color = AppColors.primary
+      ..color = primaryColor
       ..strokeWidth = 2.5
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.round
@@ -597,10 +602,10 @@ class _LineChartPainter extends CustomPainter {
 
     // Draw dots on each point
     final dotPaint = Paint()
-      ..color = AppColors.white
+      ..color = whiteColor
       ..style = PaintingStyle.fill;
     final dotBorderPaint = Paint()
-      ..color = AppColors.primary
+      ..color = primaryColor
       ..style = PaintingStyle.stroke
       ..strokeWidth = 2;
 
@@ -612,7 +617,7 @@ class _LineChartPainter extends CustomPainter {
 
   void _drawDashedLine(Canvas canvas, Offset start, Offset end) {
     final paint = Paint()
-      ..color = AppColors.greyBorder
+      ..color = greyBorderColor
       ..strokeWidth = 0.8;
     const dashLength = 4.0;
     const gapLength = 4.0;
@@ -637,73 +642,54 @@ class _LineChartPainter extends CustomPainter {
   bool shouldRepaint(_LineChartPainter old) => old.data != data;
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Recent Orders
-// ─────────────────────────────────────────────────────────────────────────────
-class _RecentOrders extends StatelessWidget {
-  const _RecentOrders({required this.state});
-  final MerchantDashboardState state;
-
-  static final _currency = NumberFormat.currency(
+Widget _recentOrders(BuildContext context) {
+  final state = context.watch<MerchantDashboardBloc>().state;
+  final colorSchema = GlobalHelper.getColorSchema(context);
+  final currency = NumberFormat.currency(
     locale: 'id',
     symbol: 'Rp',
     decimalDigits: 0,
   );
 
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              const Expanded(
-                child: Text(
-                  'Order Terbaru',
-                  style: TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.textDark,
-                  ),
-                ),
+  return Padding(
+    padding: const EdgeInsets.symmetric(horizontal: 20),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Order Terbaru',
+          style:
+              GlobalHelper.getTextTheme(
+                context,
+                appTextStyle: AppTextStyle.TITLE_SMALL,
+              )?.copyWith(
+                fontWeight: FontWeight.bold,
+                color: colorSchema.onSurface,
               ),
-              GestureDetector(
-                onTap: () {},
-                child: const Text(
-                  'Lihat semua',
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: AppColors.primary,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          ...state.recentOrders.map(
-            (order) => _OrderItem(order: order, currency: _currency),
-          ),
-        ],
-      ),
-    );
-  }
+        ),
+        const SizedBox(height: 12),
+        ...state.recentOrders.map(
+          (order) => _orderItem(context, order: order, currency: currency),
+        ),
+      ],
+    ),
+  );
 }
 
-class _OrderItem extends StatelessWidget {
-  const _OrderItem({required this.order, required this.currency});
-  final MerchantOrderItem order;
-  final NumberFormat currency;
+Widget _orderItem(
+  BuildContext context, {
+  required MerchantDashboardRecentOrder order,
+  required NumberFormat currency,
+}) {
+  final colorSchema = GlobalHelper.getColorSchema(context);
 
-  @override
-  Widget build(BuildContext context) {
-    return Container(
+  return GestureDetector(
+    onTap: () => _onPressItemOrder(context, order.id),
+    child: Container(
       margin: const EdgeInsets.only(bottom: 8),
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: colorSchema.surface,
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
@@ -713,204 +699,119 @@ class _OrderItem extends StatelessWidget {
           ),
         ],
       ),
-      child: Row(
-        children: [
-          // Order ID chip
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            decoration: BoxDecoration(
-              color: AppColors.primary.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(6),
-            ),
-            child: Text(
-              order.orderId,
-              style: const TextStyle(
-                fontSize: 10,
-                fontWeight: FontWeight.w600,
-                color: AppColors.primary,
-              ),
-            ),
-          ),
-          const SizedBox(width: 10),
-          // Name & date
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  order.customerName,
-                  style: const TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.textDark,
-                  ),
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  order.dateTime,
-                  style: const TextStyle(
-                    fontSize: 10,
-                    color: AppColors.greyText,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          // Status badge + amount
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              _StatusBadge(status: order.status),
-              const SizedBox(height: 4),
-              Text(
-                currency.format(order.total),
-                style: const TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.textDark,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(width: 4),
-          const Icon(Icons.chevron_right, color: AppColors.greyText, size: 18),
-        ],
-      ),
-    );
-  }
-}
-
-class _StatusBadge extends StatelessWidget {
-  const _StatusBadge({required this.status});
-  final MerchantOrderStatus status;
-
-  @override
-  Widget build(BuildContext context) {
-    final (label, color) = switch (status) {
-      MerchantOrderStatus.diproses => ('Diproses', const Color(0xFFF97316)),
-      MerchantOrderStatus.siapDiantar => ('Siap Diantar', AppColors.primary),
-      MerchantOrderStatus.selesai => ('Selesai', const Color(0xFF22C55E)),
-      MerchantOrderStatus.dibatalkan => ('Dibatalkan', Colors.red),
-    };
-
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.12),
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Text(
-        label,
-        style: TextStyle(
-          fontSize: 10,
-          fontWeight: FontWeight.w600,
-          color: color,
-        ),
-      ),
-    );
-  }
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// Quick Actions
-// ─────────────────────────────────────────────────────────────────────────────
-class _QuickActions extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Quick Action',
-            style: TextStyle(
-              fontSize: 15,
-              fontWeight: FontWeight.bold,
-              color: AppColors.textDark,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [_statusBadge(context, status: order.status)],
+          ),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            decoration: BoxDecoration(
+              color: colorSchema.primary.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(6),
+            ),
+            child: Text(
+              order.invoiceNumber,
+              style:
+                  GlobalHelper.getTextTheme(
+                    context,
+                    appTextStyle: AppTextStyle.LABEL_SMALL,
+                  )?.copyWith(
+                    fontWeight: FontWeight.w600,
+                    color: colorSchema.primary,
+                  ),
             ),
           ),
-          const SizedBox(height: 12),
           Row(
             children: [
-              Expanded(
-                child: _QuickActionCard(
-                  icon: Icons.inventory_2_outlined,
-                  label: 'Tambah Produk',
-                  bgColor: const Color(0xFFE8F5F1),
-                  iconColor: AppColors.primary,
-                  onTap: () {},
-                ),
-              ),
               const SizedBox(width: 10),
               Expanded(
-                child: _QuickActionCard(
-                  icon: Icons.receipt_long_outlined,
-                  label: 'Lihat Order',
-                  bgColor: const Color(0xFFEEF2FF),
-                  iconColor: const Color(0xFF4F46E5),
-                  onTap: () {},
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      order.customerName,
+                      style:
+                          GlobalHelper.getTextTheme(
+                            context,
+                            appTextStyle: AppTextStyle.LABEL_MEDIUM,
+                          )?.copyWith(
+                            fontWeight: FontWeight.w600,
+                            color: colorSchema.onSurface,
+                          ),
+                    ),
+                    const SizedBox(height: 2),
+                  ],
                 ),
               ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: _QuickActionCard(
-                  icon: Icons.local_offer_outlined,
-                  label: 'Buat Promo',
-                  bgColor: const Color(0xFFFFF7ED),
-                  iconColor: const Color(0xFFF97316),
-                  onTap: () {},
-                ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  const SizedBox(height: 4),
+                  Text(
+                    currency.format(order.total),
+                    style:
+                        GlobalHelper.getTextTheme(
+                          context,
+                          appTextStyle: AppTextStyle.LABEL_MEDIUM,
+                        )?.copyWith(
+                          fontWeight: FontWeight.w600,
+                          color: colorSchema.onSurface,
+                        ),
+                  ),
+                ],
+              ),
+              const SizedBox(width: 4),
+              Icon(
+                Icons.chevron_right,
+                color: colorSchema.onSurfaceVariant,
+                size: 18,
               ),
             ],
           ),
         ],
       ),
-    );
-  }
+    ),
+  );
 }
 
-class _QuickActionCard extends StatelessWidget {
-  const _QuickActionCard({
-    required this.icon,
-    required this.label,
-    required this.bgColor,
-    required this.iconColor,
-    required this.onTap,
-  });
+Widget _statusBadge(BuildContext context, {required OrderStatus? status}) {
+  if (status == null) return const SizedBox.shrink();
 
-  final IconData icon;
-  final String label;
-  final Color bgColor;
-  final Color iconColor;
-  final VoidCallback onTap;
+  final colorSchema = GlobalHelper.getColorSchema(context);
+  final color = switch (status) {
+    OrderStatus.waitingPayment ||
+    OrderStatus.waitingPaymentConfirmation => const Color(0xFFFACC15),
+    OrderStatus.processing => const Color(0xFFF97316),
+    OrderStatus.shipped || OrderStatus.received => colorSchema.primary,
+    OrderStatus.completed => const Color(0xFF22C55E),
+    OrderStatus.waitingCancel || OrderStatus.cancelled => colorSchema.error,
+  };
 
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
-        decoration: BoxDecoration(
-          color: bgColor,
-          borderRadius: BorderRadius.circular(14),
-        ),
-        child: Column(
-          children: [
-            Icon(icon, color: iconColor, size: 28),
-            const SizedBox(height: 8),
-            Text(
-              label,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 11,
-                fontWeight: FontWeight.w600,
-                color: iconColor,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+  return Container(
+    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+    decoration: BoxDecoration(
+      color: color.withValues(alpha: 0.12),
+      borderRadius: BorderRadius.circular(20),
+    ),
+    child: Text(
+      status.label,
+      style: GlobalHelper.getTextTheme(
+        context,
+        appTextStyle: AppTextStyle.LABEL_SMALL,
+      )?.copyWith(fontWeight: FontWeight.w600, color: color),
+    ),
+  );
+}
+
+void _onPressItemOrder(BuildContext context, String id) async {
+  final bloc = context.read<MerchantDashboardBloc>();
+  await navigatorKey.currentState?.push(
+    MaterialPageRoute(
+      builder: (context) => MerchantDetailOrderScreen(orderId: id),
+    ),
+  );
+  bloc.add(MerchantDashboardEventStarted());
 }

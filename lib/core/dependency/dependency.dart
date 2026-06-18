@@ -152,6 +152,11 @@ import 'package:warunk/app/features/customer/domain/use_case/customer_wishlist_a
 import 'package:warunk/app/features/customer/domain/use_case/customer_wishlist_remove_use_case.dart';
 import 'package:warunk/app/features/customer/domain/use_case/customer_wishlists_get_use_case.dart';
 import 'package:warunk/app/features/customer/presentation/wishlist/bloc/customer_wishlist_bloc.dart';
+import 'package:warunk/app/features/merchant/data/source/merchant_dashboard_api_service.dart';
+import 'package:warunk/app/features/merchant/domain/repository/merchant_dashboard_repository.dart';
+import 'package:warunk/app/features/merchant/data/repository/merchant_dashboard_repository_impl.dart';
+import 'package:warunk/app/features/merchant/domain/use_case/merchant_dashboard_get_use_case.dart';
+import 'package:warunk/app/features/merchant/presentation/dashboard/bloc/merchant_dashboard_bloc.dart';
 final sl = GetIt.instance;
 
 Future<void> initDependency() async {
@@ -184,6 +189,7 @@ Future<void> initDependency() async {
   sl.registerLazySingleton(() => CustomerCartApiService(dio));
   sl.registerLazySingleton(() => CustomerOrderApiService(dio));
   sl.registerLazySingleton(() => CustomerWishlistApiService(dio));
+  sl.registerLazySingleton(() => MerchantDashboardApiService(dio));
   //repository
   sl.registerLazySingleton<MerchantLocationRepository>(
     () => MerchantLocationRepositoryImpl(),
@@ -224,6 +230,9 @@ Future<void> initDependency() async {
   );
   sl.registerLazySingleton<CustomerLocationRepository>(
     () => CustomerLocationRepositoryImpl(),
+  );
+  sl.registerLazySingleton<MerchantDashboardRepository>(
+    () => MerchantDashboardRepositoryImpl(api: sl()),
   );
 
   //usecase
@@ -335,6 +344,7 @@ Future<void> initDependency() async {
   sl.registerLazySingleton(
     () => CustomerWishlistsGetUseCase(repository: sl()),
   );
+  sl.registerLazySingleton(() => MerchantDashboardGetUseCase(repository: sl()));
   //bloc
   sl.registerLazySingleton(() => AuthBloc());
   sl.registerFactory(() => AuthLoginBloc(authBloc: sl(), useCase: sl()));
@@ -471,4 +481,5 @@ Future<void> initDependency() async {
       removeWishlistUseCase: sl(),
     ),
   );
+  sl.registerFactory(() => MerchantDashboardBloc(getUseCase: sl()));
 }
