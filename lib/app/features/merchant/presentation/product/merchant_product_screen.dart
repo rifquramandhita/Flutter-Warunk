@@ -233,7 +233,8 @@ class MerchantProductScreen extends StatelessWidget {
                         const SizedBox(width: 6),
                         _buildStokBadge(
                           product.variants.isNotEmpty
-                              ? product.variants.first.stock
+                              ? product.variants.fold<int>(
+                                  0, (sum, item) => sum + item.stock)
                               : product.stock,
                         ),
                       ],
