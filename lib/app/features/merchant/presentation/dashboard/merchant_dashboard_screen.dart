@@ -9,6 +9,7 @@ import 'package:warunk/app/features/merchant/domain/entity/merchant_dashboard.da
 import 'package:warunk/app/features/merchant/domain/entity/merchant_order_item.dart';
 import 'package:warunk/app/features/merchant/presentation/dashboard/bloc/merchant_dashboard_bloc.dart';
 import 'package:warunk/app/features/merchant/presentation/detail_order/merchant_detail_order_screen.dart';
+import 'package:warunk/app/features/merchant/presentation/notification/merchant_notification_screen.dart';
 import 'package:warunk/core/dependency/dependency.dart';
 import 'package:warunk/core/widgets/loading_app_widget.dart';
 import 'package:warunk/core/helper/global_helper.dart';
@@ -167,35 +168,45 @@ class MerchantDashboardScreen extends StatelessWidget {
                   ],
                 ),
               ),
-              Stack(
-                children: [
-                  Container(
-                    width: 40,
-                    height: 40,
-                    decoration: BoxDecoration(
-                      color: colorSchema.surface,
-                      shape: BoxShape.circle,
-                      border: Border.all(color: colorSchema.outlineVariant),
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const MerchantNotificationScreen(),
                     ),
-                    child: Icon(
-                      Icons.notifications_outlined,
-                      color: colorSchema.onSurface,
-                      size: 20,
-                    ),
-                  ),
-                  Positioned(
-                    right: 0,
-                    top: 0,
-                    child: Container(
-                      width: 14,
-                      height: 14,
+                  );
+                },
+                child: Stack(
+                  children: [
+                    Container(
+                      width: 40,
+                      height: 40,
                       decoration: BoxDecoration(
-                        color: colorSchema.error,
+                        color: colorSchema.surface,
                         shape: BoxShape.circle,
+                        border: Border.all(color: colorSchema.outlineVariant),
+                      ),
+                      child: Icon(
+                        Icons.notifications_outlined,
+                        color: colorSchema.onSurface,
+                        size: 20,
                       ),
                     ),
-                  ),
-                ],
+                    Positioned(
+                      right: 0,
+                      top: 0,
+                      child: Container(
+                        width: 14,
+                        height: 14,
+                        decoration: BoxDecoration(
+                          color: colorSchema.error,
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
