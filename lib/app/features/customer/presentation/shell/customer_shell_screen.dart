@@ -17,7 +17,6 @@ class CustomerShellScreen extends StatelessWidget {
     const CustomerHomeScreen(),
     const CustomerMapScreen(),
     const CustomerOrderScreen(),
-    const CustomerNotificationScreen(),
     const CustomerProfileScreen(),
   ];
 
@@ -57,17 +56,6 @@ class CustomerShellScreen extends StatelessWidget {
                   ),
                   icon: Icon(Icons.receipt_long_outlined),
                   label: 'Transaksi',
-                ),
-                NavigationDestination(
-                  selectedIcon: Badge(
-                    label: Text('3'),
-                    child: Icon(Icons.notifications, color: AppColors.primary),
-                  ),
-                  icon: Badge(
-                    label: Text('3'),
-                    child: Icon(Icons.notifications_outlined),
-                  ),
-                  label: 'Notifikasi',
                 ),
                 NavigationDestination(
                   selectedIcon: Icon(Icons.person, color: AppColors.primary),
