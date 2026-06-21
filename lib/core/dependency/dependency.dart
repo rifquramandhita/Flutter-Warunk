@@ -4,6 +4,7 @@ import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import 'package:warunk/app/features/auth/data/source/auth_api_service.dart';
 import 'package:warunk/app/features/auth/domain/repository/auth_repository.dart';
 import 'package:warunk/app/features/auth/domain/use_case/auth_login_use_case.dart';
+import 'package:warunk/app/features/auth/domain/use_case/auth_login_google_use_case.dart';
 import 'package:warunk/app/features/auth/domain/use_case/auth_logout_use_case.dart';
 import 'package:warunk/app/features/auth/domain/use_case/auth_register_use_case.dart';
 import 'package:warunk/app/features/customer/presentation/profil/bloc/customer_profil_bloc.dart';
@@ -239,6 +240,7 @@ Future<void> initDependency() async {
   sl.registerLazySingleton(() => MerchantLocationGetCurrentUseCase(sl()));
   sl.registerLazySingleton(() => MerchantLocationGetPlacemarkUseCase(sl()));
   sl.registerLazySingleton(() => AuthLoginUseCase(repository: sl()));
+  sl.registerLazySingleton(() => AuthLoginGoogleUseCase(repository: sl()));
   sl.registerLazySingleton(() => AuthLogoutUseCase(repository: sl()));
   sl.registerLazySingleton(() => AuthRegisterUseCase(repository: sl()));
   sl.registerLazySingleton(() => AuthForgotPasswordUseCase(repository: sl()));
@@ -347,7 +349,7 @@ Future<void> initDependency() async {
   sl.registerLazySingleton(() => MerchantDashboardGetUseCase(repository: sl()));
   //bloc
   sl.registerLazySingleton(() => AuthBloc());
-  sl.registerFactory(() => AuthLoginBloc(authBloc: sl(), useCase: sl()));
+  sl.registerFactory(() => AuthLoginBloc(authBloc: sl(), useCase: sl(), googleUseCase: sl()));
   sl.registerFactory(() => MerchantBalanceHistoryBloc(useCase: sl()));
   sl.registerFactory(() => MerchantBalanceTopupPaymentBloc());
   sl.registerFactory(() => MerchantInputTopupBloc(useCase: sl()));

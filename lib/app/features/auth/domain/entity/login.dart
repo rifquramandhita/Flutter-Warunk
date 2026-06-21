@@ -15,8 +15,20 @@ sealed class Login with _$Login {
     required String type,
     required String firebaseId,
     required String role,
-    required AuthDeviceEntity device,
+    required AuthDevice device,
   }) = LoginParam;
+
+  @JsonSerializable(includeIfNull: false, fieldRename: FieldRename.snake)
+  const factory Login.googleParam({
+    required String email,
+    required String name,
+    required String role,
+    required AuthDevice device,
+    required String apkVersion,
+    required String type,
+    required String firebaseId,
+    required String fcmToken,
+  }) = LoginGoogleParam;
 
   factory Login.fromJson(Map<String, Object?> json) => _$LoginFromJson(json);
 }

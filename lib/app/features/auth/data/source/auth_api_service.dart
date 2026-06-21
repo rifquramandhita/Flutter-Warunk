@@ -12,6 +12,11 @@ abstract class AuthApiService {
     @Body() required Map<String, dynamic> body,
   });
 
+  @POST('/api/auth/login/google')
+  Future<HttpResponse<dynamic>> loginGoogle({
+    @Body() required Map<String, dynamic> body,
+  });
+
   @POST('/api/auth/register')
   Future<HttpResponse<dynamic>> registerCustomer({
     @Body() required Map<String, dynamic> body,

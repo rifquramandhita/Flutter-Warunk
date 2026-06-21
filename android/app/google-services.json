@@ -12,7 +12,20 @@
           "package_name": "com.example.warunk"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "724692728401-4dbuc1rami6mntq7trsb7lrvidrdohb1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.warunk",
+            "certificate_hash": "f27b399f5b9ced98172c693ff4a680b227c3b7c1"
+          }
+        },
+        {
+          "client_id": "724692728401-4nmkm3lkuhh8c8chv46qtfr79cq9ic66.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyB1XtuVaUoFl8NJnJHD7ThuabhoskXdh7s"
@@ -20,7 +33,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "724692728401-4nmkm3lkuhh8c8chv46qtfr79cq9ic66.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

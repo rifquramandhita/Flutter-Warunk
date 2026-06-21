@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:warunk/app/features/auth/domain/use_case/auth_login_use_case.dart';
+import 'package:warunk/app/features/auth/domain/use_case/auth_login_google_use_case.dart';
 import 'package:warunk/core/bloc/auth/auth_bloc.dart';
 import 'package:warunk/core/constants/constant.dart';
 import 'package:warunk/core/helper/shared_preferences_helper.dart';
@@ -11,11 +12,16 @@ import 'auth_login_state.dart';
 class AuthLoginBloc extends Bloc<AuthLoginEvent, AuthLoginState> {
   final AuthBloc _authBloc;
   final AuthLoginUseCase _useCase;
+  final AuthLoginGoogleUseCase _googleUseCase;
 
-  AuthLoginBloc({required AuthBloc authBloc, required AuthLoginUseCase useCase})
-    : _authBloc = authBloc,
-      _useCase = useCase,
-      super(const AuthLoginState()) {
+  AuthLoginBloc({
+    required AuthBloc authBloc,
+    required AuthLoginUseCase useCase,
+    required AuthLoginGoogleUseCase googleUseCase,
+  })  : _authBloc = authBloc,
+        _useCase = useCase,
+        _googleUseCase = googleUseCase,
+        super(const AuthLoginState()) {
     on<AuthEmailChanged>(_onEmailChanged);
     on<AuthPasswordChanged>(_onPasswordChanged);
     on<AuthObscurePasswordToggled>(_onObscurePasswordToggled);
@@ -76,9 +82,9 @@ class AuthLoginBloc extends Bloc<AuthLoginEvent, AuthLoginState> {
       final googleUser = await googleSignIn.signIn();
 
       if (googleUser != null) {
-        final response = await _useCase(
+        final response = await _googleUseCase(
           email: googleUser.email,
-          password: null,
+          name: googleUser.displayName ?? 'No Name',
           role: state.role.value,
         );
         if (response.success) {

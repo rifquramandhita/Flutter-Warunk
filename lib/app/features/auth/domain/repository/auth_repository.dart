@@ -38,6 +38,30 @@ class AuthRepository {
     });
   }
 
+  Future<DataState> loginGoogle({required LoginGoogleParam param}) async {
+    return handleResponse(() => _api.loginGoogle(body: param.toJson()), (
+      responseData,
+    ) async {
+      final auth = AuthEntity.fromJson(responseData);
+      await SharedPreferencesHelper.setString(
+        PREF_AUTH,
+        '${auth.tokenType} ${auth.token}',
+      );
+      await SharedPreferencesHelper.setString(PREF_NAME, auth.user.name);
+      await SharedPreferencesHelper.setString(PREF_EMAIL, auth.user.email);
+      await SharedPreferencesHelper.setString(PREF_PHONE, auth.user.phone);
+      if (auth.user.profilePhoto != null &&
+          auth.user.profilePhoto!.isNotEmpty) {
+        await SharedPreferencesHelper.setString(
+          PREF_PHOTO,
+          auth.user.profilePhoto!,
+        );
+      }
+      await SharedPreferencesHelper.setString(PREF_ROLE, param.role);
+      return null;
+    });
+  }
+
   Future<DataState> registerCustomer({required RegisterSendParam param}) async {
     return handleResponse(() => _api.registerCustomer(body: param.toJson()), (
       responseData,
