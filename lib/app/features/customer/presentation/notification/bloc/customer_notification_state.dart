@@ -1,22 +1,29 @@
 part of 'customer_notification_bloc.dart';
 
-class CustomerNotificationState {
-  final int selectedTab; // 0=Semua, 1=Transaksi, 2=Promo
+class CustomerNotificationState extends Equatable {
   final List<CustomerNotifItemEntity> items;
+  final bool isLoading;
+  final String? errorMessage;
 
   int get unreadCount => items.where((n) => !n.isRead).length;
 
-  List<CustomerNotifItemEntity> get filtered {
-    if (selectedTab == 1) return items.where((n) => n.type == NotifType.transaction).toList();
-    if (selectedTab == 2) return items.where((n) => n.type == NotifType.promo).toList();
-    return items;
-  }
+  const CustomerNotificationState({
+    required this.items,
+    this.isLoading = false,
+    this.errorMessage,
+  });
 
-  const CustomerNotificationState({this.selectedTab = 0, required this.items});
-
-  CustomerNotificationState copyWith({int? selectedTab, List<CustomerNotifItemEntity>? items}) =>
+  CustomerNotificationState copyWith({
+    List<CustomerNotifItemEntity>? items,
+    bool? isLoading,
+    String? errorMessage,
+  }) =>
       CustomerNotificationState(
-        selectedTab: selectedTab ?? this.selectedTab,
         items: items ?? this.items,
+        isLoading: isLoading ?? this.isLoading,
+        errorMessage: errorMessage,
       );
+
+  @override
+  List<Object?> get props => [items, isLoading, errorMessage];
 }

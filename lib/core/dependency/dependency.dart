@@ -158,6 +158,11 @@ import 'package:warunk/app/features/merchant/domain/repository/merchant_dashboar
 import 'package:warunk/app/features/merchant/data/repository/merchant_dashboard_repository_impl.dart';
 import 'package:warunk/app/features/merchant/domain/use_case/merchant_dashboard_get_use_case.dart';
 import 'package:warunk/app/features/merchant/presentation/dashboard/bloc/merchant_dashboard_bloc.dart';
+import 'package:warunk/app/features/customer/data/source/customer_notification_api_service.dart';
+import 'package:warunk/app/features/customer/domain/repository/customer_notification_repository.dart';
+import 'package:warunk/app/features/customer/data/repository/customer_notification_repository_impl.dart';
+import 'package:warunk/app/features/customer/domain/use_case/customer_notification_get_use_case.dart';
+import 'package:warunk/app/features/customer/presentation/notification/bloc/customer_notification_bloc.dart';
 final sl = GetIt.instance;
 
 Future<void> initDependency() async {
@@ -191,6 +196,7 @@ Future<void> initDependency() async {
   sl.registerLazySingleton(() => CustomerOrderApiService(dio));
   sl.registerLazySingleton(() => CustomerWishlistApiService(dio));
   sl.registerLazySingleton(() => MerchantDashboardApiService(dio));
+  sl.registerLazySingleton(() => CustomerNotificationApiService(dio));
   //repository
   sl.registerLazySingleton<MerchantLocationRepository>(
     () => MerchantLocationRepositoryImpl(),
@@ -234,6 +240,9 @@ Future<void> initDependency() async {
   );
   sl.registerLazySingleton<MerchantDashboardRepository>(
     () => MerchantDashboardRepositoryImpl(api: sl()),
+  );
+  sl.registerLazySingleton<CustomerNotificationRepository>(
+    () => CustomerNotificationRepositoryImpl(apiService: sl()),
   );
 
   //usecase
@@ -347,6 +356,7 @@ Future<void> initDependency() async {
     () => CustomerWishlistsGetUseCase(repository: sl()),
   );
   sl.registerLazySingleton(() => MerchantDashboardGetUseCase(repository: sl()));
+  sl.registerLazySingleton(() => CustomerNotificationGetUseCase(repository: sl()));
   //bloc
   sl.registerLazySingleton(() => AuthBloc());
   sl.registerFactory(() => AuthLoginBloc(authBloc: sl(), useCase: sl(), googleUseCase: sl()));
@@ -484,4 +494,5 @@ Future<void> initDependency() async {
     ),
   );
   sl.registerFactory(() => MerchantDashboardBloc(getUseCase: sl()));
+  sl.registerFactory(() => CustomerNotificationBloc(getUseCase: sl()));
 }

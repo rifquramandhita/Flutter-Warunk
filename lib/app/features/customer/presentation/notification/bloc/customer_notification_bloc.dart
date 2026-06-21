@@ -1,87 +1,99 @@
+import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:warunk/app/features/customer/domain/entity/customer_notif_item_entity.dart';
+import 'package:warunk/app/features/customer/domain/entity/customer_notification.dart';
+import 'package:warunk/app/features/customer/domain/use_case/customer_notification_get_use_case.dart';
+import 'package:warunk/core/network/data_state.dart';
 export 'package:warunk/app/features/customer/domain/entity/customer_notif_item_entity.dart';
 
 part 'customer_notification_event.dart';
 part 'customer_notification_state.dart';
 
-// ── Sample data ────────────────────────────────────────────────────────────
-final _sampleNotifs = <CustomerNotifItemEntity>[
-  const CustomerNotifItemEntity(
-    id: '1', type: NotifType.transaction,
-    title: 'Pesanan #WRK-240128-018 sedang dikirim',
-    body: 'Warung Madura Cahaya', isRead: false, timeLabel: '5 menit lalu',
-    hasStoreThumbnail: true,
-    storeColor1: 0xFF1B5E20, storeColor2: 0xFF4CAF50, storeInitial: 'WMC',
-    badgeIconCode: 0xe1b1, // electric_moped → use delivery_dining
-    badgeBgColor: 0xFF2D6A4F, badgeIconColor: 0xFFFFFFFF,
-    orderId: '#WRK-240128-018',
-  ),
-  const CustomerNotifItemEntity(
-    id: '2', type: NotifType.transaction,
-    title: 'Pesananmu sudah dikonfirmasi merchant',
-    body: 'Warung Madura Cahaya', isRead: false, timeLabel: '15 menit lalu',
-    hasStoreThumbnail: true,
-    storeColor1: 0xFF1B5E20, storeColor2: 0xFF4CAF50, storeInitial: 'WMC',
-    badgeIconCode: 0xe86c, // check_box → check_circle
-    badgeBgColor: 0xFF2D6A4F, badgeIconColor: 0xFFFFFFFF,
-  ),
-  const CustomerNotifItemEntity(
-    id: '3', type: NotifType.promo,
-    title: 'Promo ongkir min. belanja 30RB',
-    body: 'Yuk, belanja lebih hemat dengan promo ongkir spesial hari ini!',
-    isRead: false, timeLabel: '1 jam lalu',
-    hasStoreThumbnail: false,
-    storeColor1: 0xFFFFF9C4, storeColor2: 0xFFFFF176, storeInitial: '%',
-    badgeIconCode: 0xe54e, // local_offer → discount
-    badgeBgColor: 0xFFF59E0B, badgeIconColor: 0xFFFFFFFF,
-    hasPromoLabel: true,
-  ),
-  const CustomerNotifItemEntity(
-    id: '4', type: NotifType.promo,
-    title: 'Kelontong Jaya punya promo baru',
-    body: 'Cek sekarang dan nikmati penawaran spesialnya!',
-    isRead: true, timeLabel: '3 jam lalu',
-    hasStoreThumbnail: true,
-    storeColor1: 0xFFBF360C, storeColor2: 0xFFE64A19, storeInitial: 'KJ',
-    badgeIconCode: 0xe0b7, // campaign/megaphone
-    badgeBgColor: 0xFFF59E0B, badgeIconColor: 0xFFFFFFFF,
-  ),
-  const CustomerNotifItemEntity(
-    id: '5', type: NotifType.transaction,
-    title: 'Pembayaran berhasil diverifikasi',
-    body: 'Pembayaran sebesar Rp20.000 berhasil diverifikasi.',
-    isRead: true, timeLabel: 'Kemarin',
-    hasStoreThumbnail: false,
-    storeColor1: 0xFFE8F5E9, storeColor2: 0xFFA5D6A7, storeInitial: '✓',
-    badgeIconCode: 0xe8e5, // verified → check_circle
-    badgeBgColor: 0xFF2D6A4F, badgeIconColor: 0xFFFFFFFF,
-  ),
-  const CustomerNotifItemEntity(
-    id: '6', type: NotifType.info,
-    title: 'Warung Barokah sedang tutup sementara',
-    body: 'Merchant akan buka kembali besok pukul 08:00.',
-    isRead: true, timeLabel: 'Kemarin',
-    hasStoreThumbnail: false,
-    storeColor1: 0xFFE3F2FD, storeColor2: 0xFF90CAF9, storeInitial: 'B',
-    badgeIconCode: 0xe59f, // storefront with X → store
-    badgeBgColor: 0xFF1976D2, badgeIconColor: 0xFFFFFFFF,
-  ),
-];
+class CustomerNotificationBloc
+    extends Bloc<CustomerNotificationEvent, CustomerNotificationState> {
+  final CustomerNotificationGetUseCase _getUseCase;
 
-class CustomerNotificationBloc extends Bloc<CustomerNotificationEvent, CustomerNotificationState> {
-  CustomerNotificationBloc() : super(CustomerNotificationState(items: List.from(_sampleNotifs))) {
-    on<CustomerNotificationTabChanged>((e, emit) =>
-        emit(state.copyWith(selectedTab: e.tab)));
+  CustomerNotificationBloc({required CustomerNotificationGetUseCase getUseCase})
+    : _getUseCase = getUseCase,
+      super(const CustomerNotificationState(items: [])) {
+    on<CustomerNotificationEventLoad>(_onLoad);
+  }
 
-    on<CustomerNotificationRead>((e, emit) {
-      final updated = state.items.map((n) => n.id == e.id ? n.copyWith(isRead: true) : n).toList();
-      emit(state.copyWith(items: updated));
-    });
+  Future<void> _onLoad(
+    CustomerNotificationEventLoad event,
+    Emitter<CustomerNotificationState> emit,
+  ) async {
+    emit(state.copyWith(isLoading: true));
+    final result = await _getUseCase();
 
-    on<CustomerNotificationMarkAllRead>((e, emit) {
-      final updated = state.items.map((n) => n.copyWith(isRead: true)).toList();
-      emit(state.copyWith(items: updated));
-    });
+    if (result is SuccessState) {
+      final notifications = result.data?.notifications ?? [];
+      final items = notifications.map(_mapToUI).toList();
+      emit(state.copyWith(isLoading: false, items: items));
+    } else {
+      emit(state.copyWith(isLoading: false, errorMessage: result.message));
+    }
+  }
+
+  CustomerNotifItemEntity _mapToUI(CustomerNotificationEntity entity) {
+    NotifType type = NotifType.info;
+    bool hasPromoLabel = false;
+    int badgeIconCode = 0xe88e; // info
+    int badgeBgColor = 0xFF1976D2;
+    int badgeIconColor = 0xFFFFFFFF;
+    int storeColor1 = 0xFFE3F2FD;
+    int storeColor2 = 0xFF90CAF9;
+    String storeInitial = 'N';
+
+    if (entity.indicator == 'user_order_status') {
+      type = NotifType.transaction;
+      badgeIconCode = 0xe86c; // check_circle
+      badgeBgColor = 0xFF2D6A4F;
+      storeColor1 = 0xFF1B5E20;
+      storeColor2 = 0xFF4CAF50;
+      storeInitial = 'W';
+    } else if (entity.indicator == 'user_product_promotion') {
+      type = NotifType.promo;
+      badgeIconCode = 0xe54e; // local_offer
+      badgeBgColor = 0xFFF59E0B;
+      storeColor1 = 0xFFFFF9C4;
+      storeColor2 = 0xFFFFF176;
+      storeInitial = '%';
+      hasPromoLabel = true;
+    }
+
+    return CustomerNotifItemEntity(
+      id: entity.id,
+      type: type,
+      title: entity.title ?? '',
+      body: entity.description ?? '',
+      isRead: entity.isRead,
+      timeLabel: _formatDate(entity.createdAt),
+      hasStoreThumbnail: false,
+      storeColor1: storeColor1,
+      storeColor2: storeColor2,
+      storeInitial: storeInitial,
+      badgeIconCode: badgeIconCode,
+      badgeBgColor: badgeBgColor,
+      badgeIconColor: badgeIconColor,
+      hasPromoLabel: hasPromoLabel,
+      orderId: entity.data?['invoice_number']?.toString(),
+    );
+  }
+
+  String _formatDate(String? dateStr) {
+    if (dateStr == null) return '';
+    try {
+      final date = DateTime.parse(dateStr).toLocal();
+      final now = DateTime.now();
+      final diff = now.difference(date);
+      if (diff.inMinutes < 1) return 'Baru saja';
+      if (diff.inMinutes < 60) return '${diff.inMinutes} menit lalu';
+      if (diff.inHours < 24) return '${diff.inHours} jam lalu';
+      if (diff.inDays == 1) return 'Kemarin';
+      return '${date.day}/${date.month}/${date.year}';
+    } catch (_) {
+      return '';
+    }
   }
 }
