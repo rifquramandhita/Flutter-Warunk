@@ -9,7 +9,7 @@ sealed class User with _$User {
   const factory User.entity({
     required String name,
     required String email,
-    required String phone,
+    required String? phone,
     String? profilePhoto,
   }) = UserEntity;
 

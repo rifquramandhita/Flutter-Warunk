@@ -22,7 +22,7 @@ User _$UserFromJson(
 /// @nodoc
 mixin _$User {
 
- String get name; String get email; String get phone; String? get profilePhoto;
+ String get name; String get email; String? get phone; String? get profilePhoto;
 /// Create a copy of User
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -55,7 +55,7 @@ abstract mixin class $UserCopyWith<$Res>  {
   factory $UserCopyWith(User value, $Res Function(User) _then) = _$UserCopyWithImpl;
 @useResult
 $Res call({
- String name, String email, String phone, String? profilePhoto
+ String name, String email, String? phone, String? profilePhoto
 });
 
 
@@ -72,12 +72,12 @@ class _$UserCopyWithImpl<$Res>
 
 /// Create a copy of User
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? name = null,Object? email = null,Object? phone = null,Object? profilePhoto = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? name = null,Object? email = null,Object? phone = freezed,Object? profilePhoto = freezed,}) {
   return _then(_self.copyWith(
 name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,email: null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
-as String,phone: null == phone ? _self.phone : phone // ignore: cast_nullable_to_non_nullable
-as String,profilePhoto: freezed == profilePhoto ? _self.profilePhoto : profilePhoto // ignore: cast_nullable_to_non_nullable
+as String,phone: freezed == phone ? _self.phone : phone // ignore: cast_nullable_to_non_nullable
+as String?,profilePhoto: freezed == profilePhoto ? _self.profilePhoto : profilePhoto // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }
@@ -160,7 +160,7 @@ return entity(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String name,  String email,  String phone,  String? profilePhoto)?  entity,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String name,  String email,  String? phone,  String? profilePhoto)?  entity,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case UserEntity() when entity != null:
 return entity(_that.name,_that.email,_that.phone,_that.profilePhoto);case _:
@@ -181,7 +181,7 @@ return entity(_that.name,_that.email,_that.phone,_that.profilePhoto);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String name,  String email,  String phone,  String? profilePhoto)  entity,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String name,  String email,  String? phone,  String? profilePhoto)  entity,}) {final _that = this;
 switch (_that) {
 case UserEntity():
 return entity(_that.name,_that.email,_that.phone,_that.profilePhoto);}
@@ -198,7 +198,7 @@ return entity(_that.name,_that.email,_that.phone,_that.profilePhoto);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String name,  String email,  String phone,  String? profilePhoto)?  entity,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String name,  String email,  String? phone,  String? profilePhoto)?  entity,}) {final _that = this;
 switch (_that) {
 case UserEntity() when entity != null:
 return entity(_that.name,_that.email,_that.phone,_that.profilePhoto);case _:
@@ -218,7 +218,7 @@ class UserEntity implements User {
 
 @override final  String name;
 @override final  String email;
-@override final  String phone;
+@override final  String? phone;
 @override final  String? profilePhoto;
 
 /// Create a copy of User
@@ -254,7 +254,7 @@ abstract mixin class $UserEntityCopyWith<$Res> implements $UserCopyWith<$Res> {
   factory $UserEntityCopyWith(UserEntity value, $Res Function(UserEntity) _then) = _$UserEntityCopyWithImpl;
 @override @useResult
 $Res call({
- String name, String email, String phone, String? profilePhoto
+ String name, String email, String? phone, String? profilePhoto
 });
 
 
@@ -271,12 +271,12 @@ class _$UserEntityCopyWithImpl<$Res>
 
 /// Create a copy of User
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? name = null,Object? email = null,Object? phone = null,Object? profilePhoto = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? name = null,Object? email = null,Object? phone = freezed,Object? profilePhoto = freezed,}) {
   return _then(UserEntity(
 name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,email: null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
-as String,phone: null == phone ? _self.phone : phone // ignore: cast_nullable_to_non_nullable
-as String,profilePhoto: freezed == profilePhoto ? _self.profilePhoto : profilePhoto // ignore: cast_nullable_to_non_nullable
+as String,phone: freezed == phone ? _self.phone : phone // ignore: cast_nullable_to_non_nullable
+as String?,profilePhoto: freezed == profilePhoto ? _self.profilePhoto : profilePhoto // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }

@@ -25,7 +25,10 @@ class AuthRepository {
       );
       await SharedPreferencesHelper.setString(PREF_NAME, auth.user.name);
       await SharedPreferencesHelper.setString(PREF_EMAIL, auth.user.email);
-      await SharedPreferencesHelper.setString(PREF_PHONE, auth.user.phone);
+      await SharedPreferencesHelper.setString(
+        PREF_PHONE,
+        auth.user.phone ?? '',
+      );
       if (auth.user.profilePhoto != null &&
           auth.user.profilePhoto!.isNotEmpty) {
         await SharedPreferencesHelper.setString(
@@ -49,7 +52,10 @@ class AuthRepository {
       );
       await SharedPreferencesHelper.setString(PREF_NAME, auth.user.name);
       await SharedPreferencesHelper.setString(PREF_EMAIL, auth.user.email);
-      await SharedPreferencesHelper.setString(PREF_PHONE, auth.user.phone);
+      await SharedPreferencesHelper.setString(
+        PREF_PHONE,
+        auth.user.phone ?? '',
+      );
       if (auth.user.profilePhoto != null &&
           auth.user.profilePhoto!.isNotEmpty) {
         await SharedPreferencesHelper.setString(
