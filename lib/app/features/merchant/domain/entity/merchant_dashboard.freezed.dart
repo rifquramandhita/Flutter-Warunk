@@ -1714,7 +1714,7 @@ MerchantDashboardMerchantInfo _$MerchantDashboardMerchantInfoFromJson(
 /// @nodoc
 mixin _$MerchantDashboardMerchantInfo {
 
- String get id; String get name; String get photo; String get category; String get city; String get status; bool get isOperationallyActive; bool get isOpen; bool get isOpenAllDay;@JsonKey(name: 'is_open_24_hours') bool get isOpen24Hours; String get operationalDays; String get operationalTime; int get balance; int get minimumBalance; bool get hasSufficientBalance; String get joinedAt; int get totalOrders; int get activeProducts; MerchantDashboardPerformanceEntity get performance;
+ String get id; String get name; String? get photo; String? get category; bool get isOperationallyActive; bool get isOpen; bool get isOpenAllDay;@JsonKey(name: 'is_open_24_hours') bool get isOpen24Hours; String get operationalDays; String get operationalTime; int get balance; int get minimumBalance; bool get hasSufficientBalance; String get joinedAt; int get totalOrders; int get activeProducts; MerchantDashboardPerformanceEntity get performance;
 /// Create a copy of MerchantDashboardMerchantInfo
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -1727,16 +1727,16 @@ $MerchantDashboardMerchantInfoCopyWith<MerchantDashboardMerchantInfo> get copyWi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MerchantDashboardMerchantInfo&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.photo, photo) || other.photo == photo)&&(identical(other.category, category) || other.category == category)&&(identical(other.city, city) || other.city == city)&&(identical(other.status, status) || other.status == status)&&(identical(other.isOperationallyActive, isOperationallyActive) || other.isOperationallyActive == isOperationallyActive)&&(identical(other.isOpen, isOpen) || other.isOpen == isOpen)&&(identical(other.isOpenAllDay, isOpenAllDay) || other.isOpenAllDay == isOpenAllDay)&&(identical(other.isOpen24Hours, isOpen24Hours) || other.isOpen24Hours == isOpen24Hours)&&(identical(other.operationalDays, operationalDays) || other.operationalDays == operationalDays)&&(identical(other.operationalTime, operationalTime) || other.operationalTime == operationalTime)&&(identical(other.balance, balance) || other.balance == balance)&&(identical(other.minimumBalance, minimumBalance) || other.minimumBalance == minimumBalance)&&(identical(other.hasSufficientBalance, hasSufficientBalance) || other.hasSufficientBalance == hasSufficientBalance)&&(identical(other.joinedAt, joinedAt) || other.joinedAt == joinedAt)&&(identical(other.totalOrders, totalOrders) || other.totalOrders == totalOrders)&&(identical(other.activeProducts, activeProducts) || other.activeProducts == activeProducts)&&const DeepCollectionEquality().equals(other.performance, performance));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MerchantDashboardMerchantInfo&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.photo, photo) || other.photo == photo)&&(identical(other.category, category) || other.category == category)&&(identical(other.isOperationallyActive, isOperationallyActive) || other.isOperationallyActive == isOperationallyActive)&&(identical(other.isOpen, isOpen) || other.isOpen == isOpen)&&(identical(other.isOpenAllDay, isOpenAllDay) || other.isOpenAllDay == isOpenAllDay)&&(identical(other.isOpen24Hours, isOpen24Hours) || other.isOpen24Hours == isOpen24Hours)&&(identical(other.operationalDays, operationalDays) || other.operationalDays == operationalDays)&&(identical(other.operationalTime, operationalTime) || other.operationalTime == operationalTime)&&(identical(other.balance, balance) || other.balance == balance)&&(identical(other.minimumBalance, minimumBalance) || other.minimumBalance == minimumBalance)&&(identical(other.hasSufficientBalance, hasSufficientBalance) || other.hasSufficientBalance == hasSufficientBalance)&&(identical(other.joinedAt, joinedAt) || other.joinedAt == joinedAt)&&(identical(other.totalOrders, totalOrders) || other.totalOrders == totalOrders)&&(identical(other.activeProducts, activeProducts) || other.activeProducts == activeProducts)&&const DeepCollectionEquality().equals(other.performance, performance));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hashAll([runtimeType,id,name,photo,category,city,status,isOperationallyActive,isOpen,isOpenAllDay,isOpen24Hours,operationalDays,operationalTime,balance,minimumBalance,hasSufficientBalance,joinedAt,totalOrders,activeProducts,const DeepCollectionEquality().hash(performance)]);
+int get hashCode => Object.hash(runtimeType,id,name,photo,category,isOperationallyActive,isOpen,isOpenAllDay,isOpen24Hours,operationalDays,operationalTime,balance,minimumBalance,hasSufficientBalance,joinedAt,totalOrders,activeProducts,const DeepCollectionEquality().hash(performance));
 
 @override
 String toString() {
-  return 'MerchantDashboardMerchantInfo(id: $id, name: $name, photo: $photo, category: $category, city: $city, status: $status, isOperationallyActive: $isOperationallyActive, isOpen: $isOpen, isOpenAllDay: $isOpenAllDay, isOpen24Hours: $isOpen24Hours, operationalDays: $operationalDays, operationalTime: $operationalTime, balance: $balance, minimumBalance: $minimumBalance, hasSufficientBalance: $hasSufficientBalance, joinedAt: $joinedAt, totalOrders: $totalOrders, activeProducts: $activeProducts, performance: $performance)';
+  return 'MerchantDashboardMerchantInfo(id: $id, name: $name, photo: $photo, category: $category, isOperationallyActive: $isOperationallyActive, isOpen: $isOpen, isOpenAllDay: $isOpenAllDay, isOpen24Hours: $isOpen24Hours, operationalDays: $operationalDays, operationalTime: $operationalTime, balance: $balance, minimumBalance: $minimumBalance, hasSufficientBalance: $hasSufficientBalance, joinedAt: $joinedAt, totalOrders: $totalOrders, activeProducts: $activeProducts, performance: $performance)';
 }
 
 
@@ -1747,7 +1747,7 @@ abstract mixin class $MerchantDashboardMerchantInfoCopyWith<$Res>  {
   factory $MerchantDashboardMerchantInfoCopyWith(MerchantDashboardMerchantInfo value, $Res Function(MerchantDashboardMerchantInfo) _then) = _$MerchantDashboardMerchantInfoCopyWithImpl;
 @useResult
 $Res call({
- String id, String name, String photo, String category, String city, String status, bool isOperationallyActive, bool isOpen, bool isOpenAllDay,@JsonKey(name: 'is_open_24_hours') bool isOpen24Hours, String operationalDays, String operationalTime, int balance, int minimumBalance, bool hasSufficientBalance, String joinedAt, int totalOrders, int activeProducts, MerchantDashboardPerformanceEntity performance
+ String id, String name, String? photo, String? category, bool isOperationallyActive, bool isOpen, bool isOpenAllDay,@JsonKey(name: 'is_open_24_hours') bool isOpen24Hours, String operationalDays, String operationalTime, int balance, int minimumBalance, bool hasSufficientBalance, String joinedAt, int totalOrders, int activeProducts, MerchantDashboardPerformanceEntity performance
 });
 
 
@@ -1764,15 +1764,13 @@ class _$MerchantDashboardMerchantInfoCopyWithImpl<$Res>
 
 /// Create a copy of MerchantDashboardMerchantInfo
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? photo = null,Object? category = null,Object? city = null,Object? status = null,Object? isOperationallyActive = null,Object? isOpen = null,Object? isOpenAllDay = null,Object? isOpen24Hours = null,Object? operationalDays = null,Object? operationalTime = null,Object? balance = null,Object? minimumBalance = null,Object? hasSufficientBalance = null,Object? joinedAt = null,Object? totalOrders = null,Object? activeProducts = null,Object? performance = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? photo = freezed,Object? category = freezed,Object? isOperationallyActive = null,Object? isOpen = null,Object? isOpenAllDay = null,Object? isOpen24Hours = null,Object? operationalDays = null,Object? operationalTime = null,Object? balance = null,Object? minimumBalance = null,Object? hasSufficientBalance = null,Object? joinedAt = null,Object? totalOrders = null,Object? activeProducts = null,Object? performance = freezed,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
-as String,photo: null == photo ? _self.photo : photo // ignore: cast_nullable_to_non_nullable
-as String,category: null == category ? _self.category : category // ignore: cast_nullable_to_non_nullable
-as String,city: null == city ? _self.city : city // ignore: cast_nullable_to_non_nullable
-as String,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
-as String,isOperationallyActive: null == isOperationallyActive ? _self.isOperationallyActive : isOperationallyActive // ignore: cast_nullable_to_non_nullable
+as String,photo: freezed == photo ? _self.photo : photo // ignore: cast_nullable_to_non_nullable
+as String?,category: freezed == category ? _self.category : category // ignore: cast_nullable_to_non_nullable
+as String?,isOperationallyActive: null == isOperationallyActive ? _self.isOperationallyActive : isOperationallyActive // ignore: cast_nullable_to_non_nullable
 as bool,isOpen: null == isOpen ? _self.isOpen : isOpen // ignore: cast_nullable_to_non_nullable
 as bool,isOpenAllDay: null == isOpenAllDay ? _self.isOpenAllDay : isOpenAllDay // ignore: cast_nullable_to_non_nullable
 as bool,isOpen24Hours: null == isOpen24Hours ? _self.isOpen24Hours : isOpen24Hours // ignore: cast_nullable_to_non_nullable
@@ -1867,10 +1865,10 @@ return entity(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String id,  String name,  String photo,  String category,  String city,  String status,  bool isOperationallyActive,  bool isOpen,  bool isOpenAllDay, @JsonKey(name: 'is_open_24_hours')  bool isOpen24Hours,  String operationalDays,  String operationalTime,  int balance,  int minimumBalance,  bool hasSufficientBalance,  String joinedAt,  int totalOrders,  int activeProducts,  MerchantDashboardPerformanceEntity performance)?  entity,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String id,  String name,  String? photo,  String? category,  bool isOperationallyActive,  bool isOpen,  bool isOpenAllDay, @JsonKey(name: 'is_open_24_hours')  bool isOpen24Hours,  String operationalDays,  String operationalTime,  int balance,  int minimumBalance,  bool hasSufficientBalance,  String joinedAt,  int totalOrders,  int activeProducts,  MerchantDashboardPerformanceEntity performance)?  entity,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case MerchantDashboardMerchantInfoEntity() when entity != null:
-return entity(_that.id,_that.name,_that.photo,_that.category,_that.city,_that.status,_that.isOperationallyActive,_that.isOpen,_that.isOpenAllDay,_that.isOpen24Hours,_that.operationalDays,_that.operationalTime,_that.balance,_that.minimumBalance,_that.hasSufficientBalance,_that.joinedAt,_that.totalOrders,_that.activeProducts,_that.performance);case _:
+return entity(_that.id,_that.name,_that.photo,_that.category,_that.isOperationallyActive,_that.isOpen,_that.isOpenAllDay,_that.isOpen24Hours,_that.operationalDays,_that.operationalTime,_that.balance,_that.minimumBalance,_that.hasSufficientBalance,_that.joinedAt,_that.totalOrders,_that.activeProducts,_that.performance);case _:
   return orElse();
 
 }
@@ -1888,10 +1886,10 @@ return entity(_that.id,_that.name,_that.photo,_that.category,_that.city,_that.st
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String id,  String name,  String photo,  String category,  String city,  String status,  bool isOperationallyActive,  bool isOpen,  bool isOpenAllDay, @JsonKey(name: 'is_open_24_hours')  bool isOpen24Hours,  String operationalDays,  String operationalTime,  int balance,  int minimumBalance,  bool hasSufficientBalance,  String joinedAt,  int totalOrders,  int activeProducts,  MerchantDashboardPerformanceEntity performance)  entity,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String id,  String name,  String? photo,  String? category,  bool isOperationallyActive,  bool isOpen,  bool isOpenAllDay, @JsonKey(name: 'is_open_24_hours')  bool isOpen24Hours,  String operationalDays,  String operationalTime,  int balance,  int minimumBalance,  bool hasSufficientBalance,  String joinedAt,  int totalOrders,  int activeProducts,  MerchantDashboardPerformanceEntity performance)  entity,}) {final _that = this;
 switch (_that) {
 case MerchantDashboardMerchantInfoEntity():
-return entity(_that.id,_that.name,_that.photo,_that.category,_that.city,_that.status,_that.isOperationallyActive,_that.isOpen,_that.isOpenAllDay,_that.isOpen24Hours,_that.operationalDays,_that.operationalTime,_that.balance,_that.minimumBalance,_that.hasSufficientBalance,_that.joinedAt,_that.totalOrders,_that.activeProducts,_that.performance);}
+return entity(_that.id,_that.name,_that.photo,_that.category,_that.isOperationallyActive,_that.isOpen,_that.isOpenAllDay,_that.isOpen24Hours,_that.operationalDays,_that.operationalTime,_that.balance,_that.minimumBalance,_that.hasSufficientBalance,_that.joinedAt,_that.totalOrders,_that.activeProducts,_that.performance);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -1905,10 +1903,10 @@ return entity(_that.id,_that.name,_that.photo,_that.category,_that.city,_that.st
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String id,  String name,  String photo,  String category,  String city,  String status,  bool isOperationallyActive,  bool isOpen,  bool isOpenAllDay, @JsonKey(name: 'is_open_24_hours')  bool isOpen24Hours,  String operationalDays,  String operationalTime,  int balance,  int minimumBalance,  bool hasSufficientBalance,  String joinedAt,  int totalOrders,  int activeProducts,  MerchantDashboardPerformanceEntity performance)?  entity,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String id,  String name,  String? photo,  String? category,  bool isOperationallyActive,  bool isOpen,  bool isOpenAllDay, @JsonKey(name: 'is_open_24_hours')  bool isOpen24Hours,  String operationalDays,  String operationalTime,  int balance,  int minimumBalance,  bool hasSufficientBalance,  String joinedAt,  int totalOrders,  int activeProducts,  MerchantDashboardPerformanceEntity performance)?  entity,}) {final _that = this;
 switch (_that) {
 case MerchantDashboardMerchantInfoEntity() when entity != null:
-return entity(_that.id,_that.name,_that.photo,_that.category,_that.city,_that.status,_that.isOperationallyActive,_that.isOpen,_that.isOpenAllDay,_that.isOpen24Hours,_that.operationalDays,_that.operationalTime,_that.balance,_that.minimumBalance,_that.hasSufficientBalance,_that.joinedAt,_that.totalOrders,_that.activeProducts,_that.performance);case _:
+return entity(_that.id,_that.name,_that.photo,_that.category,_that.isOperationallyActive,_that.isOpen,_that.isOpenAllDay,_that.isOpen24Hours,_that.operationalDays,_that.operationalTime,_that.balance,_that.minimumBalance,_that.hasSufficientBalance,_that.joinedAt,_that.totalOrders,_that.activeProducts,_that.performance);case _:
   return null;
 
 }
@@ -1920,15 +1918,13 @@ return entity(_that.id,_that.name,_that.photo,_that.category,_that.city,_that.st
 
 @JsonSerializable(fieldRename: FieldRename.snake, includeIfNull: false)
 class MerchantDashboardMerchantInfoEntity implements MerchantDashboardMerchantInfo {
-  const MerchantDashboardMerchantInfoEntity({required this.id, required this.name, required this.photo, required this.category, required this.city, required this.status, required this.isOperationallyActive, required this.isOpen, required this.isOpenAllDay, @JsonKey(name: 'is_open_24_hours') required this.isOpen24Hours, required this.operationalDays, required this.operationalTime, required this.balance, required this.minimumBalance, required this.hasSufficientBalance, required this.joinedAt, required this.totalOrders, required this.activeProducts, required this.performance});
+  const MerchantDashboardMerchantInfoEntity({required this.id, required this.name, this.photo, this.category, required this.isOperationallyActive, required this.isOpen, required this.isOpenAllDay, @JsonKey(name: 'is_open_24_hours') required this.isOpen24Hours, required this.operationalDays, required this.operationalTime, required this.balance, required this.minimumBalance, required this.hasSufficientBalance, required this.joinedAt, required this.totalOrders, required this.activeProducts, required this.performance});
   factory MerchantDashboardMerchantInfoEntity.fromJson(Map<String, dynamic> json) => _$MerchantDashboardMerchantInfoEntityFromJson(json);
 
 @override final  String id;
 @override final  String name;
-@override final  String photo;
-@override final  String category;
-@override final  String city;
-@override final  String status;
+@override final  String? photo;
+@override final  String? category;
 @override final  bool isOperationallyActive;
 @override final  bool isOpen;
 @override final  bool isOpenAllDay;
@@ -1956,16 +1952,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MerchantDashboardMerchantInfoEntity&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.photo, photo) || other.photo == photo)&&(identical(other.category, category) || other.category == category)&&(identical(other.city, city) || other.city == city)&&(identical(other.status, status) || other.status == status)&&(identical(other.isOperationallyActive, isOperationallyActive) || other.isOperationallyActive == isOperationallyActive)&&(identical(other.isOpen, isOpen) || other.isOpen == isOpen)&&(identical(other.isOpenAllDay, isOpenAllDay) || other.isOpenAllDay == isOpenAllDay)&&(identical(other.isOpen24Hours, isOpen24Hours) || other.isOpen24Hours == isOpen24Hours)&&(identical(other.operationalDays, operationalDays) || other.operationalDays == operationalDays)&&(identical(other.operationalTime, operationalTime) || other.operationalTime == operationalTime)&&(identical(other.balance, balance) || other.balance == balance)&&(identical(other.minimumBalance, minimumBalance) || other.minimumBalance == minimumBalance)&&(identical(other.hasSufficientBalance, hasSufficientBalance) || other.hasSufficientBalance == hasSufficientBalance)&&(identical(other.joinedAt, joinedAt) || other.joinedAt == joinedAt)&&(identical(other.totalOrders, totalOrders) || other.totalOrders == totalOrders)&&(identical(other.activeProducts, activeProducts) || other.activeProducts == activeProducts)&&const DeepCollectionEquality().equals(other.performance, performance));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MerchantDashboardMerchantInfoEntity&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.photo, photo) || other.photo == photo)&&(identical(other.category, category) || other.category == category)&&(identical(other.isOperationallyActive, isOperationallyActive) || other.isOperationallyActive == isOperationallyActive)&&(identical(other.isOpen, isOpen) || other.isOpen == isOpen)&&(identical(other.isOpenAllDay, isOpenAllDay) || other.isOpenAllDay == isOpenAllDay)&&(identical(other.isOpen24Hours, isOpen24Hours) || other.isOpen24Hours == isOpen24Hours)&&(identical(other.operationalDays, operationalDays) || other.operationalDays == operationalDays)&&(identical(other.operationalTime, operationalTime) || other.operationalTime == operationalTime)&&(identical(other.balance, balance) || other.balance == balance)&&(identical(other.minimumBalance, minimumBalance) || other.minimumBalance == minimumBalance)&&(identical(other.hasSufficientBalance, hasSufficientBalance) || other.hasSufficientBalance == hasSufficientBalance)&&(identical(other.joinedAt, joinedAt) || other.joinedAt == joinedAt)&&(identical(other.totalOrders, totalOrders) || other.totalOrders == totalOrders)&&(identical(other.activeProducts, activeProducts) || other.activeProducts == activeProducts)&&const DeepCollectionEquality().equals(other.performance, performance));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hashAll([runtimeType,id,name,photo,category,city,status,isOperationallyActive,isOpen,isOpenAllDay,isOpen24Hours,operationalDays,operationalTime,balance,minimumBalance,hasSufficientBalance,joinedAt,totalOrders,activeProducts,const DeepCollectionEquality().hash(performance)]);
+int get hashCode => Object.hash(runtimeType,id,name,photo,category,isOperationallyActive,isOpen,isOpenAllDay,isOpen24Hours,operationalDays,operationalTime,balance,minimumBalance,hasSufficientBalance,joinedAt,totalOrders,activeProducts,const DeepCollectionEquality().hash(performance));
 
 @override
 String toString() {
-  return 'MerchantDashboardMerchantInfo.entity(id: $id, name: $name, photo: $photo, category: $category, city: $city, status: $status, isOperationallyActive: $isOperationallyActive, isOpen: $isOpen, isOpenAllDay: $isOpenAllDay, isOpen24Hours: $isOpen24Hours, operationalDays: $operationalDays, operationalTime: $operationalTime, balance: $balance, minimumBalance: $minimumBalance, hasSufficientBalance: $hasSufficientBalance, joinedAt: $joinedAt, totalOrders: $totalOrders, activeProducts: $activeProducts, performance: $performance)';
+  return 'MerchantDashboardMerchantInfo.entity(id: $id, name: $name, photo: $photo, category: $category, isOperationallyActive: $isOperationallyActive, isOpen: $isOpen, isOpenAllDay: $isOpenAllDay, isOpen24Hours: $isOpen24Hours, operationalDays: $operationalDays, operationalTime: $operationalTime, balance: $balance, minimumBalance: $minimumBalance, hasSufficientBalance: $hasSufficientBalance, joinedAt: $joinedAt, totalOrders: $totalOrders, activeProducts: $activeProducts, performance: $performance)';
 }
 
 
@@ -1976,7 +1972,7 @@ abstract mixin class $MerchantDashboardMerchantInfoEntityCopyWith<$Res> implemen
   factory $MerchantDashboardMerchantInfoEntityCopyWith(MerchantDashboardMerchantInfoEntity value, $Res Function(MerchantDashboardMerchantInfoEntity) _then) = _$MerchantDashboardMerchantInfoEntityCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String name, String photo, String category, String city, String status, bool isOperationallyActive, bool isOpen, bool isOpenAllDay,@JsonKey(name: 'is_open_24_hours') bool isOpen24Hours, String operationalDays, String operationalTime, int balance, int minimumBalance, bool hasSufficientBalance, String joinedAt, int totalOrders, int activeProducts, MerchantDashboardPerformanceEntity performance
+ String id, String name, String? photo, String? category, bool isOperationallyActive, bool isOpen, bool isOpenAllDay,@JsonKey(name: 'is_open_24_hours') bool isOpen24Hours, String operationalDays, String operationalTime, int balance, int minimumBalance, bool hasSufficientBalance, String joinedAt, int totalOrders, int activeProducts, MerchantDashboardPerformanceEntity performance
 });
 
 
@@ -1993,15 +1989,13 @@ class _$MerchantDashboardMerchantInfoEntityCopyWithImpl<$Res>
 
 /// Create a copy of MerchantDashboardMerchantInfo
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? photo = null,Object? category = null,Object? city = null,Object? status = null,Object? isOperationallyActive = null,Object? isOpen = null,Object? isOpenAllDay = null,Object? isOpen24Hours = null,Object? operationalDays = null,Object? operationalTime = null,Object? balance = null,Object? minimumBalance = null,Object? hasSufficientBalance = null,Object? joinedAt = null,Object? totalOrders = null,Object? activeProducts = null,Object? performance = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? photo = freezed,Object? category = freezed,Object? isOperationallyActive = null,Object? isOpen = null,Object? isOpenAllDay = null,Object? isOpen24Hours = null,Object? operationalDays = null,Object? operationalTime = null,Object? balance = null,Object? minimumBalance = null,Object? hasSufficientBalance = null,Object? joinedAt = null,Object? totalOrders = null,Object? activeProducts = null,Object? performance = freezed,}) {
   return _then(MerchantDashboardMerchantInfoEntity(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
-as String,photo: null == photo ? _self.photo : photo // ignore: cast_nullable_to_non_nullable
-as String,category: null == category ? _self.category : category // ignore: cast_nullable_to_non_nullable
-as String,city: null == city ? _self.city : city // ignore: cast_nullable_to_non_nullable
-as String,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
-as String,isOperationallyActive: null == isOperationallyActive ? _self.isOperationallyActive : isOperationallyActive // ignore: cast_nullable_to_non_nullable
+as String,photo: freezed == photo ? _self.photo : photo // ignore: cast_nullable_to_non_nullable
+as String?,category: freezed == category ? _self.category : category // ignore: cast_nullable_to_non_nullable
+as String?,isOperationallyActive: null == isOperationallyActive ? _self.isOperationallyActive : isOperationallyActive // ignore: cast_nullable_to_non_nullable
 as bool,isOpen: null == isOpen ? _self.isOpen : isOpen // ignore: cast_nullable_to_non_nullable
 as bool,isOpenAllDay: null == isOpenAllDay ? _self.isOpenAllDay : isOpenAllDay // ignore: cast_nullable_to_non_nullable
 as bool,isOpen24Hours: null == isOpen24Hours ? _self.isOpen24Hours : isOpen24Hours // ignore: cast_nullable_to_non_nullable
@@ -2032,7 +2026,7 @@ MerchantDashboardPerformance _$MerchantDashboardPerformanceFromJson(
 /// @nodoc
 mixin _$MerchantDashboardPerformance {
 
- String get key; String get label; int get rate;
+ String get key; String get label; int? get rate;
 /// Create a copy of MerchantDashboardPerformance
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -2065,7 +2059,7 @@ abstract mixin class $MerchantDashboardPerformanceCopyWith<$Res>  {
   factory $MerchantDashboardPerformanceCopyWith(MerchantDashboardPerformance value, $Res Function(MerchantDashboardPerformance) _then) = _$MerchantDashboardPerformanceCopyWithImpl;
 @useResult
 $Res call({
- String key, String label, int rate
+ String key, String label, int? rate
 });
 
 
@@ -2082,12 +2076,12 @@ class _$MerchantDashboardPerformanceCopyWithImpl<$Res>
 
 /// Create a copy of MerchantDashboardPerformance
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? key = null,Object? label = null,Object? rate = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? key = null,Object? label = null,Object? rate = freezed,}) {
   return _then(_self.copyWith(
 key: null == key ? _self.key : key // ignore: cast_nullable_to_non_nullable
 as String,label: null == label ? _self.label : label // ignore: cast_nullable_to_non_nullable
-as String,rate: null == rate ? _self.rate : rate // ignore: cast_nullable_to_non_nullable
-as int,
+as String,rate: freezed == rate ? _self.rate : rate // ignore: cast_nullable_to_non_nullable
+as int?,
   ));
 }
 
@@ -2169,7 +2163,7 @@ return entity(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String key,  String label,  int rate)?  entity,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String key,  String label,  int? rate)?  entity,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case MerchantDashboardPerformanceEntity() when entity != null:
 return entity(_that.key,_that.label,_that.rate);case _:
@@ -2190,7 +2184,7 @@ return entity(_that.key,_that.label,_that.rate);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String key,  String label,  int rate)  entity,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String key,  String label,  int? rate)  entity,}) {final _that = this;
 switch (_that) {
 case MerchantDashboardPerformanceEntity():
 return entity(_that.key,_that.label,_that.rate);}
@@ -2207,7 +2201,7 @@ return entity(_that.key,_that.label,_that.rate);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String key,  String label,  int rate)?  entity,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String key,  String label,  int? rate)?  entity,}) {final _that = this;
 switch (_that) {
 case MerchantDashboardPerformanceEntity() when entity != null:
 return entity(_that.key,_that.label,_that.rate);case _:
@@ -2222,12 +2216,12 @@ return entity(_that.key,_that.label,_that.rate);case _:
 
 @JsonSerializable(fieldRename: FieldRename.snake, includeIfNull: false)
 class MerchantDashboardPerformanceEntity implements MerchantDashboardPerformance {
-  const MerchantDashboardPerformanceEntity({required this.key, required this.label, required this.rate});
+  const MerchantDashboardPerformanceEntity({required this.key, required this.label, this.rate});
   factory MerchantDashboardPerformanceEntity.fromJson(Map<String, dynamic> json) => _$MerchantDashboardPerformanceEntityFromJson(json);
 
 @override final  String key;
 @override final  String label;
-@override final  int rate;
+@override final  int? rate;
 
 /// Create a copy of MerchantDashboardPerformance
 /// with the given fields replaced by the non-null parameter values.
@@ -2262,7 +2256,7 @@ abstract mixin class $MerchantDashboardPerformanceEntityCopyWith<$Res> implement
   factory $MerchantDashboardPerformanceEntityCopyWith(MerchantDashboardPerformanceEntity value, $Res Function(MerchantDashboardPerformanceEntity) _then) = _$MerchantDashboardPerformanceEntityCopyWithImpl;
 @override @useResult
 $Res call({
- String key, String label, int rate
+ String key, String label, int? rate
 });
 
 
@@ -2279,12 +2273,12 @@ class _$MerchantDashboardPerformanceEntityCopyWithImpl<$Res>
 
 /// Create a copy of MerchantDashboardPerformance
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? key = null,Object? label = null,Object? rate = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? key = null,Object? label = null,Object? rate = freezed,}) {
   return _then(MerchantDashboardPerformanceEntity(
 key: null == key ? _self.key : key // ignore: cast_nullable_to_non_nullable
 as String,label: null == label ? _self.label : label // ignore: cast_nullable_to_non_nullable
-as String,rate: null == rate ? _self.rate : rate // ignore: cast_nullable_to_non_nullable
-as int,
+as String,rate: freezed == rate ? _self.rate : rate // ignore: cast_nullable_to_non_nullable
+as int?,
   ));
 }
 

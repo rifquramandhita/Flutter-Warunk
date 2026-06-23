@@ -178,10 +178,8 @@ _$MerchantDashboardMerchantInfoEntityFromJson(Map<String, dynamic> json) =>
     MerchantDashboardMerchantInfoEntity(
       id: json['id'] as String,
       name: json['name'] as String,
-      photo: json['photo'] as String,
-      category: json['category'] as String,
-      city: json['city'] as String,
-      status: json['status'] as String,
+      photo: json['photo'] as String?,
+      category: json['category'] as String?,
       isOperationallyActive: json['is_operationally_active'] as bool,
       isOpen: json['is_open'] as bool,
       isOpenAllDay: json['is_open_all_day'] as bool,
@@ -204,10 +202,8 @@ Map<String, dynamic> _$MerchantDashboardMerchantInfoEntityToJson(
 ) => <String, dynamic>{
   'id': instance.id,
   'name': instance.name,
-  'photo': instance.photo,
-  'category': instance.category,
-  'city': instance.city,
-  'status': instance.status,
+  'photo': ?instance.photo,
+  'category': ?instance.category,
   'is_operationally_active': instance.isOperationallyActive,
   'is_open': instance.isOpen,
   'is_open_all_day': instance.isOpenAllDay,
@@ -228,7 +224,7 @@ MerchantDashboardPerformanceEntity _$MerchantDashboardPerformanceEntityFromJson(
 ) => MerchantDashboardPerformanceEntity(
   key: json['key'] as String,
   label: json['label'] as String,
-  rate: (json['rate'] as num).toInt(),
+  rate: (json['rate'] as num?)?.toInt(),
 );
 
 Map<String, dynamic> _$MerchantDashboardPerformanceEntityToJson(
@@ -236,5 +232,5 @@ Map<String, dynamic> _$MerchantDashboardPerformanceEntityToJson(
 ) => <String, dynamic>{
   'key': instance.key,
   'label': instance.label,
-  'rate': instance.rate,
+  'rate': ?instance.rate,
 };

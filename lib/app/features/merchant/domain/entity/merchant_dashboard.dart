@@ -105,10 +105,8 @@ sealed class MerchantDashboardMerchantInfo
   const factory MerchantDashboardMerchantInfo.entity({
     required String id,
     required String name,
-    required String photo,
-    required String category,
-    required String city,
-    required String status,
+    String? photo,
+    String? category,
     required bool isOperationallyActive,
     required bool isOpen,
     required bool isOpenAllDay,
@@ -134,7 +132,7 @@ sealed class MerchantDashboardPerformance with _$MerchantDashboardPerformance {
   const factory MerchantDashboardPerformance.entity({
     required String key,
     required String label,
-    required int rate,
+    int? rate,
   }) = MerchantDashboardPerformanceEntity;
 
   factory MerchantDashboardPerformance.fromJson(Map<String, dynamic> json) =>
