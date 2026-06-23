@@ -179,31 +179,9 @@ class MerchantDashboardScreen extends StatelessWidget {
                 },
                 child: Stack(
                   children: [
-                    Container(
-                      width: 40,
-                      height: 40,
-                      decoration: BoxDecoration(
-                        color: colorSchema.surface,
-                        shape: BoxShape.circle,
-                        border: Border.all(color: colorSchema.outlineVariant),
-                      ),
-                      child: Icon(
-                        Icons.notifications_outlined,
-                        color: colorSchema.onSurface,
-                        size: 20,
-                      ),
-                    ),
-                    Positioned(
-                      right: 0,
-                      top: 0,
-                      child: Container(
-                        width: 14,
-                        height: 14,
-                        decoration: BoxDecoration(
-                          color: colorSchema.error,
-                          shape: BoxShape.circle,
-                        ),
-                      ),
+                    Icon(
+                      Icons.notifications_rounded,
+                      color: colorSchema.onSurface,
                     ),
                   ],
                 ),
