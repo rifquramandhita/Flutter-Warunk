@@ -75,23 +75,29 @@ class MerchantProfilScreen extends StatelessWidget {
   }
 
   Widget _bodyLayout(BuildContext context, MerchantProfilState state) {
-    return CustomScrollView(
-      slivers: [
-        SliverToBoxAdapter(child: _profilHeader(context, state)),
-        SliverToBoxAdapter(
-          child: Column(
-            children: [
-              const SizedBox(height: 20),
-              _infoAkunCard(context, state),
-              const SizedBox(height: 16),
-              _pengaturanCard(context, state),
-              const SizedBox(height: 24),
-              _logoutButton(context, state),
-              const SizedBox(height: 32),
-            ],
+    return RefreshIndicator(
+      onRefresh: () async {
+        context.read<MerchantProfilBloc>().add(MerchantProfilEventGet());
+      },
+      child: CustomScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        slivers: [
+          SliverToBoxAdapter(child: _profilHeader(context, state)),
+          SliverToBoxAdapter(
+            child: Column(
+              children: [
+                const SizedBox(height: 20),
+                _infoAkunCard(context, state),
+                const SizedBox(height: 16),
+                _pengaturanCard(context, state),
+                const SizedBox(height: 24),
+                _logoutButton(context, state),
+                const SizedBox(height: 32),
+              ],
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
