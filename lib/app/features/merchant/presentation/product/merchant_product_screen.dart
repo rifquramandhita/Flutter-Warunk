@@ -155,36 +155,52 @@ class MerchantProductScreen extends StatelessWidget {
     final state = context.watch<MerchantProductBloc>().state;
     final products = state.filteredProducts;
 
+    Widget content;
     if (products.isEmpty) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.inventory_2_outlined,
-              size: 60,
-              color: AppColors.greyText.withValues(alpha: 0.35),
-            ),
-            const SizedBox(height: 14),
-            const Text(
-              'Produk tidak ditemukan',
-              style: TextStyle(
-                fontSize: 15,
-                fontWeight: FontWeight.w600,
-                color: AppColors.greyText,
+      content = CustomScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        slivers: [
+          SliverFillRemaining(
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.inventory_2_outlined,
+                    size: 60,
+                    color: AppColors.greyText.withValues(alpha: 0.35),
+                  ),
+                  const SizedBox(height: 14),
+                  const Text(
+                    'Produk tidak ditemukan',
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.greyText,
+                    ),
+                  ),
+                ],
               ),
             ),
-          ],
-        ),
+          ),
+        ],
+      );
+    } else {
+      content = ListView.separated(
+        physics: const AlwaysScrollableScrollPhysics(),
+        padding: const EdgeInsets.fromLTRB(20, 4, 20, 100),
+        itemCount: products.length,
+        separatorBuilder: (_, _) => const SizedBox(height: 10),
+        itemBuilder: (context, index) =>
+            _buildProductCard(context, products[index]),
       );
     }
 
-    return ListView.separated(
-      padding: const EdgeInsets.fromLTRB(20, 4, 20, 100),
-      itemCount: products.length,
-      separatorBuilder: (_, _) => const SizedBox(height: 10),
-      itemBuilder: (context, index) =>
-          _buildProductCard(context, products[index]),
+    return RefreshIndicator(
+      onRefresh: () async {
+        context.read<MerchantProductBloc>().add(MerchantProductEventGet());
+      },
+      child: content,
     );
   }
 
