@@ -13,14 +13,14 @@ class MerchantDashboardBloc
 
   MerchantDashboardBloc({required this.getUseCase})
     : super(const MerchantDashboardState()) {
-    on<MerchantDashboardEventStarted>(_onStarted);
+    on<MerchantDashboardEventGet>(_onGet);
     on<MerchantDashboardEventPeriodChanged>((event, emit) {
       emit(state.copyWith(selectedPeriod: event.period));
     });
   }
 
-  Future<void> _onStarted(
-    MerchantDashboardEventStarted event,
+  Future<void> _onGet(
+    MerchantDashboardEventGet event,
     Emitter<MerchantDashboardState> emit,
   ) async {
     emit(state.copyWith(isLoading: true, errorMessage: null));

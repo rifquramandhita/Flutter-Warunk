@@ -24,7 +24,7 @@ class MerchantDashboardScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) =>
-          sl<MerchantDashboardBloc>()..add(MerchantDashboardEventStarted()),
+          sl<MerchantDashboardBloc>()..add(MerchantDashboardEventGet()),
       child: BlocConsumer<MerchantDashboardBloc, MerchantDashboardState>(
         listener: (context, state) {
           if (state.errorMessage != null) {
@@ -57,19 +57,25 @@ class MerchantDashboardScreen extends StatelessWidget {
   }
 
   Widget _bodyLayout(BuildContext context) {
-    return SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _dashboardHeader(context),
-          const SizedBox(height: 16),
-          _statsGrid(context),
-          const SizedBox(height: 16),
-          _salesChart(context),
-          const SizedBox(height: 16),
-          _recentOrders(context),
-          const SizedBox(height: 24),
-        ],
+    return RefreshIndicator(
+      onRefresh: () async {
+        context.read<MerchantDashboardBloc>().add(MerchantDashboardEventGet());
+      },
+      child: SingleChildScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _dashboardHeader(context),
+            const SizedBox(height: 16),
+            _statsGrid(context),
+            const SizedBox(height: 16),
+            _salesChart(context),
+            const SizedBox(height: 16),
+            _recentOrders(context),
+            const SizedBox(height: 24),
+          ],
+        ),
       ),
     );
   }
@@ -802,5 +808,5 @@ void _onPressItemOrder(BuildContext context, String id) async {
       builder: (context) => MerchantDetailOrderScreen(orderId: id),
     ),
   );
-  bloc.add(MerchantDashboardEventStarted());
+  bloc.add(MerchantDashboardEventGet());
 }
