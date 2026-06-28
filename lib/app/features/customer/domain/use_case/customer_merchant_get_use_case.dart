@@ -9,7 +9,7 @@ class CustomerMerchantGetUseCase {
     : _repository = repository;
 
   @override
-  Future<DataState<List<CustomerMerchantEntity>>> call({void params}) {
-    return _repository.get();
+  Future<DataState<List<CustomerMerchantEntity>>> call({String? category}) {
+    return _repository.get(category: category);
   }
 }

@@ -124,6 +124,7 @@ import 'package:warunk/app/features/customer/domain/use_case/customer_cart_delet
 import 'package:warunk/app/features/customer/domain/use_case/customer_cart_update_use_case.dart';
 import 'package:warunk/app/features/customer/presentation/cart/bloc/customer_cart_bloc.dart';
 import 'package:warunk/app/features/customer/presentation/home/bloc/customer_home_bloc.dart';
+import 'package:warunk/app/features/customer/presentation/merchant/bloc/customer_merchant_bloc.dart';
 import 'package:warunk/app/features/customer/presentation/checkout/bloc/customer_checkout_bloc.dart';
 import 'package:warunk/app/features/customer/presentation/review_order/bloc/customer_review_order_bloc.dart';
 import 'package:warunk/app/features/customer/presentation/order_success/bloc/customer_order_success_bloc.dart';
@@ -426,6 +427,7 @@ Future<void> initDependency() async {
   );
   sl.registerFactory(() => CustomerInputAddressBloc(sl(), sl(), sl()));
   sl.registerFactory(() => CustomerSearchBloc(getMerchantUseCase: sl()));
+  sl.registerFactory(() => CustomerMerchantBloc(getUseCase: sl()));
   sl.registerFactory(
     () => CustomerDetailMerchantBloc(
       getByIdUseCase: sl(),

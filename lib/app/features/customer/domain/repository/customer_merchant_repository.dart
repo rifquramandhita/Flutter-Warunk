@@ -3,7 +3,7 @@ import 'package:warunk/app/features/customer/domain/entity/customer_merchant_cat
 import 'package:warunk/core/network/data_state.dart';
 
 abstract class CustomerMerchantRepository {
-  Future<DataState<List<CustomerMerchantEntity>>> get();
+  Future<DataState<List<CustomerMerchantEntity>>> get({String? category});
   Future<DataState<CustomerMerchantEntity>> getById(String id);
   Future<DataState<List<CustomerMerchantCategoryEntity>>> getCategories();
 }

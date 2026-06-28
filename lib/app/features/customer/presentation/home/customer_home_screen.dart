@@ -4,6 +4,7 @@ import 'package:warunk/app/features/customer/presentation/home/bloc/customer_hom
 import 'package:warunk/app/features/customer/presentation/cart/customer_cart_screen.dart';
 import 'package:warunk/main.dart';
 import 'package:warunk/app/features/customer/presentation/search/customer_search_screen.dart';
+import 'package:warunk/app/features/customer/presentation/merchant/customer_merchant_screen.dart';
 import 'package:warunk/core/dependency/dependency.dart';
 import 'package:warunk/theme/app_colors.dart';
 
@@ -533,11 +534,20 @@ class _HomeCategoriesSection extends StatelessWidget {
                       .map(
                         (c) => Padding(
                           padding: const EdgeInsets.only(right: 16.0),
-                          child: SizedBox(
-                            width: 60,
-                            child: _CategoryItem(
-                              icon: Icons.category,
-                              label: c.name,
+                          child: GestureDetector(
+                            onTap: () {
+                              navigatorKey.currentState?.push(
+                                MaterialPageRoute(
+                                  builder: (_) => CustomerMerchantScreen(category: c),
+                                ),
+                              );
+                            },
+                            child: SizedBox(
+                              width: 60,
+                              child: _CategoryItem(
+                                icon: Icons.category,
+                                label: c.name,
+                              ),
                             ),
                           ),
                         ),
