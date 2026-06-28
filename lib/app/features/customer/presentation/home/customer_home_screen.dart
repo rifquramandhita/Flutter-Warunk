@@ -4,6 +4,7 @@ import 'package:warunk/app/features/customer/presentation/home/bloc/customer_hom
 import 'package:warunk/app/features/customer/presentation/cart/customer_cart_screen.dart';
 import 'package:warunk/main.dart';
 import 'package:warunk/app/features/customer/presentation/search/customer_search_screen.dart';
+import 'package:warunk/core/dependency/dependency.dart';
 import 'package:warunk/theme/app_colors.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -16,7 +17,8 @@ class CustomerHomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => CustomerHomeBloc(),
+      create: (_) =>
+          sl<CustomerHomeBloc>()..add(CustomerHomeGetCategoriesStarted()),
       child: const _HomeView(),
     );
   }
@@ -500,15 +502,6 @@ class _BannerDotIndicator extends StatelessWidget {
 class _HomeCategoriesSection extends StatelessWidget {
   const _HomeCategoriesSection();
 
-  static const List<Map<String, String>> _categories = [
-    {'icon': '🏪', 'label': 'Warung\nMadura'},
-    {'icon': '🛒', 'label': 'Kelontong'},
-    {'icon': '🍜', 'label': 'Makanan'},
-    {'icon': '🧃', 'label': 'Minuman'},
-    {'icon': '🏷️', 'label': 'Promo'},
-    {'icon': '📍', 'label': 'Terdekat'},
-  ];
-
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -517,11 +510,42 @@ class _HomeCategoriesSection extends StatelessWidget {
         children: [
           _SectionHeader(title: 'Kategori', onTapSeeAll: () {}),
           const SizedBox(height: 12),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: _categories
-                .map((c) => _CategoryItem(icon: c['icon']!, label: c['label']!))
-                .toList(),
+          BlocBuilder<CustomerHomeBloc, CustomerHomeState>(
+            builder: (context, state) {
+              if (state.isLoadingCategories) {
+                return const Center(child: CircularProgressIndicator());
+              }
+
+              if (state.categories.isEmpty) {
+                return const Center(
+                  child: Text(
+                    'Tidak ada kategori',
+                    style: TextStyle(color: AppColors.greyText, fontSize: 12),
+                  ),
+                );
+              }
+
+              return SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: state.categories
+                      .map(
+                        (c) => Padding(
+                          padding: const EdgeInsets.only(right: 16.0),
+                          child: SizedBox(
+                            width: 60,
+                            child: _CategoryItem(
+                              icon: Icons.category,
+                              label: c.name,
+                            ),
+                          ),
+                        ),
+                      )
+                      .toList(),
+                ),
+              );
+            },
           ),
         ],
       ),
@@ -532,7 +556,7 @@ class _HomeCategoriesSection extends StatelessWidget {
 class _CategoryItem extends StatelessWidget {
   const _CategoryItem({required this.icon, required this.label});
 
-  final String icon;
+  final IconData icon;
   final String label;
 
   @override
@@ -553,9 +577,7 @@ class _CategoryItem extends StatelessWidget {
               ),
             ],
           ),
-          child: Center(
-            child: Text(icon, style: const TextStyle(fontSize: 24)),
-          ),
+          child: Center(child: Icon(icon, color: AppColors.primary, size: 24)),
         ),
         const SizedBox(height: 6),
         Text(

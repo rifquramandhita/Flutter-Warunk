@@ -114,6 +114,7 @@ import 'package:warunk/app/features/customer/domain/repository/customer_merchant
 import 'package:warunk/app/features/customer/data/repository/customer_merchant_repository_impl.dart';
 import 'package:warunk/app/features/customer/domain/use_case/customer_merchant_get_use_case.dart';
 import 'package:warunk/app/features/customer/domain/use_case/customer_merchant_get_by_id_use_case.dart';
+import 'package:warunk/app/features/customer/domain/use_case/customer_merchant_get_category_use_case.dart';
 import 'package:warunk/app/features/customer/data/source/customer_cart_api_service.dart';
 import 'package:warunk/app/features/customer/domain/repository/customer_cart_repository.dart';
 import 'package:warunk/app/features/customer/data/repository/customer_cart_repository_impl.dart';
@@ -122,6 +123,7 @@ import 'package:warunk/app/features/customer/domain/use_case/customer_cart_get_u
 import 'package:warunk/app/features/customer/domain/use_case/customer_cart_delete_use_case.dart';
 import 'package:warunk/app/features/customer/domain/use_case/customer_cart_update_use_case.dart';
 import 'package:warunk/app/features/customer/presentation/cart/bloc/customer_cart_bloc.dart';
+import 'package:warunk/app/features/customer/presentation/home/bloc/customer_home_bloc.dart';
 import 'package:warunk/app/features/customer/presentation/checkout/bloc/customer_checkout_bloc.dart';
 import 'package:warunk/app/features/customer/presentation/review_order/bloc/customer_review_order_bloc.dart';
 import 'package:warunk/app/features/customer/presentation/order_success/bloc/customer_order_success_bloc.dart';
@@ -334,6 +336,9 @@ Future<void> initDependency() async {
     () => CustomerMerchantGetByIdUseCase(repository: sl()),
   );
   sl.registerLazySingleton(
+    () => CustomerMerchantGetCategoryUseCase(repository: sl()),
+  );
+  sl.registerLazySingleton(
     () => CustomerProductGetByMerchantUseCase(repository: sl()),
   );
   sl.registerLazySingleton(
@@ -369,6 +374,7 @@ Future<void> initDependency() async {
   sl.registerLazySingleton(() => MerchantNotificationGetUseCase(repository: sl()));
   //bloc
   sl.registerLazySingleton(() => AuthBloc());
+  sl.registerFactory(() => CustomerHomeBloc(getCategoryUseCase: sl()));
   sl.registerFactory(() => AuthLoginBloc(authBloc: sl(), useCase: sl(), googleUseCase: sl()));
   sl.registerFactory(() => MerchantBalanceHistoryBloc(useCase: sl()));
   sl.registerFactory(() => MerchantBalanceTopupPaymentBloc());

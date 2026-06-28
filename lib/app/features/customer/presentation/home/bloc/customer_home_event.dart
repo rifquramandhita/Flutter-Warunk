@@ -6,3 +6,6 @@ final class CustomerHomeBannerChanged extends CustomerHomeEvent {
   final int index;
   CustomerHomeBannerChanged(this.index);
 }
+
+final class CustomerHomeGetCategoriesStarted extends CustomerHomeEvent {}
+

@@ -1,5 +1,6 @@
 import 'package:warunk/app/features/customer/data/source/customer_merchant_api_service.dart';
 import 'package:warunk/app/features/customer/domain/entity/customer_merchant.dart';
+import 'package:warunk/app/features/customer/domain/entity/customer_merchant_category.dart';
 import 'package:warunk/app/features/customer/domain/repository/customer_merchant_repository.dart';
 import 'package:warunk/core/network/data_state.dart';
 
@@ -32,6 +33,20 @@ class CustomerMerchantRepositoryImpl implements CustomerMerchantRepository {
         );
       }
       throw Exception('Invalid response format');
+    });
+  }
+
+  @override
+  Future<DataState<List<CustomerMerchantCategoryEntity>>> getCategories() {
+    return handleResponse(() => _apiService.getCategories(), (json) {
+      if (json is Map<String, dynamic> && json['categories'] is List) {
+        return (json['categories'] as List)
+            .map(
+              (e) => CustomerMerchantCategoryEntity.fromJson(e as Map<String, dynamic>),
+            )
+            .toList();
+      }
+      return <CustomerMerchantCategoryEntity>[];
     });
   }
 }

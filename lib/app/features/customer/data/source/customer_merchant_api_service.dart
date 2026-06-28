@@ -14,4 +14,7 @@ abstract class CustomerMerchantApiService {
 
   @GET('/api/merchants/{id}')
   Future<HttpResponse<dynamic>> getById(@Path('id') String id);
+
+  @GET('/api/merchant-categories')
+  Future<HttpResponse<dynamic>> getCategories();
 }
