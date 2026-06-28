@@ -8,6 +8,7 @@ import 'package:warunk/app/features/customer/presentation/wishlist/customer_wish
 import 'package:warunk/app/features/customer/presentation/profil/bloc/customer_profil_bloc.dart';
 import 'package:warunk/app/features/customer/presentation/profil/bloc/customer_profil_event.dart';
 import 'package:warunk/app/features/customer/presentation/profil/bloc/customer_profil_state.dart';
+import 'package:warunk/core/constants/constant.dart';
 import 'package:warunk/main.dart';
 import 'package:warunk/core/widgets/custom_dotted_divider.dart';
 import 'package:warunk/core/widgets/shadow_card.dart';
@@ -153,7 +154,9 @@ class CustomerProfileScreen extends StatelessWidget {
                       width: 70,
                       height: 70,
                       errorBuilder: (context, error, stackTrace) =>
-                          const Center(child: Text('👨🏻', style: TextStyle(fontSize: 40))),
+                          const Center(
+                            child: Text('👨🏻', style: TextStyle(fontSize: 40)),
+                          ),
                     ),
                   )
                 : const Center(
@@ -237,15 +240,19 @@ class CustomerProfileScreen extends StatelessWidget {
             label: 'Favorit',
             value: '${state.favoriteCount}',
             onTap: () {
-              navigatorKey.currentState?.push(
-                MaterialPageRoute(
-                  builder: (_) => const CustomerWishlistScreen(),
-                ),
-              ).then((_) {
-                if (context.mounted) {
-                  context.read<CustomerProfilBloc>().add(CustomerLoadProfilData());
-                }
-              });
+              navigatorKey.currentState
+                  ?.push(
+                    MaterialPageRoute(
+                      builder: (_) => const CustomerWishlistScreen(),
+                    ),
+                  )
+                  .then((_) {
+                    if (context.mounted) {
+                      context.read<CustomerProfilBloc>().add(
+                        CustomerLoadProfilData(),
+                      );
+                    }
+                  });
             },
           ),
         ],
@@ -269,45 +276,45 @@ class CustomerProfileScreen extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-          Container(
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: iconBgColor,
-              borderRadius: BorderRadius.circular(10),
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: iconBgColor,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Icon(icon, color: iconColor, size: 18),
             ),
-            child: Icon(icon, color: iconColor, size: 18),
-          ),
-          const SizedBox(width: 10),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                label,
-                style:
-                    GlobalHelper.getTextTheme(
-                      context,
-                      appTextStyle: AppTextStyle.LABEL_SMALL,
-                    )?.copyWith(
-                      color: GlobalHelper.getColorSchema(
+            const SizedBox(width: 10),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  label,
+                  style:
+                      GlobalHelper.getTextTheme(
                         context,
-                      ).onSurfaceVariant,
-                    ),
-              ),
-              const SizedBox(height: 2),
-              Text(
-                value,
-                style: GlobalHelper.getTextTheme(
-                  context,
-                  appTextStyle: AppTextStyle.BODY_MEDIUM,
-                )?.copyWith(fontWeight: FontWeight.w800),
-              ),
-            ],
-          ),
-        ],
+                        appTextStyle: AppTextStyle.LABEL_SMALL,
+                      )?.copyWith(
+                        color: GlobalHelper.getColorSchema(
+                          context,
+                        ).onSurfaceVariant,
+                      ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  value,
+                  style: GlobalHelper.getTextTheme(
+                    context,
+                    appTextStyle: AppTextStyle.BODY_MEDIUM,
+                  )?.copyWith(fontWeight: FontWeight.w800),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
-    ),
-  );
-}
+    );
+  }
 
   Widget _verticalDivider(BuildContext context) {
     return Container(
@@ -362,8 +369,37 @@ class CustomerProfileScreen extends StatelessWidget {
           _menuItem(
             context: context,
             icon: Icons.help_outline_rounded,
-            label: 'Bantuan',
+            label: 'Pusat Bantuan',
             iconColor: GlobalHelper.getColorSchema(context).primary,
+            onTap: () => context.read<CustomerProfilBloc>().add(
+              CustomerLaunchUrlEvent(
+                '${(isProduction) ? BASE_URL_PROD : BASE_URL_DEV}/pusat-bantuan?mode=customer',
+              ),
+            ),
+          ),
+          _divider(context),
+          _menuItem(
+            context: context,
+            icon: Icons.info_outline_rounded,
+            label: 'Cara Pemesanan',
+            iconColor: GlobalHelper.getColorSchema(context).primary,
+            onTap: () => context.read<CustomerProfilBloc>().add(
+              CustomerLaunchUrlEvent(
+                '${(isProduction) ? BASE_URL_PROD : BASE_URL_DEV}/cara-pemesanan?mode=customer',
+              ),
+            ),
+          ),
+          _divider(context),
+          _menuItem(
+            context: context,
+            icon: Icons.privacy_tip_outlined,
+            label: 'Kebijakan Privasi',
+            iconColor: GlobalHelper.getColorSchema(context).primary,
+            onTap: () => context.read<CustomerProfilBloc>().add(
+              CustomerLaunchUrlEvent(
+                '${(isProduction) ? BASE_URL_PROD : BASE_URL_DEV}/kebijakan-privasi?mode=customer',
+              ),
+            ),
           ),
           _divider(context),
           _menuItem(
@@ -371,6 +407,11 @@ class CustomerProfileScreen extends StatelessWidget {
             icon: Icons.description_outlined,
             label: 'Syarat & Ketentuan',
             iconColor: GlobalHelper.getColorSchema(context).primary,
+            onTap: () => context.read<CustomerProfilBloc>().add(
+              CustomerLaunchUrlEvent(
+                '${(isProduction) ? BASE_URL_PROD : BASE_URL_DEV}/syarat-ketentuan?mode=customer',
+              ),
+            ),
           ),
           _divider(context),
           _menuItem(
