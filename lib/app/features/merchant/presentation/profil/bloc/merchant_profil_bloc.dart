@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:warunk/app/features/merchant/domain/entity/merchant_merchant.dart';
 import 'package:warunk/app/features/merchant/domain/use_case/merchant_merchant_get_use_case.dart';
 import 'package:warunk/core/constants/constant.dart';
@@ -18,6 +19,7 @@ class MerchantProfilBloc
       super(const MerchantProfilState()) {
     on<MerchantProfilEventGet>(_onGet);
     on<MerchantProfilEventEditTapped>(_onEditTapped);
+    on<MerchantLaunchUrlEvent>(_onLaunchUrl);
   }
 
   void _onEditTapped(
@@ -56,5 +58,21 @@ class MerchantProfilBloc
     }
 
     emit(state.copyWith(isLoading: false));
+  }
+
+  Future<void> _onLaunchUrl(
+    MerchantLaunchUrlEvent event,
+    Emitter<MerchantProfilState> emit,
+  ) async {
+    try {
+      final uri = Uri.parse(event.url);
+      if (await canLaunchUrl(uri)) {
+        await launchUrl(uri);
+      } else {
+        emit(state.copyWith(errorMessage: 'Tidak dapat membuka tautan'));
+      }
+    } catch (e) {
+      emit(state.copyWith(errorMessage: 'Terjadi kesalahan: ${e.toString()}'));
+    }
   }
 }

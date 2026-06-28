@@ -15,6 +15,7 @@ import 'package:warunk/core/helper/global_helper.dart';
 import 'package:warunk/core/helper/dialog_helper.dart';
 import 'package:warunk/core/helper/number_helper.dart';
 import 'package:warunk/core/widgets/loading_app_widget.dart';
+import 'package:warunk/core/constants/constant.dart';
 
 class MerchantProfilScreen extends StatelessWidget {
   const MerchantProfilScreen({super.key});
@@ -378,6 +379,46 @@ class MerchantProfilScreen extends StatelessWidget {
           label: 'Pengiriman',
           onTap: () => navigatorKey.currentState?.push(
             MaterialPageRoute(builder: (_) => const MerchantShippingScreen()),
+          ),
+        ),
+        _divider(context),
+        _navRow(
+          context: context,
+          label: 'Pusat Bantuan',
+          onTap: () => context.read<MerchantProfilBloc>().add(
+            MerchantLaunchUrlEvent(
+              '${(isProduction) ? BASE_URL_PROD : BASE_URL_DEV}/pusat-bantuan?mode=merchant',
+            ),
+          ),
+        ),
+        _divider(context),
+        _navRow(
+          context: context,
+          label: 'Cara Pemesanan',
+          onTap: () => context.read<MerchantProfilBloc>().add(
+            MerchantLaunchUrlEvent(
+              '${(isProduction) ? BASE_URL_PROD : BASE_URL_DEV}/cara-pemesanan?mode=merchant',
+            ),
+          ),
+        ),
+        _divider(context),
+        _navRow(
+          context: context,
+          label: 'Kebijakan Privasi',
+          onTap: () => context.read<MerchantProfilBloc>().add(
+            MerchantLaunchUrlEvent(
+              '${(isProduction) ? BASE_URL_PROD : BASE_URL_DEV}/kebijakan-privasi?mode=merchant',
+            ),
+          ),
+        ),
+        _divider(context),
+        _navRow(
+          context: context,
+          label: 'Syarat & Ketentuan',
+          onTap: () => context.read<MerchantProfilBloc>().add(
+            MerchantLaunchUrlEvent(
+              '${(isProduction) ? BASE_URL_PROD : BASE_URL_DEV}/syarat-ketentuan?mode=merchant',
+            ),
           ),
         ),
       ],
