@@ -38,6 +38,8 @@ sealed class CustomerMerchant with _$CustomerMerchant {
     double? latitude,
     int? balance,
     int? currentBalance,
+    double? distance,
+    List<String>? promoBadges,
     CustomerMerchantUserEntity? user,
   }) = CustomerMerchantEntity;
 

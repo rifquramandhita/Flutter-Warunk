@@ -6,4 +6,5 @@ abstract class CustomerMerchantRepository {
   Future<DataState<List<CustomerMerchantEntity>>> get({String? category});
   Future<DataState<CustomerMerchantEntity>> getById(String id);
   Future<DataState<List<CustomerMerchantCategoryEntity>>> getCategories();
+  Future<DataState<List<CustomerMerchantEntity>>> getNearby({required double latitude, required double longitude});
 }

@@ -19,4 +19,10 @@ abstract class CustomerMerchantApiService {
 
   @GET('/api/merchant-categories')
   Future<HttpResponse<dynamic>> getCategories();
+
+  @GET('/api/merchants/nearby')
+  Future<HttpResponse<dynamic>> getNearby({
+    @Query('latitude') required double latitude,
+    @Query('longitude') required double longitude,
+  });
 }

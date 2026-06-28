@@ -115,6 +115,7 @@ import 'package:warunk/app/features/customer/data/repository/customer_merchant_r
 import 'package:warunk/app/features/customer/domain/use_case/customer_merchant_get_use_case.dart';
 import 'package:warunk/app/features/customer/domain/use_case/customer_merchant_get_by_id_use_case.dart';
 import 'package:warunk/app/features/customer/domain/use_case/customer_merchant_get_category_use_case.dart';
+import 'package:warunk/app/features/customer/domain/use_case/customer_merchant_get_nearby_use_case.dart';
 import 'package:warunk/app/features/customer/data/source/customer_cart_api_service.dart';
 import 'package:warunk/app/features/customer/domain/repository/customer_cart_repository.dart';
 import 'package:warunk/app/features/customer/data/repository/customer_cart_repository_impl.dart';
@@ -341,6 +342,9 @@ Future<void> initDependency() async {
     () => CustomerMerchantGetCategoryUseCase(repository: sl()),
   );
   sl.registerLazySingleton(
+    () => CustomerMerchantGetNearbyUseCase(repository: sl()),
+  );
+  sl.registerLazySingleton(
     () => CustomerProductGetByMerchantUseCase(repository: sl()),
   );
   sl.registerLazySingleton(
@@ -378,7 +382,11 @@ Future<void> initDependency() async {
   );
   //bloc
   sl.registerLazySingleton(() => AuthBloc());
-  sl.registerFactory(() => CustomerHomeBloc(getCategoryUseCase: sl()));
+  sl.registerFactory(() => CustomerHomeBloc(
+    getCategoryUseCase: sl(),
+    getNearbyUseCase: sl(),
+    getCurrentLocationUseCase: sl(),
+  ));
   sl.registerFactory(
     () => AuthLoginBloc(authBloc: sl(), useCase: sl(), googleUseCase: sl()),
   );

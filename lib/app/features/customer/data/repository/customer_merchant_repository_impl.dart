@@ -49,4 +49,18 @@ class CustomerMerchantRepositoryImpl implements CustomerMerchantRepository {
       return <CustomerMerchantCategoryEntity>[];
     });
   }
+
+  @override
+  Future<DataState<List<CustomerMerchantEntity>>> getNearby({required double latitude, required double longitude}) {
+    return handleResponse(() => _apiService.getNearby(latitude: latitude, longitude: longitude), (json) {
+      if (json is Map<String, dynamic> && json['merchants'] is List) {
+        return (json['merchants'] as List)
+            .map(
+              (e) => CustomerMerchantEntity.fromJson(e as Map<String, dynamic>),
+            )
+            .toList();
+      }
+      return <CustomerMerchantEntity>[];
+    });
+  }
 }

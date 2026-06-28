@@ -5,8 +5,12 @@ import 'package:warunk/app/features/customer/presentation/cart/customer_cart_scr
 import 'package:warunk/main.dart';
 import 'package:warunk/app/features/customer/presentation/search/customer_search_screen.dart';
 import 'package:warunk/app/features/customer/presentation/merchant/customer_merchant_screen.dart';
+import 'package:warunk/app/features/customer/presentation/detail_merchant/customer_detail_merchant_screen.dart';
+
 import 'package:warunk/core/dependency/dependency.dart';
 import 'package:warunk/theme/app_colors.dart';
+import 'package:warunk/core/helper/global_helper.dart';
+import 'package:warunk/core/helper/dialog_helper.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Home Screen — entry point, menyediakan CustomerHomeBloc
@@ -18,134 +22,129 @@ class CustomerHomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) =>
-          sl<CustomerHomeBloc>()..add(CustomerHomeGetCategoriesStarted()),
-      child: const _HomeView(),
+      create: (_) => sl<CustomerHomeBloc>()
+        ..add(CustomerHomeGetCategoriesStarted())
+        ..add(CustomerHomeGetNearbyStarted()),
+      child: BlocConsumer<CustomerHomeBloc, CustomerHomeState>(
+        listener: (context, state) {
+          if (state.errorMessage != null) {
+            DialogHelper.showErrorSnackBar(
+                context: context, text: state.errorMessage!);
+          }
+        },
+        builder: (context, state) {
+          return Scaffold(
+            backgroundColor: GlobalHelper.getColorSchema(context).surface,
+            body: _bodyBuild(context),
+          );
+        },
+      ),
     );
   }
-}
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Home View — layout utama halaman home
-// ─────────────────────────────────────────────────────────────────────────────
-
-class _HomeView extends StatelessWidget {
-  const _HomeView();
-
-  @override
-  Widget build(BuildContext context) {
-    return const Scaffold(
-      backgroundColor: AppColors.background,
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _HomeHeader(),
-              _HomeSearchBar(),
-              _HomeModeChip(),
-              _HomeBannerCarousel(),
-              _HomeCategoriesSection(),
-              _HomeNearbyStoresSection(),
-              _HomeMapPreview(),
-              SizedBox(height: 16),
-            ],
-          ),
+  Widget _bodyBuild(BuildContext context) {
+    return SafeArea(
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _homeHeader(context),
+            _homeSearchBar(context),
+            _homeModeChip(context),
+            _homeBannerCarousel(context),
+            _homeCategoriesSection(context),
+            _homeNearbyStoresSection(context),
+            _homeMapPreview(context),
+            const SizedBox(height: 16),
+          ],
         ),
       ),
     );
   }
-}
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Header Section
-// ─────────────────────────────────────────────────────────────────────────────
+  // ─────────────────────────────────────────────────────────────────────────────
+  // Header Section
+  // ─────────────────────────────────────────────────────────────────────────────
 
-class _HomeHeader extends StatelessWidget {
-  const _HomeHeader();
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _homeHeader(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 16, 20, 8),
       child: Row(
         children: [
-          const Expanded(child: _GreetingText()),
+          Expanded(child: _greetingText(context)),
           const SizedBox(width: 12),
-          _LocationChip(),
+          _locationChip(context),
           const SizedBox(width: 8),
-          const _CartButton(),
+          _cartButton(context),
         ],
       ),
     );
   }
-}
 
-class _GreetingText extends StatelessWidget {
-  const _GreetingText();
-
-  @override
-  Widget build(BuildContext context) {
-    return const Column(
+  Widget _greetingText(BuildContext context) {
+    return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
           children: [
             Text(
               'Hai, Andi! ',
-              style: TextStyle(
-                fontSize: 20,
+              style: GlobalHelper.getTextTheme(context,
+                      appTextStyle: AppTextStyle.TITLE_LARGE)
+                  ?.copyWith(
                 fontWeight: FontWeight.bold,
-                color: AppColors.primary,
+                color: GlobalHelper.getColorSchema(context).primary,
               ),
             ),
-            Text('👋', style: TextStyle(fontSize: 20)),
+            Text('👋',
+                style: GlobalHelper.getTextTheme(context,
+                        appTextStyle: AppTextStyle.TITLE_LARGE)
+                    ?.copyWith(fontSize: 20)),
           ],
         ),
         Text(
           'Mau belanja apa hari ini?',
-          style: TextStyle(fontSize: 13, color: AppColors.greyText),
+          style: GlobalHelper.getTextTheme(context,
+                  appTextStyle: AppTextStyle.BODY_MEDIUM)
+              ?.copyWith(
+                  color: GlobalHelper.getColorSchema(context).onSurfaceVariant),
         ),
       ],
     );
   }
-}
 
-class _LocationChip extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
+  Widget _locationChip(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: Colors.white,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: AppColors.greyBorder),
+        border: Border.all(
+            color: GlobalHelper.getColorSchema(context).outlineVariant),
       ),
-      child: const Row(
+      child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(Icons.location_on, color: AppColors.primary, size: 14),
-          SizedBox(width: 4),
+          Icon(Icons.location_on,
+              color: GlobalHelper.getColorSchema(context).primary, size: 14),
+          const SizedBox(width: 4),
           Text(
             'Jakarta',
-            style: TextStyle(
-              fontSize: 12,
+            style: GlobalHelper.getTextTheme(context,
+                    appTextStyle: AppTextStyle.LABEL_MEDIUM)
+                ?.copyWith(
               fontWeight: FontWeight.w600,
-              color: AppColors.primary,
+              color: GlobalHelper.getColorSchema(context).primary,
             ),
           ),
-          Icon(Icons.keyboard_arrow_down, color: AppColors.primary, size: 16),
+          Icon(Icons.keyboard_arrow_down,
+              color: GlobalHelper.getColorSchema(context).primary, size: 16),
         ],
       ),
     );
   }
-}
 
-class _CartButton extends StatelessWidget {
-  const _CartButton();
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _cartButton(BuildContext context) {
     return GestureDetector(
       onTap: () => navigatorKey.currentState?.push(
         MaterialPageRoute(builder: (_) => const CustomerCartScreen()),
@@ -156,13 +155,14 @@ class _CartButton extends StatelessWidget {
             width: 38,
             height: 38,
             decoration: BoxDecoration(
-              color: AppColors.white,
+              color: Colors.white,
               shape: BoxShape.circle,
-              border: Border.all(color: AppColors.greyBorder),
+              border: Border.all(
+                  color: GlobalHelper.getColorSchema(context).outlineVariant),
             ),
-            child: const Icon(
+            child: Icon(
               Icons.shopping_cart_outlined,
-              color: AppColors.primary,
+              color: GlobalHelper.getColorSchema(context).primary,
               size: 20,
             ),
           ),
@@ -176,11 +176,13 @@ class _CartButton extends StatelessWidget {
                 color: Colors.red,
                 shape: BoxShape.circle,
               ),
-              child: const Center(
+              child: Center(
                 child: Text(
                   '3',
-                  style: TextStyle(
-                    color: AppColors.white,
+                  style: GlobalHelper.getTextTheme(context,
+                          appTextStyle: AppTextStyle.LABEL_SMALL)
+                      ?.copyWith(
+                    color: Colors.white,
                     fontSize: 9,
                     fontWeight: FontWeight.bold,
                   ),
@@ -192,14 +194,10 @@ class _CartButton extends StatelessWidget {
       ),
     );
   }
-}
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Search Bar Section
-// ─────────────────────────────────────────────────────────────────────────────
-
-class _HomeSearchBar extends StatelessWidget {
-  const _HomeSearchBar();
+  // ─────────────────────────────────────────────────────────────────────────────
+  // Search Bar Section
+  // ─────────────────────────────────────────────────────────────────────────────
 
   void _openSearch(BuildContext context) {
     navigatorKey.currentState?.push(
@@ -207,8 +205,7 @@ class _HomeSearchBar extends StatelessWidget {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
+  Widget _homeSearchBar(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
       child: Row(
@@ -220,7 +217,7 @@ class _HomeSearchBar extends StatelessWidget {
                 child: Container(
                   height: 48,
                   decoration: BoxDecoration(
-                    color: AppColors.white,
+                    color: Colors.white,
                     borderRadius: BorderRadius.circular(12),
                     boxShadow: [
                       BoxShadow(
@@ -233,18 +230,18 @@ class _HomeSearchBar extends StatelessWidget {
                   child: Row(
                     children: [
                       const SizedBox(width: 14),
-                      const Icon(
+                      Icon(
                         Icons.search,
-                        color: AppColors.greyText,
+                        color: GlobalHelper.getColorSchema(context)
+                            .onSurfaceVariant,
                         size: 20,
                       ),
                       const SizedBox(width: 8),
                       Text(
                         'Cari produk atau warung',
-                        style: TextStyle(
-                          color: Colors.grey.shade400,
-                          fontSize: 14,
-                        ),
+                        style: GlobalHelper.getTextTheme(context,
+                                appTextStyle: AppTextStyle.BODY_MEDIUM)
+                            ?.copyWith(color: Colors.grey.shade400),
                       ),
                     ],
                   ),
@@ -259,46 +256,47 @@ class _HomeSearchBar extends StatelessWidget {
               width: 48,
               height: 48,
               decoration: BoxDecoration(
-                color: AppColors.primary,
+                color: GlobalHelper.getColorSchema(context).primary,
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: const Icon(Icons.tune, color: AppColors.white, size: 20),
+              child: const Icon(Icons.tune, color: Colors.white, size: 20),
             ),
           ),
         ],
       ),
     );
   }
-}
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Mode Chip Section
-// ─────────────────────────────────────────────────────────────────────────────
+  // ─────────────────────────────────────────────────────────────────────────────
+  // Mode Chip Section
+  // ─────────────────────────────────────────────────────────────────────────────
 
-class _HomeModeChip extends StatelessWidget {
-  const _HomeModeChip();
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _homeModeChip(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
         decoration: BoxDecoration(
-          color: AppColors.primary.withValues(alpha: 0.1),
+          color:
+              GlobalHelper.getColorSchema(context).primary.withValues(alpha: 0.1),
           borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: AppColors.primary.withValues(alpha: 0.3)),
+          border: Border.all(
+              color: GlobalHelper.getColorSchema(context)
+                  .primary
+                  .withValues(alpha: 0.3)),
         ),
-        child: const Row(
+        child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.person_outline, color: AppColors.primary, size: 16),
-            SizedBox(width: 6),
+            Icon(Icons.person_outline,
+                color: GlobalHelper.getColorSchema(context).primary, size: 16),
+            const SizedBox(width: 6),
             Text(
               'Mode: Customer',
-              style: TextStyle(
-                color: AppColors.primary,
-                fontSize: 12,
+              style: GlobalHelper.getTextTheme(context,
+                      appTextStyle: AppTextStyle.LABEL_MEDIUM)
+                  ?.copyWith(
+                color: GlobalHelper.getColorSchema(context).primary,
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -307,51 +305,34 @@ class _HomeModeChip extends StatelessWidget {
       ),
     );
   }
-}
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Banner Carousel Section
-// ─────────────────────────────────────────────────────────────────────────────
+  // ─────────────────────────────────────────────────────────────────────────────
+  // Banner Carousel Section
+  // ─────────────────────────────────────────────────────────────────────────────
 
-class _HomeBannerCarousel extends StatelessWidget {
-  const _HomeBannerCarousel();
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _homeBannerCarousel(BuildContext context) {
+    final state = context.watch<CustomerHomeBloc>().state;
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
       child: Column(
         children: [
-          const _BannerCard(),
+          _bannerCard(context),
           const SizedBox(height: 10),
-          BlocBuilder<CustomerHomeBloc, CustomerHomeState>(
-            builder: (context, state) {
-              return _BannerDotIndicator(
-                total: 3,
-                currentIndex: state.currentBanner,
-              );
-            },
-          ),
+          _bannerDotIndicator(context, 3, state.currentBanner),
         ],
       ),
     );
   }
-}
 
-class _BannerCard extends StatelessWidget {
-  const _BannerCard();
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _bannerCard(BuildContext context) {
     return Container(
       height: 150,
       decoration: BoxDecoration(
-        color: AppColors.yellow,
+        color: AppColors.yellow, // Custom color maintained
         borderRadius: BorderRadius.circular(16),
       ),
       child: Stack(
         children: [
-          // Left content
           Positioned(
             left: 20,
             top: 16,
@@ -368,56 +349,54 @@ class _BannerCard extends StatelessWidget {
                     color: AppColors.yellowDark.withValues(alpha: 0.3),
                     borderRadius: BorderRadius.circular(4),
                   ),
-                  child: const Text(
+                  child: Text(
                     'Promo Spesial',
-                    style: TextStyle(
-                      fontSize: 10,
+                    style: GlobalHelper.getTextTheme(context,
+                            appTextStyle: AppTextStyle.LABEL_SMALL)
+                        ?.copyWith(
                       fontWeight: FontWeight.w600,
-                      color: Color(0xFF92400E),
+                      color: const Color(0xFF92400E),
                     ),
                   ),
                 ),
                 const SizedBox(height: 6),
-                const Text(
+                Text(
                   'Diskon Ongkir\nHingga 10RB!',
-                  style: TextStyle(
-                    fontSize: 18,
+                  style: GlobalHelper.getTextTheme(context,
+                          appTextStyle: AppTextStyle.TITLE_MEDIUM)
+                      ?.copyWith(
                     fontWeight: FontWeight.bold,
-                    color: AppColors.textDark,
+                    color: GlobalHelper.getColorSchema(context).onSurface,
                     height: 1.2,
                   ),
                 ),
                 const SizedBox(height: 4),
-                const Text(
+                Text(
                   'Belanja di warung favoritmu\nlebih hemat setiap hari.',
-                  style: TextStyle(fontSize: 10, color: AppColors.textMuted),
+                  style: GlobalHelper.getTextTheme(context,
+                          appTextStyle: AppTextStyle.BODY_SMALL)
+                      ?.copyWith(
+                          color: GlobalHelper.getColorSchema(context)
+                              .onSurfaceVariant),
                 ),
                 const Spacer(),
-                _BannerButton(label: 'Belanja Sekarang', onPressed: () {}),
+                _bannerButton(context, 'Belanja Sekarang', () {}),
               ],
             ),
           ),
-          // Right illustration
-          const Positioned(right: 12, bottom: 0, child: _BannerIllustration()),
+          Positioned(right: 12, bottom: 0, child: _bannerIllustration(context)),
         ],
       ),
     );
   }
-}
 
-class _BannerButton extends StatelessWidget {
-  const _BannerButton({required this.label, required this.onPressed});
-
-  final String label;
-  final VoidCallback onPressed;
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _bannerButton(
+      BuildContext context, String label, VoidCallback onPressed) {
     return ElevatedButton(
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
-        backgroundColor: AppColors.white,
-        foregroundColor: AppColors.primary,
+        backgroundColor: Colors.white,
+        foregroundColor: GlobalHelper.getColorSchema(context).primary,
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
         minimumSize: Size.zero,
         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -426,37 +405,39 @@ class _BannerButton extends StatelessWidget {
       ),
       child: Text(
         label,
-        style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold),
+        style: GlobalHelper.getTextTheme(context,
+                appTextStyle: AppTextStyle.LABEL_MEDIUM)
+            ?.copyWith(fontWeight: FontWeight.bold),
       ),
     );
   }
-}
 
-class _BannerIllustration extends StatelessWidget {
-  const _BannerIllustration();
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _bannerIllustration(BuildContext context) {
     return Stack(
       alignment: Alignment.center,
       children: [
-        const Text('🛵', style: TextStyle(fontSize: 70)),
+        Text('🛵',
+            style: GlobalHelper.getTextTheme(context,
+                    appTextStyle: AppTextStyle.DISPLAY_MEDIUM)
+                ?.copyWith(fontSize: 70)),
         Positioned(
           top: 0,
           right: 0,
           child: Container(
             width: 52,
             height: 52,
-            decoration: const BoxDecoration(
-              color: AppColors.primary,
+            decoration: BoxDecoration(
+              color: GlobalHelper.getColorSchema(context).primary,
               shape: BoxShape.circle,
             ),
-            child: const Center(
+            child: Center(
               child: Text(
                 'ONGKIR\n10RB',
                 textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: AppColors.white,
+                style: GlobalHelper.getTextTheme(context,
+                        appTextStyle: AppTextStyle.LABEL_SMALL)
+                    ?.copyWith(
+                  color: Colors.white,
                   fontSize: 9,
                   fontWeight: FontWeight.bold,
                 ),
@@ -467,16 +448,9 @@ class _BannerIllustration extends StatelessWidget {
       ],
     );
   }
-}
 
-class _BannerDotIndicator extends StatelessWidget {
-  const _BannerDotIndicator({required this.total, required this.currentIndex});
-
-  final int total;
-  final int currentIndex;
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _bannerDotIndicator(
+      BuildContext context, int total, int currentIndex) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: List.generate(total, (i) {
@@ -487,97 +461,82 @@ class _BannerDotIndicator extends StatelessWidget {
           width: isActive ? 20 : 6,
           height: 6,
           decoration: BoxDecoration(
-            color: isActive ? AppColors.primary : AppColors.greyBorder,
+            color: isActive
+                ? GlobalHelper.getColorSchema(context).primary
+                : GlobalHelper.getColorSchema(context).outlineVariant,
             borderRadius: BorderRadius.circular(3),
           ),
         );
       }),
     );
   }
-}
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Categories Section
-// ─────────────────────────────────────────────────────────────────────────────
+  // ─────────────────────────────────────────────────────────────────────────────
+  // Categories Section
+  // ─────────────────────────────────────────────────────────────────────────────
 
-class _HomeCategoriesSection extends StatelessWidget {
-  const _HomeCategoriesSection();
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _homeCategoriesSection(BuildContext context) {
+    final state = context.watch<CustomerHomeBloc>().state;
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
       child: Column(
         children: [
-          _SectionHeader(title: 'Kategori', onTapSeeAll: () {}),
+          _sectionHeader(context, 'Kategori', () {}),
           const SizedBox(height: 12),
-          BlocBuilder<CustomerHomeBloc, CustomerHomeState>(
-            builder: (context, state) {
-              if (state.isLoadingCategories) {
-                return const Center(child: CircularProgressIndicator());
-              }
-
-              if (state.categories.isEmpty) {
-                return const Center(
-                  child: Text(
-                    'Tidak ada kategori',
-                    style: TextStyle(color: AppColors.greyText, fontSize: 12),
-                  ),
-                );
-              }
-
-              return SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: state.categories
-                      .map(
-                        (c) => Padding(
-                          padding: const EdgeInsets.only(right: 16.0),
-                          child: GestureDetector(
-                            onTap: () {
-                              navigatorKey.currentState?.push(
-                                MaterialPageRoute(
-                                  builder: (_) => CustomerMerchantScreen(category: c),
-                                ),
-                              );
-                            },
-                            child: SizedBox(
-                              width: 60,
-                              child: _CategoryItem(
-                                icon: Icons.category,
-                                label: c.name,
+          if (state.isLoadingCategories)
+            const Center(child: CircularProgressIndicator())
+          else if (state.categories.isEmpty)
+            Center(
+              child: Text(
+                'Tidak ada kategori',
+                style: GlobalHelper.getTextTheme(context,
+                        appTextStyle: AppTextStyle.BODY_SMALL)
+                    ?.copyWith(
+                        color: GlobalHelper.getColorSchema(context)
+                            .onSurfaceVariant),
+              ),
+            )
+          else
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: state.categories
+                    .map(
+                      (c) => Padding(
+                        padding: const EdgeInsets.only(right: 16.0),
+                        child: GestureDetector(
+                          onTap: () {
+                            navigatorKey.currentState?.push(
+                              MaterialPageRoute(
+                                builder: (_) =>
+                                    CustomerMerchantScreen(category: c),
                               ),
-                            ),
+                            );
+                          },
+                          child: SizedBox(
+                            width: 60,
+                            child: _categoryItem(context, Icons.category, c.name),
                           ),
                         ),
-                      )
-                      .toList(),
-                ),
-              );
-            },
-          ),
+                      ),
+                    )
+                    .toList(),
+              ),
+            ),
         ],
       ),
     );
   }
-}
 
-class _CategoryItem extends StatelessWidget {
-  const _CategoryItem({required this.icon, required this.label});
-
-  final IconData icon;
-  final String label;
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _categoryItem(BuildContext context, IconData icon, String label) {
     return Column(
       children: [
         Container(
           width: 52,
           height: 52,
           decoration: BoxDecoration(
-            color: AppColors.white,
+            color: Colors.white,
             shape: BoxShape.circle,
             boxShadow: [
               BoxShadow(
@@ -587,101 +546,100 @@ class _CategoryItem extends StatelessWidget {
               ),
             ],
           ),
-          child: Center(child: Icon(icon, color: AppColors.primary, size: 24)),
+          child: Center(
+              child: Icon(icon,
+                  color: GlobalHelper.getColorSchema(context).primary,
+                  size: 24)),
         ),
         const SizedBox(height: 6),
         Text(
           label,
           textAlign: TextAlign.center,
-          style: const TextStyle(fontSize: 10, color: Colors.black87),
+          style: GlobalHelper.getTextTheme(context,
+                  appTextStyle: AppTextStyle.LABEL_SMALL)
+              ?.copyWith(color: Colors.black87),
         ),
       ],
     );
   }
-}
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Nearby Stores Section
-// ─────────────────────────────────────────────────────────────────────────────
+  // ─────────────────────────────────────────────────────────────────────────────
+  // Nearby Stores Section
+  // ─────────────────────────────────────────────────────────────────────────────
 
-class _HomeNearbyStoresSection extends StatelessWidget {
-  const _HomeNearbyStoresSection();
-
-  static const List<_StoreData> _stores = [
-    _StoreData(
-      name: 'Warung Madura Cahaya',
-      status: 'Buka',
-      statusColor: AppColors.primary,
-      rating: '4.7',
-      reviews: '128',
-      distance: '0,6 km',
-      location: 'Jakarta Timur',
-      promo: 'Promo Ongkir',
-      emoji: '🏪',
-    ),
-    _StoreData(
-      name: 'Toko Sumber Rezeki',
-      status: 'Promo',
-      statusColor: AppColors.yellowDark,
-      rating: '4.5',
-      reviews: '95',
-      distance: '1,2 km',
-      location: 'Jakarta Timur',
-      promo: 'Promo Ongkir',
-      emoji: '🛒',
-    ),
-  ];
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _homeNearbyStoresSection(BuildContext context) {
+    final state = context.watch<CustomerHomeBloc>().state;
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
       child: Column(
         children: [
-          _SectionHeader(title: 'Warung Terdekat', onTapSeeAll: () {}),
+          _sectionHeader(context, 'Warung Terdekat', () {}),
           const SizedBox(height: 8),
-          ..._stores.map((store) => _StoreCard(data: store)),
+          if (state.isLoadingNearby)
+            const Padding(
+              padding: EdgeInsets.symmetric(vertical: 20),
+              child: Center(child: CircularProgressIndicator()),
+            )
+          else if (state.nearbyMerchants.isEmpty)
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 20),
+              child: Center(
+                child: Text(
+                  'Tidak ada warung terdekat',
+                  style: GlobalHelper.getTextTheme(context,
+                          appTextStyle: AppTextStyle.BODY_SMALL)
+                      ?.copyWith(
+                          color: GlobalHelper.getColorSchema(context)
+                              .onSurfaceVariant),
+                ),
+              ),
+            )
+          else
+            Column(
+              children: state.nearbyMerchants.map((merchant) {
+                return GestureDetector(
+                  onTap: () {
+                    navigatorKey.currentState?.push(
+                      MaterialPageRoute(
+                        builder: (_) => CustomerDetailMerchantScreen(
+                          storeId: merchant.id,
+                        ),
+                      ),
+                    );
+                  },
+                  child: _storeCard(
+                    context,
+                    _StoreData(
+                      name: merchant.name,
+                      status: merchant.isOpen ? 'Buka' : 'Tutup',
+                      statusColor: merchant.isOpen
+                          ? GlobalHelper.getColorSchema(context).primary
+                          : GlobalHelper.getColorSchema(context).onSurfaceVariant,
+                      rating: '0',
+                      reviews: '0',
+                      distance: '${merchant.distance ?? 0} m',
+                      location: '',
+                      promo: (merchant.promoBadges != null &&
+                              merchant.promoBadges!.isNotEmpty)
+                          ? merchant.promoBadges!.first
+                          : '',
+                      emoji: '🏪',
+                      photo: merchant.photo,
+                    ),
+                  ),
+                );
+              }).toList(),
+            ),
         ],
       ),
     );
   }
-}
 
-class _StoreData {
-  final String name;
-  final String status;
-  final Color statusColor;
-  final String rating;
-  final String reviews;
-  final String distance;
-  final String location;
-  final String promo;
-  final String emoji;
-
-  const _StoreData({
-    required this.name,
-    required this.status,
-    required this.statusColor,
-    required this.rating,
-    required this.reviews,
-    required this.distance,
-    required this.location,
-    required this.promo,
-    required this.emoji,
-  });
-}
-
-class _StoreCard extends StatelessWidget {
-  const _StoreCard({required this.data});
-
-  final _StoreData data;
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _storeCard(BuildContext context, _StoreData data) {
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: Colors.white,
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
@@ -693,83 +651,79 @@ class _StoreCard extends StatelessWidget {
       ),
       child: Row(
         children: [
-          // Store thumbnail
           Container(
             width: 90,
             height: 90,
             decoration: BoxDecoration(
-              color: AppColors.primary.withValues(alpha: 0.1),
+              color: GlobalHelper.getColorSchema(context)
+                  .primary
+                  .withValues(alpha: 0.1),
               borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(12),
                 bottomLeft: Radius.circular(12),
               ),
+              image: data.photo != null && data.photo!.isNotEmpty
+                  ? DecorationImage(
+                      image: NetworkImage(data.photo!),
+                      fit: BoxFit.cover,
+                    )
+                  : null,
             ),
-            child: Center(
-              child: Text(data.emoji, style: const TextStyle(fontSize: 40)),
-            ),
+            child: data.photo == null || data.photo!.isEmpty
+                ? Center(
+                    child: Text(
+                      data.emoji,
+                      style: GlobalHelper.getTextTheme(context,
+                              appTextStyle: AppTextStyle.DISPLAY_SMALL)
+                          ?.copyWith(fontSize: 40),
+                    ),
+                  )
+                : null,
           ),
           const SizedBox(width: 12),
-          // Store info
           Expanded(
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 12),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _StoreNameRow(
-                    name: data.name,
-                    status: data.status,
-                    statusColor: data.statusColor,
-                  ),
+                  _storeNameRow(context, data.name, data.status, data.statusColor),
                   const SizedBox(height: 4),
-                  _StoreMetaRow(
-                    rating: data.rating,
-                    reviews: data.reviews,
-                    distance: data.distance,
-                  ),
+                  _storeMetaRow(context, data.rating, data.reviews, data.distance),
                   const SizedBox(height: 2),
                   Text(
                     data.location,
-                    style: const TextStyle(
-                      fontSize: 11,
-                      color: AppColors.greyText,
-                    ),
+                    style: GlobalHelper.getTextTheme(context,
+                            appTextStyle: AppTextStyle.LABEL_SMALL)
+                        ?.copyWith(
+                            color: GlobalHelper.getColorSchema(context)
+                                .onSurfaceVariant),
                   ),
-                  const SizedBox(height: 6),
-                  _StorePromoTag(promo: data.promo),
                 ],
               ),
             ),
           ),
-          const Padding(
-            padding: EdgeInsets.only(right: 12),
-            child: Icon(Icons.chevron_right, color: AppColors.greyText),
+          Padding(
+            padding: const EdgeInsets.only(right: 12),
+            child: Icon(Icons.chevron_right,
+                color:
+                    GlobalHelper.getColorSchema(context).onSurfaceVariant),
           ),
         ],
       ),
     );
   }
-}
 
-class _StoreNameRow extends StatelessWidget {
-  const _StoreNameRow({
-    required this.name,
-    required this.status,
-    required this.statusColor,
-  });
-
-  final String name;
-  final String status;
-  final Color statusColor;
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _storeNameRow(BuildContext context, String name, String status,
+      Color statusColor) {
     return Row(
       children: [
         Flexible(
           child: Text(
             name,
-            style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
+            style: GlobalHelper.getTextTheme(context,
+                    appTextStyle: AppTextStyle.TITLE_SMALL)
+                ?.copyWith(fontWeight: FontWeight.bold),
             overflow: TextOverflow.ellipsis,
           ),
         ),
@@ -783,8 +737,9 @@ class _StoreNameRow extends StatelessWidget {
           ),
           child: Text(
             status,
-            style: TextStyle(
-              fontSize: 10,
+            style: GlobalHelper.getTextTheme(context,
+                    appTextStyle: AppTextStyle.LABEL_SMALL)
+                ?.copyWith(
               color: statusColor,
               fontWeight: FontWeight.w600,
             ),
@@ -793,76 +748,33 @@ class _StoreNameRow extends StatelessWidget {
       ],
     );
   }
-}
 
-class _StoreMetaRow extends StatelessWidget {
-  const _StoreMetaRow({
-    required this.rating,
-    required this.reviews,
-    required this.distance,
-  });
-
-  final String rating;
-  final String reviews;
-  final String distance;
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _storeMetaRow(BuildContext context, String rating, String reviews,
+      String distance) {
     return Row(
       children: [
-        const Icon(Icons.star, color: AppColors.yellowDark, size: 13),
-        const SizedBox(width: 2),
-        Text(
-          '$rating ($reviews)  •  ',
-          style: const TextStyle(fontSize: 11, color: AppColors.greyText),
-        ),
-        const Icon(
+        Icon(
           Icons.location_on_outlined,
           size: 11,
-          color: AppColors.greyText,
+          color: GlobalHelper.getColorSchema(context).onSurfaceVariant,
         ),
         Text(
           ' $distance',
-          style: const TextStyle(fontSize: 11, color: AppColors.greyText),
+          style: GlobalHelper.getTextTheme(context,
+                  appTextStyle: AppTextStyle.LABEL_SMALL)
+              ?.copyWith(
+                  color: GlobalHelper.getColorSchema(context)
+                      .onSurfaceVariant),
         ),
       ],
     );
   }
-}
 
-class _StorePromoTag extends StatelessWidget {
-  const _StorePromoTag({required this.promo});
+  // ─────────────────────────────────────────────────────────────────────────────
+  // Map Preview Section
+  // ─────────────────────────────────────────────────────────────────────────────
 
-  final String promo;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        const Text('🏷️', style: TextStyle(fontSize: 11)),
-        const SizedBox(width: 4),
-        Text(
-          promo,
-          style: const TextStyle(
-            fontSize: 11,
-            color: AppColors.primary,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// Map Preview Section
-// ─────────────────────────────────────────────────────────────────────────────
-
-class _HomeMapPreview extends StatelessWidget {
-  const _HomeMapPreview();
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _homeMapPreview(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
       child: Container(
@@ -879,20 +791,29 @@ class _HomeMapPreview extends StatelessWidget {
                 child: CustomPaint(painter: _MapGridPainter()),
               ),
             ),
-            const Positioned(
+            Positioned(
               right: 80,
               top: 30,
-              child: Text('📍', style: TextStyle(fontSize: 28)),
+              child: Text('📍',
+                  style: GlobalHelper.getTextTheme(context,
+                          appTextStyle: AppTextStyle.TITLE_LARGE)
+                      ?.copyWith(fontSize: 28)),
             ),
-            const Positioned(
+            Positioned(
               right: 40,
               top: 55,
-              child: Text('📍', style: TextStyle(fontSize: 28)),
+              child: Text('📍',
+                  style: GlobalHelper.getTextTheme(context,
+                          appTextStyle: AppTextStyle.TITLE_LARGE)
+                      ?.copyWith(fontSize: 28)),
             ),
-            const Positioned(
+            Positioned(
               right: 120,
               top: 55,
-              child: Text('📍', style: TextStyle(fontSize: 28)),
+              child: Text('📍',
+                  style: GlobalHelper.getTextTheme(context,
+                          appTextStyle: AppTextStyle.TITLE_LARGE)
+                      ?.copyWith(fontSize: 28)),
             ),
             Positioned(
               left: 20,
@@ -900,25 +821,31 @@ class _HomeMapPreview extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
+                  Text(
                     'Lihat di Peta',
-                    style: TextStyle(
-                      fontSize: 15,
+                    style: GlobalHelper.getTextTheme(context,
+                            appTextStyle: AppTextStyle.TITLE_MEDIUM)
+                        ?.copyWith(
                       fontWeight: FontWeight.bold,
-                      color: AppColors.textDark,
+                      color: GlobalHelper.getColorSchema(context).onSurface,
                     ),
                   ),
                   const SizedBox(height: 4),
-                  const Text(
+                  Text(
                     'Temukan warung terdekat\ndi sekitarmu',
-                    style: TextStyle(fontSize: 11, color: AppColors.textMuted),
+                    style: GlobalHelper.getTextTheme(context,
+                            appTextStyle: AppTextStyle.BODY_SMALL)
+                        ?.copyWith(
+                            color: GlobalHelper.getColorSchema(context)
+                                .onSurfaceVariant),
                   ),
                   const SizedBox(height: 12),
                   ElevatedButton(
                     onPressed: () {},
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primary,
-                      foregroundColor: AppColors.white,
+                      backgroundColor:
+                          GlobalHelper.getColorSchema(context).primary,
+                      foregroundColor: Colors.white,
                       padding: const EdgeInsets.symmetric(
                         horizontal: 16,
                         vertical: 8,
@@ -930,10 +857,11 @@ class _HomeMapPreview extends StatelessWidget {
                       ),
                       elevation: 0,
                     ),
-                    child: const Text(
+                    child: Text(
                       'Buka Peta',
-                      style: TextStyle(
-                        fontSize: 12,
+                      style: GlobalHelper.getTextTheme(context,
+                              appTextStyle: AppTextStyle.LABEL_MEDIUM)
+                          ?.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -946,26 +874,21 @@ class _HomeMapPreview extends StatelessWidget {
       ),
     );
   }
-}
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Shared Widgets
-// ─────────────────────────────────────────────────────────────────────────────
+  // ─────────────────────────────────────────────────────────────────────────────
+  // Shared Widgets
+  // ─────────────────────────────────────────────────────────────────────────────
 
-class _SectionHeader extends StatelessWidget {
-  const _SectionHeader({required this.title, required this.onTapSeeAll});
-
-  final String title;
-  final VoidCallback onTapSeeAll;
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _sectionHeader(
+      BuildContext context, String title, VoidCallback onTapSeeAll) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
           title,
-          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          style: GlobalHelper.getTextTheme(context,
+                  appTextStyle: AppTextStyle.TITLE_MEDIUM)
+              ?.copyWith(fontWeight: FontWeight.bold),
         ),
         TextButton(
           onPressed: onTapSeeAll,
@@ -974,14 +897,43 @@ class _SectionHeader extends StatelessWidget {
             minimumSize: Size.zero,
             tapTargetSize: MaterialTapTargetSize.shrinkWrap,
           ),
-          child: const Text(
+          child: Text(
             'Lihat semua >',
-            style: TextStyle(color: AppColors.primary, fontSize: 12),
+            style: GlobalHelper.getTextTheme(context,
+                    appTextStyle: AppTextStyle.LABEL_MEDIUM)
+                ?.copyWith(
+                    color: GlobalHelper.getColorSchema(context).primary),
           ),
         ),
       ],
     );
   }
+}
+
+class _StoreData {
+  final String name;
+  final String status;
+  final Color statusColor;
+  final String rating;
+  final String reviews;
+  final String distance;
+  final String location;
+  final String promo;
+  final String emoji;
+  final String? photo;
+
+  const _StoreData({
+    required this.name,
+    required this.status,
+    required this.statusColor,
+    required this.rating,
+    required this.reviews,
+    required this.distance,
+    required this.location,
+    required this.promo,
+    required this.emoji,
+    this.photo,
+  });
 }
 
 // ─────────────────────────────────────────────────────────────────────────────

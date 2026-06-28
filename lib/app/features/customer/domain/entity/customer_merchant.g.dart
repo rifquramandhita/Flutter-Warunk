@@ -52,6 +52,10 @@ CustomerMerchantEntity _$CustomerMerchantEntityFromJson(
   latitude: (json['latitude'] as num?)?.toDouble(),
   balance: (json['balance'] as num?)?.toInt(),
   currentBalance: (json['current_balance'] as num?)?.toInt(),
+  distance: (json['distance'] as num?)?.toDouble(),
+  promoBadges: (json['promo_badges'] as List<dynamic>?)
+      ?.map((e) => e as String)
+      .toList(),
   user: json['user'] == null
       ? null
       : CustomerMerchantUserEntity.fromJson(
@@ -93,6 +97,8 @@ Map<String, dynamic> _$CustomerMerchantEntityToJson(
   'latitude': ?instance.latitude,
   'balance': ?instance.balance,
   'current_balance': ?instance.currentBalance,
+  'distance': ?instance.distance,
+  'promo_badges': ?instance.promoBadges,
   'user': ?instance.user,
 };
 
