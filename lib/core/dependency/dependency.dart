@@ -29,7 +29,7 @@ import 'package:warunk/app/features/merchant/domain/use_case/merchant_location_g
 import 'package:warunk/app/features/customer/presentation/address/bloc/customer_address_bloc.dart';
 import 'package:warunk/app/features/customer/presentation/input_address/bloc/customer_input_address_bloc.dart';
 import 'package:warunk/app/features/customer/presentation/search/bloc/customer_search_bloc.dart';
-import 'package:warunk/app/features/customer/presentation/store/bloc/customer_merchant_bloc.dart';
+import 'package:warunk/app/features/customer/presentation/detail_merchant/bloc/customer_detail_merchant_bloc.dart';
 import 'package:warunk/app/features/customer/presentation/product/bloc/customer_product_bloc.dart';
 import 'package:warunk/app/features/customer/presentation/order/bloc/customer_order_bloc.dart';
 import 'package:warunk/app/features/customer/domain/use_case/customer_product_get_by_id_use_case.dart';
@@ -170,6 +170,7 @@ import 'package:warunk/app/features/merchant/domain/repository/merchant_notifica
 import 'package:warunk/app/features/merchant/data/repository/merchant_notification_repository_impl.dart';
 import 'package:warunk/app/features/merchant/domain/use_case/merchant_notification_get_use_case.dart';
 import 'package:warunk/app/features/merchant/presentation/notification/bloc/merchant_notification_bloc.dart';
+
 final sl = GetIt.instance;
 
 Future<void> initDependency() async {
@@ -366,16 +367,20 @@ Future<void> initDependency() async {
   sl.registerLazySingleton(
     () => CustomerWishlistRemoveUseCase(repository: sl()),
   );
-  sl.registerLazySingleton(
-    () => CustomerWishlistsGetUseCase(repository: sl()),
-  );
+  sl.registerLazySingleton(() => CustomerWishlistsGetUseCase(repository: sl()));
   sl.registerLazySingleton(() => MerchantDashboardGetUseCase(repository: sl()));
-  sl.registerLazySingleton(() => CustomerNotificationGetUseCase(repository: sl()));
-  sl.registerLazySingleton(() => MerchantNotificationGetUseCase(repository: sl()));
+  sl.registerLazySingleton(
+    () => CustomerNotificationGetUseCase(repository: sl()),
+  );
+  sl.registerLazySingleton(
+    () => MerchantNotificationGetUseCase(repository: sl()),
+  );
   //bloc
   sl.registerLazySingleton(() => AuthBloc());
   sl.registerFactory(() => CustomerHomeBloc(getCategoryUseCase: sl()));
-  sl.registerFactory(() => AuthLoginBloc(authBloc: sl(), useCase: sl(), googleUseCase: sl()));
+  sl.registerFactory(
+    () => AuthLoginBloc(authBloc: sl(), useCase: sl(), googleUseCase: sl()),
+  );
   sl.registerFactory(() => MerchantBalanceHistoryBloc(useCase: sl()));
   sl.registerFactory(() => MerchantBalanceTopupPaymentBloc());
   sl.registerFactory(() => MerchantInputTopupBloc(useCase: sl()));
@@ -422,7 +427,7 @@ Future<void> initDependency() async {
   sl.registerFactory(() => CustomerInputAddressBloc(sl(), sl(), sl()));
   sl.registerFactory(() => CustomerSearchBloc(getMerchantUseCase: sl()));
   sl.registerFactory(
-    () => CustomerMerchantBloc(
+    () => CustomerDetailMerchantBloc(
       getByIdUseCase: sl(),
       productGetByMerchantUseCase: sl(),
       cartGetUseCase: sl(),

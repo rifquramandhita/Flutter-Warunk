@@ -3,31 +3,31 @@ import 'package:warunk/app/features/customer/domain/use_case/customer_merchant_g
 import 'package:warunk/app/features/customer/domain/use_case/customer_product_get_by_merchant_use_case.dart';
 import 'package:warunk/app/features/customer/domain/use_case/customer_cart_get_use_case.dart';
 import 'package:warunk/core/network/data_state.dart';
-import 'customer_merchant_event.dart';
-import 'customer_merchant_state.dart';
+import 'customer_detail_merchant_event.dart';
+import 'customer_detail_merchant_state.dart';
 
-class CustomerMerchantBloc
-    extends Bloc<CustomerMerchantEvent, CustomerMerchantState> {
+class CustomerDetailMerchantBloc
+    extends Bloc<CustomerDetailMerchantEvent, CustomerDetailMerchantState> {
   final CustomerMerchantGetByIdUseCase _getByIdUseCase;
   final CustomerProductGetByMerchantUseCase _productGetByMerchantUseCase;
   final CustomerCartGetUseCase _cartGetUseCase;
 
-  CustomerMerchantBloc({
+  CustomerDetailMerchantBloc({
     required CustomerMerchantGetByIdUseCase getByIdUseCase,
     required CustomerProductGetByMerchantUseCase productGetByMerchantUseCase,
     required CustomerCartGetUseCase cartGetUseCase,
   }) : _getByIdUseCase = getByIdUseCase,
        _productGetByMerchantUseCase = productGetByMerchantUseCase,
        _cartGetUseCase = cartGetUseCase,
-       super(const CustomerMerchantState()) {
-    on<CustomerMerchantEventGet>(_onLoadStoreDetails);
-    on<CustomerMerchantEventSelectCategory>(_onSelectCategory);
-    on<CustomerMerchantEventAddToCart>(_onAddToCart);
+       super(const CustomerDetailMerchantState()) {
+    on<CustomerDetailMerchantEventGet>(_onLoadStoreDetails);
+    on<CustomerDetailMerchantEventSelectCategory>(_onSelectCategory);
+    on<CustomerDetailMerchantEventAddToCart>(_onAddToCart);
   }
 
   Future<void> _onLoadStoreDetails(
-    CustomerMerchantEventGet event,
-    Emitter<CustomerMerchantState> emit,
+    CustomerDetailMerchantEventGet event,
+    Emitter<CustomerDetailMerchantState> emit,
   ) async {
     emit(state.copyWith(isLoading: true, storeId: event.storeId));
 
@@ -77,15 +77,15 @@ class CustomerMerchantBloc
   }
 
   void _onSelectCategory(
-    CustomerMerchantEventSelectCategory event,
-    Emitter<CustomerMerchantState> emit,
+    CustomerDetailMerchantEventSelectCategory event,
+    Emitter<CustomerDetailMerchantState> emit,
   ) {
     emit(state.copyWith(selectedCategory: event.index));
   }
 
   void _onAddToCart(
-    CustomerMerchantEventAddToCart event,
-    Emitter<CustomerMerchantState> emit,
+    CustomerDetailMerchantEventAddToCart event,
+    Emitter<CustomerDetailMerchantState> emit,
   ) {
     final price = event.product.price;
 

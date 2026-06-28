@@ -10,7 +10,7 @@ import 'package:warunk/core/helper/number_helper.dart';
 import 'package:warunk/core/widgets/loading_app_widget.dart';
 import 'package:warunk/core/widgets/primary_button.dart';
 import 'package:warunk/main.dart';
-import 'package:warunk/app/features/customer/presentation/store/customer_merchant_screen.dart';
+import 'package:warunk/app/features/customer/presentation/detail_merchant/customer_detail_merchant_screen.dart';
 import 'package:warunk/app/features/customer/presentation/product/customer_product_screen.dart';
 
 class CustomerCartScreen extends StatelessWidget {
@@ -615,7 +615,7 @@ class CustomerCartScreen extends StatelessWidget {
 
     await navigatorKey.currentState?.push(
       MaterialPageRoute(
-        builder: (_) => CustomerMerchantScreen(storeId: merchantId),
+        builder: (_) => CustomerDetailMerchantScreen(storeId: merchantId),
       ),
     );
     context.read<CustomerCartBloc>().add(CustomerCartEventGet());

@@ -4,9 +4,9 @@ import 'package:warunk/core/dependency/dependency.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:warunk/app/features/customer/presentation/cart/customer_cart_screen.dart';
 import 'package:warunk/app/features/customer/presentation/product/customer_product_screen.dart';
-import 'package:warunk/app/features/customer/presentation/store/bloc/customer_merchant_bloc.dart';
-import 'package:warunk/app/features/customer/presentation/store/bloc/customer_merchant_event.dart';
-import 'package:warunk/app/features/customer/presentation/store/bloc/customer_merchant_state.dart';
+import 'package:warunk/app/features/customer/presentation/detail_merchant/bloc/customer_detail_merchant_bloc.dart';
+import 'package:warunk/app/features/customer/presentation/detail_merchant/bloc/customer_detail_merchant_event.dart';
+import 'package:warunk/app/features/customer/presentation/detail_merchant/bloc/customer_detail_merchant_state.dart';
 import 'package:warunk/core/widgets/primary_button.dart';
 import 'package:warunk/core/helper/global_helper.dart';
 import 'package:warunk/core/helper/dialog_helper.dart';
@@ -14,34 +14,35 @@ import 'package:warunk/core/helper/number_helper.dart';
 import 'package:warunk/core/widgets/loading_app_widget.dart';
 import 'package:warunk/main.dart';
 
-class CustomerMerchantScreen extends StatelessWidget {
+class CustomerDetailMerchantScreen extends StatelessWidget {
   final String storeId;
-  const CustomerMerchantScreen({super.key, required this.storeId});
+  const CustomerDetailMerchantScreen({super.key, required this.storeId});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) =>
-          sl<CustomerMerchantBloc>()
-            ..add(CustomerMerchantEventGet(storeId: storeId)),
-      child: BlocConsumer<CustomerMerchantBloc, CustomerMerchantState>(
-        listener: (context, state) {
-          if (state.errorMessage != null) {
-            DialogHelper.showErrorSnackBar(
-              context: context,
-              text: state.errorMessage!,
-            );
-          }
-        },
-        builder: (context, state) {
-          return Scaffold(body: _bodyBuild(context));
-        },
-      ),
+          sl<CustomerDetailMerchantBloc>()
+            ..add(CustomerDetailMerchantEventGet(storeId: storeId)),
+      child:
+          BlocConsumer<CustomerDetailMerchantBloc, CustomerDetailMerchantState>(
+            listener: (context, state) {
+              if (state.errorMessage != null) {
+                DialogHelper.showErrorSnackBar(
+                  context: context,
+                  text: state.errorMessage!,
+                );
+              }
+            },
+            builder: (context, state) {
+              return Scaffold(body: _bodyBuild(context));
+            },
+          ),
     );
   }
 
   Widget _bodyBuild(BuildContext context) {
-    final state = context.watch<CustomerMerchantBloc>().state;
+    final state = context.watch<CustomerDetailMerchantBloc>().state;
     return SafeArea(
       top: false, // since we have hero image
       child: Stack(
@@ -54,7 +55,7 @@ class CustomerMerchantScreen extends StatelessWidget {
   }
 
   Widget _bodyLayout(BuildContext context) {
-    final state = context.watch<CustomerMerchantBloc>().state;
+    final state = context.watch<CustomerDetailMerchantBloc>().state;
     return Stack(
       children: [
         CustomScrollView(
@@ -233,9 +234,10 @@ class CustomerMerchantScreen extends StatelessWidget {
                       children: List.generate(state.categories.length, (i) {
                         final selected = state.selectedCategory == i;
                         return GestureDetector(
-                          onTap: () => context.read<CustomerMerchantBloc>().add(
-                            CustomerMerchantEventSelectCategory(i),
-                          ),
+                          onTap: () =>
+                              context.read<CustomerDetailMerchantBloc>().add(
+                                CustomerDetailMerchantEventSelectCategory(i),
+                              ),
                           child: Container(
                             margin: const EdgeInsets.only(right: 10),
                             padding: const EdgeInsets.symmetric(
@@ -444,7 +446,7 @@ class CustomerMerchantScreen extends StatelessWidget {
   }
 
   Widget _buildHero(BuildContext context) {
-    final state = context.watch<CustomerMerchantBloc>().state;
+    final state = context.watch<CustomerDetailMerchantBloc>().state;
     final hasPhoto =
         state.merchantDetail?.photo != null &&
         state.merchantDetail!.photo!.isNotEmpty;
@@ -623,8 +625,8 @@ class CustomerMerchantScreen extends StatelessWidget {
         builder: (_) => CustomerProductScreen(productId: item.id),
       ),
     );
-    context.read<CustomerMerchantBloc>().add(
-      CustomerMerchantEventGet(storeId: storeId),
+    context.read<CustomerDetailMerchantBloc>().add(
+      CustomerDetailMerchantEventGet(storeId: storeId),
     );
   }
 }

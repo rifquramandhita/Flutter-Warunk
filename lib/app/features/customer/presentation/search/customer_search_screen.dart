@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:warunk/app/features/customer/presentation/search/bloc/customer_search_bloc.dart';
 import 'package:warunk/app/features/customer/presentation/search/bloc/customer_search_event.dart';
 import 'package:warunk/app/features/customer/presentation/search/bloc/customer_search_state.dart';
-import 'package:warunk/app/features/customer/presentation/store/customer_merchant_screen.dart';
+import 'package:warunk/app/features/customer/presentation/detail_merchant/customer_detail_merchant_screen.dart';
 import 'package:warunk/core/dependency/dependency.dart';
 import 'package:warunk/core/helper/global_helper.dart';
 import 'package:warunk/core/helper/dialog_helper.dart';
@@ -160,7 +160,7 @@ class CustomerSearchScreen extends StatelessWidget {
                   onTap: () => navigatorKey.currentState?.push(
                     MaterialPageRoute(
                       builder: (_) =>
-                          CustomerMerchantScreen(storeId: merchant.id),
+                          CustomerDetailMerchantScreen(storeId: merchant.id),
                     ),
                   ),
                   child: Container(
