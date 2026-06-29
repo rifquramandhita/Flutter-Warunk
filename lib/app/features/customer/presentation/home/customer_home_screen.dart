@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:warunk/app/features/customer/presentation/home/bloc/customer_home_bloc.dart';
@@ -6,6 +7,7 @@ import 'package:warunk/main.dart';
 import 'package:warunk/app/features/customer/presentation/search/customer_search_screen.dart';
 import 'package:warunk/app/features/customer/presentation/merchant/customer_merchant_screen.dart';
 import 'package:warunk/app/features/customer/presentation/detail_merchant/customer_detail_merchant_screen.dart';
+import 'package:warunk/app/features/customer/domain/entity/customer_promotion_information.dart';
 
 import 'package:warunk/core/dependency/dependency.dart';
 import 'package:warunk/theme/app_colors.dart';
@@ -24,7 +26,8 @@ class CustomerHomeScreen extends StatelessWidget {
     return BlocProvider(
       create: (_) => sl<CustomerHomeBloc>()
         ..add(CustomerHomeGetCategoriesStarted())
-        ..add(CustomerHomeGetNearbyStarted()),
+        ..add(CustomerHomeGetNearbyStarted())
+        ..add(CustomerHomeGetBannersStarted()),
       child: BlocConsumer<CustomerHomeBloc, CustomerHomeState>(
         listener: (context, state) {
           if (state.errorMessage != null) {
@@ -312,13 +315,121 @@ class CustomerHomeScreen extends StatelessWidget {
 
   Widget _homeBannerCarousel(BuildContext context) {
     final state = context.watch<CustomerHomeBloc>().state;
+    if (state.isLoadingBanners) {
+      return const Padding(
+        padding: EdgeInsets.fromLTRB(20, 16, 20, 0),
+        child: SizedBox(
+          height: 150,
+          child: Center(child: CircularProgressIndicator()),
+        ),
+      );
+    }
+
+    if (state.banners.isEmpty) {
+      return Padding(
+        padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
+        child: Column(
+          children: [
+            _bannerCard(context),
+            const SizedBox(height: 10),
+            _bannerDotIndicator(context, 1, 0),
+          ],
+        ),
+      );
+    }
+
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
       child: Column(
         children: [
-          _bannerCard(context),
+          SizedBox(
+            height: 150,
+            child: _AutoSlidingBannerCarousel(
+              banners: state.banners,
+              onPageChanged: (index) {
+                context.read<CustomerHomeBloc>().add(CustomerHomeBannerChanged(index));
+              },
+              itemBuilder: (context, banner) {
+                return _dynamicBannerCard(context, banner);
+              },
+            ),
+          ),
           const SizedBox(height: 10),
-          _bannerDotIndicator(context, 3, state.currentBanner),
+          _bannerDotIndicator(context, state.banners.length, state.currentBanner),
+        ],
+      ),
+    );
+  }
+
+  Widget _dynamicBannerCard(BuildContext context, CustomerPromotionInformationEntity banner) {
+    return Container(
+      decoration: BoxDecoration(
+        color: AppColors.yellow,
+        borderRadius: BorderRadius.circular(16),
+        image: banner.image != null && banner.image!.isNotEmpty
+            ? DecorationImage(
+                image: NetworkImage(banner.image!),
+                fit: BoxFit.cover,
+              )
+            : null,
+      ),
+      child: Stack(
+        children: [
+          if (banner.image == null || banner.image!.isEmpty)
+            Positioned(
+              left: 20,
+              top: 16,
+              bottom: 16,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (banner.badge != null)
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 3,
+                      ),
+                      decoration: BoxDecoration(
+                        color: AppColors.yellowDark.withValues(alpha: 0.3),
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                      child: Text(
+                        banner.badge!,
+                        style: GlobalHelper.getTextTheme(context,
+                                appTextStyle: AppTextStyle.LABEL_SMALL)
+                            ?.copyWith(
+                          fontWeight: FontWeight.w600,
+                          color: const Color(0xFF92400E),
+                        ),
+                      ),
+                    ),
+                  const SizedBox(height: 6),
+                  if (banner.title != null)
+                    Text(
+                      banner.title!,
+                      style: GlobalHelper.getTextTheme(context,
+                              appTextStyle: AppTextStyle.TITLE_MEDIUM)
+                          ?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: GlobalHelper.getColorSchema(context).onSurface,
+                        height: 1.2,
+                      ),
+                    ),
+                  const SizedBox(height: 4),
+                  if (banner.description != null)
+                    Text(
+                      banner.description!,
+                      style: GlobalHelper.getTextTheme(context,
+                              appTextStyle: AppTextStyle.BODY_SMALL)
+                          ?.copyWith(
+                              color: GlobalHelper.getColorSchema(context)
+                                  .onSurfaceVariant),
+                    ),
+                  const Spacer(),
+                  _bannerButton(context, banner.buttonLabel ?? 'Lihat Detail', () {}),
+                ],
+              ),
+            ),
         ],
       ),
     );
@@ -972,4 +1083,76 @@ class _MapGridPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Auto Sliding Banner Carousel
+// ─────────────────────────────────────────────────────────────────────────────
+
+class _AutoSlidingBannerCarousel extends StatefulWidget {
+  final List<CustomerPromotionInformationEntity> banners;
+  final Widget Function(BuildContext, CustomerPromotionInformationEntity) itemBuilder;
+  final void Function(int) onPageChanged;
+
+  const _AutoSlidingBannerCarousel({
+    required this.banners,
+    required this.itemBuilder,
+    required this.onPageChanged,
+  });
+
+  @override
+  State<_AutoSlidingBannerCarousel> createState() => _AutoSlidingBannerCarouselState();
+}
+
+class _AutoSlidingBannerCarouselState extends State<_AutoSlidingBannerCarousel> {
+  late PageController _pageController;
+  Timer? _timer;
+  int _currentPage = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _pageController = PageController();
+    _startTimer();
+  }
+
+  void _startTimer() {
+    _timer = Timer.periodic(const Duration(seconds: 4), (Timer timer) {
+      if (widget.banners.isEmpty) return;
+      if (_currentPage < widget.banners.length - 1) {
+        _currentPage++;
+      } else {
+        _currentPage = 0;
+      }
+      if (_pageController.hasClients) {
+        _pageController.animateToPage(
+          _currentPage,
+          duration: const Duration(milliseconds: 350),
+          curve: Curves.easeIn,
+        );
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return PageView.builder(
+      controller: _pageController,
+      itemCount: widget.banners.length,
+      onPageChanged: (index) {
+        _currentPage = index;
+        widget.onPageChanged(index);
+      },
+      itemBuilder: (context, index) {
+        return widget.itemBuilder(context, widget.banners[index]);
+      },
+    );
+  }
 }

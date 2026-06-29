@@ -2,6 +2,10 @@ import 'package:curl_logger_dio_interceptor/curl_logger_dio_interceptor.dart';
 import 'package:get_it/get_it.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import 'package:warunk/app/features/auth/data/source/auth_api_service.dart';
+import 'package:warunk/app/features/customer/data/source/customer_promotion_information_api_service.dart';
+import 'package:warunk/app/features/customer/domain/repository/customer_promotion_information_repository.dart';
+import 'package:warunk/app/features/customer/data/repository/customer_promotion_information_repository_impl.dart';
+import 'package:warunk/app/features/customer/domain/use_case/customer_promotion_information_get_banner_use_case.dart';
 import 'package:warunk/app/features/auth/domain/repository/auth_repository.dart';
 import 'package:warunk/app/features/auth/domain/use_case/auth_login_use_case.dart';
 import 'package:warunk/app/features/auth/domain/use_case/auth_login_google_use_case.dart';
@@ -208,6 +212,7 @@ Future<void> initDependency() async {
   sl.registerLazySingleton(() => MerchantDashboardApiService(dio));
   sl.registerLazySingleton(() => CustomerNotificationApiService(dio));
   sl.registerLazySingleton(() => MerchantNotificationApiService(dio));
+  sl.registerLazySingleton(() => CustomerPromotionInformationApiService(dio));
   //repository
   sl.registerLazySingleton<MerchantLocationRepository>(
     () => MerchantLocationRepositoryImpl(),
@@ -257,6 +262,9 @@ Future<void> initDependency() async {
   );
   sl.registerLazySingleton<MerchantNotificationRepository>(
     () => MerchantNotificationRepositoryImpl(apiService: sl()),
+  );
+  sl.registerLazySingleton<CustomerPromotionInformationRepository>(
+    () => CustomerPromotionInformationRepositoryImpl(apiService: sl()),
   );
 
   //usecase
@@ -380,12 +388,16 @@ Future<void> initDependency() async {
   sl.registerLazySingleton(
     () => MerchantNotificationGetUseCase(repository: sl()),
   );
+  sl.registerLazySingleton(
+    () => CustomerPromotionInformationGetBannerUseCase(repository: sl()),
+  );
   //bloc
   sl.registerLazySingleton(() => AuthBloc());
   sl.registerFactory(() => CustomerHomeBloc(
     getCategoryUseCase: sl(),
     getNearbyUseCase: sl(),
     getCurrentLocationUseCase: sl(),
+    getBannerUseCase: sl(),
   ));
   sl.registerFactory(
     () => AuthLoginBloc(authBloc: sl(), useCase: sl(), googleUseCase: sl()),
