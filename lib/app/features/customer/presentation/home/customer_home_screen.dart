@@ -25,6 +25,7 @@ class CustomerHomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => sl<CustomerHomeBloc>()
+        ..add(CustomerHomeGetUserNameStarted())
         ..add(CustomerHomeGetCategoriesStarted())
         ..add(CustomerHomeGetNearbyStarted())
         ..add(CustomerHomeGetBannersStarted()),
@@ -32,7 +33,9 @@ class CustomerHomeScreen extends StatelessWidget {
         listener: (context, state) {
           if (state.errorMessage != null) {
             DialogHelper.showErrorSnackBar(
-                context: context, text: state.errorMessage!);
+              context: context,
+              text: state.errorMessage!,
+            );
           }
         },
         builder: (context, state) {
@@ -53,7 +56,6 @@ class CustomerHomeScreen extends StatelessWidget {
           children: [
             _homeHeader(context),
             _homeSearchBar(context),
-            _homeModeChip(context),
             _homeBannerCarousel(context),
             _homeCategoriesSection(context),
             _homeNearbyStoresSection(context),
@@ -75,8 +77,6 @@ class CustomerHomeScreen extends StatelessWidget {
       child: Row(
         children: [
           Expanded(child: _greetingText(context)),
-          const SizedBox(width: 12),
-          _locationChip(context),
           const SizedBox(width: 8),
           _cartButton(context),
         ],
@@ -85,65 +85,44 @@ class CustomerHomeScreen extends StatelessWidget {
   }
 
   Widget _greetingText(BuildContext context) {
+    final state = context.watch<CustomerHomeBloc>().state;
+    final name = state.userName.isNotEmpty ? state.userName : 'User';
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
           children: [
             Text(
-              'Hai, Andi! ',
-              style: GlobalHelper.getTextTheme(context,
-                      appTextStyle: AppTextStyle.TITLE_LARGE)
-                  ?.copyWith(
-                fontWeight: FontWeight.bold,
-                color: GlobalHelper.getColorSchema(context).primary,
-              ),
+              'Hai, $name! ',
+              style:
+                  GlobalHelper.getTextTheme(
+                    context,
+                    appTextStyle: AppTextStyle.TITLE_LARGE,
+                  )?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: GlobalHelper.getColorSchema(context).primary,
+                  ),
             ),
-            Text('👋',
-                style: GlobalHelper.getTextTheme(context,
-                        appTextStyle: AppTextStyle.TITLE_LARGE)
-                    ?.copyWith(fontSize: 20)),
+            Text(
+              '👋',
+              style: GlobalHelper.getTextTheme(
+                context,
+                appTextStyle: AppTextStyle.TITLE_LARGE,
+              )?.copyWith(fontSize: 20),
+            ),
           ],
         ),
         Text(
           'Mau belanja apa hari ini?',
-          style: GlobalHelper.getTextTheme(context,
-                  appTextStyle: AppTextStyle.BODY_MEDIUM)
-              ?.copyWith(
-                  color: GlobalHelper.getColorSchema(context).onSurfaceVariant),
+          style:
+              GlobalHelper.getTextTheme(
+                context,
+                appTextStyle: AppTextStyle.BODY_MEDIUM,
+              )?.copyWith(
+                color: GlobalHelper.getColorSchema(context).onSurfaceVariant,
+              ),
         ),
       ],
-    );
-  }
-
-  Widget _locationChip(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-            color: GlobalHelper.getColorSchema(context).outlineVariant),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(Icons.location_on,
-              color: GlobalHelper.getColorSchema(context).primary, size: 14),
-          const SizedBox(width: 4),
-          Text(
-            'Jakarta',
-            style: GlobalHelper.getTextTheme(context,
-                    appTextStyle: AppTextStyle.LABEL_MEDIUM)
-                ?.copyWith(
-              fontWeight: FontWeight.w600,
-              color: GlobalHelper.getColorSchema(context).primary,
-            ),
-          ),
-          Icon(Icons.keyboard_arrow_down,
-              color: GlobalHelper.getColorSchema(context).primary, size: 16),
-        ],
-      ),
     );
   }
 
@@ -152,48 +131,10 @@ class CustomerHomeScreen extends StatelessWidget {
       onTap: () => navigatorKey.currentState?.push(
         MaterialPageRoute(builder: (_) => const CustomerCartScreen()),
       ),
-      child: Stack(
-        children: [
-          Container(
-            width: 38,
-            height: 38,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              shape: BoxShape.circle,
-              border: Border.all(
-                  color: GlobalHelper.getColorSchema(context).outlineVariant),
-            ),
-            child: Icon(
-              Icons.shopping_cart_outlined,
-              color: GlobalHelper.getColorSchema(context).primary,
-              size: 20,
-            ),
-          ),
-          Positioned(
-            right: 0,
-            top: 0,
-            child: Container(
-              width: 16,
-              height: 16,
-              decoration: const BoxDecoration(
-                color: Colors.red,
-                shape: BoxShape.circle,
-              ),
-              child: Center(
-                child: Text(
-                  '3',
-                  style: GlobalHelper.getTextTheme(context,
-                          appTextStyle: AppTextStyle.LABEL_SMALL)
-                      ?.copyWith(
-                    color: Colors.white,
-                    fontSize: 9,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ],
+      child: Icon(
+        Icons.shopping_cart_rounded,
+        color: GlobalHelper.getColorSchema(context).primary,
+        size: 20,
       ),
     );
   }
@@ -211,107 +152,45 @@ class CustomerHomeScreen extends StatelessWidget {
   Widget _homeSearchBar(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-      child: Row(
-        children: [
-          Expanded(
-            child: GestureDetector(
-              onTap: () => _openSearch(context),
-              child: AbsorbPointer(
-                child: Container(
-                  height: 48,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(12),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.05),
-                        blurRadius: 8,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
-                  ),
-                  child: Row(
-                    children: [
-                      const SizedBox(width: 14),
-                      Icon(
-                        Icons.search,
-                        color: GlobalHelper.getColorSchema(context)
-                            .onSurfaceVariant,
-                        size: 20,
-                      ),
-                      const SizedBox(width: 8),
-                      Text(
-                        'Cari produk atau warung',
-                        style: GlobalHelper.getTextTheme(context,
-                                appTextStyle: AppTextStyle.BODY_MEDIUM)
-                            ?.copyWith(color: Colors.grey.shade400),
-                      ),
-                    ],
-                  ),
+      child: GestureDetector(
+        onTap: () => _openSearch(context),
+        child: AbsorbPointer(
+          child: Container(
+            height: 48,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.05),
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
                 ),
-              ),
+              ],
+            ),
+            child: Row(
+              children: [
+                const SizedBox(width: 14),
+                Icon(
+                  Icons.search,
+                  color: GlobalHelper.getColorSchema(context).onSurfaceVariant,
+                  size: 20,
+                ),
+                const SizedBox(width: 8),
+                Text(
+                  'Cari produk atau warung',
+                  style: GlobalHelper.getTextTheme(
+                    context,
+                    appTextStyle: AppTextStyle.BODY_MEDIUM,
+                  )?.copyWith(color: Colors.grey.shade400),
+                ),
+              ],
             ),
           ),
-          const SizedBox(width: 10),
-          GestureDetector(
-            onTap: () => _openSearch(context),
-            child: Container(
-              width: 48,
-              height: 48,
-              decoration: BoxDecoration(
-                color: GlobalHelper.getColorSchema(context).primary,
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: const Icon(Icons.tune, color: Colors.white, size: 20),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  // ─────────────────────────────────────────────────────────────────────────────
-  // Mode Chip Section
-  // ─────────────────────────────────────────────────────────────────────────────
-
-  Widget _homeModeChip(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-        decoration: BoxDecoration(
-          color:
-              GlobalHelper.getColorSchema(context).primary.withValues(alpha: 0.1),
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(
-              color: GlobalHelper.getColorSchema(context)
-                  .primary
-                  .withValues(alpha: 0.3)),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(Icons.person_outline,
-                color: GlobalHelper.getColorSchema(context).primary, size: 16),
-            const SizedBox(width: 6),
-            Text(
-              'Mode: Customer',
-              style: GlobalHelper.getTextTheme(context,
-                      appTextStyle: AppTextStyle.LABEL_MEDIUM)
-                  ?.copyWith(
-                color: GlobalHelper.getColorSchema(context).primary,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ],
         ),
       ),
     );
   }
-
-  // ─────────────────────────────────────────────────────────────────────────────
-  // Banner Carousel Section
-  // ─────────────────────────────────────────────────────────────────────────────
 
   Widget _homeBannerCarousel(BuildContext context) {
     final state = context.watch<CustomerHomeBloc>().state;
@@ -326,16 +205,7 @@ class CustomerHomeScreen extends StatelessWidget {
     }
 
     if (state.banners.isEmpty) {
-      return Padding(
-        padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
-        child: Column(
-          children: [
-            _bannerCard(context),
-            const SizedBox(height: 10),
-            _bannerDotIndicator(context, 1, 0),
-          ],
-        ),
-      );
+      return SizedBox();
     }
 
     return Padding(
@@ -347,7 +217,9 @@ class CustomerHomeScreen extends StatelessWidget {
             child: _AutoSlidingBannerCarousel(
               banners: state.banners,
               onPageChanged: (index) {
-                context.read<CustomerHomeBloc>().add(CustomerHomeBannerChanged(index));
+                context.read<CustomerHomeBloc>().add(
+                  CustomerHomeBannerChanged(index),
+                );
               },
               itemBuilder: (context, banner) {
                 return _dynamicBannerCard(context, banner);
@@ -355,13 +227,20 @@ class CustomerHomeScreen extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 10),
-          _bannerDotIndicator(context, state.banners.length, state.currentBanner),
+          _bannerDotIndicator(
+            context,
+            state.banners.length,
+            state.currentBanner,
+          ),
         ],
       ),
     );
   }
 
-  Widget _dynamicBannerCard(BuildContext context, CustomerPromotionInformationEntity banner) {
+  Widget _dynamicBannerCard(
+    BuildContext context,
+    CustomerPromotionInformationEntity banner,
+  ) {
     return Container(
       decoration: BoxDecoration(
         color: AppColors.yellow,
@@ -395,38 +274,52 @@ class CustomerHomeScreen extends StatelessWidget {
                       ),
                       child: Text(
                         banner.badge!,
-                        style: GlobalHelper.getTextTheme(context,
-                                appTextStyle: AppTextStyle.LABEL_SMALL)
-                            ?.copyWith(
-                          fontWeight: FontWeight.w600,
-                          color: const Color(0xFF92400E),
-                        ),
+                        style:
+                            GlobalHelper.getTextTheme(
+                              context,
+                              appTextStyle: AppTextStyle.LABEL_SMALL,
+                            )?.copyWith(
+                              fontWeight: FontWeight.w600,
+                              color: const Color(0xFF92400E),
+                            ),
                       ),
                     ),
                   const SizedBox(height: 6),
                   if (banner.title != null)
                     Text(
                       banner.title!,
-                      style: GlobalHelper.getTextTheme(context,
-                              appTextStyle: AppTextStyle.TITLE_MEDIUM)
-                          ?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: GlobalHelper.getColorSchema(context).onSurface,
-                        height: 1.2,
-                      ),
+                      style:
+                          GlobalHelper.getTextTheme(
+                            context,
+                            appTextStyle: AppTextStyle.TITLE_MEDIUM,
+                          )?.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: GlobalHelper.getColorSchema(
+                              context,
+                            ).onSurface,
+                            height: 1.2,
+                          ),
                     ),
                   const SizedBox(height: 4),
                   if (banner.description != null)
                     Text(
                       banner.description!,
-                      style: GlobalHelper.getTextTheme(context,
-                              appTextStyle: AppTextStyle.BODY_SMALL)
-                          ?.copyWith(
-                              color: GlobalHelper.getColorSchema(context)
-                                  .onSurfaceVariant),
+                      style:
+                          GlobalHelper.getTextTheme(
+                            context,
+                            appTextStyle: AppTextStyle.BODY_SMALL,
+                          )?.copyWith(
+                            color: GlobalHelper.getColorSchema(
+                              context,
+                            ).onSurfaceVariant,
+                          ),
                     ),
                   const Spacer(),
-                  _bannerButton(context, banner.buttonLabel ?? 'Lihat Detail', () {}),
+                  _bannerButton(
+                    context,
+                    banner.buttonLabel ?? 'Lihat Detail',
+                    () {},
+                  ),
                 ],
               ),
             ),
@@ -435,74 +328,11 @@ class CustomerHomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _bannerCard(BuildContext context) {
-    return Container(
-      height: 150,
-      decoration: BoxDecoration(
-        color: AppColors.yellow, // Custom color maintained
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Stack(
-        children: [
-          Positioned(
-            left: 20,
-            top: 16,
-            bottom: 16,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 3,
-                  ),
-                  decoration: BoxDecoration(
-                    color: AppColors.yellowDark.withValues(alpha: 0.3),
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                  child: Text(
-                    'Promo Spesial',
-                    style: GlobalHelper.getTextTheme(context,
-                            appTextStyle: AppTextStyle.LABEL_SMALL)
-                        ?.copyWith(
-                      fontWeight: FontWeight.w600,
-                      color: const Color(0xFF92400E),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 6),
-                Text(
-                  'Diskon Ongkir\nHingga 10RB!',
-                  style: GlobalHelper.getTextTheme(context,
-                          appTextStyle: AppTextStyle.TITLE_MEDIUM)
-                      ?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: GlobalHelper.getColorSchema(context).onSurface,
-                    height: 1.2,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  'Belanja di warung favoritmu\nlebih hemat setiap hari.',
-                  style: GlobalHelper.getTextTheme(context,
-                          appTextStyle: AppTextStyle.BODY_SMALL)
-                      ?.copyWith(
-                          color: GlobalHelper.getColorSchema(context)
-                              .onSurfaceVariant),
-                ),
-                const Spacer(),
-                _bannerButton(context, 'Belanja Sekarang', () {}),
-              ],
-            ),
-          ),
-          Positioned(right: 12, bottom: 0, child: _bannerIllustration(context)),
-        ],
-      ),
-    );
-  }
-
   Widget _bannerButton(
-      BuildContext context, String label, VoidCallback onPressed) {
+    BuildContext context,
+    String label,
+    VoidCallback onPressed,
+  ) {
     return ElevatedButton(
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
@@ -516,9 +346,10 @@ class CustomerHomeScreen extends StatelessWidget {
       ),
       child: Text(
         label,
-        style: GlobalHelper.getTextTheme(context,
-                appTextStyle: AppTextStyle.LABEL_MEDIUM)
-            ?.copyWith(fontWeight: FontWeight.bold),
+        style: GlobalHelper.getTextTheme(
+          context,
+          appTextStyle: AppTextStyle.LABEL_MEDIUM,
+        )?.copyWith(fontWeight: FontWeight.bold),
       ),
     );
   }
@@ -527,10 +358,13 @@ class CustomerHomeScreen extends StatelessWidget {
     return Stack(
       alignment: Alignment.center,
       children: [
-        Text('🛵',
-            style: GlobalHelper.getTextTheme(context,
-                    appTextStyle: AppTextStyle.DISPLAY_MEDIUM)
-                ?.copyWith(fontSize: 70)),
+        Text(
+          '🛵',
+          style: GlobalHelper.getTextTheme(
+            context,
+            appTextStyle: AppTextStyle.DISPLAY_MEDIUM,
+          )?.copyWith(fontSize: 70),
+        ),
         Positioned(
           top: 0,
           right: 0,
@@ -545,13 +379,15 @@ class CustomerHomeScreen extends StatelessWidget {
               child: Text(
                 'ONGKIR\n10RB',
                 textAlign: TextAlign.center,
-                style: GlobalHelper.getTextTheme(context,
-                        appTextStyle: AppTextStyle.LABEL_SMALL)
-                    ?.copyWith(
-                  color: Colors.white,
-                  fontSize: 9,
-                  fontWeight: FontWeight.bold,
-                ),
+                style:
+                    GlobalHelper.getTextTheme(
+                      context,
+                      appTextStyle: AppTextStyle.LABEL_SMALL,
+                    )?.copyWith(
+                      color: Colors.white,
+                      fontSize: 9,
+                      fontWeight: FontWeight.bold,
+                    ),
               ),
             ),
           ),
@@ -561,7 +397,10 @@ class CustomerHomeScreen extends StatelessWidget {
   }
 
   Widget _bannerDotIndicator(
-      BuildContext context, int total, int currentIndex) {
+    BuildContext context,
+    int total,
+    int currentIndex,
+  ) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: List.generate(total, (i) {
@@ -592,7 +431,7 @@ class CustomerHomeScreen extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
       child: Column(
         children: [
-          _sectionHeader(context, 'Kategori', () {}),
+          _sectionHeader(context, 'Kategori'),
           const SizedBox(height: 12),
           if (state.isLoadingCategories)
             const Center(child: CircularProgressIndicator())
@@ -600,11 +439,15 @@ class CustomerHomeScreen extends StatelessWidget {
             Center(
               child: Text(
                 'Tidak ada kategori',
-                style: GlobalHelper.getTextTheme(context,
-                        appTextStyle: AppTextStyle.BODY_SMALL)
-                    ?.copyWith(
-                        color: GlobalHelper.getColorSchema(context)
-                            .onSurfaceVariant),
+                style:
+                    GlobalHelper.getTextTheme(
+                      context,
+                      appTextStyle: AppTextStyle.BODY_SMALL,
+                    )?.copyWith(
+                      color: GlobalHelper.getColorSchema(
+                        context,
+                      ).onSurfaceVariant,
+                    ),
               ),
             )
           else
@@ -627,7 +470,11 @@ class CustomerHomeScreen extends StatelessWidget {
                           },
                           child: SizedBox(
                             width: 60,
-                            child: _categoryItem(context, Icons.category, c.name),
+                            child: _categoryItem(
+                              context,
+                              Icons.category,
+                              c.name,
+                            ),
                           ),
                         ),
                       ),
@@ -658,17 +505,23 @@ class CustomerHomeScreen extends StatelessWidget {
             ],
           ),
           child: Center(
-              child: Icon(icon,
-                  color: GlobalHelper.getColorSchema(context).primary,
-                  size: 24)),
+            child: Icon(
+              icon,
+              color: GlobalHelper.getColorSchema(context).primary,
+              size: 24,
+            ),
+          ),
         ),
         const SizedBox(height: 6),
         Text(
           label,
           textAlign: TextAlign.center,
-          style: GlobalHelper.getTextTheme(context,
-                  appTextStyle: AppTextStyle.LABEL_SMALL)
-              ?.copyWith(color: Colors.black87),
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+          style: GlobalHelper.getTextTheme(
+            context,
+            appTextStyle: AppTextStyle.LABEL_SMALL,
+          )?.copyWith(color: Colors.black87),
         ),
       ],
     );
@@ -684,7 +537,7 @@ class CustomerHomeScreen extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
       child: Column(
         children: [
-          _sectionHeader(context, 'Warung Terdekat', () {}),
+          _sectionHeader(context, 'Warung Terdekat'),
           const SizedBox(height: 8),
           if (state.isLoadingNearby)
             const Padding(
@@ -697,11 +550,15 @@ class CustomerHomeScreen extends StatelessWidget {
               child: Center(
                 child: Text(
                   'Tidak ada warung terdekat',
-                  style: GlobalHelper.getTextTheme(context,
-                          appTextStyle: AppTextStyle.BODY_SMALL)
-                      ?.copyWith(
-                          color: GlobalHelper.getColorSchema(context)
-                              .onSurfaceVariant),
+                  style:
+                      GlobalHelper.getTextTheme(
+                        context,
+                        appTextStyle: AppTextStyle.BODY_SMALL,
+                      )?.copyWith(
+                        color: GlobalHelper.getColorSchema(
+                          context,
+                        ).onSurfaceVariant,
+                      ),
                 ),
               ),
             )
@@ -712,9 +569,8 @@ class CustomerHomeScreen extends StatelessWidget {
                   onTap: () {
                     navigatorKey.currentState?.push(
                       MaterialPageRoute(
-                        builder: (_) => CustomerDetailMerchantScreen(
-                          storeId: merchant.id,
-                        ),
+                        builder: (_) =>
+                            CustomerDetailMerchantScreen(storeId: merchant.id),
                       ),
                     );
                   },
@@ -725,12 +581,15 @@ class CustomerHomeScreen extends StatelessWidget {
                       status: merchant.isOpen ? 'Buka' : 'Tutup',
                       statusColor: merchant.isOpen
                           ? GlobalHelper.getColorSchema(context).primary
-                          : GlobalHelper.getColorSchema(context).onSurfaceVariant,
+                          : GlobalHelper.getColorSchema(
+                              context,
+                            ).onSurfaceVariant,
                       rating: '0',
                       reviews: '0',
                       distance: '${merchant.distance ?? 0} m',
                       location: '',
-                      promo: (merchant.promoBadges != null &&
+                      promo:
+                          (merchant.promoBadges != null &&
                               merchant.promoBadges!.isNotEmpty)
                           ? merchant.promoBadges!.first
                           : '',
@@ -766,9 +625,9 @@ class CustomerHomeScreen extends StatelessWidget {
             width: 90,
             height: 90,
             decoration: BoxDecoration(
-              color: GlobalHelper.getColorSchema(context)
-                  .primary
-                  .withValues(alpha: 0.1),
+              color: GlobalHelper.getColorSchema(
+                context,
+              ).primary.withValues(alpha: 0.1),
               borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(12),
                 bottomLeft: Radius.circular(12),
@@ -784,9 +643,10 @@ class CustomerHomeScreen extends StatelessWidget {
                 ? Center(
                     child: Text(
                       data.emoji,
-                      style: GlobalHelper.getTextTheme(context,
-                              appTextStyle: AppTextStyle.DISPLAY_SMALL)
-                          ?.copyWith(fontSize: 40),
+                      style: GlobalHelper.getTextTheme(
+                        context,
+                        appTextStyle: AppTextStyle.DISPLAY_SMALL,
+                      )?.copyWith(fontSize: 40),
                     ),
                   )
                 : null,
@@ -798,17 +658,31 @@ class CustomerHomeScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _storeNameRow(context, data.name, data.status, data.statusColor),
+                  _storeNameRow(
+                    context,
+                    data.name,
+                    data.status,
+                    data.statusColor,
+                  ),
                   const SizedBox(height: 4),
-                  _storeMetaRow(context, data.rating, data.reviews, data.distance),
+                  _storeMetaRow(
+                    context,
+                    data.rating,
+                    data.reviews,
+                    data.distance,
+                  ),
                   const SizedBox(height: 2),
                   Text(
                     data.location,
-                    style: GlobalHelper.getTextTheme(context,
-                            appTextStyle: AppTextStyle.LABEL_SMALL)
-                        ?.copyWith(
-                            color: GlobalHelper.getColorSchema(context)
-                                .onSurfaceVariant),
+                    style:
+                        GlobalHelper.getTextTheme(
+                          context,
+                          appTextStyle: AppTextStyle.LABEL_SMALL,
+                        )?.copyWith(
+                          color: GlobalHelper.getColorSchema(
+                            context,
+                          ).onSurfaceVariant,
+                        ),
                   ),
                 ],
               ),
@@ -816,25 +690,31 @@ class CustomerHomeScreen extends StatelessWidget {
           ),
           Padding(
             padding: const EdgeInsets.only(right: 12),
-            child: Icon(Icons.chevron_right,
-                color:
-                    GlobalHelper.getColorSchema(context).onSurfaceVariant),
+            child: Icon(
+              Icons.chevron_right,
+              color: GlobalHelper.getColorSchema(context).onSurfaceVariant,
+            ),
           ),
         ],
       ),
     );
   }
 
-  Widget _storeNameRow(BuildContext context, String name, String status,
-      Color statusColor) {
+  Widget _storeNameRow(
+    BuildContext context,
+    String name,
+    String status,
+    Color statusColor,
+  ) {
     return Row(
       children: [
         Flexible(
           child: Text(
             name,
-            style: GlobalHelper.getTextTheme(context,
-                    appTextStyle: AppTextStyle.TITLE_SMALL)
-                ?.copyWith(fontWeight: FontWeight.bold),
+            style: GlobalHelper.getTextTheme(
+              context,
+              appTextStyle: AppTextStyle.TITLE_SMALL,
+            )?.copyWith(fontWeight: FontWeight.bold),
             overflow: TextOverflow.ellipsis,
           ),
         ),
@@ -848,20 +728,22 @@ class CustomerHomeScreen extends StatelessWidget {
           ),
           child: Text(
             status,
-            style: GlobalHelper.getTextTheme(context,
-                    appTextStyle: AppTextStyle.LABEL_SMALL)
-                ?.copyWith(
-              color: statusColor,
-              fontWeight: FontWeight.w600,
-            ),
+            style: GlobalHelper.getTextTheme(
+              context,
+              appTextStyle: AppTextStyle.LABEL_SMALL,
+            )?.copyWith(color: statusColor, fontWeight: FontWeight.w600),
           ),
         ),
       ],
     );
   }
 
-  Widget _storeMetaRow(BuildContext context, String rating, String reviews,
-      String distance) {
+  Widget _storeMetaRow(
+    BuildContext context,
+    String rating,
+    String reviews,
+    String distance,
+  ) {
     return Row(
       children: [
         Icon(
@@ -871,11 +753,13 @@ class CustomerHomeScreen extends StatelessWidget {
         ),
         Text(
           ' $distance',
-          style: GlobalHelper.getTextTheme(context,
-                  appTextStyle: AppTextStyle.LABEL_SMALL)
-              ?.copyWith(
-                  color: GlobalHelper.getColorSchema(context)
-                      .onSurfaceVariant),
+          style:
+              GlobalHelper.getTextTheme(
+                context,
+                appTextStyle: AppTextStyle.LABEL_SMALL,
+              )?.copyWith(
+                color: GlobalHelper.getColorSchema(context).onSurfaceVariant,
+              ),
         ),
       ],
     );
@@ -905,26 +789,35 @@ class CustomerHomeScreen extends StatelessWidget {
             Positioned(
               right: 80,
               top: 30,
-              child: Text('📍',
-                  style: GlobalHelper.getTextTheme(context,
-                          appTextStyle: AppTextStyle.TITLE_LARGE)
-                      ?.copyWith(fontSize: 28)),
+              child: Text(
+                '📍',
+                style: GlobalHelper.getTextTheme(
+                  context,
+                  appTextStyle: AppTextStyle.TITLE_LARGE,
+                )?.copyWith(fontSize: 28),
+              ),
             ),
             Positioned(
               right: 40,
               top: 55,
-              child: Text('📍',
-                  style: GlobalHelper.getTextTheme(context,
-                          appTextStyle: AppTextStyle.TITLE_LARGE)
-                      ?.copyWith(fontSize: 28)),
+              child: Text(
+                '📍',
+                style: GlobalHelper.getTextTheme(
+                  context,
+                  appTextStyle: AppTextStyle.TITLE_LARGE,
+                )?.copyWith(fontSize: 28),
+              ),
             ),
             Positioned(
               right: 120,
               top: 55,
-              child: Text('📍',
-                  style: GlobalHelper.getTextTheme(context,
-                          appTextStyle: AppTextStyle.TITLE_LARGE)
-                      ?.copyWith(fontSize: 28)),
+              child: Text(
+                '📍',
+                style: GlobalHelper.getTextTheme(
+                  context,
+                  appTextStyle: AppTextStyle.TITLE_LARGE,
+                )?.copyWith(fontSize: 28),
+              ),
             ),
             Positioned(
               left: 20,
@@ -934,28 +827,35 @@ class CustomerHomeScreen extends StatelessWidget {
                 children: [
                   Text(
                     'Lihat di Peta',
-                    style: GlobalHelper.getTextTheme(context,
-                            appTextStyle: AppTextStyle.TITLE_MEDIUM)
-                        ?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: GlobalHelper.getColorSchema(context).onSurface,
-                    ),
+                    style:
+                        GlobalHelper.getTextTheme(
+                          context,
+                          appTextStyle: AppTextStyle.TITLE_MEDIUM,
+                        )?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: GlobalHelper.getColorSchema(context).onSurface,
+                        ),
                   ),
                   const SizedBox(height: 4),
                   Text(
                     'Temukan warung terdekat\ndi sekitarmu',
-                    style: GlobalHelper.getTextTheme(context,
-                            appTextStyle: AppTextStyle.BODY_SMALL)
-                        ?.copyWith(
-                            color: GlobalHelper.getColorSchema(context)
-                                .onSurfaceVariant),
+                    style:
+                        GlobalHelper.getTextTheme(
+                          context,
+                          appTextStyle: AppTextStyle.BODY_SMALL,
+                        )?.copyWith(
+                          color: GlobalHelper.getColorSchema(
+                            context,
+                          ).onSurfaceVariant,
+                        ),
                   ),
                   const SizedBox(height: 12),
                   ElevatedButton(
                     onPressed: () {},
                     style: ElevatedButton.styleFrom(
-                      backgroundColor:
-                          GlobalHelper.getColorSchema(context).primary,
+                      backgroundColor: GlobalHelper.getColorSchema(
+                        context,
+                      ).primary,
                       foregroundColor: Colors.white,
                       padding: const EdgeInsets.symmetric(
                         horizontal: 16,
@@ -970,11 +870,10 @@ class CustomerHomeScreen extends StatelessWidget {
                     ),
                     child: Text(
                       'Buka Peta',
-                      style: GlobalHelper.getTextTheme(context,
-                              appTextStyle: AppTextStyle.LABEL_MEDIUM)
-                          ?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style: GlobalHelper.getTextTheme(
+                        context,
+                        appTextStyle: AppTextStyle.LABEL_MEDIUM,
+                      )?.copyWith(fontWeight: FontWeight.bold),
                     ),
                   ),
                 ],
@@ -990,31 +889,16 @@ class CustomerHomeScreen extends StatelessWidget {
   // Shared Widgets
   // ─────────────────────────────────────────────────────────────────────────────
 
-  Widget _sectionHeader(
-      BuildContext context, String title, VoidCallback onTapSeeAll) {
+  Widget _sectionHeader(BuildContext context, String title) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
           title,
-          style: GlobalHelper.getTextTheme(context,
-                  appTextStyle: AppTextStyle.TITLE_MEDIUM)
-              ?.copyWith(fontWeight: FontWeight.bold),
-        ),
-        TextButton(
-          onPressed: onTapSeeAll,
-          style: TextButton.styleFrom(
-            padding: EdgeInsets.zero,
-            minimumSize: Size.zero,
-            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-          ),
-          child: Text(
-            'Lihat semua >',
-            style: GlobalHelper.getTextTheme(context,
-                    appTextStyle: AppTextStyle.LABEL_MEDIUM)
-                ?.copyWith(
-                    color: GlobalHelper.getColorSchema(context).primary),
-          ),
+          style: GlobalHelper.getTextTheme(
+            context,
+            appTextStyle: AppTextStyle.TITLE_MEDIUM,
+          )?.copyWith(fontWeight: FontWeight.bold),
         ),
       ],
     );
@@ -1091,7 +975,8 @@ class _MapGridPainter extends CustomPainter {
 
 class _AutoSlidingBannerCarousel extends StatefulWidget {
   final List<CustomerPromotionInformationEntity> banners;
-  final Widget Function(BuildContext, CustomerPromotionInformationEntity) itemBuilder;
+  final Widget Function(BuildContext, CustomerPromotionInformationEntity)
+  itemBuilder;
   final void Function(int) onPageChanged;
 
   const _AutoSlidingBannerCarousel({
@@ -1101,10 +986,12 @@ class _AutoSlidingBannerCarousel extends StatefulWidget {
   });
 
   @override
-  State<_AutoSlidingBannerCarousel> createState() => _AutoSlidingBannerCarouselState();
+  State<_AutoSlidingBannerCarousel> createState() =>
+      _AutoSlidingBannerCarouselState();
 }
 
-class _AutoSlidingBannerCarouselState extends State<_AutoSlidingBannerCarousel> {
+class _AutoSlidingBannerCarouselState
+    extends State<_AutoSlidingBannerCarousel> {
   late PageController _pageController;
   Timer? _timer;
   int _currentPage = 0;

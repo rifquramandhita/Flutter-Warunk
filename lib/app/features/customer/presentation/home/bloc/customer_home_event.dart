@@ -12,3 +12,5 @@ final class CustomerHomeGetCategoriesStarted extends CustomerHomeEvent {}
 final class CustomerHomeGetNearbyStarted extends CustomerHomeEvent {}
 
 final class CustomerHomeGetBannersStarted extends CustomerHomeEvent {}
+
+final class CustomerHomeGetUserNameStarted extends CustomerHomeEvent {}

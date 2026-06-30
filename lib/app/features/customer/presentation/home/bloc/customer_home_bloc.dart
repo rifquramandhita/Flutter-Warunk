@@ -8,6 +8,8 @@ import 'package:warunk/app/features/customer/domain/use_case/customer_merchant_g
 import 'package:warunk/app/features/customer/domain/use_case/customer_location_get_current_use_case.dart';
 import 'package:warunk/app/features/customer/domain/use_case/customer_promotion_information_get_banner_use_case.dart';
 import 'package:warunk/core/network/data_state.dart';
+import 'package:warunk/core/helper/shared_preferences_helper.dart';
+import 'package:warunk/core/constants/constant.dart';
 
 part 'customer_home_event.dart';
 part 'customer_home_state.dart';
@@ -32,6 +34,7 @@ class CustomerHomeBloc extends Bloc<CustomerHomeEvent, CustomerHomeState> {
     on<CustomerHomeGetCategoriesStarted>(_onGetCategoriesStarted);
     on<CustomerHomeGetNearbyStarted>(_onGetNearbyStarted);
     on<CustomerHomeGetBannersStarted>(_onGetBannersStarted);
+    on<CustomerHomeGetUserNameStarted>(_onGetUserNameStarted);
   }
 
   void _onBannerChanged(
@@ -129,5 +132,13 @@ class CustomerHomeBloc extends Bloc<CustomerHomeEvent, CustomerHomeState> {
     } else {
       emit(state.copyWith(isLoadingBanners: false, banners: result.data ?? []));
     }
+  }
+
+  Future<void> _onGetUserNameStarted(
+    CustomerHomeGetUserNameStarted event,
+    Emitter<CustomerHomeState> emit,
+  ) async {
+    final name = await SharedPreferencesHelper.getString(PREF_NAME) ?? '';
+    emit(state.copyWith(userName: name));
   }
 }

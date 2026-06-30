@@ -10,6 +10,7 @@ final class CustomerHomeState extends Equatable {
   final List<CustomerMerchantEntity> nearbyMerchants;
   final List<CustomerPromotionInformationEntity> banners;
   final bool isLoadingBanners;
+  final String userName;
 
   const CustomerHomeState({
     this.isLoading = false,
@@ -21,6 +22,7 @@ final class CustomerHomeState extends Equatable {
     this.nearbyMerchants = const [],
     this.banners = const [],
     this.isLoadingBanners = false,
+    this.userName = '',
   });
 
   CustomerHomeState copyWith({
@@ -33,6 +35,7 @@ final class CustomerHomeState extends Equatable {
     List<CustomerMerchantEntity>? nearbyMerchants,
     List<CustomerPromotionInformationEntity>? banners,
     bool? isLoadingBanners,
+    String? userName,
   }) {
     return CustomerHomeState(
       isLoading: isLoading ?? this.isLoading,
@@ -44,6 +47,7 @@ final class CustomerHomeState extends Equatable {
       nearbyMerchants: nearbyMerchants ?? this.nearbyMerchants,
       banners: banners ?? this.banners,
       isLoadingBanners: isLoadingBanners ?? this.isLoadingBanners,
+      userName: userName ?? this.userName,
     );
   }
 
@@ -58,5 +62,6 @@ final class CustomerHomeState extends Equatable {
     nearbyMerchants,
     banners,
     isLoadingBanners,
+    userName,
   ];
 }
