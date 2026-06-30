@@ -59,8 +59,6 @@ class CustomerHomeScreen extends StatelessWidget {
             _homeBannerCarousel(context),
             _homeCategoriesSection(context),
             _homeNearbyStoresSection(context),
-            _homeMapPreview(context),
-            const SizedBox(height: 16),
           ],
         ),
       ),
@@ -762,126 +760,6 @@ class CustomerHomeScreen extends StatelessWidget {
               ),
         ),
       ],
-    );
-  }
-
-  // ─────────────────────────────────────────────────────────────────────────────
-  // Map Preview Section
-  // ─────────────────────────────────────────────────────────────────────────────
-
-  Widget _homeMapPreview(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
-      child: Container(
-        height: 130,
-        decoration: BoxDecoration(
-          color: AppColors.mapGreen,
-          borderRadius: BorderRadius.circular(16),
-        ),
-        child: Stack(
-          children: [
-            Positioned.fill(
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(16),
-                child: CustomPaint(painter: _MapGridPainter()),
-              ),
-            ),
-            Positioned(
-              right: 80,
-              top: 30,
-              child: Text(
-                '📍',
-                style: GlobalHelper.getTextTheme(
-                  context,
-                  appTextStyle: AppTextStyle.TITLE_LARGE,
-                )?.copyWith(fontSize: 28),
-              ),
-            ),
-            Positioned(
-              right: 40,
-              top: 55,
-              child: Text(
-                '📍',
-                style: GlobalHelper.getTextTheme(
-                  context,
-                  appTextStyle: AppTextStyle.TITLE_LARGE,
-                )?.copyWith(fontSize: 28),
-              ),
-            ),
-            Positioned(
-              right: 120,
-              top: 55,
-              child: Text(
-                '📍',
-                style: GlobalHelper.getTextTheme(
-                  context,
-                  appTextStyle: AppTextStyle.TITLE_LARGE,
-                )?.copyWith(fontSize: 28),
-              ),
-            ),
-            Positioned(
-              left: 20,
-              top: 20,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Lihat di Peta',
-                    style:
-                        GlobalHelper.getTextTheme(
-                          context,
-                          appTextStyle: AppTextStyle.TITLE_MEDIUM,
-                        )?.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: GlobalHelper.getColorSchema(context).onSurface,
-                        ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    'Temukan warung terdekat\ndi sekitarmu',
-                    style:
-                        GlobalHelper.getTextTheme(
-                          context,
-                          appTextStyle: AppTextStyle.BODY_SMALL,
-                        )?.copyWith(
-                          color: GlobalHelper.getColorSchema(
-                            context,
-                          ).onSurfaceVariant,
-                        ),
-                  ),
-                  const SizedBox(height: 12),
-                  ElevatedButton(
-                    onPressed: () {},
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: GlobalHelper.getColorSchema(
-                        context,
-                      ).primary,
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 8,
-                      ),
-                      minimumSize: Size.zero,
-                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      elevation: 0,
-                    ),
-                    child: Text(
-                      'Buka Peta',
-                      style: GlobalHelper.getTextTheme(
-                        context,
-                        appTextStyle: AppTextStyle.LABEL_MEDIUM,
-                      )?.copyWith(fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
     );
   }
 
