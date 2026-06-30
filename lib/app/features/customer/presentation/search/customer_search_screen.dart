@@ -4,9 +4,12 @@ import 'package:warunk/app/features/customer/presentation/search/bloc/customer_s
 import 'package:warunk/app/features/customer/presentation/search/bloc/customer_search_event.dart';
 import 'package:warunk/app/features/customer/presentation/search/bloc/customer_search_state.dart';
 import 'package:warunk/app/features/customer/presentation/detail_merchant/customer_detail_merchant_screen.dart';
+import 'package:warunk/app/features/customer/domain/entity/customer_product.dart';
+import 'package:warunk/app/features/customer/presentation/product/customer_product_screen.dart';
 import 'package:warunk/core/dependency/dependency.dart';
 import 'package:warunk/core/helper/global_helper.dart';
 import 'package:warunk/core/helper/dialog_helper.dart';
+import 'package:warunk/core/helper/number_helper.dart';
 import 'package:warunk/main.dart';
 import 'package:warunk/core/widgets/loading_app_widget.dart';
 
@@ -16,8 +19,7 @@ class CustomerSearchScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) =>
-          sl<CustomerSearchBloc>()..add(CustomerSearchMerchantsFetched()),
+      create: (context) => sl<CustomerSearchBloc>(),
       child: BlocConsumer<CustomerSearchBloc, CustomerSearchState>(
         listener: (context, state) {
           if (state.errorMessage != null) {
@@ -31,7 +33,7 @@ class CustomerSearchScreen extends StatelessWidget {
           return Scaffold(
             appBar: AppBar(
               title: Text(
-                'Cari Warung',
+                'Cari',
                 style:
                     GlobalHelper.getTextTheme(
                       context,
@@ -117,6 +119,8 @@ class CustomerSearchScreen extends StatelessWidget {
   // ── RESULTS ──────────────────────────────────────────────────────────────
   Widget _results(BuildContext context, CustomerSearchState state) {
     final stores = state.filteredMerchants;
+    final products = state.products;
+
     return CustomScrollView(
       slivers: [
         SliverToBoxAdapter(
@@ -130,24 +134,59 @@ class CustomerSearchScreen extends StatelessWidget {
             ),
           ),
         ),
-        SliverToBoxAdapter(
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(16, 14, 16, 10),
-            child: Text(
-              '${stores.length} warung ditemukan',
-              style:
-                  GlobalHelper.getTextTheme(
-                    context,
-                    appTextStyle: AppTextStyle.BODY_MEDIUM,
-                  )?.copyWith(
-                    fontWeight: FontWeight.w600,
-                    color: GlobalHelper.getColorSchema(context).onSurface,
-                  ),
+
+        // Product Section
+        if (products.isNotEmpty && !state.isLoading) ...[
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(16, 14, 16, 10),
+              child: Text(
+                '${products.length} produk ditemukan',
+                style:
+                    GlobalHelper.getTextTheme(
+                      context,
+                      appTextStyle: AppTextStyle.BODY_MEDIUM,
+                    )?.copyWith(
+                      fontWeight: FontWeight.w600,
+                      color: GlobalHelper.getColorSchema(context).onSurface,
+                    ),
+              ),
             ),
           ),
-        ),
+          SliverPadding(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+            sliver: SliverGrid(
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                childAspectRatio: 0.72,
+                crossAxisSpacing: 16,
+                mainAxisSpacing: 16,
+              ),
+              delegate: SliverChildBuilderDelegate((context, index) {
+                return _productCard(context, products[index]);
+              }, childCount: products.length),
+            ),
+          ),
+        ],
 
-        if (!state.isLoading)
+        // Store Section
+        if (stores.isNotEmpty && !state.isLoading) ...[
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(16, 14, 16, 10),
+              child: Text(
+                '${stores.length} warung ditemukan',
+                style:
+                    GlobalHelper.getTextTheme(
+                      context,
+                      appTextStyle: AppTextStyle.BODY_MEDIUM,
+                    )?.copyWith(
+                      fontWeight: FontWeight.w600,
+                      color: GlobalHelper.getColorSchema(context).onSurface,
+                    ),
+              ),
+            ),
+          ),
           SliverPadding(
             padding: const EdgeInsets.fromLTRB(16, 0, 16, 32),
             sliver: SliverList(
@@ -300,7 +339,135 @@ class CustomerSearchScreen extends StatelessWidget {
               }, childCount: stores.length),
             ),
           ),
+        ],
+
+        if (stores.isEmpty && products.isEmpty && !state.isLoading)
+          SliverFillRemaining(
+            hasScrollBody: false,
+            child: Center(
+              child: Text(
+                'Pencarian tidak ditemukan',
+                style:
+                    GlobalHelper.getTextTheme(
+                      context,
+                      appTextStyle: AppTextStyle.BODY_LARGE,
+                    )?.copyWith(
+                      color: GlobalHelper.getColorSchema(
+                        context,
+                      ).onSurface.withValues(alpha: 0.5),
+                    ),
+              ),
+            ),
+          ),
       ],
+    );
+  }
+
+  Widget _productCard(BuildContext context, CustomerProductEntity p) {
+    final imgUrl = (p.images != null && p.images!.isNotEmpty)
+        ? p.images!.first.url
+        : null;
+
+    return GestureDetector(
+      onTap: () => navigatorKey.currentState?.push(
+        MaterialPageRoute(
+          builder: (_) => CustomerProductScreen(productId: p.id),
+        ),
+      ),
+      child: Container(
+        decoration: BoxDecoration(
+          color: GlobalHelper.getColorSchema(context).surface,
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(
+            color: GlobalHelper.getColorSchema(context).outlineVariant,
+          ),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: Container(
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: GlobalHelper.getColorSchema(context).primaryContainer,
+                  borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(13),
+                  ),
+                ),
+                child: Center(
+                  child: imgUrl != null
+                      ? ClipRRect(
+                          borderRadius: const BorderRadius.vertical(
+                            top: Radius.circular(13),
+                          ),
+                          child: Image.network(
+                            imgUrl,
+                            fit: BoxFit.cover,
+                            width: double.infinity,
+                            height: double.infinity,
+                          ),
+                        )
+                      : Icon(
+                          Icons.inventory_2_rounded,
+                          size: 48,
+                          color: GlobalHelper.getColorSchema(context).primary,
+                        ),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(10, 8, 10, 10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    p.name,
+                    style:
+                        GlobalHelper.getTextTheme(
+                          context,
+                          appTextStyle: AppTextStyle.BODY_SMALL,
+                        )?.copyWith(
+                          fontWeight: FontWeight.w700,
+                          color: GlobalHelper.getColorSchema(context).onSurface,
+                        ),
+                  ),
+                  if (p.category.isNotEmpty)
+                    Text(
+                      p.category,
+                      style:
+                          GlobalHelper.getTextTheme(
+                            context,
+                            appTextStyle: AppTextStyle.LABEL_SMALL,
+                          )?.copyWith(
+                            color: GlobalHelper.getColorSchema(
+                              context,
+                            ).onSurface.withValues(alpha: 0.6),
+                          ),
+                    ),
+                  const SizedBox(height: 6),
+                  Text(
+                    NumberHelper.formatIDR(
+                      (p.hasVariant ?? false) &&
+                              p.variants != null &&
+                              p.variants!.isNotEmpty
+                          ? p.variants!.first.price
+                          : p.price,
+                    ),
+                    style:
+                        GlobalHelper.getTextTheme(
+                          context,
+                          appTextStyle: AppTextStyle.BODY_SMALL,
+                        )?.copyWith(
+                          fontWeight: FontWeight.w700,
+                          color: GlobalHelper.getColorSchema(context).primary,
+                        ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 

@@ -25,7 +25,7 @@ import 'package:warunk/app/features/customer/domain/use_case/customer_order_get_
 import 'package:warunk/app/features/customer/domain/use_case/customer_order_get_use_case.dart';
 import 'package:warunk/app/features/customer/domain/use_case/customer_order_complete_use_case.dart';
 import 'package:warunk/app/features/customer/domain/use_case/customer_checkout_get_shipping_option_use_case.dart';
-import 'package:warunk/app/features/customer/domain/use_case/customer_product_get_by_merchant_use_case.dart';
+import 'package:warunk/app/features/customer/domain/use_case/customer_product_get_use_case.dart';
 import 'package:warunk/app/features/merchant/domain/repository/merchant_location_repository.dart';
 import 'package:warunk/app/features/merchant/data/repository/merchant_location_repository_impl.dart';
 import 'package:warunk/app/features/merchant/domain/use_case/merchant_location_get_current_use_case.dart';
@@ -353,7 +353,7 @@ Future<void> initDependency() async {
     () => CustomerMerchantGetNearbyUseCase(repository: sl()),
   );
   sl.registerLazySingleton(
-    () => CustomerProductGetByMerchantUseCase(repository: sl()),
+    () => CustomerProductGetUseCase(repository: sl()),
   );
   sl.registerLazySingleton(
     () => CustomerProductGetByIdUseCase(repository: sl()),
@@ -446,12 +446,15 @@ Future<void> initDependency() async {
     () => CustomerAddressBloc(getUseCase: sl(), setDefaultUseCase: sl()),
   );
   sl.registerFactory(() => CustomerInputAddressBloc(sl(), sl(), sl()));
-  sl.registerFactory(() => CustomerSearchBloc(getMerchantUseCase: sl()));
+  sl.registerFactory(() => CustomerSearchBloc(
+    getMerchantUseCase: sl(),
+    productGetUseCase: sl(),
+  ));
   sl.registerFactory(() => CustomerMerchantBloc(getUseCase: sl()));
   sl.registerFactory(
     () => CustomerDetailMerchantBloc(
       getByIdUseCase: sl(),
-      productGetByMerchantUseCase: sl(),
+      productGetUseCase: sl(),
       cartGetUseCase: sl(),
     ),
   );

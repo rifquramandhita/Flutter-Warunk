@@ -11,8 +11,8 @@ class CustomerProductRepositoryImpl implements CustomerProductRepository {
   }) : _apiService = apiService;
 
   @override
-  Future<DataState<List<CustomerProductEntity>>> getByMerchant(String merchantId) {
-    return handleResponse(() => _apiService.getByMerchant(merchantId), (json) {
+  Future<DataState<List<CustomerProductEntity>>> getProducts({String? merchantId, String? keyword}) {
+    return handleResponse(() => _apiService.getProducts(merchantId, keyword), (json) {
       if (json is Map<String, dynamic> && json['products'] is List) {
         return (json['products'] as List)
             .map((e) => CustomerProductEntity.fromJson(e as Map<String, dynamic>))

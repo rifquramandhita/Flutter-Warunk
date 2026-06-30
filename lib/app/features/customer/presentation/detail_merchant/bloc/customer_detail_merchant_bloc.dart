@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:warunk/app/features/customer/domain/use_case/customer_merchant_get_by_id_use_case.dart';
-import 'package:warunk/app/features/customer/domain/use_case/customer_product_get_by_merchant_use_case.dart';
+import 'package:warunk/app/features/customer/domain/use_case/customer_product_get_use_case.dart';
 import 'package:warunk/app/features/customer/domain/use_case/customer_cart_get_use_case.dart';
 import 'package:warunk/core/network/data_state.dart';
 import 'customer_detail_merchant_event.dart';
@@ -9,15 +9,15 @@ import 'customer_detail_merchant_state.dart';
 class CustomerDetailMerchantBloc
     extends Bloc<CustomerDetailMerchantEvent, CustomerDetailMerchantState> {
   final CustomerMerchantGetByIdUseCase _getByIdUseCase;
-  final CustomerProductGetByMerchantUseCase _productGetByMerchantUseCase;
+  final CustomerProductGetUseCase _productGetUseCase;
   final CustomerCartGetUseCase _cartGetUseCase;
 
   CustomerDetailMerchantBloc({
     required CustomerMerchantGetByIdUseCase getByIdUseCase,
-    required CustomerProductGetByMerchantUseCase productGetByMerchantUseCase,
+    required CustomerProductGetUseCase productGetUseCase,
     required CustomerCartGetUseCase cartGetUseCase,
   }) : _getByIdUseCase = getByIdUseCase,
-       _productGetByMerchantUseCase = productGetByMerchantUseCase,
+       _productGetUseCase = productGetUseCase,
        _cartGetUseCase = cartGetUseCase,
        super(const CustomerDetailMerchantState()) {
     on<CustomerDetailMerchantEventGet>(_onLoadStoreDetails);
@@ -34,8 +34,8 @@ class CustomerDetailMerchantBloc
     final merchantResponse = await _getByIdUseCase.call(event.storeId);
 
     if (merchantResponse is SuccessState) {
-      final productResponse = await _productGetByMerchantUseCase.call(
-        event.storeId,
+      final productResponse = await _productGetUseCase.call(
+        merchantId: event.storeId,
       );
       final cartResponse = await _cartGetUseCase.call();
 

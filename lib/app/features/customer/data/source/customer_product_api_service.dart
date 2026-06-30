@@ -9,8 +9,9 @@ abstract class CustomerProductApiService {
       _CustomerProductApiService;
 
   @GET('/api/products')
-  Future<HttpResponse<dynamic>> getByMerchant(
-    @Query('merchant_id') String merchantId,
+  Future<HttpResponse<dynamic>> getProducts(
+    @Query('merchant_id') String? merchantId,
+    @Query('keyword') String? keyword,
   );
 
   @GET('/api/products/{product}')

@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:warunk/app/features/customer/domain/entity/customer_merchant.dart';
+import 'package:warunk/app/features/customer/domain/entity/customer_product.dart';
 
 class CustomerSearchState extends Equatable {
   final bool isLoading;
@@ -8,6 +9,7 @@ class CustomerSearchState extends Equatable {
   final String searchQuery;
   final List<String> activeFilters;
   final List<CustomerMerchantEntity> merchants;
+  final List<CustomerProductEntity> products;
 
   const CustomerSearchState({
     this.isLoading = false,
@@ -16,6 +18,7 @@ class CustomerSearchState extends Equatable {
     this.searchQuery = '',
     this.activeFilters = const ['Jakarta', 'Terdekat', 'Buka', 'Promo'],
     this.merchants = const [],
+    this.products = const [],
   });
 
   List<CustomerMerchantEntity> get filteredMerchants {
@@ -33,6 +36,7 @@ class CustomerSearchState extends Equatable {
     String? searchQuery,
     List<String>? activeFilters,
     List<CustomerMerchantEntity>? merchants,
+    List<CustomerProductEntity>? products,
   }) {
     return CustomerSearchState(
       isLoading: isLoading ?? this.isLoading,
@@ -41,6 +45,7 @@ class CustomerSearchState extends Equatable {
       searchQuery: searchQuery ?? this.searchQuery,
       activeFilters: activeFilters ?? this.activeFilters,
       merchants: merchants ?? this.merchants,
+      products: products ?? this.products,
     );
   }
 
@@ -52,5 +57,6 @@ class CustomerSearchState extends Equatable {
     searchQuery,
     activeFilters,
     merchants,
+    products,
   ];
 }

@@ -20,9 +20,16 @@ class _CustomerProductApiService implements CustomerProductApiService {
   final ParseErrorLogger? errorLogger;
 
   @override
-  Future<HttpResponse<dynamic>> getByMerchant(String merchantId) async {
+  Future<HttpResponse<dynamic>> getProducts(
+    String? merchantId,
+    String? keyword,
+  ) async {
     final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{r'merchant_id': merchantId};
+    final queryParameters = <String, dynamic>{
+      r'merchant_id': merchantId,
+      r'keyword': keyword,
+    };
+    queryParameters.removeWhere((k, v) => v == null);
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
     final _options = _setStreamType<HttpResponse<dynamic>>(
