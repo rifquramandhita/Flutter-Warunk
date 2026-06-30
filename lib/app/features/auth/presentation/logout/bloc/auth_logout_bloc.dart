@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:warunk/app/features/auth/domain/use_case/auth_logout_use_case.dart';
 import 'package:warunk/core/bloc/auth/auth_bloc.dart';
 import 'auth_logout_event.dart';
@@ -22,6 +23,11 @@ class AuthLogoutBloc extends Bloc<AuthLogoutEvent, AuthLogoutState> {
     Emitter<AuthLogoutState> emit,
   ) async {
     emit(state.copyWith(isLoading: true));
+
+    try {
+      final googleSignIn = GoogleSignIn();
+      await googleSignIn.signOut();
+    } catch (_) {}
 
     final response = await _useCase();
 
