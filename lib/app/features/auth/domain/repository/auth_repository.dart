@@ -99,4 +99,12 @@ class AuthRepository {
       return null;
     });
   }
+
+  Future<DataState> logout() async {
+    return handleResponse(() => _api.logout(), (
+      responseData,
+    ) async {
+      return null;
+    });
+  }
 }

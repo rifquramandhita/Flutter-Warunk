@@ -36,4 +36,7 @@ abstract class AuthApiService {
   Future<HttpResponse<dynamic>> resetPassword({
     @Body() required Map<String, dynamic> body,
   });
+
+  @POST('/api/auth/logout')
+  Future<HttpResponse<dynamic>> logout();
 }

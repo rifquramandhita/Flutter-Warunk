@@ -31,7 +31,8 @@ class AuthLogoutBloc extends Bloc<AuthLogoutEvent, AuthLogoutState> {
 
     final response = await _useCase();
 
-    emit(state.copyWith(isLoading: false, isSuccess: response.success));
+    // Selalu paksa isSuccess = true agar user tetap bisa logout meskipun hit API gagal (token expired, masalah koneksi, dsb)
+    emit(state.copyWith(isLoading: false, isSuccess: true));
     _authBloc.add(AuthEventCheck());
   }
 }

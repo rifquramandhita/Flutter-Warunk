@@ -10,9 +10,15 @@ class AuthLogoutUseCase {
     : _repository = repository;
 
   Future<DataState> call() async {
+    final response = await _repository.logout();
+    
     await SharedPreferencesHelper.remove(PREF_AUTH);
     await SharedPreferencesHelper.remove(PREF_NAME);
     await SharedPreferencesHelper.remove(PREF_EMAIL);
-    return SuccessState(message: 'Logout berhasil');
+    await SharedPreferencesHelper.remove(PREF_PHONE);
+    await SharedPreferencesHelper.remove(PREF_PHOTO);
+    await SharedPreferencesHelper.remove(PREF_ROLE);
+    
+    return response;
   }
 }
