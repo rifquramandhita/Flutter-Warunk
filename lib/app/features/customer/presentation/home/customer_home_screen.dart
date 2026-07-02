@@ -584,7 +584,7 @@ class CustomerHomeScreen extends StatelessWidget {
                             ).onSurfaceVariant,
                       rating: '0',
                       reviews: '0',
-                      distance: '${merchant.distance ?? 0} m',
+                      distance: '${merchant.distance ?? 0} km',
                       location: '',
                       promo:
                           (merchant.promoBadges != null &&
