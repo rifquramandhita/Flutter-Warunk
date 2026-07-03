@@ -53,6 +53,7 @@ CustomerProductEntity _$CustomerProductEntityFromJson(
   isWishlisted: json['is_wishlisted'] as bool?,
   createdAt: json['created_at'] as String?,
   updatedAt: json['updated_at'] as String?,
+  chatUrl: json['chat_url'] as String?,
 );
 
 Map<String, dynamic> _$CustomerProductEntityToJson(
@@ -86,4 +87,5 @@ Map<String, dynamic> _$CustomerProductEntityToJson(
   'is_wishlisted': ?instance.isWishlisted,
   'created_at': ?instance.createdAt,
   'updated_at': ?instance.updatedAt,
+  'chat_url': ?instance.chatUrl,
 };

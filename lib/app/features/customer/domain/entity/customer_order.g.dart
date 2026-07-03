@@ -170,6 +170,7 @@ CustomerOrderEntity _$CustomerOrderEntityFromJson(Map<String, dynamic> json) =>
       completedAt: json['completed_at'] as String?,
       createdAt: json['created_at'] as String?,
       updatedAt: json['updated_at'] as String?,
+      chatUrl: json['chat_url'] as String?,
       $type: json['runtimeType'] as String?,
     );
 
@@ -218,6 +219,7 @@ Map<String, dynamic> _$CustomerOrderEntityToJson(
   'completed_at': ?instance.completedAt,
   'created_at': ?instance.createdAt,
   'updated_at': ?instance.updatedAt,
+  'chat_url': ?instance.chatUrl,
   'runtimeType': instance.$type,
 };
 

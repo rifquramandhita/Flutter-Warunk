@@ -30,8 +30,6 @@ sealed class CustomerOrder with _$CustomerOrder {
     String? biteshipRateKey,
   }) = CustomerOrderGetPromotionParam;
 
-
-
   const factory CustomerOrder.completeParam({
     required String orderId,
     required List<CustomerOrderCompleteReviewParam> reviews,
@@ -42,7 +40,8 @@ sealed class CustomerOrder with _$CustomerOrder {
     required int rating,
     String? review,
     @JsonKey(includeFromJson: false, includeToJson: false)
-    @Default([]) List<File> images,
+    @Default([])
+    List<File> images,
   }) = CustomerOrderCompleteReviewParam;
 
   @JsonSerializable(fieldRename: FieldRename.snake, includeIfNull: false)
@@ -98,31 +97,41 @@ sealed class CustomerOrder with _$CustomerOrder {
     String? completedAt,
     String? createdAt,
     String? updatedAt,
+    String? chatUrl,
   }) = CustomerOrderEntity;
 
   factory CustomerOrder.fromJson(Map<String, dynamic> json) =>
       _$CustomerOrderFromJson(json);
 }
 
-
-
 extension CustomerOrderCompleteParamX on CustomerOrderCompleteParam {
   Future<FormData> toFormData() async {
     final formData = FormData();
     for (int i = 0; i < reviews.length; i++) {
       final reviewItem = reviews[i];
-      formData.fields.add(MapEntry('reviews[$i][order_item_id]', reviewItem.orderItemId));
-      formData.fields.add(MapEntry('reviews[$i][rating]', reviewItem.rating.toString()));
+      formData.fields.add(
+        MapEntry('reviews[$i][order_item_id]', reviewItem.orderItemId),
+      );
+      formData.fields.add(
+        MapEntry('reviews[$i][rating]', reviewItem.rating.toString()),
+      );
       if (reviewItem.review != null && reviewItem.review!.isNotEmpty) {
-        formData.fields.add(MapEntry('reviews[$i][review]', reviewItem.review!));
+        formData.fields.add(
+          MapEntry('reviews[$i][review]', reviewItem.review!),
+        );
       }
       for (int j = 0; j < reviewItem.images.length; j++) {
         final image = reviewItem.images[j];
         final ext = image.path.split('.').last;
-        formData.files.add(MapEntry(
-          'reviews[$i][images][]',
-          await MultipartFile.fromFile(image.path, filename: 'review_${i}_$j.$ext'),
-        ));
+        formData.files.add(
+          MapEntry(
+            'reviews[$i][images][]',
+            await MultipartFile.fromFile(
+              image.path,
+              filename: 'review_${i}_$j.$ext',
+            ),
+          ),
+        );
       }
     }
     return formData;

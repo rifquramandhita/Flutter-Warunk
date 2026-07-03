@@ -12,6 +12,7 @@ import 'package:warunk/core/enum/delivery_method.dart';
 import 'package:warunk/app/features/customer/presentation/review_order/customer_review_order_screen.dart';
 import 'package:warunk/app/features/customer/presentation/cancel_order/customer_cancel_order_screen.dart';
 import 'package:warunk/core/enum/order_status.dart';
+import 'package:warunk/app/features/customer/presentation/chat/customer_chat_webview_screen.dart';
 
 // ── Entry point ────────────────────────────────────────────────────────────
 class CustomerDetailOrderScreen extends StatelessWidget {
@@ -36,7 +37,24 @@ class CustomerDetailOrderScreen extends StatelessWidget {
         builder: (context, state) {
           return Scaffold(
             backgroundColor: AppColors.background,
-            appBar: AppBar(title: const Text('Detail Pesanan')),
+            appBar: AppBar(
+              title: const Text('Detail Pesanan'),
+              actions: [
+                if (state.transaction?.chatUrl != null)
+                  IconButton(
+                    icon: const Icon(Icons.chat_bubble_outline_rounded),
+                    onPressed: () {
+                      final chatUrl = state.transaction!.chatUrl;
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => CustomerChatWebviewScreen(chatUrl: chatUrl),
+                        ),
+                      );
+                    },
+                  ),
+              ],
+            ),
             body: _bodyBuild(context),
           );
         },

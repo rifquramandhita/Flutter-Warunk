@@ -41,6 +41,7 @@ sealed class CustomerMerchant with _$CustomerMerchant {
     double? distance,
     List<String>? promoBadges,
     CustomerMerchantUserEntity? user,
+    String? chatUrl,
   }) = CustomerMerchantEntity;
 
   factory CustomerMerchant.fromJson(Map<String, dynamic> json) =>

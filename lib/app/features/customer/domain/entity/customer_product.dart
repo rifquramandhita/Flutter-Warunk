@@ -39,6 +39,7 @@ sealed class CustomerProduct with _$CustomerProduct {
     bool? isWishlisted,
     String? createdAt,
     String? updatedAt,
+    String? chatUrl,
   }) = CustomerProductEntity;
 
   factory CustomerProduct.fromJson(Map<String, dynamic> json) =>

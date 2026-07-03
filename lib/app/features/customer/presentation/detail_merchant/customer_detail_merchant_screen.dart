@@ -13,6 +13,7 @@ import 'package:warunk/core/helper/dialog_helper.dart';
 import 'package:warunk/core/helper/number_helper.dart';
 import 'package:warunk/core/widgets/loading_app_widget.dart';
 import 'package:warunk/main.dart';
+import 'package:warunk/app/features/customer/presentation/chat/customer_chat_webview_screen.dart';
 
 class CustomerDetailMerchantScreen extends StatelessWidget {
   final String storeId;
@@ -67,6 +68,21 @@ class CustomerDetailMerchantScreen extends StatelessWidget {
               backgroundColor: GlobalHelper.getColorSchema(context).primary,
               iconTheme: const IconThemeData(color: Colors.white),
               flexibleSpace: FlexibleSpaceBar(background: _buildHero(context)),
+              actions: [
+                IconButton(
+                  icon: const Icon(Icons.chat_bubble_outline_rounded),
+                  onPressed: () {
+                    final chatUrl = state.merchantDetail?.chatUrl;
+                    if (chatUrl != null) {
+                      navigatorKey.currentState?.push(
+                        MaterialPageRoute(
+                          builder: (_) => CustomerChatWebviewScreen(chatUrl: chatUrl),
+                        ),
+                      );
+                    }
+                  },
+                ),
+              ],
             ),
 
             // ── Store info card ───────────────────────────────────────────────

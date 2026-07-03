@@ -61,6 +61,7 @@ CustomerMerchantEntity _$CustomerMerchantEntityFromJson(
       : CustomerMerchantUserEntity.fromJson(
           json['user'] as Map<String, dynamic>,
         ),
+  chatUrl: json['chat_url'] as String?,
 );
 
 Map<String, dynamic> _$CustomerMerchantEntityToJson(
@@ -100,6 +101,7 @@ Map<String, dynamic> _$CustomerMerchantEntityToJson(
   'distance': ?instance.distance,
   'promo_badges': ?instance.promoBadges,
   'user': ?instance.user,
+  'chat_url': ?instance.chatUrl,
 };
 
 CustomerMerchantAccountEntity _$CustomerMerchantAccountEntityFromJson(

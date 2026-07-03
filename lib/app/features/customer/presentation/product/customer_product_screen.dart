@@ -9,6 +9,7 @@ import 'package:warunk/app/features/customer/presentation/product/bloc/customer_
 import 'package:warunk/app/features/customer/presentation/product/bloc/customer_product_state.dart';
 import 'package:warunk/app/features/customer/presentation/detail_merchant/customer_detail_merchant_screen.dart';
 import 'package:warunk/main.dart';
+import 'package:warunk/app/features/customer/presentation/chat/customer_chat_webview_screen.dart';
 
 class CustomerProductScreen extends StatelessWidget {
   final String productId;
@@ -121,7 +122,7 @@ class CustomerProductScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     _infoLayout(context, product, price),
-                    _merchantLayout(context, product.merchant),
+                    _merchantLayout(context, product.merchant, product.chatUrl),
                     if (dimensions.isNotEmpty)
                       _variantsLayout(context, dimensions),
                     _quantityLayout(context),
@@ -308,92 +309,105 @@ class CustomerProductScreen extends StatelessWidget {
     );
   }
 
-  Widget _merchantLayout(BuildContext context, dynamic merchant) {
+  Widget _merchantLayout(BuildContext context, dynamic merchant, String? chatUrl) {
     if (merchant == null) return const SizedBox();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        InkWell(
-          onTap: () {
-            if (merchant.id != null) {
-              navigatorKey.currentState?.push(
-                MaterialPageRoute(
-                  builder: (_) => CustomerDetailMerchantScreen(storeId: merchant.id!),
-                ),
-              );
-            }
-          },
-          borderRadius: BorderRadius.circular(12),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8),
-            child: Row(
-              children: [
-                CircleAvatar(
-                  radius: 20,
-                  backgroundColor: GlobalHelper.getColorSchema(context).primaryContainer,
-                  backgroundImage: merchant.photo != null ? NetworkImage(merchant.photo!) : null,
-                  child: merchant.photo == null
-                      ? Icon(Icons.storefront_rounded, color: GlobalHelper.getColorSchema(context).primary)
-                      : null,
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        merchant.name ?? '-',
-                        style: GlobalHelper.getTextTheme(
-                          context,
-                          appTextStyle: AppTextStyle.TITLE_SMALL,
-                        )?.copyWith(
-                          fontWeight: FontWeight.w700,
-                          color: GlobalHelper.getColorSchema(context).onSurface,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
+        Row(
+          children: [
+            Expanded(
+              child: InkWell(
+                onTap: () {
+                  if (merchant.id != null) {
+                    navigatorKey.currentState?.push(
+                      MaterialPageRoute(
+                        builder: (_) => CustomerDetailMerchantScreen(storeId: merchant.id!),
                       ),
-                      if (merchant.city != null || merchant.distance != null)
-                        const SizedBox(height: 4),
-                      if (merchant.city != null || merchant.distance != null)
-                        Row(
+                    );
+                  }
+                },
+                borderRadius: BorderRadius.circular(12),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  child: Row(
+                    children: [
+                      CircleAvatar(
+                        radius: 20,
+                        backgroundColor: GlobalHelper.getColorSchema(context).primaryContainer,
+                        backgroundImage: merchant.photo != null ? NetworkImage(merchant.photo!) : null,
+                        child: merchant.photo == null
+                            ? Icon(Icons.storefront_rounded, color: GlobalHelper.getColorSchema(context).primary)
+                            : null,
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Icon(
-                              Icons.location_on_rounded,
-                              size: 14,
-                              color: GlobalHelper.getColorSchema(context).onSurface.withValues(alpha: 0.6),
-                            ),
-                            const SizedBox(width: 4),
-                            Expanded(
-                              child: Text(
-                                [
-                                  if (merchant.city != null) merchant.city,
-                                  if (merchant.distance != null) '${merchant.distance} km',
-                                ].join(' • '),
-                                style: GlobalHelper.getTextTheme(
-                                  context,
-                                  appTextStyle: AppTextStyle.BODY_SMALL,
-                                )?.copyWith(
-                                  color: GlobalHelper.getColorSchema(context).onSurface.withValues(alpha: 0.6),
-                                ),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
+                            Text(
+                              merchant.name ?? '-',
+                              style: GlobalHelper.getTextTheme(
+                                context,
+                                appTextStyle: AppTextStyle.TITLE_SMALL,
+                              )?.copyWith(
+                                fontWeight: FontWeight.w700,
+                                color: GlobalHelper.getColorSchema(context).onSurface,
                               ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                             ),
+                            if (merchant.city != null || merchant.distance != null)
+                              const SizedBox(height: 4),
+                            if (merchant.city != null || merchant.distance != null)
+                              Row(
+                                children: [
+                                  Icon(
+                                    Icons.location_on_rounded,
+                                    size: 14,
+                                    color: GlobalHelper.getColorSchema(context).onSurface.withValues(alpha: 0.6),
+                                  ),
+                                  const SizedBox(width: 4),
+                                  Expanded(
+                                    child: Text(
+                                      [
+                                        if (merchant.city != null) merchant.city,
+                                        if (merchant.distance != null) '${merchant.distance} km',
+                                      ].join(' • '),
+                                      style: GlobalHelper.getTextTheme(
+                                        context,
+                                        appTextStyle: AppTextStyle.BODY_SMALL,
+                                      )?.copyWith(
+                                        color: GlobalHelper.getColorSchema(context).onSurface.withValues(alpha: 0.6),
+                                      ),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                ],
+                              ),
                           ],
                         ),
+                      ),
                     ],
                   ),
                 ),
-                const SizedBox(width: 8),
-                Icon(
-                  Icons.chevron_right_rounded,
-                  color: GlobalHelper.getColorSchema(context).onSurface.withValues(alpha: 0.4),
-                ),
-              ],
+              ),
             ),
-          ),
+            if (chatUrl != null)
+              IconButton(
+                icon: const Icon(Icons.chat_bubble_outline_rounded),
+                color: GlobalHelper.getColorSchema(context).primary,
+                onPressed: () {
+                  navigatorKey.currentState?.push(
+                    MaterialPageRoute(
+                      builder: (_) => CustomerChatWebviewScreen(chatUrl: chatUrl),
+                    ),
+                  );
+                },
+              ),
+          ],
         ),
         Divider(
           height: 20,

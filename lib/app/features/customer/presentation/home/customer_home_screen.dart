@@ -8,6 +8,8 @@ import 'package:warunk/app/features/customer/presentation/search/customer_search
 import 'package:warunk/app/features/customer/presentation/merchant/customer_merchant_screen.dart';
 import 'package:warunk/app/features/customer/presentation/detail_merchant/customer_detail_merchant_screen.dart';
 import 'package:warunk/app/features/customer/domain/entity/customer_promotion_information.dart';
+import 'package:warunk/app/features/customer/presentation/chat/customer_chat_webview_screen.dart';
+
 
 import 'package:warunk/core/dependency/dependency.dart';
 import 'package:warunk/theme/app_colors.dart';
@@ -76,6 +78,8 @@ class CustomerHomeScreen extends StatelessWidget {
         children: [
           Expanded(child: _greetingText(context)),
           const SizedBox(width: 8),
+          _chatButton(context),
+          const SizedBox(width: 16),
           _cartButton(context),
         ],
       ),
@@ -131,6 +135,19 @@ class CustomerHomeScreen extends StatelessWidget {
       ),
       child: Icon(
         Icons.shopping_cart_rounded,
+        color: GlobalHelper.getColorSchema(context).primary,
+        size: 20,
+      ),
+    );
+  }
+
+  Widget _chatButton(BuildContext context) {
+    return GestureDetector(
+      onTap: () => navigatorKey.currentState?.push(
+        MaterialPageRoute(builder: (_) => const CustomerChatWebviewScreen()),
+      ),
+      child: Icon(
+        Icons.chat_bubble_outline_rounded,
         color: GlobalHelper.getColorSchema(context).primary,
         size: 20,
       ),
