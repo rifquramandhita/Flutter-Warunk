@@ -7,6 +7,8 @@ abstract class MerchantOrderRepository {
   Future<DataState<List<MerchantOrderEntity>>> getOrders();
   Future<DataState<MerchantOrderEntity>> getOrderById(String id);
   Future<DataState<MerchantOrderEntity>> acceptOrder(String id);
+  Future<DataState<MerchantOrderEntity>> processOrder(String id);
+  Future<DataState<MerchantOrderEntity>> completeOrder(String id);
   Future<DataState<MerchantOrderEntity>> shipOrder(
     String id,
     Map<String, dynamic> body,

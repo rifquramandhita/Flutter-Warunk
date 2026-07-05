@@ -93,6 +93,8 @@ import 'package:warunk/app/features/merchant/data/repository/merchant_order_repo
 import 'package:warunk/app/features/merchant/domain/use_case/merchant_order_get_use_case.dart';
 import 'package:warunk/app/features/merchant/domain/use_case/merchant_order_get_by_id_use_case.dart';
 import 'package:warunk/app/features/merchant/domain/use_case/merchant_order_accept_use_case.dart';
+import 'package:warunk/app/features/merchant/domain/use_case/merchant_order_process_use_case.dart';
+import 'package:warunk/app/features/merchant/domain/use_case/merchant_order_complete_use_case.dart';
 import 'package:warunk/app/features/merchant/domain/use_case/merchant_order_ship_use_case.dart';
 import 'package:warunk/app/features/merchant/domain/use_case/merchant_order_received_use_case.dart';
 import 'package:warunk/app/features/merchant/domain/use_case/merchant_order_reject_use_case.dart';
@@ -323,6 +325,8 @@ Future<void> initDependency() async {
   sl.registerLazySingleton(() => MerchantOrderGetUseCase(sl()));
   sl.registerLazySingleton(() => MerchantOrderGetByIdUseCase(sl()));
   sl.registerLazySingleton(() => MerchantOrderAcceptUseCase(sl()));
+  sl.registerLazySingleton(() => MerchantOrderProcessUseCase(sl()));
+  sl.registerLazySingleton(() => MerchantOrderCompleteUseCase(sl()));
   sl.registerLazySingleton(() => MerchantOrderShipUseCase(sl()));
   sl.registerLazySingleton(() => MerchantOrderReceivedUseCase(sl()));
   sl.registerLazySingleton(() => MerchantOrderRejectUseCase(sl()));
@@ -352,9 +356,7 @@ Future<void> initDependency() async {
   sl.registerLazySingleton(
     () => CustomerMerchantGetNearbyUseCase(repository: sl()),
   );
-  sl.registerLazySingleton(
-    () => CustomerProductGetUseCase(repository: sl()),
-  );
+  sl.registerLazySingleton(() => CustomerProductGetUseCase(repository: sl()));
   sl.registerLazySingleton(
     () => CustomerProductGetByIdUseCase(repository: sl()),
   );
@@ -393,12 +395,14 @@ Future<void> initDependency() async {
   );
   //bloc
   sl.registerLazySingleton(() => AuthBloc());
-  sl.registerFactory(() => CustomerHomeBloc(
-    getCategoryUseCase: sl(),
-    getNearbyUseCase: sl(),
-    getCurrentLocationUseCase: sl(),
-    getBannerUseCase: sl(),
-  ));
+  sl.registerFactory(
+    () => CustomerHomeBloc(
+      getCategoryUseCase: sl(),
+      getNearbyUseCase: sl(),
+      getCurrentLocationUseCase: sl(),
+      getBannerUseCase: sl(),
+    ),
+  );
   sl.registerFactory(
     () => AuthLoginBloc(authBloc: sl(), useCase: sl(), googleUseCase: sl()),
   );
@@ -446,10 +450,9 @@ Future<void> initDependency() async {
     () => CustomerAddressBloc(getUseCase: sl(), setDefaultUseCase: sl()),
   );
   sl.registerFactory(() => CustomerInputAddressBloc(sl(), sl(), sl()));
-  sl.registerFactory(() => CustomerSearchBloc(
-    getMerchantUseCase: sl(),
-    productGetUseCase: sl(),
-  ));
+  sl.registerFactory(
+    () => CustomerSearchBloc(getMerchantUseCase: sl(), productGetUseCase: sl()),
+  );
   sl.registerFactory(() => CustomerMerchantBloc(getUseCase: sl()));
   sl.registerFactory(
     () => CustomerDetailMerchantBloc(
@@ -501,6 +504,8 @@ Future<void> initDependency() async {
       receivedUseCase: sl(),
       acceptCancelUseCase: sl(),
       rejectCancelUseCase: sl(),
+      processUseCase: sl(),
+      completeUseCase: sl(),
     ),
   );
   sl.registerFactory(

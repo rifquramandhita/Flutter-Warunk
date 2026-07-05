@@ -20,6 +20,12 @@ abstract class MerchantOrderApiService {
   @POST('$MERCHANT_ORDERS/{id}/accept')
   Future<HttpResponse<dynamic>> acceptOrder(@Path('id') String id);
 
+  @POST('$MERCHANT_ORDERS/{id}/process')
+  Future<HttpResponse<dynamic>> processOrder(@Path('id') String id);
+
+  @POST('$MERCHANT_ORDERS/{id}/complete')
+  Future<HttpResponse<dynamic>> completeOrder(@Path('id') String id);
+
   @POST('$MERCHANT_ORDERS/{id}/ship')
   Future<HttpResponse<dynamic>> shipOrder(
     @Path('id') String id,

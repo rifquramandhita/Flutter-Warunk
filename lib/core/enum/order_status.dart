@@ -1,6 +1,8 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 enum OrderStatus {
+  @JsonValue('waiting_merchant_confirmation')
+  waitingMerchantConfirmation,
   @JsonValue('waiting_payment')
   waitingPayment,
   @JsonValue('waiting_payment_confirmation')
@@ -16,14 +18,18 @@ enum OrderStatus {
   @JsonValue('completed')
   completed,
   @JsonValue('cancelled')
-  cancelled;
+  cancelled,
+  @JsonValue('rejected')
+  rejected;
 
   String get label {
     switch (this) {
+      case OrderStatus.waitingMerchantConfirmation:
+        return 'Menunggu Konfirmasi Merchant';
       case OrderStatus.waitingPayment:
-        return 'Menunggu Pembayaran';
+        return 'Menunggu Pembayaran Customer';
       case OrderStatus.waitingPaymentConfirmation:
-        return 'Menunggu Konfirmasi Pembayaran';
+        return 'Dibayar';
       case OrderStatus.waitingCancel:
         return 'Menunggu Pembatalan';
       case OrderStatus.processing:
@@ -36,11 +42,15 @@ enum OrderStatus {
         return 'Selesai';
       case OrderStatus.cancelled:
         return 'Dibatalkan';
+      case OrderStatus.rejected:
+        return 'Ditolak';
     }
   }
 
   String get value {
     switch (this) {
+      case OrderStatus.waitingMerchantConfirmation:
+        return 'waiting_merchant_confirmation';
       case OrderStatus.waitingPayment:
         return 'waiting_payment';
       case OrderStatus.waitingPaymentConfirmation:
@@ -57,6 +67,8 @@ enum OrderStatus {
         return 'completed';
       case OrderStatus.cancelled:
         return 'cancelled';
+      case OrderStatus.rejected:
+        return 'rejected';
     }
   }
 

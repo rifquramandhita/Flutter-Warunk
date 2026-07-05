@@ -5,6 +5,7 @@ import 'merchant_order_customer.dart';
 import 'merchant_order_customer_address.dart';
 import 'merchant_order_item.dart';
 import 'merchant_order_shipping.dart';
+import 'merchant_order_next_action.dart';
 import 'package:warunk/core/enum/order_status.dart';
 
 part 'merchant_order.freezed.dart';
@@ -74,6 +75,8 @@ sealed class MerchantOrder with _$MerchantOrder {
     String? completedAt,
     String? createdAt,
     String? updatedAt,
+    String? chatUrl,
+    List<MerchantOrderNextActionEntity>? nextActions,
   }) = MerchantOrderEntity;
 
   factory MerchantOrder.fromJson(Map<String, dynamic> json) =>

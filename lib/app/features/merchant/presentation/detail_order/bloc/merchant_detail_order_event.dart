@@ -11,6 +11,10 @@ class MerchantDetailOrderEventMapsTapped extends MerchantDetailOrderEvent {}
 
 class MerchantDetailOrderEventAccept extends MerchantDetailOrderEvent {}
 
+class MerchantDetailOrderEventProcess extends MerchantDetailOrderEvent {}
+
+class MerchantDetailOrderEventComplete extends MerchantDetailOrderEvent {}
+
 class MerchantDetailOrderEventReject extends MerchantDetailOrderEvent {
   final String reason;
   MerchantDetailOrderEventReject(this.reason);

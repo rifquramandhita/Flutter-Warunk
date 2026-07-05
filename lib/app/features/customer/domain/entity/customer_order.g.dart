@@ -224,6 +224,7 @@ Map<String, dynamic> _$CustomerOrderEntityToJson(
 };
 
 const _$OrderStatusEnumMap = {
+  OrderStatus.waitingMerchantConfirmation: 'waiting_merchant_confirmation',
   OrderStatus.waitingPayment: 'waiting_payment',
   OrderStatus.waitingPaymentConfirmation: 'waiting_payment_confirmation',
   OrderStatus.waitingCancel: 'waiting_cancel',
@@ -232,4 +233,5 @@ const _$OrderStatusEnumMap = {
   OrderStatus.received: 'received',
   OrderStatus.completed: 'completed',
   OrderStatus.cancelled: 'cancelled',
+  OrderStatus.rejected: 'rejected',
 };

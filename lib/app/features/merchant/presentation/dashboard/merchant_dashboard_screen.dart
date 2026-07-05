@@ -777,12 +777,15 @@ Widget _statusBadge(BuildContext context, {required OrderStatus? status}) {
 
   final colorSchema = GlobalHelper.getColorSchema(context);
   final color = switch (status) {
+    OrderStatus.waitingMerchantConfirmation ||
     OrderStatus.waitingPayment ||
     OrderStatus.waitingPaymentConfirmation => const Color(0xFFFACC15),
     OrderStatus.processing => const Color(0xFFF97316),
     OrderStatus.shipped || OrderStatus.received => colorSchema.primary,
     OrderStatus.completed => const Color(0xFF22C55E),
-    OrderStatus.waitingCancel || OrderStatus.cancelled => colorSchema.error,
+    OrderStatus.waitingCancel || 
+    OrderStatus.cancelled || 
+    OrderStatus.rejected => colorSchema.error,
   };
 
   return Container(

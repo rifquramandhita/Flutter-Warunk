@@ -117,6 +117,14 @@ MerchantOrderEntity _$MerchantOrderEntityFromJson(Map<String, dynamic> json) =>
       completedAt: json['completed_at'] as String?,
       createdAt: json['created_at'] as String?,
       updatedAt: json['updated_at'] as String?,
+      chatUrl: json['chat_url'] as String?,
+      nextActions: (json['next_actions'] as List<dynamic>?)
+          ?.map(
+            (e) => MerchantOrderNextActionEntity.fromJson(
+              e as Map<String, dynamic>,
+            ),
+          )
+          .toList(),
       $type: json['runtimeType'] as String?,
     );
 
@@ -162,10 +170,13 @@ Map<String, dynamic> _$MerchantOrderEntityToJson(
   'completed_at': ?instance.completedAt,
   'created_at': ?instance.createdAt,
   'updated_at': ?instance.updatedAt,
+  'chat_url': ?instance.chatUrl,
+  'next_actions': ?instance.nextActions,
   'runtimeType': instance.$type,
 };
 
 const _$OrderStatusEnumMap = {
+  OrderStatus.waitingMerchantConfirmation: 'waiting_merchant_confirmation',
   OrderStatus.waitingPayment: 'waiting_payment',
   OrderStatus.waitingPaymentConfirmation: 'waiting_payment_confirmation',
   OrderStatus.waitingCancel: 'waiting_cancel',
@@ -174,4 +185,5 @@ const _$OrderStatusEnumMap = {
   OrderStatus.received: 'received',
   OrderStatus.completed: 'completed',
   OrderStatus.cancelled: 'cancelled',
+  OrderStatus.rejected: 'rejected',
 };

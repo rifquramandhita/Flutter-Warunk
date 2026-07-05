@@ -8,6 +8,7 @@ import 'package:warunk/app/features/merchant/presentation/detail_order/bloc/merc
 import 'package:warunk/app/features/merchant/presentation/ship_order/merchant_ship_order_screen.dart';
 import 'package:warunk/app/features/merchant/presentation/reject_order/merchant_order_reject_screen.dart';
 import 'package:warunk/app/features/merchant/presentation/reject_cancel_order/merchant_reject_cancel_order_screen.dart';
+import 'package:warunk/app/features/merchant/domain/entity/merchant_order_next_action.dart';
 import 'package:warunk/app/features/merchant/presentation/accept_cancel_order/merchant_accept_cancel_order_screen.dart';
 import 'package:warunk/core/dependency/dependency.dart';
 import 'package:warunk/core/helper/dialog_helper.dart';
@@ -106,22 +107,9 @@ class MerchantDetailOrderScreen extends StatelessWidget {
   }
 
   Widget _buildBottomActions(BuildContext context, MerchantOrderEntity order) {
-    if (order.status == OrderStatus.waitingPaymentConfirmation) {
-      return _buildAcceptRejectButtons(context, order);
-    } else if (order.status == OrderStatus.processing) {
-      return _buildShipButton(context, order);
-    } else if (order.status == OrderStatus.shipped) {
-      return _buildReceiveButton(context, order);
-    } else if (order.status == OrderStatus.waitingCancel) {
-      return _buildApproveRejectCancelButtons(context, order);
-    }
-    return SizedBox();
-  }
+    final nextActions = order.nextActions;
+    if (nextActions == null || nextActions.isEmpty) return const SizedBox();
 
-  Widget _buildAcceptRejectButtons(
-    BuildContext context,
-    MerchantOrderEntity order,
-  ) {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -134,290 +122,165 @@ class MerchantDetailOrderScreen extends StatelessWidget {
           ),
         ],
       ),
-      child: Row(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
-          Expanded(
-            child: OutlinedButton(
-              onPressed: () async {
-                final result = await navigatorKey.currentState?.push(
-                  MaterialPageRoute(
-                    builder: (context) =>
-                        MerchantOrderRejectScreen(orderId: order.id!),
-                  ),
-                );
-                if (result == true && context.mounted) {
-                  context.read<MerchantDetailOrderBloc>().add(
-                    MerchantDetailOrderEventFetchStarted(order.id!),
-                  );
-                }
-              },
-              style: OutlinedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(vertical: 14),
-                side: BorderSide(
-                  color: GlobalHelper.getColorSchema(context).error,
+
+          Row(
+            children: nextActions.asMap().entries.map((entry) {
+              final index = entry.key;
+              final action = entry.value;
+              final isLast = index == nextActions.length - 1;
+
+              return Expanded(
+                child: Padding(
+                  padding: EdgeInsets.only(right: isLast ? 0 : 16),
+                  child: _buildActionButton(context, order, action),
                 ),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-              child: Text(
-                'Tolak',
-                style:
-                    GlobalHelper.getTextTheme(
-                      context,
-                      appTextStyle: AppTextStyle.BODY_SMALL,
-                    )?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: GlobalHelper.getColorSchema(context).error,
-                    ),
-              ),
-            ),
-          ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: ElevatedButton(
-              onPressed: () {
-                context.read<MerchantDetailOrderBloc>().add(
-                  MerchantDetailOrderEventAccept(),
-                );
-              },
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(vertical: 14),
-                backgroundColor: GlobalHelper.getColorSchema(context).primary,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-              child: Text(
-                'Terima',
-                style:
-                    GlobalHelper.getTextTheme(
-                      context,
-                      appTextStyle: AppTextStyle.BODY_SMALL,
-                    )?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: GlobalHelper.getColorSchema(context).onPrimary,
-                    ),
-              ),
-            ),
+              );
+            }).toList(),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildShipButton(BuildContext context, MerchantOrderEntity order) {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      width: double.maxFinite,
-      decoration: BoxDecoration(
-        color: GlobalHelper.getColorSchema(context).surface,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, -5),
-          ),
-        ],
-      ),
-      child: ElevatedButton(
-        onPressed: () async {
-          final result = await navigatorKey.currentState?.push(
-            MaterialPageRoute(
-              builder: (context) => MerchantShipOrderScreen(orderId: order.id),
-            ),
-          );
-          if (result == true && context.mounted) {
-            context.read<MerchantDetailOrderBloc>().add(
-              MerchantDetailOrderEventFetchStarted(order.id),
-            );
-          }
-        },
-        style: ElevatedButton.styleFrom(
+  bool _hasTrackingLink(MerchantOrderEntity order) {
+    final trackingLink = order.shipping?.biteshipResponse?.courier?.link;
+    return trackingLink != null && trackingLink.isNotEmpty;
+  }
+
+  Widget _buildActionButton(
+    BuildContext context,
+    MerchantOrderEntity order,
+    MerchantOrderNextActionEntity action, // Using dynamic or MerchantOrderNextActionEntity depending on import
+  ) {
+    final isNegativeAction = action.key?.contains('reject') == true || action.key?.contains('cancel') == true;
+
+    if (isNegativeAction) {
+      return OutlinedButton(
+        onPressed: () => _handleAction(context, order, action.key),
+        style: OutlinedButton.styleFrom(
           padding: const EdgeInsets.symmetric(vertical: 14),
-          backgroundColor: GlobalHelper.getColorSchema(context).primary,
+          side: BorderSide(
+            color: GlobalHelper.getColorSchema(context).error,
+          ),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
           ),
         ),
         child: Text(
-          'Kirim Pesanan',
-          style:
-              GlobalHelper.getTextTheme(
-                context,
-                appTextStyle: AppTextStyle.BODY_SMALL,
-              )?.copyWith(
-                fontWeight: FontWeight.bold,
-                color: GlobalHelper.getColorSchema(context).onPrimary,
-              ),
+          action.label ?? '-',
+          style: GlobalHelper.getTextTheme(
+            context,
+            appTextStyle: AppTextStyle.BODY_SMALL,
+          )?.copyWith(
+            fontWeight: FontWeight.bold,
+            color: GlobalHelper.getColorSchema(context).error,
+          ),
+        ),
+      );
+    }
+
+    return ElevatedButton(
+      onPressed: () => _handleAction(context, order, action.key),
+      style: ElevatedButton.styleFrom(
+        padding: const EdgeInsets.symmetric(vertical: 14),
+        backgroundColor: GlobalHelper.getColorSchema(context).primary,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+      ),
+      child: Text(
+        action.label ?? '-',
+        style: GlobalHelper.getTextTheme(
+          context,
+          appTextStyle: AppTextStyle.BODY_SMALL,
+        )?.copyWith(
+          fontWeight: FontWeight.bold,
+          color: GlobalHelper.getColorSchema(context).onPrimary,
         ),
       ),
     );
   }
 
-  Widget _buildReceiveButton(BuildContext context, MerchantOrderEntity order) {
-    final trackingLink = order.shipping?.biteshipResponse?.courier?.link;
-    final hasTrackingLink = trackingLink != null && trackingLink.isNotEmpty;
-
-    return Column(
-      children: [
-        Container(
-          width: double.maxFinite,
-          padding: const EdgeInsets.all(20),
-          decoration: BoxDecoration(
-            color: GlobalHelper.getColorSchema(context).surface,
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.05),
-                blurRadius: 10,
-                offset: const Offset(0, -5),
-              ),
-            ],
+  void _handleAction(BuildContext context, MerchantOrderEntity order, String? key) async {
+    switch (key) {
+      case 'accept_order':
+        context.read<MerchantDetailOrderBloc>().add(MerchantDetailOrderEventAccept());
+        break;
+      case 'process_order':
+        context.read<MerchantDetailOrderBloc>().add(MerchantDetailOrderEventProcess());
+        break;
+      case 'reject_order':
+        final result = await navigatorKey.currentState?.push(
+          MaterialPageRoute(
+            builder: (context) => MerchantOrderRejectScreen(orderId: order.id!),
           ),
-          child: Column(
-            children: [
-              if (hasTrackingLink) ...[
-                OutlineButtonCustom(
-                  label: 'Lacak Pengiriman',
-                  onPressed: () {
-                    context.read<MerchantDetailOrderBloc>().add(
-                      MerchantDetailOrderEventTrackDeliveryTapped(),
-                    );
-                  },
-                ),
-                const SizedBox(height: 12),
-              ],
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () {
-                    context.read<MerchantDetailOrderBloc>().add(
-                      MerchantDetailOrderEventReceived(),
-                    );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 14),
-                    backgroundColor: GlobalHelper.getColorSchema(context).primary,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                  child: Text(
-                    'Pesanan Diterima',
-                    style:
-                        GlobalHelper.getTextTheme(
-                          context,
-                          appTextStyle: AppTextStyle.BODY_SMALL,
-                        )?.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: GlobalHelper.getColorSchema(context).onPrimary,
-                        ),
-                  ),
-                ),
-              ),
-            ],
+        );
+        if (result == true && context.mounted) {
+          context.read<MerchantDetailOrderBloc>().add(
+            MerchantDetailOrderEventFetchStarted(order.id!),
+          );
+        }
+        break;
+      case 'ship_order':
+        final result = await navigatorKey.currentState?.push(
+          MaterialPageRoute(
+            builder: (context) => MerchantShipOrderScreen(orderId: order.id!),
           ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildApproveRejectCancelButtons(
-    BuildContext context,
-    MerchantOrderEntity order,
-  ) {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: GlobalHelper.getColorSchema(context).surface,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, -5),
+        );
+        if (result == true && context.mounted) {
+          context.read<MerchantDetailOrderBloc>().add(
+            MerchantDetailOrderEventFetchStarted(order.id!),
+          );
+        }
+        break;
+      case 'mark_received':
+      case 'receive_order':
+        context.read<MerchantDetailOrderBloc>().add(MerchantDetailOrderEventReceived());
+        break;
+      case 'complete_order':
+        context.read<MerchantDetailOrderBloc>().add(MerchantDetailOrderEventComplete());
+        break;
+      case 'accept_cancel':
+      case 'approve_cancel':
+        final result = await Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => MerchantAcceptCancelOrderScreen(orderId: order.id!),
           ),
-        ],
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: OutlinedButton(
-              onPressed: () async {
-                final result = await Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) =>
-                        MerchantRejectCancelOrderScreen(orderId: order.id!),
-                  ),
-                );
-                if (result == true && context.mounted) {
-                  context.read<MerchantDetailOrderBloc>().add(
-                    MerchantDetailOrderEventFetchStarted(order.id!),
-                  );
-                }
-              },
-              style: OutlinedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(vertical: 14),
-                side: BorderSide(
-                  color: GlobalHelper.getColorSchema(context).error,
-                ),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-              child: Text(
-                'Tolak Pembatalan',
-                style:
-                    GlobalHelper.getTextTheme(
-                      context,
-                      appTextStyle: AppTextStyle.BODY_SMALL,
-                    )?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: GlobalHelper.getColorSchema(context).error,
-                    ),
-              ),
-            ),
+        );
+        if (result == true && context.mounted) {
+          context.read<MerchantDetailOrderBloc>().add(
+            MerchantDetailOrderEventFetchStarted(order.id!),
+          );
+        }
+        break;
+      case 'track_delivery':
+      case 'track_order':
+      case 'track_shipment':
+        context.read<MerchantDetailOrderBloc>().add(MerchantDetailOrderEventTrackDeliveryTapped());
+        break;
+      case 'reject_cancel':
+        final result = await Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => MerchantRejectCancelOrderScreen(orderId: order.id!),
           ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: ElevatedButton(
-              onPressed: () async {
-                final result = await Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) =>
-                        MerchantAcceptCancelOrderScreen(orderId: order.id!),
-                  ),
-                );
-                if (result == true && context.mounted) {
-                  context.read<MerchantDetailOrderBloc>().add(
-                    MerchantDetailOrderEventFetchStarted(order.id!),
-                  );
-                }
-              },
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(vertical: 14),
-                backgroundColor: GlobalHelper.getColorSchema(context).primary,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-              child: Text(
-                'Setujui Pembatalan',
-                style:
-                    GlobalHelper.getTextTheme(
-                      context,
-                      appTextStyle: AppTextStyle.BODY_SMALL,
-                    )?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: GlobalHelper.getColorSchema(context).onPrimary,
-                    ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
+        );
+        if (result == true && context.mounted) {
+          context.read<MerchantDetailOrderBloc>().add(
+            MerchantDetailOrderEventFetchStarted(order.id!),
+          );
+        }
+        break;
+      default:
+        DialogHelper.showErrorSnackBar(
+          context: context,
+          text: 'Tindakan tidak didukung saat ini: $key',
+        );
+    }
   }
 
   AppBar _buildAppBar(BuildContext context) {

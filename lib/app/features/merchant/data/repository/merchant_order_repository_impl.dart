@@ -36,6 +36,22 @@ class MerchantOrderRepositoryImpl implements MerchantOrderRepository {
   }
 
   @override
+  Future<DataState<MerchantOrderEntity>> processOrder(String id) async {
+    return handleResponse(() => _apiService.processOrder(id), (responseData) {
+      final data = responseData['order'];
+      return MerchantOrderEntity.fromJson(data);
+    });
+  }
+
+  @override
+  Future<DataState<MerchantOrderEntity>> completeOrder(String id) async {
+    return handleResponse(() => _apiService.completeOrder(id), (responseData) {
+      final data = responseData['order'];
+      return MerchantOrderEntity.fromJson(data);
+    });
+  }
+
+  @override
   Future<DataState<MerchantOrderEntity>> shipOrder(String id, Map<String, dynamic> body) async {
     return handleResponse(() => _apiService.shipOrder(id, body), (responseData) {
       final data = responseData['order'];

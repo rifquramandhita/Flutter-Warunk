@@ -2,6 +2,8 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:warunk/app/features/merchant/domain/entity/merchant_order.dart';
 import 'package:warunk/app/features/merchant/domain/use_case/merchant_order_accept_use_case.dart';
+import 'package:warunk/app/features/merchant/domain/use_case/merchant_order_process_use_case.dart';
+import 'package:warunk/app/features/merchant/domain/use_case/merchant_order_complete_use_case.dart';
 import 'package:warunk/app/features/merchant/domain/use_case/merchant_order_reject_use_case.dart';
 import 'package:warunk/app/features/merchant/domain/use_case/merchant_order_received_use_case.dart';
 import 'package:warunk/app/features/merchant/domain/use_case/merchant_order_get_by_id_use_case.dart';
@@ -17,6 +19,8 @@ class MerchantDetailOrderBloc
     extends Bloc<MerchantDetailOrderEvent, MerchantDetailOrderState> {
   final MerchantOrderGetByIdUseCase _getByIdUseCase;
   final MerchantOrderAcceptUseCase _acceptUseCase;
+  final MerchantOrderProcessUseCase _processUseCase;
+  final MerchantOrderCompleteUseCase _completeUseCase;
   final MerchantOrderRejectUseCase _rejectUseCase;
   final MerchantOrderReceivedUseCase _receivedUseCase;
   final MerchantOrderAcceptCancelUseCase _acceptCancelUseCase;
@@ -25,12 +29,16 @@ class MerchantDetailOrderBloc
   MerchantDetailOrderBloc({
     required MerchantOrderGetByIdUseCase getByIdUseCase,
     required MerchantOrderAcceptUseCase acceptUseCase,
+    required MerchantOrderProcessUseCase processUseCase,
+    required MerchantOrderCompleteUseCase completeUseCase,
     required MerchantOrderRejectUseCase rejectUseCase,
     required MerchantOrderReceivedUseCase receivedUseCase,
     required MerchantOrderAcceptCancelUseCase acceptCancelUseCase,
     required MerchantOrderRejectCancelUseCase rejectCancelUseCase,
   }) : _getByIdUseCase = getByIdUseCase,
        _acceptUseCase = acceptUseCase,
+       _processUseCase = processUseCase,
+       _completeUseCase = completeUseCase,
        _rejectUseCase = rejectUseCase,
        _receivedUseCase = receivedUseCase,
        _acceptCancelUseCase = acceptCancelUseCase,
@@ -39,6 +47,8 @@ class MerchantDetailOrderBloc
     on<MerchantDetailOrderEventFetchStarted>(_onFetchStarted);
     on<MerchantDetailOrderEventMapsTapped>(_onMapsTapped);
     on<MerchantDetailOrderEventAccept>(_onAccept);
+    on<MerchantDetailOrderEventProcess>(_onProcess);
+    on<MerchantDetailOrderEventComplete>(_onComplete);
     on<MerchantDetailOrderEventReject>(_onReject);
     on<MerchantDetailOrderEventReceived>(_onReceived);
     on<MerchantDetailOrderEventPaymentProofTapped>(_onPaymentProofTapped);
@@ -129,6 +139,34 @@ class MerchantDetailOrderBloc
     if (state.order?.id == null) return;
     emit(state.copyWith(isLoading: true));
     final response = await _acceptUseCase.call(params: state.order!.id!);
+    if (response is SuccessState) {
+      add(MerchantDetailOrderEventFetchStarted(state.order!.id!));
+    } else {
+      emit(state.copyWith(errorMessage: response.message, isLoading: false));
+    }
+  }
+
+  Future<void> _onProcess(
+    MerchantDetailOrderEventProcess event,
+    Emitter<MerchantDetailOrderState> emit,
+  ) async {
+    if (state.order?.id == null) return;
+    emit(state.copyWith(isLoading: true));
+    final response = await _processUseCase.call(params: state.order!.id!);
+    if (response is SuccessState) {
+      add(MerchantDetailOrderEventFetchStarted(state.order!.id!));
+    } else {
+      emit(state.copyWith(errorMessage: response.message, isLoading: false));
+    }
+  }
+
+  Future<void> _onComplete(
+    MerchantDetailOrderEventComplete event,
+    Emitter<MerchantDetailOrderState> emit,
+  ) async {
+    if (state.order?.id == null) return;
+    emit(state.copyWith(isLoading: true));
+    final response = await _completeUseCase.call(params: state.order!.id!);
     if (response is SuccessState) {
       add(MerchantDetailOrderEventFetchStarted(state.order!.id!));
     } else {
