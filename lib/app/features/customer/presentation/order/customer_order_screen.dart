@@ -4,8 +4,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:warunk/app/features/customer/presentation/order/bloc/customer_order_bloc.dart';
 import 'package:warunk/app/features/customer/presentation/detail_order/customer_detail_order_screen.dart';
 import 'package:warunk/core/enum/order_status.dart';
-import 'package:warunk/theme/app_colors.dart';
+import 'package:warunk/main.dart';
 import 'package:warunk/core/helper/global_helper.dart';
+import 'package:warunk/core/helper/dialog_helper.dart';
+import 'package:warunk/core/widgets/loading_app_widget.dart';
 
 import 'package:warunk/core/dependency/dependency.dart';
 
@@ -19,10 +21,10 @@ class CustomerOrderScreen extends StatelessWidget {
       child: BlocConsumer<CustomerOrderBloc, CustomerOrderState>(
         listener: (context, state) {
           if (state.errorMessage != null) {
-            // Usually we'd use DialogHelper.showErrorSnackBar but let's just use ScaffoldMessenger for simplicity or if DialogHelper isn't imported
-            ScaffoldMessenger.of(
-              context,
-            ).showSnackBar(SnackBar(content: Text(state.errorMessage!)));
+            DialogHelper.showErrorSnackBar(
+              context: context,
+              text: state.errorMessage!,
+            );
           }
         },
         builder: (context, state) {
@@ -37,11 +39,12 @@ class CustomerOrderScreen extends StatelessWidget {
   }
 
   Widget _bodyBuild(BuildContext context) {
+    final state = context.watch<CustomerOrderBloc>().state;
     return SafeArea(
       child: Stack(
         children: [
           _bodyLayout(context),
-          // Loading indicator could be added here if needed
+          (state.isLoading) ? const LoadingAppWidget() : const SizedBox(),
         ],
       ),
     );
@@ -238,32 +241,48 @@ class CustomerOrderScreen extends StatelessWidget {
     );
   }
 
-  static final _statusOptions = [
-    null,
-    ...OrderStatus.values,
-  ];
+  static final _statusOptions = [null, ...OrderStatus.values];
 
   // ── Transaction list ──────────────────────────────────────────────────────
   Widget _buildList(BuildContext context, CustomerOrderState state) {
-    if (state.isLoading) {
-      return Center(child: CircularProgressIndicator());
-    }
-    if (state.errorMessage != null) {
-      return Center(
-        child: Text(
-          state.errorMessage!,
-          style: GlobalHelper.getTextTheme(
-            context,
-            appTextStyle: AppTextStyle.BODY_MEDIUM,
-          )?.copyWith(color: Colors.red),
-        ),
-      );
-    }
-    final items = state.filteredTransactions;
     Future<void> handleRefresh() async {
       context.read<CustomerOrderBloc>().add(CustomerOrderFetchStarted());
       await Future.delayed(const Duration(milliseconds: 800));
     }
+
+    if (state.errorMessage != null) {
+      return RefreshIndicator(
+        color: GlobalHelper.getColorSchema(context).primary,
+        backgroundColor: Colors.white,
+        onRefresh: handleRefresh,
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return ListView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              children: [
+                Container(
+                  height: constraints.maxHeight,
+                  alignment: Alignment.center,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Text(
+                      state.errorMessage!,
+                      textAlign: TextAlign.center,
+                      style: GlobalHelper.getTextTheme(
+                        context,
+                        appTextStyle: AppTextStyle.BODY_MEDIUM,
+                      )?.copyWith(color: Colors.red),
+                    ),
+                  ),
+                ),
+              ],
+            );
+          },
+        ),
+      );
+    }
+
+    final items = state.filteredTransactions;
 
     if (items.isEmpty) {
       return RefreshIndicator(
@@ -389,7 +408,8 @@ class CustomerOrderScreen extends StatelessWidget {
                   child: SizedBox(
                     width: 80,
                     height: 80,
-                    child: _StorePhotoWidget(
+                    child: _storePhotoWidget(
+                      context,
                       storeName: storeName,
                       color1: storeColor1,
                       color2: storeColor2,
@@ -551,12 +571,7 @@ class CustomerOrderScreen extends StatelessWidget {
                 ),
                 SizedBox(width: 8),
                 GestureDetector(
-                  onTap: () => Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (_) =>
-                          CustomerDetailOrderScreen(orderId: tx.id!),
-                    ),
-                  ),
+                  onTap: () => _onPressItem(context, tx.id),
                   child: Row(
                     children: [
                       Text(
@@ -588,6 +603,16 @@ class CustomerOrderScreen extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  void _onPressItem(BuildContext context, String? orderId) async {
+    if (orderId == null) return;
+    await navigatorKey.currentState?.push(
+      MaterialPageRoute(
+        builder: (_) => CustomerDetailOrderScreen(orderId: orderId),
+      ),
+    );
+    context.read<CustomerOrderBloc>().add(CustomerOrderFetchStarted());
   }
 
   // ── Status badge ──────────────────────────────────────────────────────────
@@ -690,35 +715,27 @@ class CustomerOrderScreen extends StatelessWidget {
     }
     return buf.toString();
   }
-}
 
-// ── Store Photo Widget ─────────────────────────────────────────────────────
-/// Simulates a store photo using gradient + store sign overlay
-class _StorePhotoWidget extends StatelessWidget {
-  final String storeName;
-  final Color color1;
-  final Color color2;
-  final String? imageUrl;
-  const _StorePhotoWidget({
-    required this.storeName,
-    required this.color1,
-    required this.color2,
-    this.imageUrl,
-  });
-
-  @override
-  Widget build(BuildContext context) {
+  // ── Store Photo Widget ─────────────────────────────────────────────────────
+  /// Simulates a store photo using gradient + store sign overlay
+  Widget _storePhotoWidget(
+    BuildContext context, {
+    required String storeName,
+    required Color color1,
+    required Color color2,
+    String? imageUrl,
+  }) {
     final initial = storeName.isNotEmpty ? storeName[0] : 'W';
-    final hasImage = imageUrl != null && imageUrl!.isNotEmpty;
+    final hasImage = imageUrl != null && imageUrl.isNotEmpty;
 
     return Stack(
       fit: StackFit.expand,
       children: [
         if (hasImage)
           Image.network(
-            imageUrl!,
+            imageUrl,
             fit: BoxFit.cover,
-            errorBuilder: (_, __, ___) => CustomPaint(
+            errorBuilder: (context, error, stackTrace) => CustomPaint(
               painter: _StorePhotoMockPainter(color1: color1, color2: color2),
             ),
           )
