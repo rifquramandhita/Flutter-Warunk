@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:warunk/app/features/customer/domain/entity/customer_checkout.dart';
 import 'package:warunk/app/features/customer/domain/entity/customer_order.dart';
 import 'package:warunk/app/features/customer/domain/entity/customer_promotion.dart';
@@ -20,4 +21,6 @@ abstract class CustomerOrderRepository {
     CustomerOrderCompleteParam param,
   );
   Future<DataState<String>> cancelOrder(CustomerOrderCancelParam param);
+  Future<DataState<dynamic>> submitPaymentProof(String id, File paymentProof);
+  Future<DataState<CustomerOrderEntity>> receivedOrder(String id);
 }

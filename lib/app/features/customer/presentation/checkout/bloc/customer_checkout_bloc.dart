@@ -39,7 +39,6 @@ class CustomerCheckoutBloc
     on<CustomerCheckoutEventVoucherRemoved>(_onVoucherRemoved);
     on<CustomerCheckoutEventAddressChanged>(_onAddressChanged);
     on<CustomerCheckoutEventPaymentMethodChanged>(_onPaymentMethodChanged);
-    on<CustomerCheckoutEventPaymentProofChanged>(_onPaymentProofChanged);
     on<CustomerCheckoutEventNotesChanged>(_onNotesChanged);
     on<CustomerCheckoutEventSubmit>(_onSubmit);
     on<CustomerCheckoutEventPromoChanged>(_onPromoChanged);
@@ -249,12 +248,7 @@ class CustomerCheckoutBloc
     await _fetchShippingOptions(emit);
   }
 
-  void _onPaymentProofChanged(
-    CustomerCheckoutEventPaymentProofChanged event,
-    Emitter<CustomerCheckoutState> emit,
-  ) {
-    emit(state.copyWith(paymentProof: event.file));
-  }
+
 
   void _onNotesChanged(
     CustomerCheckoutEventNotesChanged event,
@@ -292,10 +286,7 @@ class CustomerCheckoutBloc
       );
       return;
     }
-    if (state.paymentProof == null) {
-      emit(state.copyWith(errorMessage: 'Mohon unggah bukti pembayaran'));
-      return;
-    }
+
 
     emit(state.copyWith(isLoading: true, errorMessage: null));
 
@@ -312,7 +303,6 @@ class CustomerCheckoutBloc
           .firstOrNull
           ?.key,
       notes: state.notes,
-      paymentProof: state.paymentProof!.path,
       cartIds: state.items.map((e) => e.id).toList(),
       promotionId: state.appliedPromoId ?? state.checkoutOption?.promotion?.id,
       promotionCode:

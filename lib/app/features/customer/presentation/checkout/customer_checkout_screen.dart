@@ -94,7 +94,7 @@ class CustomerCheckoutScreen extends StatelessWidget {
                 const SizedBox(height: 12),
                 _notesSection(context, state),
                 const SizedBox(height: 12),
-                _paymentProofSection(context, state),
+
                 const SizedBox(height: 12),
                 _paymentSummarySection(context, state),
               ],
@@ -788,116 +788,6 @@ class CustomerCheckoutScreen extends StatelessWidget {
           ),
         ),
         maxLines: 2,
-      ),
-    );
-  }
-
-  Widget _paymentProofSection(
-    BuildContext context,
-    CustomerCheckoutState state,
-  ) {
-    return _sectionCard(
-      context: context,
-      icon: Icons.upload_file_rounded,
-      title: 'Bukti Pembayaran',
-      child: GestureDetector(
-        onTap: () async {
-          try {
-            final ImagePicker picker = ImagePicker();
-            final XFile? image = await picker.pickImage(
-              source: ImageSource.gallery,
-            );
-            if (image != null) {
-              if (context.mounted) {
-                context.read<CustomerCheckoutBloc>().add(
-                  CustomerCheckoutEventPaymentProofChanged(File(image.path)),
-                );
-              }
-            }
-          } catch (e) {
-            debugPrint('ImagePicker error: $e');
-          }
-        },
-        child: Container(
-          width: double.infinity,
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: GlobalHelper.getColorSchema(
-              context,
-            ).surfaceContainerHighest.withValues(alpha: 0.3),
-            borderRadius: BorderRadius.circular(8),
-            border: Border.all(
-              color: GlobalHelper.getColorSchema(context).outlineVariant,
-              style: BorderStyle.solid,
-            ),
-          ),
-          child: Column(
-            children: [
-              if (state.paymentProof != null) ...[
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(8),
-                  child: Image.file(
-                    state.paymentProof!,
-                    height: 150,
-                    width: double.infinity,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.edit_rounded,
-                      color: GlobalHelper.getColorSchema(context).primary,
-                      size: 16,
-                    ),
-                    const SizedBox(width: 4),
-                    Text(
-                      'Ketuk untuk mengganti gambar',
-                      style:
-                          GlobalHelper.getTextTheme(
-                            context,
-                            appTextStyle: AppTextStyle.LABEL_SMALL,
-                          )?.copyWith(
-                            color: GlobalHelper.getColorSchema(context).primary,
-                            fontWeight: FontWeight.w600,
-                          ),
-                    ),
-                  ],
-                ),
-              ] else ...[
-                Icon(
-                  Icons.cloud_upload_outlined,
-                  color: GlobalHelper.getColorSchema(context).outline,
-                  size: 32,
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  'Unggah Bukti Pembayaran',
-                  style:
-                      GlobalHelper.getTextTheme(
-                        context,
-                        appTextStyle: AppTextStyle.BODY_MEDIUM,
-                      )?.copyWith(
-                        color: GlobalHelper.getColorSchema(context).onSurface,
-                        fontWeight: FontWeight.w600,
-                      ),
-                ),
-                Text(
-                  'Format: JPG, PNG, PDF maks 4MB',
-                  style:
-                      GlobalHelper.getTextTheme(
-                        context,
-                        appTextStyle: AppTextStyle.LABEL_SMALL,
-                      )?.copyWith(
-                        color: GlobalHelper.getColorSchema(context).outline,
-                      ),
-                ),
-              ],
-            ],
-          ),
-        ),
       ),
     );
   }

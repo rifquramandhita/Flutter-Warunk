@@ -10,9 +10,12 @@ import 'package:warunk/core/widgets/loading_app_widget.dart';
 import 'package:warunk/core/helper/global_helper.dart';
 import 'package:warunk/core/enum/delivery_method.dart';
 import 'package:warunk/app/features/customer/presentation/review_order/customer_review_order_screen.dart';
+import 'package:warunk/app/features/customer/presentation/payment_proof/customer_payment_proof_screen.dart';
 import 'package:warunk/app/features/customer/presentation/cancel_order/customer_cancel_order_screen.dart';
 import 'package:warunk/core/enum/order_status.dart';
 import 'package:warunk/app/features/customer/presentation/chat/customer_chat_webview_screen.dart';
+import 'package:warunk/app/features/customer/domain/entity/customer_order.dart';
+import 'package:warunk/app/features/customer/domain/entity/customer_order_next_action.dart';
 
 // ── Entry point ────────────────────────────────────────────────────────────
 class CustomerDetailOrderScreen extends StatelessWidget {
@@ -48,7 +51,8 @@ class CustomerDetailOrderScreen extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (_) => CustomerChatWebviewScreen(chatUrl: chatUrl),
+                          builder: (_) =>
+                              CustomerChatWebviewScreen(chatUrl: chatUrl),
                         ),
                       );
                     },
@@ -532,126 +536,24 @@ class CustomerDetailOrderScreen extends StatelessWidget {
         ),
 
         // ── Fixed bottom buttons ────────────────────────────────────
-        Container(
-          padding: EdgeInsets.all(16),
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black12,
-                blurRadius: 16,
-                offset: Offset(0, -4),
-              ),
-            ],
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              if (tx.status == OrderStatus.waitingPaymentConfirmation) ...[
-                SizedBox(
-                  width: double.infinity,
-                  height: 50,
-                  child: ElevatedButton.icon(
-                    onPressed: () async {
-                      final result = await Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              CustomerCancelOrderScreen(order: tx),
-                        ),
-                      );
-                      if (result == true) {
-                        context.read<CustomerDetailOrderBloc>().add(
-                          CustomerDetailOrderFetchStarted(tx.id!),
-                        );
-                      }
-                    },
-                    icon: const Icon(Icons.cancel_outlined, size: 20),
-                    label: const Text(
-                      'Batalkan Pesanan',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w700,
-                        fontSize: 15,
-                      ),
-                    ),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      foregroundColor: Colors.red,
-                      elevation: 0,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(14),
-                        side: const BorderSide(color: Colors.red),
-                      ),
-                    ),
-                  ),
+        if (tx.nextActions != null && tx.nextActions!.isNotEmpty)
+          Container(
+            padding: EdgeInsets.all(16),
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black12,
+                  blurRadius: 16,
+                  offset: Offset(0, -4),
                 ),
-                const SizedBox(height: 12),
               ],
-              if (tx.status == OrderStatus.received) ...[
-                SizedBox(
-                  width: double.infinity,
-                  height: 50,
-                  child: ElevatedButton.icon(
-                    onPressed: () async {
-                      final result = await Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              CustomerReviewOrderScreen(order: tx),
-                        ),
-                      );
-                      if (result == true) {
-                        context.read<CustomerDetailOrderBloc>().add(
-                          CustomerDetailOrderFetchStarted(tx.id!),
-                        );
-                      }
-                    },
-                    icon: const Icon(Icons.star_outline, size: 20),
-                    label: const Text(
-                      'Selesaikan Pesanan & Review',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w700,
-                        fontSize: 15,
-                      ),
-                    ),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.orange,
-                      foregroundColor: Colors.white,
-                      elevation: 0,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(14),
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 12),
-              ],
-              // Lacak Pesanan
-              SizedBox(
-                width: double.infinity,
-                height: 50,
-                child: ElevatedButton.icon(
-                  onPressed: () => context.read<CustomerDetailOrderBloc>().add(
-                    CustomerDetailOrderTrackOrder(),
-                  ),
-                  icon: const Icon(Icons.location_on_outlined, size: 20),
-                  label: const Text(
-                    'Lacak Pesanan',
-                    style: TextStyle(fontWeight: FontWeight.w700, fontSize: 15),
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.primary,
-                    foregroundColor: Colors.white,
-                    elevation: 0,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(14),
-                    ),
-                  ),
-                ),
-              ),
-            ],
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [_buildBottomActions(context, tx)],
+            ),
           ),
-        ),
       ],
     );
   }
@@ -827,6 +729,138 @@ class CustomerDetailOrderScreen extends StatelessWidget {
       buf.write(s[i]);
     }
     return buf.toString();
+  }
+
+  Widget _buildBottomActions(BuildContext context, CustomerOrderEntity order) {
+    final nextActions = order.nextActions;
+    if (nextActions == null || nextActions.isEmpty) return const SizedBox();
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: nextActions.map((action) {
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 12),
+          child: SizedBox(
+            width: double.infinity,
+            height: 50,
+            child: _buildActionButton(context, order, action),
+          ),
+        );
+      }).toList(),
+    );
+  }
+
+  Widget _buildActionButton(
+    BuildContext context,
+    CustomerOrderEntity order,
+    CustomerOrderNextActionEntity action,
+  ) {
+    final isNegativeAction =
+        action.key?.contains('cancel') == true ||
+        action.key?.contains('reject') == true;
+
+    if (isNegativeAction) {
+      return ElevatedButton.icon(
+        onPressed: () => _handleAction(context, order, action.key),
+        label: Text(
+          action.label ?? '-',
+          style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 15),
+        ),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.white,
+          foregroundColor: Colors.red,
+          elevation: 0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(14),
+            side: const BorderSide(color: Colors.red),
+          ),
+        ),
+      );
+    }
+
+    return ElevatedButton.icon(
+      onPressed: () => _handleAction(context, order, action.key),
+      label: Text(
+        action.label ?? '-',
+        style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 15),
+      ),
+      style: ElevatedButton.styleFrom(
+        backgroundColor: AppColors.primary,
+        foregroundColor: Colors.white,
+        elevation: 0,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+      ),
+    );
+  }
+
+  void _handleAction(
+    BuildContext context,
+    CustomerOrderEntity order,
+    String? key,
+  ) async {
+    switch (key) {
+      case 'request_cancellation':
+      case 'cancel_order':
+        final result = await Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => CustomerCancelOrderScreen(order: order),
+          ),
+        );
+        if (result == true && context.mounted) {
+          context.read<CustomerDetailOrderBloc>().add(
+            CustomerDetailOrderFetchStarted(order.id!),
+          );
+        }
+        break;
+      case 'submit_payment_proof':
+        final result = await Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => CustomerPaymentProofScreen(order: order),
+          ),
+        );
+        if (result == true && context.mounted) {
+          context.read<CustomerDetailOrderBloc>().add(
+            CustomerDetailOrderFetchStarted(order.id!),
+          );
+        }
+        break;
+      case 'mark_received':
+        context.read<CustomerDetailOrderBloc>().add(
+          CustomerDetailOrderMarkReceived(order.id!),
+        );
+        break;
+      case 'complete_order':
+      case 'receive_order':
+      case 'review_order':
+        final result = await Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => CustomerReviewOrderScreen(order: order),
+          ),
+        );
+        if (result == true && context.mounted) {
+          context.read<CustomerDetailOrderBloc>().add(
+            CustomerDetailOrderFetchStarted(order.id!),
+          );
+        }
+        break;
+      case 'track_order':
+      case 'track_shipment':
+      case 'track_delivery':
+        context.read<CustomerDetailOrderBloc>().add(
+          CustomerDetailOrderTrackOrder(),
+        );
+        break;
+      case 'contact_merchant':
+        context.read<CustomerDetailOrderBloc>().add(
+          CustomerDetailOrderContactMerchant(),
+        );
+        break;
+      default:
+        break;
+    }
   }
 }
 

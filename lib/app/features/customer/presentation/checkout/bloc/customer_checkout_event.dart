@@ -35,11 +35,6 @@ final class CustomerCheckoutEventPaymentMethodChanged
   const CustomerCheckoutEventPaymentMethodChanged(this.methodKey);
 }
 
-final class CustomerCheckoutEventPaymentProofChanged
-    extends CustomerCheckoutEvent {
-  final File file;
-  const CustomerCheckoutEventPaymentProofChanged(this.file);
-}
 
 final class CustomerCheckoutEventNotesChanged extends CustomerCheckoutEvent {
   final String notes;

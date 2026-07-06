@@ -55,7 +55,6 @@ class CustomerOrderRepositoryImpl implements CustomerOrderRepository {
         param.biteshipRateKey,
         param.merchantAccountId,
         param.notes,
-        File(param.paymentProof),
         param.cartIds,
         param.promotionId,
         param.promotionCode,
@@ -100,6 +99,26 @@ class CustomerOrderRepositoryImpl implements CustomerOrderRepository {
     return handleResponse(
       () => _apiService.cancelOrder(param.orderId, param.toJson()),
       (json) => json['message'] as String? ?? 'Success',
+    );
+  }
+
+  @override
+  Future<DataState<dynamic>> submitPaymentProof(String id, File paymentProof) {
+    return handleResponse(
+      () => _apiService.submitPaymentProof(id, paymentProof),
+      (json) => json,
+    );
+  }
+
+  @override
+  Future<DataState<CustomerOrderEntity>> receivedOrder(String id) {
+    return handleResponse(
+      () => _apiService.receivedOrder(id),
+      (json) {
+        if (json['order'] == null) return const CustomerOrderEntity();
+        return CustomerOrderEntity.fromJson(
+            json['order'] as Map<String, dynamic>);
+      },
     );
   }
 }

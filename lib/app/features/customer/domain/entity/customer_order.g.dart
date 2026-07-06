@@ -14,7 +14,6 @@ CustomerOrderCreateParam _$CustomerOrderCreateParamFromJson(
   biteshipRateKey: json['biteshipRateKey'] as String?,
   merchantAccountId: json['merchantAccountId'] as String?,
   notes: json['notes'] as String?,
-  paymentProof: json['paymentProof'] as String,
   cartIds: (json['cartIds'] as List<dynamic>).map((e) => e as String).toList(),
   promotionId: json['promotionId'] as String?,
   promotionCode: json['promotionCode'] as String?,
@@ -29,7 +28,6 @@ Map<String, dynamic> _$CustomerOrderCreateParamToJson(
   'biteshipRateKey': instance.biteshipRateKey,
   'merchantAccountId': instance.merchantAccountId,
   'notes': instance.notes,
-  'paymentProof': instance.paymentProof,
   'cartIds': instance.cartIds,
   'promotionId': instance.promotionId,
   'promotionCode': instance.promotionCode,
@@ -118,61 +116,66 @@ Map<String, dynamic> _$CustomerOrderCancelParamToJson(
   'runtimeType': instance.$type,
 };
 
-CustomerOrderEntity _$CustomerOrderEntityFromJson(Map<String, dynamic> json) =>
-    CustomerOrderEntity(
-      id: json['id'] as String?,
-      invoiceNumber: json['invoice_number'] as String?,
-      invoiceUrl: json['invoice_url'] as String?,
-      merchantId: json['merchant_id'] as String?,
-      customerId: (json['customer_id'] as num?)?.toInt(),
-      customerAddressId: json['customer_address_id'] as String?,
-      merchantAccountId: json['merchant_account_id'] as String?,
-      subtotal: (json['subtotal'] as num?)?.toInt(),
-      shippingCost: (json['shipping_cost'] as num?)?.toInt(),
-      serviceFee: (json['service_fee'] as num?)?.toInt(),
-      promotionId: json['promotion_id'] as String?,
-      promotionCode: json['promotion_code'] as String?,
-      promotionTitle: json['promotion_title'] as String?,
-      promotionType: json['promotion_type'] as String?,
-      promotionDiscount: (json['promotion_discount'] as num?)?.toInt(),
-      promotion: json['promotion'],
-      promotions: json['promotions'] as List<dynamic>?,
-      total: (json['total'] as num?)?.toInt(),
-      paidAmount: (json['paid_amount'] as num?)?.toInt(),
-      paymentProof: json['payment_proof'] as String?,
-      type: json['type'] as String?,
-      status: $enumDecodeNullable(_$OrderStatusEnumMap, json['status']),
-      statusLabel: json['status_label'] as String?,
-      notes: json['notes'] as String?,
-      cancelReason: json['cancel_reason'] as String?,
-      customerBank: json['customer_bank'] as String?,
-      customerAccountNumber: json['customer_account_number'] as String?,
-      customerAccountName: json['customer_account_name'] as String?,
-      refundProof: json['refund_proof'] as String?,
-      customer: json['customer'],
-      customerAddress: json['customer_address'],
-      merchantAccount: json['merchant_account'],
-      merchant: json['merchant'],
-      items: (json['items'] as List<dynamic>?)
-          ?.map(
-            (e) => CustomerOrderItemEntity.fromJson(e as Map<String, dynamic>),
-          )
-          .toList(),
-      reviews: json['reviews'] as List<dynamic>?,
-      needsReview: json['needs_review'] as bool?,
-      shipping: json['shipping'] == null
-          ? null
-          : CustomerShippingEntity.fromJson(
-              json['shipping'] as Map<String, dynamic>,
-            ),
-      paidAt: json['paid_at'] as String?,
-      cancelledAt: json['cancelled_at'] as String?,
-      completedAt: json['completed_at'] as String?,
-      createdAt: json['created_at'] as String?,
-      updatedAt: json['updated_at'] as String?,
-      chatUrl: json['chat_url'] as String?,
-      $type: json['runtimeType'] as String?,
-    );
+CustomerOrderEntity _$CustomerOrderEntityFromJson(
+  Map<String, dynamic> json,
+) => CustomerOrderEntity(
+  id: json['id'] as String?,
+  invoiceNumber: json['invoice_number'] as String?,
+  invoiceUrl: json['invoice_url'] as String?,
+  merchantId: json['merchant_id'] as String?,
+  customerId: (json['customer_id'] as num?)?.toInt(),
+  customerAddressId: json['customer_address_id'] as String?,
+  merchantAccountId: json['merchant_account_id'] as String?,
+  subtotal: (json['subtotal'] as num?)?.toInt(),
+  shippingCost: (json['shipping_cost'] as num?)?.toInt(),
+  serviceFee: (json['service_fee'] as num?)?.toInt(),
+  promotionId: json['promotion_id'] as String?,
+  promotionCode: json['promotion_code'] as String?,
+  promotionTitle: json['promotion_title'] as String?,
+  promotionType: json['promotion_type'] as String?,
+  promotionDiscount: (json['promotion_discount'] as num?)?.toInt(),
+  promotion: json['promotion'],
+  promotions: json['promotions'] as List<dynamic>?,
+  total: (json['total'] as num?)?.toInt(),
+  paidAmount: (json['paid_amount'] as num?)?.toInt(),
+  paymentProof: json['payment_proof'] as String?,
+  type: json['type'] as String?,
+  status: $enumDecodeNullable(_$OrderStatusEnumMap, json['status']),
+  statusLabel: json['status_label'] as String?,
+  notes: json['notes'] as String?,
+  cancelReason: json['cancel_reason'] as String?,
+  customerBank: json['customer_bank'] as String?,
+  customerAccountNumber: json['customer_account_number'] as String?,
+  customerAccountName: json['customer_account_name'] as String?,
+  refundProof: json['refund_proof'] as String?,
+  customer: json['customer'],
+  customerAddress: json['customer_address'],
+  merchantAccount: json['merchant_account'],
+  merchant: json['merchant'],
+  items: (json['items'] as List<dynamic>?)
+      ?.map((e) => CustomerOrderItemEntity.fromJson(e as Map<String, dynamic>))
+      .toList(),
+  reviews: json['reviews'] as List<dynamic>?,
+  needsReview: json['needs_review'] as bool?,
+  shipping: json['shipping'] == null
+      ? null
+      : CustomerShippingEntity.fromJson(
+          json['shipping'] as Map<String, dynamic>,
+        ),
+  paidAt: json['paid_at'] as String?,
+  cancelledAt: json['cancelled_at'] as String?,
+  completedAt: json['completed_at'] as String?,
+  createdAt: json['created_at'] as String?,
+  updatedAt: json['updated_at'] as String?,
+  chatUrl: json['chat_url'] as String?,
+  nextActions: (json['next_actions'] as List<dynamic>?)
+      ?.map(
+        (e) =>
+            CustomerOrderNextActionEntity.fromJson(e as Map<String, dynamic>),
+      )
+      .toList(),
+  $type: json['runtimeType'] as String?,
+);
 
 Map<String, dynamic> _$CustomerOrderEntityToJson(
   CustomerOrderEntity instance,
@@ -220,6 +223,7 @@ Map<String, dynamic> _$CustomerOrderEntityToJson(
   'created_at': ?instance.createdAt,
   'updated_at': ?instance.updatedAt,
   'chat_url': ?instance.chatUrl,
+  'next_actions': ?instance.nextActions,
   'runtimeType': instance.$type,
 };
 

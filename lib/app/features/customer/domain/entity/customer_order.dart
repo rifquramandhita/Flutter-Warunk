@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:warunk/app/features/customer/domain/entity/customer_shipping.dart';
 import 'package:warunk/app/features/customer/domain/entity/customer_order_item.dart';
+import 'package:warunk/app/features/customer/domain/entity/customer_order_next_action.dart';
 import 'package:warunk/core/enum/order_status.dart';
 
 part 'customer_order.g.dart';
@@ -16,7 +17,6 @@ sealed class CustomerOrder with _$CustomerOrder {
     String? biteshipRateKey,
     String? merchantAccountId,
     String? notes,
-    required String paymentProof,
     required List<String> cartIds,
     String? promotionId,
     String? promotionCode,
@@ -98,6 +98,7 @@ sealed class CustomerOrder with _$CustomerOrder {
     String? createdAt,
     String? updatedAt,
     String? chatUrl,
+    @JsonKey(name: 'next_actions') List<CustomerOrderNextActionEntity>? nextActions,
   }) = CustomerOrderEntity;
 
   factory CustomerOrder.fromJson(Map<String, dynamic> json) =>

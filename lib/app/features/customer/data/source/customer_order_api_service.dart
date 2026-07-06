@@ -26,7 +26,6 @@ abstract class CustomerOrderApiService {
     @Part(name: 'biteship_rate_key') String? biteshipRateKey,
     @Part(name: 'merchant_account_id') String? merchantAccountId,
     @Part(name: 'notes') String? notes,
-    @Part(name: 'payment_proof') File paymentProof,
     @Part(name: 'cart_ids[]') List<String> cartIds,
     @Part(name: 'promotions[0][id]') String? promotionId,
     @Part(name: 'promotions[0][code]') String? promotionCode,
@@ -49,4 +48,14 @@ abstract class CustomerOrderApiService {
     @Path('id') String id,
     @Body() Map<String, dynamic> body,
   );
+
+  @MultiPart()
+  @POST('/api/orders/{id}/payment-proof')
+  Future<HttpResponse<dynamic>> submitPaymentProof(
+    @Path('id') String id,
+    @Part(name: 'payment_proof') File paymentProof,
+  );
+
+  @POST('/api/orders/{id}/received')
+  Future<HttpResponse<dynamic>> receivedOrder(@Path('id') String id);
 }

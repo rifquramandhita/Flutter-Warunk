@@ -19,3 +19,12 @@ class CustomerDetailOrderFetchStarted extends CustomerDetailOrderEvent {
 class CustomerDetailOrderTrackOrder extends CustomerDetailOrderEvent {}
 
 class CustomerDetailOrderContactMerchant extends CustomerDetailOrderEvent {}
+
+class CustomerDetailOrderMarkReceived extends CustomerDetailOrderEvent {
+  final String orderId;
+
+  const CustomerDetailOrderMarkReceived(this.orderId);
+
+  @override
+  List<Object?> get props => [orderId];
+}

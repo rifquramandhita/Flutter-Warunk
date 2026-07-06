@@ -10,7 +10,6 @@ class CustomerCheckoutState extends Equatable {
   final List<CustomerCartEntity> items;
   final CustomerCheckoutOptionEntity? checkoutOption;
   final String? selectedPaymentMethodKey;
-  final File? paymentProof;
   final String? notes;
   final bool isSuccess;
   final String? appliedPromoId;
@@ -78,7 +77,6 @@ class CustomerCheckoutState extends Equatable {
     this.items = const [],
     this.checkoutOption,
     this.selectedPaymentMethodKey,
-    this.paymentProof,
     this.notes,
     this.isSuccess = false,
     this.appliedPromoId,
@@ -96,7 +94,6 @@ class CustomerCheckoutState extends Equatable {
     List<CustomerCartEntity>? items,
     CustomerCheckoutOptionEntity? checkoutOption,
     String? selectedPaymentMethodKey,
-    File? paymentProof,
     String? notes,
     bool? isSuccess,
     String? appliedPromoId,
@@ -115,7 +112,6 @@ class CustomerCheckoutState extends Equatable {
     checkoutOption: checkoutOption ?? this.checkoutOption,
     selectedPaymentMethodKey:
         selectedPaymentMethodKey ?? this.selectedPaymentMethodKey,
-    paymentProof: paymentProof ?? this.paymentProof,
     notes: notes ?? this.notes,
     isSuccess: isSuccess ?? this.isSuccess,
     appliedPromoId:
@@ -138,7 +134,6 @@ class CustomerCheckoutState extends Equatable {
     items,
     checkoutOption,
     selectedPaymentMethodKey,
-    paymentProof,
     notes,
     isSuccess,
     appliedPromoId,

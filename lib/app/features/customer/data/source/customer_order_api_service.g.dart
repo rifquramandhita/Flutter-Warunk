@@ -99,7 +99,6 @@ class _CustomerOrderApiService implements CustomerOrderApiService {
     String? biteshipRateKey,
     String? merchantAccountId,
     String? notes,
-    File paymentProof,
     List<String> cartIds,
     String? promotionId,
     String? promotionCode,
@@ -122,15 +121,6 @@ class _CustomerOrderApiService implements CustomerOrderApiService {
     if (notes != null) {
       _data.fields.add(MapEntry('notes', notes));
     }
-    _data.files.add(
-      MapEntry(
-        'payment_proof',
-        MultipartFile.fromFileSync(
-          paymentProof.path,
-          filename: paymentProof.path.split(Platform.pathSeparator).last,
-        ),
-      ),
-    );
     cartIds.forEach((i) {
       _data.fields.add(MapEntry('cart_ids[]', i));
     });
@@ -242,6 +232,67 @@ class _CustomerOrderApiService implements CustomerOrderApiService {
           .compose(
             _dio.options,
             '/api/orders/${id}/cancel-request',
+            queryParameters: queryParameters,
+            data: _data,
+          )
+          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
+    );
+    final _result = await _dio.fetch(_options);
+    final _value = _result.data;
+    final httpResponse = HttpResponse(_value, _result);
+    return httpResponse;
+  }
+
+  @override
+  Future<HttpResponse<dynamic>> submitPaymentProof(
+    String id,
+    File paymentProof,
+  ) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = FormData();
+    _data.files.add(
+      MapEntry(
+        'payment_proof',
+        MultipartFile.fromFileSync(
+          paymentProof.path,
+          filename: paymentProof.path.split(Platform.pathSeparator).last,
+        ),
+      ),
+    );
+    final _options = _setStreamType<HttpResponse<dynamic>>(
+      Options(
+            method: 'POST',
+            headers: _headers,
+            extra: _extra,
+            contentType: 'multipart/form-data',
+          )
+          .compose(
+            _dio.options,
+            '/api/orders/${id}/payment-proof',
+            queryParameters: queryParameters,
+            data: _data,
+          )
+          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
+    );
+    final _result = await _dio.fetch(_options);
+    final _value = _result.data;
+    final httpResponse = HttpResponse(_value, _result);
+    return httpResponse;
+  }
+
+  @override
+  Future<HttpResponse<dynamic>> receivedOrder(String id) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _options = _setStreamType<HttpResponse<dynamic>>(
+      Options(method: 'POST', headers: _headers, extra: _extra)
+          .compose(
+            _dio.options,
+            '/api/orders/${id}/received',
             queryParameters: queryParameters,
             data: _data,
           )

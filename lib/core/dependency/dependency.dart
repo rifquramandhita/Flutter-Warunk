@@ -1,4 +1,7 @@
 import 'package:curl_logger_dio_interceptor/curl_logger_dio_interceptor.dart';
+import 'package:warunk/app/features/customer/domain/use_case/customer_order_payment_proof_use_case.dart';
+import 'package:warunk/app/features/customer/domain/use_case/customer_order_received_use_case.dart';
+import 'package:warunk/app/features/customer/presentation/payment_proof/bloc/customer_payment_proof_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import 'package:warunk/app/features/auth/data/source/auth_api_service.dart';
@@ -375,6 +378,8 @@ Future<void> initDependency() async {
   sl.registerLazySingleton(() => CustomerLocationGetPlacemarkUseCase(sl()));
   sl.registerLazySingleton(() => CustomerOrderGetPromotionUseCase(sl()));
   sl.registerLazySingleton(() => CustomerOrderGetByIdUseCase(sl()));
+  sl.registerLazySingleton(() => CustomerOrderPaymentProofUseCase(sl()));
+  sl.registerLazySingleton(() => CustomerOrderReceivedUseCase(sl()));
   sl.registerLazySingleton(() => CustomerOrderGetUseCase(sl()));
   sl.registerLazySingleton(() => CustomerOrderCompleteUseCase(sl()));
   sl.registerLazySingleton(() => CustomerOrderCancelUseCase(sl()));
@@ -536,7 +541,8 @@ Future<void> initDependency() async {
   sl.registerFactory(() => CustomerPromotionBloc(getPromotionUseCase: sl()));
   sl.registerFactory(() => CustomerAddressMapsBloc(sl()));
   sl.registerFactory(() => CustomerOrderBloc(getOrdersUseCase: sl()));
-  sl.registerFactory(() => CustomerDetailOrderBloc(sl()));
+  sl.registerFactory(() => CustomerDetailOrderBloc(sl(), sl()));
+  sl.registerFactory(() => CustomerPaymentProofBloc(sl()));
   sl.registerFactory(() => CustomerCancelOrderBloc(cancelUseCase: sl()));
   sl.registerFactory(
     () => CustomerWishlistBloc(
