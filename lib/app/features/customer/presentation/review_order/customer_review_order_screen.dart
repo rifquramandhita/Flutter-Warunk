@@ -5,42 +5,27 @@ import 'package:image_picker/image_picker.dart';
 import 'package:warunk/app/features/customer/domain/entity/customer_order.dart';
 import 'package:warunk/app/features/customer/domain/entity/customer_order_item.dart';
 import 'package:warunk/app/features/customer/presentation/review_order/bloc/customer_review_order_bloc.dart';
-import 'package:warunk/theme/app_colors.dart';
 import 'package:warunk/core/widgets/loading_app_widget.dart';
 import 'package:warunk/core/dependency/dependency.dart';
 import 'package:warunk/core/helper/global_helper.dart';
+import 'package:warunk/core/helper/dialog_helper.dart';
+import 'package:warunk/main.dart';
 
-class CustomerReviewOrderScreen extends StatefulWidget {
+class CustomerReviewOrderScreen extends StatelessWidget {
   final CustomerOrderEntity order;
 
-  const CustomerReviewOrderScreen({Key? key, required this.order})
-    : super(key: key);
-
-  @override
-  State<CustomerReviewOrderScreen> createState() =>
-      _CustomerReviewOrderScreenState();
-}
-
-class _CustomerReviewOrderScreenState extends State<CustomerReviewOrderScreen> {
-  final ImagePicker _picker = ImagePicker();
-  bool _isPickingImage = false;
+  const CustomerReviewOrderScreen({super.key, required this.order});
 
   Future<void> _pickImage(BuildContext context, String orderItemId) async {
-    if (_isPickingImage) return;
-
-    try {
-      _isPickingImage = true;
-      final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
-      if (image != null && mounted) {
-        context.read<CustomerReviewOrderBloc>().add(
-          CustomerReviewOrderImageAdded(
-            orderItemId: orderItemId,
-            image: File(image.path),
-          ),
-        );
-      }
-    } finally {
-      _isPickingImage = false;
+    final ImagePicker picker = ImagePicker();
+    final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+    if (image != null && context.mounted) {
+      context.read<CustomerReviewOrderBloc>().add(
+        CustomerReviewOrderImageAdded(
+          orderItemId: orderItemId,
+          image: File(image.path),
+        ),
+      );
     }
   }
 
@@ -49,119 +34,140 @@ class _CustomerReviewOrderScreenState extends State<CustomerReviewOrderScreen> {
     return BlocProvider(
       create: (context) =>
           sl<CustomerReviewOrderBloc>()
-            ..add(CustomerReviewOrderInit(widget.order.items ?? [])),
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        appBar: AppBar(
-          title: const Text(
-            'Ulas Pesanan',
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-          ),
-          centerTitle: true,
-          elevation: 0.5,
-          backgroundColor: Colors.white,
-          foregroundColor: Colors.black,
-        ),
-        body: BlocConsumer<CustomerReviewOrderBloc, CustomerReviewOrderState>(
-          listener: (context, state) {
-            if (state.status == CustomerReviewOrderStatus.success) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Ulasan berhasil dikirim!')),
-              );
-              Navigator.pop(context, true); // Return true to indicate success
-            } else if (state.status == CustomerReviewOrderStatus.failure) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(state.errorMessage ?? 'Gagal mengirim ulasan'),
-                  backgroundColor: Colors.red,
-                ),
-              );
-            }
-          },
-          builder: (context, state) {
-            if (state.status == CustomerReviewOrderStatus.loading) {
-              return const Center(child: LoadingAppWidget());
-            }
-
-            final items = widget.order.items ?? [];
-            if (items.isEmpty) {
-              return const Center(
-                child: Text('Tidak ada produk untuk diulas.'),
-              );
-            }
-
-            return Column(
-              children: [
-                Expanded(
-                  child: ListView.separated(
-                    padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
-                    itemCount: items.length,
-                    separatorBuilder: (context, index) =>
-                        const Divider(height: 32),
-                    itemBuilder: (context, index) {
-                      final item = items[index];
-
-                      final orderItemId = item.id;
-                      if (orderItemId == null) return const SizedBox.shrink();
-
-                      final reviewParam = state.reviews.firstWhere(
-                        (r) => r.orderItemId == orderItemId,
-                        orElse: () => CustomerOrderCompleteReviewParam(
-                          orderItemId: orderItemId,
-                          rating: 0,
-                        ),
-                      );
-
-                      return _buildReviewItem(context, item, reviewParam);
-                    },
-                  ),
-                ),
-                Container(
-                  padding: EdgeInsets.all(16),
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black12,
-                        blurRadius: 16,
-                        offset: Offset(0, -4),
-                      ),
-                    ],
-                  ),
-                  child: SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed:
-                          state.status == CustomerReviewOrderStatus.loading
-                          ? null
-                          : () {
-                              context.read<CustomerReviewOrderBloc>().add(
-                                CustomerReviewOrderSubmitted(
-                                  orderId: widget.order.id ?? '',
-                                ),
-                              );
-                            },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.primary,
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(vertical: 14),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
-                      child: const Text(
-                        'Kirim Ulasan',
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
+            ..add(CustomerReviewOrderInit(order.items ?? [])),
+      child: BlocConsumer<CustomerReviewOrderBloc, CustomerReviewOrderState>(
+        listener: (context, state) {
+          if (state.status == CustomerReviewOrderStatus.success) {
+            DialogHelper.showSnackBar(
+              context: context,
+              text: 'Ulasan berhasil dikirim!',
             );
-          },
+            navigatorKey.currentState?.pop(true);
+          } else if (state.status == CustomerReviewOrderStatus.failure) {
+            DialogHelper.showErrorSnackBar(
+              context: context,
+              text: state.errorMessage ?? 'Gagal mengirim ulasan',
+            );
+          }
+        },
+        builder: (context, state) {
+          return Scaffold(
+            appBar: AppBar(title: const Text('Ulas Pesanan')),
+            body: _bodyBuild(context),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _bodyBuild(BuildContext context) {
+    final state = context.watch<CustomerReviewOrderBloc>().state;
+    return SafeArea(
+      child: Stack(
+        children: [
+          _bodyLayout(context),
+          if (state.status == CustomerReviewOrderStatus.loading)
+            const LoadingAppWidget()
+          else
+            const SizedBox(),
+        ],
+      ),
+    );
+  }
+
+  Widget _bodyLayout(BuildContext context) {
+    final state = context.watch<CustomerReviewOrderBloc>().state;
+    final items = order.items ?? [];
+    
+    if (items.isEmpty) {
+      return Center(
+        child: Text(
+          'Tidak ada produk untuk diulas.',
+          style: GlobalHelper.getTextTheme(
+            context,
+            appTextStyle: AppTextStyle.BODY_MEDIUM,
+          ),
+        ),
+      );
+    }
+
+    return Column(
+      children: [
+        Expanded(
+          child: ListView.separated(
+            padding: const EdgeInsets.all(16),
+            itemCount: items.length,
+            separatorBuilder: (context, index) => Divider(
+              height: 32,
+              color: GlobalHelper.getColorSchema(context).outlineVariant,
+            ),
+            itemBuilder: (context, index) {
+              final item = items[index];
+
+              final orderItemId = item.id;
+              if (orderItemId == null) return const SizedBox.shrink();
+
+              final reviewParam = state.reviews.firstWhere(
+                (r) => r.orderItemId == orderItemId,
+                orElse: () => CustomerOrderCompleteReviewParam(
+                  orderItemId: orderItemId,
+                  rating: 0,
+                ),
+              );
+
+              return _buildReviewItem(context, item, reviewParam);
+            },
+          ),
+        ),
+        _buildSubmitButton(context, state),
+      ],
+    );
+  }
+  
+  Widget _buildSubmitButton(BuildContext context, CustomerReviewOrderState state) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: GlobalHelper.getColorSchema(context).surface,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.12),
+            blurRadius: 16,
+            offset: const Offset(0, -4),
+          ),
+        ],
+      ),
+      child: SizedBox(
+        width: double.infinity,
+        child: ElevatedButton(
+          onPressed:
+              state.status == CustomerReviewOrderStatus.loading
+              ? null
+              : () {
+                  context.read<CustomerReviewOrderBloc>().add(
+                    CustomerReviewOrderSubmitted(
+                      orderId: order.id ?? '',
+                    ),
+                  );
+                },
+          style: ElevatedButton.styleFrom(
+            backgroundColor: GlobalHelper.getColorSchema(context).primary,
+            foregroundColor: GlobalHelper.getColorSchema(context).onPrimary,
+            padding: const EdgeInsets.symmetric(vertical: 14),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
+          ),
+          child: Text(
+            'Kirim Ulasan',
+            style: GlobalHelper.getTextTheme(
+              context,
+              appTextStyle: AppTextStyle.BODY_MEDIUM,
+            )?.copyWith(
+              fontWeight: FontWeight.bold,
+              color: GlobalHelper.getColorSchema(context).onPrimary,
+            ),
+          ),
         ),
       ),
     );
@@ -202,10 +208,10 @@ class _CustomerReviewOrderScreenState extends State<CustomerReviewOrderScreen> {
                 children: [
                   Text(
                     name,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 14,
-                    ),
+                    style: GlobalHelper.getTextTheme(
+                      context,
+                      appTextStyle: AppTextStyle.BODY_MEDIUM,
+                    )?.copyWith(fontWeight: FontWeight.bold),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -213,7 +219,12 @@ class _CustomerReviewOrderScreenState extends State<CustomerReviewOrderScreen> {
                     const SizedBox(height: 4),
                     Text(
                       variantName,
-                      style: TextStyle(color: Colors.grey[600], fontSize: 12),
+                      style: GlobalHelper.getTextTheme(
+                        context,
+                        appTextStyle: AppTextStyle.BODY_SMALL,
+                      )?.copyWith(
+                        color: GlobalHelper.getColorSchema(context).onSurfaceVariant,
+                      ),
                     ),
                   ],
                 ],
@@ -222,9 +233,12 @@ class _CustomerReviewOrderScreenState extends State<CustomerReviewOrderScreen> {
           ],
         ),
         const SizedBox(height: 16),
-        const Text(
+        Text(
           'Kualitas Produk',
-          style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
+          style: GlobalHelper.getTextTheme(
+            context,
+            appTextStyle: AppTextStyle.BODY_MEDIUM,
+          )?.copyWith(fontWeight: FontWeight.w600),
         ),
         const SizedBox(height: 8),
         Row(
@@ -243,7 +257,9 @@ class _CustomerReviewOrderScreenState extends State<CustomerReviewOrderScreen> {
               },
               icon: Icon(
                 isSelected ? Icons.star : Icons.star_border,
-                color: isSelected ? Colors.orange : Colors.grey[400],
+                color: isSelected 
+                  ? Colors.orange 
+                  : GlobalHelper.getColorSchema(context).outlineVariant,
                 size: 36,
               ),
             );
@@ -253,14 +269,23 @@ class _CustomerReviewOrderScreenState extends State<CustomerReviewOrderScreen> {
         TextFormField(
           decoration: InputDecoration(
             hintText: 'Bagaimana kualitas produk ini? (Opsional)',
-            hintStyle: TextStyle(color: Colors.grey[400], fontSize: 13),
+            hintStyle: GlobalHelper.getTextTheme(
+              context,
+              appTextStyle: AppTextStyle.BODY_SMALL,
+            )?.copyWith(
+              color: GlobalHelper.getColorSchema(context).onSurfaceVariant,
+            ),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(color: Colors.grey[300]!),
+              borderSide: BorderSide(
+                color: GlobalHelper.getColorSchema(context).outlineVariant,
+              ),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(color: Colors.grey[300]!),
+              borderSide: BorderSide(
+                color: GlobalHelper.getColorSchema(context).outlineVariant,
+              ),
             ),
             contentPadding: const EdgeInsets.all(12),
           ),
@@ -275,9 +300,12 @@ class _CustomerReviewOrderScreenState extends State<CustomerReviewOrderScreen> {
           },
         ),
         const SizedBox(height: 16),
-        const Text(
+        Text(
           'Tambah Foto (Maks 3)',
-          style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
+          style: GlobalHelper.getTextTheme(
+            context,
+            appTextStyle: AppTextStyle.BODY_MEDIUM,
+          )?.copyWith(fontWeight: FontWeight.w600),
         ),
         const SizedBox(height: 8),
         Wrap(
@@ -324,15 +352,18 @@ class _CustomerReviewOrderScreenState extends State<CustomerReviewOrderScreen> {
                   width: 70,
                   height: 70,
                   decoration: BoxDecoration(
-                    color: Colors.grey[100],
+                    color: GlobalHelper.getColorSchema(context).surfaceContainerHighest,
                     borderRadius: BorderRadius.circular(8),
                     border: Border.all(
-                      color: Colors.grey[300]!,
+                      color: GlobalHelper.getColorSchema(context).outlineVariant,
                       style: BorderStyle.solid,
                     ),
                   ),
-                  child: const Center(
-                    child: Icon(Icons.add_a_photo, color: Colors.grey),
+                  child: Center(
+                    child: Icon(
+                      Icons.add_a_photo, 
+                      color: GlobalHelper.getColorSchema(context).onSurfaceVariant,
+                    ),
                   ),
                 ),
               ),
