@@ -4,6 +4,7 @@ import 'package:warunk/app/features/customer/domain/entity/customer_order.dart';
 import 'package:warunk/app/features/customer/domain/use_case/customer_order_get_by_id_use_case.dart';
 import 'package:warunk/app/features/customer/domain/use_case/customer_order_received_use_case.dart';
 import 'package:warunk/core/network/data_state.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 part 'customer_detail_order_event.dart';
 part 'customer_detail_order_state.dart';
@@ -38,11 +39,28 @@ class CustomerDetailOrderBloc
     }
   }
 
-  void _onTrackOrder(
+  Future<void> _onTrackOrder(
     CustomerDetailOrderTrackOrder event,
     Emitter<CustomerDetailOrderState> emit,
-  ) {
-    /* navigate to tracking */
+  ) async {
+    final biteshipResponse = state.transaction?.shipping?.biteshipResponse;
+    String? trackingUrl;
+    
+    if (biteshipResponse is Map<String, dynamic>) {
+      final courier = biteshipResponse['courier'];
+      if (courier is Map<String, dynamic>) {
+        trackingUrl = courier['link'] as String?;
+      }
+    }
+
+    if (trackingUrl != null && trackingUrl.isNotEmpty) {
+      final url = Uri.parse(trackingUrl);
+      try {
+        await launchUrl(url, mode: LaunchMode.inAppWebView);
+      } catch (e) {
+        // Handle error silently
+      }
+    }
   }
 
   void _onContactMerchant(
