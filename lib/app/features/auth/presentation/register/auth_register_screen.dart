@@ -186,7 +186,7 @@ class AuthRegisterScreen extends StatelessWidget {
           ),
           const SizedBox(width: 10),
           const Text(
-            'WARRUNK',
+            'WARUNK',
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.w900,

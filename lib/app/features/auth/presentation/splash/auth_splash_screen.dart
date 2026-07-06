@@ -186,7 +186,7 @@ class _SplashScreenState extends State<AuthSplashScreen>
                   child: FadeTransition(
                     opacity: _textFade,
                     child: const Text(
-                      'WARRUNK',
+                      'WARUNK',
                       style: TextStyle(
                         fontSize: 34,
                         fontWeight: FontWeight.w900,
@@ -245,7 +245,6 @@ class _SplashScreenState extends State<AuthSplashScreen>
       ),
     );
   }
-
 
   // ── Helpers ──────────────────────────────────────────────────────────────
   Widget _buildBlob({
