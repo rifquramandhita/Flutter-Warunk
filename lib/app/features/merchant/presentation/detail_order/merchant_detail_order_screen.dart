@@ -10,6 +10,7 @@ import 'package:warunk/app/features/merchant/presentation/reject_order/merchant_
 import 'package:warunk/app/features/merchant/presentation/reject_cancel_order/merchant_reject_cancel_order_screen.dart';
 import 'package:warunk/app/features/merchant/domain/entity/merchant_order_next_action.dart';
 import 'package:warunk/app/features/merchant/presentation/accept_cancel_order/merchant_accept_cancel_order_screen.dart';
+import 'package:warunk/app/features/merchant/presentation/chat/merchant_chat_webview_screen.dart';
 import 'package:warunk/core/dependency/dependency.dart';
 import 'package:warunk/core/helper/dialog_helper.dart';
 import 'package:warunk/core/widgets/loading_app_widget.dart';
@@ -126,17 +127,16 @@ class MerchantDetailOrderScreen extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
 
-          Row(
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: nextActions.asMap().entries.map((entry) {
               final index = entry.key;
               final action = entry.value;
               final isLast = index == nextActions.length - 1;
 
-              return Expanded(
-                child: Padding(
-                  padding: EdgeInsets.only(right: isLast ? 0 : 16),
-                  child: _buildActionButton(context, order, action),
-                ),
+              return Padding(
+                padding: EdgeInsets.only(bottom: isLast ? 0 : 12),
+                child: _buildActionButton(context, order, action),
               );
             }).toList(),
           ),
@@ -159,7 +159,7 @@ class MerchantDetailOrderScreen extends StatelessWidget {
 
     if (isNegativeAction) {
       return OutlinedButton(
-        onPressed: () => _handleAction(context, order, action.key),
+        onPressed: () => _handleAction(context, order, action),
         style: OutlinedButton.styleFrom(
           padding: const EdgeInsets.symmetric(vertical: 14),
           side: BorderSide(
@@ -183,7 +183,7 @@ class MerchantDetailOrderScreen extends StatelessWidget {
     }
 
     return ElevatedButton(
-      onPressed: () => _handleAction(context, order, action.key),
+      onPressed: () => _handleAction(context, order, action),
       style: ElevatedButton.styleFrom(
         padding: const EdgeInsets.symmetric(vertical: 14),
         backgroundColor: GlobalHelper.getColorSchema(context).primary,
@@ -204,8 +204,8 @@ class MerchantDetailOrderScreen extends StatelessWidget {
     );
   }
 
-  void _handleAction(BuildContext context, MerchantOrderEntity order, String? key) async {
-    switch (key) {
+  void _handleAction(BuildContext context, MerchantOrderEntity order, MerchantOrderNextActionEntity action) async {
+    switch (action.key) {
       case 'accept_order':
         context.read<MerchantDetailOrderBloc>().add(MerchantDetailOrderEventAccept());
         break;
@@ -262,6 +262,16 @@ class MerchantDetailOrderScreen extends StatelessWidget {
       case 'track_shipment':
         context.read<MerchantDetailOrderBloc>().add(MerchantDetailOrderEventTrackDeliveryTapped());
         break;
+      case 'chat_buyer':
+        if (action.url != null && action.url!.isNotEmpty) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => MerchantChatWebViewScreen(chatUrl: action.url),
+            ),
+          );
+        }
+        break;
       case 'reject_cancel':
         final result = await Navigator.push(
           context,
@@ -278,7 +288,7 @@ class MerchantDetailOrderScreen extends StatelessWidget {
       default:
         DialogHelper.showErrorSnackBar(
           context: context,
-          text: 'Tindakan tidak didukung saat ini: $key',
+          text: 'Tindakan tidak didukung saat ini: ${action.key}',
         );
     }
   }

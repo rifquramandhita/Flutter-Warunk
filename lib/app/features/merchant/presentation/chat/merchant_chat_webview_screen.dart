@@ -3,16 +3,16 @@ import 'package:webview_flutter/webview_flutter.dart';
 import 'package:warunk/core/helper/shared_preferences_helper.dart';
 import 'package:warunk/core/constants/constant.dart';
 
-class CustomerChatWebviewScreen extends StatefulWidget {
+class MerchantChatWebViewScreen extends StatefulWidget {
   final String? chatUrl;
-  const CustomerChatWebviewScreen({super.key, this.chatUrl});
+  const MerchantChatWebViewScreen({super.key, this.chatUrl});
 
   @override
-  State<CustomerChatWebviewScreen> createState() =>
-      _CustomerChatWebviewScreenState();
+  State<MerchantChatWebViewScreen> createState() =>
+      _MerchantChatWebViewScreenState();
 }
 
-class _CustomerChatWebviewScreenState extends State<CustomerChatWebviewScreen> {
+class _MerchantChatWebViewScreenState extends State<MerchantChatWebViewScreen> {
   late final WebViewController _controller;
   bool _isLoading = true;
   String? _token;
