@@ -56,25 +56,49 @@ class CustomerCartScreen extends StatelessWidget {
     final state = context.watch<CustomerCartBloc>().state;
 
     if (!state.isLoading && state.items.isEmpty && state.errorMessage != null) {
-      return Center(
-        child: Text(
-          state.errorMessage!,
-          style: GlobalHelper.getTextTheme(
-            context,
-            appTextStyle: AppTextStyle.BODY_MEDIUM,
-          )?.copyWith(color: GlobalHelper.getColorSchema(context).outline),
+      return RefreshIndicator(
+        onRefresh: () async {
+          context.read<CustomerCartBloc>().add(CustomerCartEventGet());
+        },
+        child: CustomScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          slivers: [
+            SliverFillRemaining(
+              child: Center(
+                child: Text(
+                  state.errorMessage!,
+                  style: GlobalHelper.getTextTheme(
+                    context,
+                    appTextStyle: AppTextStyle.BODY_MEDIUM,
+                  )?.copyWith(color: GlobalHelper.getColorSchema(context).outline),
+                ),
+              ),
+            ),
+          ],
         ),
       );
     }
 
     if (!state.isLoading && state.items.isEmpty) {
-      return Center(
-        child: Text(
-          'Keranjang kosong',
-          style: GlobalHelper.getTextTheme(
-            context,
-            appTextStyle: AppTextStyle.BODY_MEDIUM,
-          )?.copyWith(color: GlobalHelper.getColorSchema(context).outline),
+      return RefreshIndicator(
+        onRefresh: () async {
+          context.read<CustomerCartBloc>().add(CustomerCartEventGet());
+        },
+        child: CustomScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          slivers: [
+            SliverFillRemaining(
+              child: Center(
+                child: Text(
+                  'Keranjang kosong',
+                  style: GlobalHelper.getTextTheme(
+                    context,
+                    appTextStyle: AppTextStyle.BODY_MEDIUM,
+                  )?.copyWith(color: GlobalHelper.getColorSchema(context).outline),
+                ),
+              ),
+            ),
+          ],
         ),
       );
     }
@@ -84,11 +108,16 @@ class CustomerCartScreen extends StatelessWidget {
     return Column(
       children: [
         Expanded(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.fromLTRB(16, 8, 16, 140),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
+          child: RefreshIndicator(
+            onRefresh: () async {
+              context.read<CustomerCartBloc>().add(CustomerCartEventGet());
+            },
+            child: SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              padding: const EdgeInsets.fromLTRB(16, 8, 16, 140),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
                 ...state.groupedItemsWithIndex.values.map((merchantItems) {
                   final firstItem = merchantItems.first.value;
                   final merchant = firstItem.product?.merchant;
@@ -289,9 +318,10 @@ class CustomerCartScreen extends StatelessWidget {
                       ],
                     ),
                   );
-                }),
+                }).toList(),
               ],
             ),
+          ),
           ),
         ),
 

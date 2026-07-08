@@ -51,16 +51,26 @@ class CustomerHomeScreen extends StatelessWidget {
 
   Widget _bodyBuild(BuildContext context) {
     return SafeArea(
-      child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _homeHeader(context),
-            _homeSearchBar(context),
-            _homeBannerCarousel(context),
-            _homeCategoriesSection(context),
-            _homeNearbyStoresSection(context),
-          ],
+      child: RefreshIndicator(
+        onRefresh: () async {
+          final bloc = context.read<CustomerHomeBloc>();
+          bloc.add(CustomerHomeGetUserNameStarted());
+          bloc.add(CustomerHomeGetCategoriesStarted());
+          bloc.add(CustomerHomeGetNearbyStarted());
+          bloc.add(CustomerHomeGetBannersStarted());
+        },
+        child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _homeHeader(context),
+              _homeSearchBar(context),
+              _homeBannerCarousel(context),
+              _homeCategoriesSection(context),
+              _homeNearbyStoresSection(context),
+            ],
+          ),
         ),
       ),
     );

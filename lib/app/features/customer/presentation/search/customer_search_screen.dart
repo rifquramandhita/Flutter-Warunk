@@ -66,14 +66,22 @@ class CustomerSearchScreen extends StatelessWidget {
 
   Widget _bodyLayout(BuildContext context) {
     final state = context.watch<CustomerSearchBloc>().state;
-    return state.showResults
-        ? _results(context, state)
-        : _initial(context, state);
+    return RefreshIndicator(
+      onRefresh: () async {
+        if (state.searchQuery.isNotEmpty) {
+          context.read<CustomerSearchBloc>().add(CustomerSearchQuerySubmitted(state.searchQuery));
+        }
+      },
+      child: state.showResults
+          ? _results(context, state)
+          : _initial(context, state),
+    );
   }
 
   // ── INITIAL ──────────────────────────────────────────────────────────────
   Widget _initial(BuildContext context, CustomerSearchState state) {
     return CustomScrollView(
+      physics: const AlwaysScrollableScrollPhysics(),
       slivers: [
         SliverToBoxAdapter(
           child: Padding(
@@ -122,6 +130,7 @@ class CustomerSearchScreen extends StatelessWidget {
     final products = state.products;
 
     return CustomScrollView(
+      physics: const AlwaysScrollableScrollPhysics(),
       slivers: [
         SliverToBoxAdapter(
           child: Padding(

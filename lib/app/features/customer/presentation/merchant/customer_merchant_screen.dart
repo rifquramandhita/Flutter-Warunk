@@ -30,38 +30,53 @@ class CustomerMerchantScreen extends StatelessWidget {
               return const Center(child: CircularProgressIndicator());
             }
 
+            Widget content;
             if (state.errorMessage != null) {
-              return Center(
-                child: Text(
-                  state.errorMessage!,
-                  style: const TextStyle(color: Colors.red),
-                ),
-              );
-            }
-
-            if (state.merchants.isEmpty) {
-              return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Icon(
-                      Icons.storefront,
-                      size: 64,
-                      color: AppColors.greyBorder,
+              content = ListView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                children: [
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.7,
+                    child: Center(
+                      child: Text(
+                        state.errorMessage!,
+                        style: const TextStyle(color: Colors.red),
+                      ),
                     ),
-                    const SizedBox(height: 16),
-                    Text(
-                      'Belum ada warung di kategori ${category.name}',
-                      style: const TextStyle(color: AppColors.greyText),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               );
-            }
-
-            return ListView.builder(
-              padding: const EdgeInsets.all(20),
-              itemCount: state.merchants.length,
+            } else if (state.merchants.isEmpty) {
+              content = ListView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                children: [
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.7,
+                    child: Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Icon(
+                            Icons.storefront,
+                            size: 64,
+                            color: AppColors.greyBorder,
+                          ),
+                          const SizedBox(height: 16),
+                          Text(
+                            'Belum ada warung di kategori ${category.name}',
+                            style: const TextStyle(color: AppColors.greyText),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            } else {
+              content = ListView.builder(
+                physics: const AlwaysScrollableScrollPhysics(),
+                padding: const EdgeInsets.all(20),
+                itemCount: state.merchants.length,
               itemBuilder: (context, index) {
                 final merchant = state.merchants[index];
                 return GestureDetector(
@@ -171,13 +186,23 @@ class CustomerMerchantScreen extends StatelessWidget {
                                 overflow: TextOverflow.ellipsis,
                               ),
                             ],
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                );
+                  );
+                },
+              );
+            }
+
+            return RefreshIndicator(
+              onRefresh: () async {
+                context.read<CustomerMerchantBloc>().add(
+                      CustomerMerchantEventGet(categorySlug: category.slug),
+                    );
               },
+              child: content,
             );
           },
         ),

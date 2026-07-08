@@ -116,19 +116,25 @@ class CustomerProfileScreen extends StatelessWidget {
   }
 
   Widget _bodyLayout(BuildContext context) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _buildUserCard(context),
-          const SizedBox(height: 16),
-          _buildStatsCard(context),
-          const SizedBox(height: 16),
-          _buildMenuList(context),
-          const SizedBox(height: 16),
-          _buildPromoBanner(context),
-        ],
+    return RefreshIndicator(
+      onRefresh: () async {
+        context.read<CustomerProfilBloc>().add(CustomerLoadProfilData());
+      },
+      child: SingleChildScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildUserCard(context),
+            const SizedBox(height: 16),
+            _buildStatsCard(context),
+            const SizedBox(height: 16),
+            _buildMenuList(context),
+            const SizedBox(height: 16),
+            _buildPromoBanner(context),
+          ],
+        ),
       ),
     );
   }

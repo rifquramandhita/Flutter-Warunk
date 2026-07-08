@@ -98,11 +98,18 @@ class CustomerDetailOrderScreen extends StatelessWidget {
     return Column(
       children: [
         Expanded(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.fromLTRB(20, 8, 20, 32),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
+          child: RefreshIndicator(
+            onRefresh: () async {
+              context.read<CustomerDetailOrderBloc>().add(
+                    CustomerDetailOrderFetchStarted(orderId),
+                  );
+            },
+            child: SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              padding: const EdgeInsets.fromLTRB(20, 8, 20, 32),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
                 _headerCard(context, order),
                 const SizedBox(height: 16),
                 _productCard(context, order),
@@ -118,6 +125,7 @@ class CustomerDetailOrderScreen extends StatelessWidget {
                 _catatanCard(context, order),
               ],
             ),
+          ),
           ),
         ),
         _buildBottomActions(context, order),

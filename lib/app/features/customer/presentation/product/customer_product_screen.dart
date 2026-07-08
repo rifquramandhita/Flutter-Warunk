@@ -105,8 +105,15 @@ class CustomerProductScreen extends StatelessWidget {
 
     return Stack(
       children: [
-        CustomScrollView(
-          slivers: [
+        RefreshIndicator(
+          onRefresh: () async {
+            context.read<CustomerProductBloc>().add(
+                  CustomerDetailProductEventStarted(productId: productId),
+                );
+          },
+          child: CustomScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            slivers: [
             SliverToBoxAdapter(child: _imageLayout(context, imgUrl)),
             SliverToBoxAdapter(
               child: Container(
@@ -133,6 +140,7 @@ class CustomerProductScreen extends StatelessWidget {
               ),
             ),
           ],
+        ),
         ),
         _bottomBarLayout(context, totalPrice, noteCtrl),
       ],

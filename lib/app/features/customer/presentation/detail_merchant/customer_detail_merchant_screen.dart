@@ -59,8 +59,15 @@ class CustomerDetailMerchantScreen extends StatelessWidget {
     final state = context.watch<CustomerDetailMerchantBloc>().state;
     return Stack(
       children: [
-        CustomScrollView(
-          slivers: [
+        RefreshIndicator(
+          onRefresh: () async {
+            context.read<CustomerDetailMerchantBloc>().add(
+                  CustomerDetailMerchantEventGet(storeId: storeId),
+                );
+          },
+          child: CustomScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            slivers: [
             // ── Hero image ────────────────────────────────────────────────────
             SliverAppBar(
               pinned: true,
@@ -342,6 +349,7 @@ class CustomerDetailMerchantScreen extends StatelessWidget {
               child: SizedBox(height: 100), // padding for bottom cart
             ),
           ],
+        ),
         ),
 
         // ── Bottom Cart Bar ───────────────────────────────────────────────────

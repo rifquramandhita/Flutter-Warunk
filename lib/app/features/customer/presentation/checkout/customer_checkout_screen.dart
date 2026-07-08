@@ -77,12 +77,19 @@ class CustomerCheckoutScreen extends StatelessWidget {
     return Column(
       children: [
         Expanded(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _addressSection(context, state),
+          child: RefreshIndicator(
+            onRefresh: () async {
+              context.read<CustomerCheckoutBloc>().add(
+                    CustomerCheckoutEventFetchStarted(selectedItems),
+                  );
+            },
+            child: SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _addressSection(context, state),
                 const SizedBox(height: 12),
                 _orderSection(context, state),
                 const SizedBox(height: 12),
@@ -99,6 +106,7 @@ class CustomerCheckoutScreen extends StatelessWidget {
                 _paymentSummarySection(context, state),
               ],
             ),
+          ),
           ),
         ),
         _bottomBar(context, state),
