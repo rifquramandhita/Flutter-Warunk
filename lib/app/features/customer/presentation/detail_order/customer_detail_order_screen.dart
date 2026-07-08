@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:warunk/core/enum/order_status.dart';
 import 'package:warunk/main.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:warunk/app/features/customer/domain/entity/customer_order.dart';
 import 'package:warunk/app/features/customer/domain/entity/customer_order_next_action.dart';
 import 'package:warunk/app/features/customer/presentation/detail_order/bloc/customer_detail_order_bloc.dart';
@@ -10,6 +11,7 @@ import 'package:warunk/app/features/customer/presentation/review_order/customer_
 import 'package:warunk/app/features/customer/presentation/payment_proof/customer_payment_proof_screen.dart';
 import 'package:warunk/app/features/customer/presentation/cancel_order/customer_cancel_order_screen.dart';
 import 'package:warunk/app/features/customer/presentation/chat/customer_chat_webview_screen.dart';
+import 'package:warunk/app/features/customer/presentation/cart/customer_cart_screen.dart';
 import 'package:warunk/core/dependency/dependency.dart';
 import 'package:warunk/core/helper/dialog_helper.dart';
 import 'package:warunk/core/widgets/loading_app_widget.dart';
@@ -38,6 +40,12 @@ class CustomerDetailOrderScreen extends StatelessWidget {
             DialogHelper.showErrorSnackBar(
               context: context,
               text: state.errorMessage!,
+            );
+          }
+          if (state.isReorderSuccess) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const CustomerCartScreen()),
             );
           }
         },
@@ -134,8 +142,18 @@ class CustomerDetailOrderScreen extends StatelessWidget {
   }
 
   Widget _buildBottomActions(BuildContext context, CustomerOrderEntity order) {
-    final nextActions = order.nextActions;
-    if (nextActions == null || nextActions.isEmpty) return const SizedBox();
+    List<CustomerOrderNextActionEntity> nextActions = List.from(order.nextActions ?? []);
+
+    if (order.status == OrderStatus.completed) {
+      if (!nextActions.any((element) => element.key == 'download_invoice')) {
+        nextActions.add(const CustomerOrderNextActionEntity(key: 'download_invoice', label: 'Unduh Invoice'));
+      }
+      if (!nextActions.any((element) => element.key == 'reorder')) {
+        nextActions.add(const CustomerOrderNextActionEntity(key: 'reorder', label: 'Pesan Lagi'));
+      }
+    }
+
+    if (nextActions.isEmpty) return const SizedBox();
 
     return Container(
       padding: const EdgeInsets.all(20),
@@ -286,6 +304,22 @@ class CustomerDetailOrderScreen extends StatelessWidget {
       case 'contact_merchant':
         context.read<CustomerDetailOrderBloc>().add(
           CustomerDetailOrderContactMerchant(),
+        );
+        break;
+      case 'download_invoice':
+        if (order.invoiceUrl != null && order.invoiceUrl!.isNotEmpty) {
+          final url = Uri.parse(order.invoiceUrl!);
+          launchUrl(url, mode: LaunchMode.externalApplication);
+        } else {
+          DialogHelper.showErrorSnackBar(
+            context: context,
+            text: 'URL Invoice tidak tersedia',
+          );
+        }
+        break;
+      case 'reorder':
+        context.read<CustomerDetailOrderBloc>().add(
+          CustomerDetailOrderReorder(),
         );
         break;
       default:

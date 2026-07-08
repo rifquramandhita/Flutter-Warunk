@@ -541,7 +541,7 @@ Future<void> initDependency() async {
   sl.registerFactory(() => CustomerPromotionBloc(getPromotionUseCase: sl()));
   sl.registerFactory(() => CustomerAddressMapsBloc(sl()));
   sl.registerFactory(() => CustomerOrderBloc(getOrdersUseCase: sl()));
-  sl.registerFactory(() => CustomerDetailOrderBloc(sl(), sl()));
+  sl.registerFactory(() => CustomerDetailOrderBloc(sl(), sl(), sl()));
   sl.registerFactory(() => CustomerPaymentProofBloc(sl()));
   sl.registerFactory(() => CustomerCancelOrderBloc(cancelUseCase: sl()));
   sl.registerFactory(

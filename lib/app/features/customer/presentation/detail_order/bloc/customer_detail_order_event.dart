@@ -28,3 +28,5 @@ class CustomerDetailOrderMarkReceived extends CustomerDetailOrderEvent {
   @override
   List<Object?> get props => [orderId];
 }
+
+class CustomerDetailOrderReorder extends CustomerDetailOrderEvent {}
