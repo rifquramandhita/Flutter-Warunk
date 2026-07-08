@@ -17,15 +17,39 @@ class CustomerReviewOrderScreen extends StatelessWidget {
   const CustomerReviewOrderScreen({super.key, required this.order});
 
   Future<void> _pickImage(BuildContext context, String orderItemId) async {
-    final ImagePicker picker = ImagePicker();
-    final XFile? image = await picker.pickImage(source: ImageSource.gallery);
-    if (image != null && context.mounted) {
-      context.read<CustomerReviewOrderBloc>().add(
-        CustomerReviewOrderImageAdded(
-          orderItemId: orderItemId,
-          image: File(image.path),
-        ),
-      );
+    final ImageSource? source = await showModalBottomSheet<ImageSource>(
+      context: context,
+      builder: (BuildContext context) {
+        return SafeArea(
+          child: Wrap(
+            children: <Widget>[
+              ListTile(
+                leading: const Icon(Icons.photo_library),
+                title: const Text('Galeri'),
+                onTap: () => Navigator.of(context).pop(ImageSource.gallery),
+              ),
+              ListTile(
+                leading: const Icon(Icons.photo_camera),
+                title: const Text('Kamera'),
+                onTap: () => Navigator.of(context).pop(ImageSource.camera),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+
+    if (source != null) {
+      final ImagePicker picker = ImagePicker();
+      final XFile? image = await picker.pickImage(source: source);
+      if (image != null && context.mounted) {
+        context.read<CustomerReviewOrderBloc>().add(
+          CustomerReviewOrderImageAdded(
+            orderItemId: orderItemId,
+            image: File(image.path),
+          ),
+        );
+      }
     }
   }
 
