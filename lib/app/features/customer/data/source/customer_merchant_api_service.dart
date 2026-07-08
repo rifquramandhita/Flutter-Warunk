@@ -12,6 +12,7 @@ abstract class CustomerMerchantApiService {
   @GET('/api/merchants')
   Future<HttpResponse<dynamic>> get({
     @Query('category') String? category,
+    @Query('keyword') String? keyword,
   });
 
   @GET('/api/merchants/{id}')

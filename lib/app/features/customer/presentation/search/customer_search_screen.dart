@@ -126,7 +126,8 @@ class CustomerSearchScreen extends StatelessWidget {
 
   // ── RESULTS ──────────────────────────────────────────────────────────────
   Widget _results(BuildContext context, CustomerSearchState state) {
-    final stores = state.filteredMerchants;
+    final stores = state.merchants;
+    final displayedStores = state.showAllMerchants || stores.length <= 1 ? stores : [stores.first];
     final products = state.products;
 
     return CustomScrollView(
@@ -144,55 +145,43 @@ class CustomerSearchScreen extends StatelessWidget {
           ),
         ),
 
-        // Product Section
-        if (products.isNotEmpty && !state.isLoading) ...[
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(16, 14, 16, 10),
-              child: Text(
-                '${products.length} produk ditemukan',
-                style:
-                    GlobalHelper.getTextTheme(
-                      context,
-                      appTextStyle: AppTextStyle.BODY_MEDIUM,
-                    )?.copyWith(
-                      fontWeight: FontWeight.w600,
-                      color: GlobalHelper.getColorSchema(context).onSurface,
-                    ),
-              ),
-            ),
-          ),
-          SliverPadding(
-            padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-            sliver: SliverGrid(
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                childAspectRatio: 0.72,
-                crossAxisSpacing: 16,
-                mainAxisSpacing: 16,
-              ),
-              delegate: SliverChildBuilderDelegate((context, index) {
-                return _productCard(context, products[index]);
-              }, childCount: products.length),
-            ),
-          ),
-        ],
-
         // Store Section
         if (stores.isNotEmpty && !state.isLoading) ...[
           SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.fromLTRB(16, 14, 16, 10),
-              child: Text(
-                '${stores.length} warung ditemukan',
-                style:
-                    GlobalHelper.getTextTheme(
-                      context,
-                      appTextStyle: AppTextStyle.BODY_MEDIUM,
-                    )?.copyWith(
-                      fontWeight: FontWeight.w600,
-                      color: GlobalHelper.getColorSchema(context).onSurface,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    '${stores.length} warung ditemukan',
+                    style:
+                        GlobalHelper.getTextTheme(
+                          context,
+                          appTextStyle: AppTextStyle.BODY_MEDIUM,
+                        )?.copyWith(
+                          fontWeight: FontWeight.w600,
+                          color: GlobalHelper.getColorSchema(context).onSurface,
+                        ),
+                  ),
+                  if (stores.length > 1)
+                    GestureDetector(
+                      onTap: () {
+                        context.read<CustomerSearchBloc>().add(CustomerSearchShowAllMerchantsToggled());
+                      },
+                      child: Text(
+                        state.showAllMerchants ? 'Tutup' : 'Lihat Semua',
+                        style:
+                            GlobalHelper.getTextTheme(
+                              context,
+                              appTextStyle: AppTextStyle.BODY_SMALL,
+                            )?.copyWith(
+                              fontWeight: FontWeight.w600,
+                              color: GlobalHelper.getColorSchema(context).primary,
+                            ),
+                      ),
                     ),
+                ],
               ),
             ),
           ),
@@ -200,7 +189,7 @@ class CustomerSearchScreen extends StatelessWidget {
             padding: const EdgeInsets.fromLTRB(16, 0, 16, 32),
             sliver: SliverList(
               delegate: SliverChildBuilderDelegate((_, i) {
-                final merchant = stores[i];
+                final merchant = displayedStores[i];
                 final name = merchant.name;
                 final badges = merchant.isOpen ? ['Buka'] : ['Tutup'];
                 final photoUrl = merchant.photo;
@@ -345,7 +334,41 @@ class CustomerSearchScreen extends StatelessWidget {
                     ),
                   ),
                 );
-              }, childCount: stores.length),
+              }, childCount: displayedStores.length),
+            ),
+          ),
+        ],
+
+        // Product Section
+        if (products.isNotEmpty && !state.isLoading) ...[
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(16, 14, 16, 10),
+              child: Text(
+                '${products.length} produk ditemukan',
+                style:
+                    GlobalHelper.getTextTheme(
+                      context,
+                      appTextStyle: AppTextStyle.BODY_MEDIUM,
+                    )?.copyWith(
+                      fontWeight: FontWeight.w600,
+                      color: GlobalHelper.getColorSchema(context).onSurface,
+                    ),
+              ),
+            ),
+          ),
+          SliverPadding(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+            sliver: SliverGrid(
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                childAspectRatio: 0.72,
+                crossAxisSpacing: 16,
+                mainAxisSpacing: 16,
+              ),
+              delegate: SliverChildBuilderDelegate((context, index) {
+                return _productCard(context, products[index]);
+              }, childCount: products.length),
             ),
           ),
         ],

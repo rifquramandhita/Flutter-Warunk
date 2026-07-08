@@ -10,6 +10,7 @@ class CustomerSearchState extends Equatable {
   final List<String> activeFilters;
   final List<CustomerMerchantEntity> merchants;
   final List<CustomerProductEntity> products;
+  final bool showAllMerchants;
 
   const CustomerSearchState({
     this.isLoading = false,
@@ -19,15 +20,10 @@ class CustomerSearchState extends Equatable {
     this.activeFilters = const ['Jakarta', 'Terdekat', 'Buka', 'Promo'],
     this.merchants = const [],
     this.products = const [],
+    this.showAllMerchants = false,
   });
 
-  List<CustomerMerchantEntity> get filteredMerchants {
-    if (searchQuery.isEmpty) return merchants;
-    final lowerQuery = searchQuery.toLowerCase();
-    return merchants.where((merchant) {
-      return merchant.name.toLowerCase().contains(lowerQuery);
-    }).toList();
-  }
+
 
   CustomerSearchState copyWith({
     bool? isLoading,
@@ -37,6 +33,7 @@ class CustomerSearchState extends Equatable {
     List<String>? activeFilters,
     List<CustomerMerchantEntity>? merchants,
     List<CustomerProductEntity>? products,
+    bool? showAllMerchants,
   }) {
     return CustomerSearchState(
       isLoading: isLoading ?? this.isLoading,
@@ -46,6 +43,7 @@ class CustomerSearchState extends Equatable {
       activeFilters: activeFilters ?? this.activeFilters,
       merchants: merchants ?? this.merchants,
       products: products ?? this.products,
+      showAllMerchants: showAllMerchants ?? this.showAllMerchants,
     );
   }
 
@@ -58,5 +56,6 @@ class CustomerSearchState extends Equatable {
     activeFilters,
     merchants,
     products,
+    showAllMerchants,
   ];
 }

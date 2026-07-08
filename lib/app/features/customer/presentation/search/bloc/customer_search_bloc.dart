@@ -6,16 +6,26 @@ import 'customer_search_state.dart';
 
 class CustomerSearchBloc
     extends Bloc<CustomerSearchEvent, CustomerSearchState> {
+  final CustomerMerchantGetUseCase _merchantGetUseCase;
   final CustomerProductGetUseCase _productGetUseCase;
 
   CustomerSearchBloc({
     required CustomerMerchantGetUseCase getMerchantUseCase,
     required CustomerProductGetUseCase productGetUseCase,
-  }) : _productGetUseCase = productGetUseCase,
+  }) : _merchantGetUseCase = getMerchantUseCase,
+       _productGetUseCase = productGetUseCase,
        super(const CustomerSearchState()) {
     on<CustomerSearchQuerySubmitted>(_onSearchQuerySubmitted);
     on<CustomerSearchQueryCleared>(_onSearchQueryCleared);
     on<CustomerSearchFilterRemoved>(_onSearchFilterRemoved);
+    on<CustomerSearchShowAllMerchantsToggled>(_onShowAllMerchantsToggled);
+  }
+
+  void _onShowAllMerchantsToggled(
+    CustomerSearchShowAllMerchantsToggled event,
+    Emitter<CustomerSearchState> emit,
+  ) {
+    emit(state.copyWith(showAllMerchants: !state.showAllMerchants));
   }
 
   Future<void> _onSearchQuerySubmitted(
@@ -29,14 +39,24 @@ class CustomerSearchBloc
         showResults: true,
         searchQuery: event.query,
         errorMessage: null,
+        showAllMerchants: false,
       ),
     );
 
-    final result = await _productGetUseCase.call(keyword: event.query);
-    if (result.success) {
-      emit(state.copyWith(isLoading: false, products: result.data));
+    final productResult = await _productGetUseCase.call(keyword: event.query);
+    final merchantResult = await _merchantGetUseCase.call(keyword: event.query);
+    
+    if (productResult.success && merchantResult.success) {
+      emit(state.copyWith(
+        isLoading: false, 
+        products: productResult.data,
+        merchants: merchantResult.data,
+      ));
     } else {
-      emit(state.copyWith(isLoading: false, errorMessage: result.message));
+      emit(state.copyWith(
+        isLoading: false, 
+        errorMessage: productResult.message ?? merchantResult.message,
+      ));
     }
   }
 

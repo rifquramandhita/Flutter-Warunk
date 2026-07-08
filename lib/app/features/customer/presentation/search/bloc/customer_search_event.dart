@@ -11,3 +11,5 @@ class CustomerSearchFilterRemoved extends CustomerSearchEvent {
   final String filter;
   CustomerSearchFilterRemoved(this.filter);
 }
+
+class CustomerSearchShowAllMerchantsToggled extends CustomerSearchEvent {}

@@ -11,8 +11,8 @@ class CustomerMerchantRepositoryImpl implements CustomerMerchantRepository {
       : _apiService = apiService;
 
   @override
-  Future<DataState<List<CustomerMerchantEntity>>> get({String? category}) {
-    return handleResponse(() => _apiService.get(category: category), (json) {
+  Future<DataState<List<CustomerMerchantEntity>>> get({String? category, String? keyword}) {
+    return handleResponse(() => _apiService.get(category: category, keyword: keyword), (json) {
       if (json is Map<String, dynamic> && json['merchants'] is List) {
         return (json['merchants'] as List)
             .map(
