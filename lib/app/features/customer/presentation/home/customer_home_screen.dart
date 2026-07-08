@@ -10,7 +10,6 @@ import 'package:warunk/app/features/customer/presentation/detail_merchant/custom
 import 'package:warunk/app/features/customer/domain/entity/customer_promotion_information.dart';
 import 'package:warunk/app/features/customer/presentation/chat/customer_chat_webview_screen.dart';
 
-
 import 'package:warunk/core/dependency/dependency.dart';
 import 'package:warunk/theme/app_colors.dart';
 import 'package:warunk/core/helper/global_helper.dart';
@@ -92,27 +91,18 @@ class CustomerHomeScreen extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          children: [
-            Text(
-              'Hai, $name! ',
-              style:
-                  GlobalHelper.getTextTheme(
-                    context,
-                    appTextStyle: AppTextStyle.TITLE_LARGE,
-                  )?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: GlobalHelper.getColorSchema(context).primary,
-                  ),
-            ),
-            Text(
-              '👋',
-              style: GlobalHelper.getTextTheme(
+        Text(
+          'Hai, $name! ',
+          style:
+              GlobalHelper.getTextTheme(
                 context,
                 appTextStyle: AppTextStyle.TITLE_LARGE,
-              )?.copyWith(fontSize: 20),
-            ),
-          ],
+              )?.copyWith(
+                fontWeight: FontWeight.bold,
+                color: GlobalHelper.getColorSchema(context).primary,
+              ),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
         ),
         Text(
           'Mau belanja apa hari ini?',
