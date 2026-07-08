@@ -22,7 +22,7 @@ CustomerMerchantCategory _$CustomerMerchantCategoryFromJson(
 /// @nodoc
 mixin _$CustomerMerchantCategory {
 
- String get id; String get name; String get slug; DateTime? get createdAt; DateTime? get updatedAt;
+ String get id; String get name; String get slug; String? get iconUrl;
 /// Create a copy of CustomerMerchantCategory
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -35,16 +35,16 @@ $CustomerMerchantCategoryCopyWith<CustomerMerchantCategory> get copyWith => _$Cu
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CustomerMerchantCategory&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.slug, slug) || other.slug == slug)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CustomerMerchantCategory&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.slug, slug) || other.slug == slug)&&(identical(other.iconUrl, iconUrl) || other.iconUrl == iconUrl));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,name,slug,createdAt,updatedAt);
+int get hashCode => Object.hash(runtimeType,id,name,slug,iconUrl);
 
 @override
 String toString() {
-  return 'CustomerMerchantCategory(id: $id, name: $name, slug: $slug, createdAt: $createdAt, updatedAt: $updatedAt)';
+  return 'CustomerMerchantCategory(id: $id, name: $name, slug: $slug, iconUrl: $iconUrl)';
 }
 
 
@@ -55,7 +55,7 @@ abstract mixin class $CustomerMerchantCategoryCopyWith<$Res>  {
   factory $CustomerMerchantCategoryCopyWith(CustomerMerchantCategory value, $Res Function(CustomerMerchantCategory) _then) = _$CustomerMerchantCategoryCopyWithImpl;
 @useResult
 $Res call({
- String id, String name, String slug, DateTime? createdAt, DateTime? updatedAt
+ String id, String name, String slug, String? iconUrl
 });
 
 
@@ -72,14 +72,13 @@ class _$CustomerMerchantCategoryCopyWithImpl<$Res>
 
 /// Create a copy of CustomerMerchantCategory
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? slug = null,Object? createdAt = freezed,Object? updatedAt = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? slug = null,Object? iconUrl = freezed,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,slug: null == slug ? _self.slug : slug // ignore: cast_nullable_to_non_nullable
-as String,createdAt: freezed == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
-as DateTime?,updatedAt: freezed == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
-as DateTime?,
+as String,iconUrl: freezed == iconUrl ? _self.iconUrl : iconUrl // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 
@@ -161,10 +160,10 @@ return entity(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String id,  String name,  String slug,  DateTime? createdAt,  DateTime? updatedAt)?  entity,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String id,  String name,  String slug,  String? iconUrl)?  entity,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case CustomerMerchantCategoryEntity() when entity != null:
-return entity(_that.id,_that.name,_that.slug,_that.createdAt,_that.updatedAt);case _:
+return entity(_that.id,_that.name,_that.slug,_that.iconUrl);case _:
   return orElse();
 
 }
@@ -182,10 +181,10 @@ return entity(_that.id,_that.name,_that.slug,_that.createdAt,_that.updatedAt);ca
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String id,  String name,  String slug,  DateTime? createdAt,  DateTime? updatedAt)  entity,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String id,  String name,  String slug,  String? iconUrl)  entity,}) {final _that = this;
 switch (_that) {
 case CustomerMerchantCategoryEntity():
-return entity(_that.id,_that.name,_that.slug,_that.createdAt,_that.updatedAt);}
+return entity(_that.id,_that.name,_that.slug,_that.iconUrl);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -199,10 +198,10 @@ return entity(_that.id,_that.name,_that.slug,_that.createdAt,_that.updatedAt);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String id,  String name,  String slug,  DateTime? createdAt,  DateTime? updatedAt)?  entity,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String id,  String name,  String slug,  String? iconUrl)?  entity,}) {final _that = this;
 switch (_that) {
 case CustomerMerchantCategoryEntity() when entity != null:
-return entity(_that.id,_that.name,_that.slug,_that.createdAt,_that.updatedAt);case _:
+return entity(_that.id,_that.name,_that.slug,_that.iconUrl);case _:
   return null;
 
 }
@@ -214,14 +213,13 @@ return entity(_that.id,_that.name,_that.slug,_that.createdAt,_that.updatedAt);ca
 
 @JsonSerializable(fieldRename: FieldRename.snake, includeIfNull: false)
 class CustomerMerchantCategoryEntity implements CustomerMerchantCategory {
-  const CustomerMerchantCategoryEntity({required this.id, required this.name, required this.slug, this.createdAt, this.updatedAt});
+  const CustomerMerchantCategoryEntity({required this.id, required this.name, required this.slug, this.iconUrl});
   factory CustomerMerchantCategoryEntity.fromJson(Map<String, dynamic> json) => _$CustomerMerchantCategoryEntityFromJson(json);
 
 @override final  String id;
 @override final  String name;
 @override final  String slug;
-@override final  DateTime? createdAt;
-@override final  DateTime? updatedAt;
+@override final  String? iconUrl;
 
 /// Create a copy of CustomerMerchantCategory
 /// with the given fields replaced by the non-null parameter values.
@@ -236,16 +234,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CustomerMerchantCategoryEntity&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.slug, slug) || other.slug == slug)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CustomerMerchantCategoryEntity&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.slug, slug) || other.slug == slug)&&(identical(other.iconUrl, iconUrl) || other.iconUrl == iconUrl));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,name,slug,createdAt,updatedAt);
+int get hashCode => Object.hash(runtimeType,id,name,slug,iconUrl);
 
 @override
 String toString() {
-  return 'CustomerMerchantCategory.entity(id: $id, name: $name, slug: $slug, createdAt: $createdAt, updatedAt: $updatedAt)';
+  return 'CustomerMerchantCategory.entity(id: $id, name: $name, slug: $slug, iconUrl: $iconUrl)';
 }
 
 
@@ -256,7 +254,7 @@ abstract mixin class $CustomerMerchantCategoryEntityCopyWith<$Res> implements $C
   factory $CustomerMerchantCategoryEntityCopyWith(CustomerMerchantCategoryEntity value, $Res Function(CustomerMerchantCategoryEntity) _then) = _$CustomerMerchantCategoryEntityCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String name, String slug, DateTime? createdAt, DateTime? updatedAt
+ String id, String name, String slug, String? iconUrl
 });
 
 
@@ -273,14 +271,13 @@ class _$CustomerMerchantCategoryEntityCopyWithImpl<$Res>
 
 /// Create a copy of CustomerMerchantCategory
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? slug = null,Object? createdAt = freezed,Object? updatedAt = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? slug = null,Object? iconUrl = freezed,}) {
   return _then(CustomerMerchantCategoryEntity(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,slug: null == slug ? _self.slug : slug // ignore: cast_nullable_to_non_nullable
-as String,createdAt: freezed == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
-as DateTime?,updatedAt: freezed == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
-as DateTime?,
+as String,iconUrl: freezed == iconUrl ? _self.iconUrl : iconUrl // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 

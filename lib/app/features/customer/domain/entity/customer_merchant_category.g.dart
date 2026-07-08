@@ -12,12 +12,7 @@ CustomerMerchantCategoryEntity _$CustomerMerchantCategoryEntityFromJson(
   id: json['id'] as String,
   name: json['name'] as String,
   slug: json['slug'] as String,
-  createdAt: json['created_at'] == null
-      ? null
-      : DateTime.parse(json['created_at'] as String),
-  updatedAt: json['updated_at'] == null
-      ? null
-      : DateTime.parse(json['updated_at'] as String),
+  iconUrl: json['icon_url'] as String?,
 );
 
 Map<String, dynamic> _$CustomerMerchantCategoryEntityToJson(
@@ -26,6 +21,5 @@ Map<String, dynamic> _$CustomerMerchantCategoryEntityToJson(
   'id': instance.id,
   'name': instance.name,
   'slug': instance.slug,
-  'created_at': ?instance.createdAt?.toIso8601String(),
-  'updated_at': ?instance.updatedAt?.toIso8601String(),
+  'icon_url': ?instance.iconUrl,
 };

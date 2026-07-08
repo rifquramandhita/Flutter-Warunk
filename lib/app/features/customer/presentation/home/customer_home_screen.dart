@@ -489,6 +489,7 @@ class CustomerHomeScreen extends StatelessWidget {
                               context,
                               Icons.category,
                               c.name,
+                              c.iconUrl,
                             ),
                           ),
                         ),
@@ -502,7 +503,8 @@ class CustomerHomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _categoryItem(BuildContext context, IconData icon, String label) {
+  Widget _categoryItem(
+      BuildContext context, IconData icon, String label, String? iconUrl) {
     return Column(
       children: [
         Container(
@@ -520,11 +522,23 @@ class CustomerHomeScreen extends StatelessWidget {
             ],
           ),
           child: Center(
-            child: Icon(
-              icon,
-              color: GlobalHelper.getColorSchema(context).primary,
-              size: 24,
-            ),
+            child: iconUrl != null && iconUrl.isNotEmpty
+                ? Image.network(
+                    iconUrl,
+                    width: 24,
+                    height: 24,
+                    fit: BoxFit.contain,
+                    errorBuilder: (context, error, stackTrace) => Icon(
+                      icon,
+                      color: GlobalHelper.getColorSchema(context).primary,
+                      size: 24,
+                    ),
+                  )
+                : Icon(
+                    icon,
+                    color: GlobalHelper.getColorSchema(context).primary,
+                    size: 24,
+                  ),
           ),
         ),
         const SizedBox(height: 6),

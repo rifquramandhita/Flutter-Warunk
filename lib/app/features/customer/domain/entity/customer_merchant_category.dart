@@ -10,8 +10,7 @@ sealed class CustomerMerchantCategory with _$CustomerMerchantCategory {
     required String id,
     required String name,
     required String slug,
-    DateTime? createdAt,
-    DateTime? updatedAt,
+    String? iconUrl,
   }) = CustomerMerchantCategoryEntity;
 
   factory CustomerMerchantCategory.fromJson(Map<String, dynamic> json) =>
