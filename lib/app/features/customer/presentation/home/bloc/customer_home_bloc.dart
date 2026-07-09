@@ -1,9 +1,9 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:warunk/app/features/customer/domain/entity/customer_merchant.dart';
-import 'package:warunk/app/features/customer/domain/entity/customer_merchant_category.dart';
+import 'package:warunk/app/features/customer/domain/entity/customer_merchant_quick_category.dart';
 import 'package:warunk/app/features/customer/domain/entity/customer_promotion_information.dart';
-import 'package:warunk/app/features/customer/domain/use_case/customer_merchant_get_category_use_case.dart';
+import 'package:warunk/app/features/customer/domain/use_case/customer_merchant_get_quick_category_use_case.dart';
 import 'package:warunk/app/features/customer/domain/use_case/customer_merchant_get_nearby_use_case.dart';
 import 'package:warunk/app/features/customer/domain/use_case/customer_location_get_current_use_case.dart';
 import 'package:warunk/app/features/customer/domain/use_case/customer_promotion_information_get_banner_use_case.dart';
@@ -15,13 +15,13 @@ part 'customer_home_event.dart';
 part 'customer_home_state.dart';
 
 class CustomerHomeBloc extends Bloc<CustomerHomeEvent, CustomerHomeState> {
-  final CustomerMerchantGetCategoryUseCase _getCategoryUseCase;
+  final CustomerMerchantGetQuickCategoryUseCase _getCategoryUseCase;
   final CustomerMerchantGetNearbyUseCase _getNearbyUseCase;
   final CustomerLocationGetCurrentUseCase _getCurrentLocationUseCase;
   final CustomerPromotionInformationGetBannerUseCase _getBannerUseCase;
 
   CustomerHomeBloc({
-    required CustomerMerchantGetCategoryUseCase getCategoryUseCase,
+    required CustomerMerchantGetQuickCategoryUseCase getCategoryUseCase,
     required CustomerMerchantGetNearbyUseCase getNearbyUseCase,
     required CustomerLocationGetCurrentUseCase getCurrentLocationUseCase,
     required CustomerPromotionInformationGetBannerUseCase getBannerUseCase,

@@ -21,6 +21,16 @@ abstract class CustomerMerchantApiService {
   @GET('/api/merchant-categories')
   Future<HttpResponse<dynamic>> getCategories();
 
+  @GET('/api/merchants/quick-filter-categories')
+  Future<HttpResponse<dynamic>> getQuickCategories();
+
+  @GET('/api/merchants/quick-filters/{key}')
+  Future<HttpResponse<dynamic>> getByQuickFilter({
+    @Path('key') required String key,
+    @Query('latitude') required double latitude,
+    @Query('longitude') required double longitude,
+  });
+
   @GET('/api/merchants/nearby')
   Future<HttpResponse<dynamic>> getNearby({
     @Query('latitude') required double latitude,

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:warunk/app/features/customer/domain/entity/customer_merchant_category.dart';
+import 'package:warunk/app/features/customer/domain/entity/customer_merchant_quick_category.dart';
 import 'package:warunk/app/features/customer/presentation/detail_merchant/customer_detail_merchant_screen.dart';
 import 'package:warunk/core/dependency/dependency.dart';
 import 'package:warunk/theme/app_colors.dart';
@@ -11,7 +11,7 @@ import 'bloc/customer_merchant_event.dart';
 import 'bloc/customer_merchant_state.dart';
 
 class CustomerMerchantScreen extends StatelessWidget {
-  final CustomerMerchantCategoryEntity category;
+  final CustomerMerchantQuickCategoryEntity category;
 
   const CustomerMerchantScreen({super.key, required this.category});
 
@@ -20,7 +20,7 @@ class CustomerMerchantScreen extends StatelessWidget {
     return BlocProvider(
       create: (context) =>
           sl<CustomerMerchantBloc>()
-            ..add(CustomerMerchantEventGet(categorySlug: category.slug)),
+            ..add(CustomerMerchantEventGet(key: category.key)),
       child: Scaffold(
         backgroundColor: AppColors.background,
         appBar: AppBar(title: Text('Merchant')),
@@ -199,7 +199,7 @@ class CustomerMerchantScreen extends StatelessWidget {
             return RefreshIndicator(
               onRefresh: () async {
                 context.read<CustomerMerchantBloc>().add(
-                      CustomerMerchantEventGet(categorySlug: category.slug),
+                      CustomerMerchantEventGet(key: category.key),
                     );
               },
               child: content,

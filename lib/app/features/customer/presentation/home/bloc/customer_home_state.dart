@@ -6,7 +6,7 @@ final class CustomerHomeState extends Equatable {
   final bool isLoadingNearby;
   final String? errorMessage;
   final int currentBanner;
-  final List<CustomerMerchantCategoryEntity> categories;
+  final List<CustomerMerchantQuickCategoryEntity> categories;
   final List<CustomerMerchantEntity> nearbyMerchants;
   final List<CustomerPromotionInformationEntity> banners;
   final bool isLoadingBanners;
@@ -31,7 +31,7 @@ final class CustomerHomeState extends Equatable {
     bool? isLoadingNearby,
     String? errorMessage,
     int? currentBanner,
-    List<CustomerMerchantCategoryEntity>? categories,
+    List<CustomerMerchantQuickCategoryEntity>? categories,
     List<CustomerMerchantEntity>? nearbyMerchants,
     List<CustomerPromotionInformationEntity>? banners,
     bool? isLoadingBanners,

@@ -1,6 +1,7 @@
 import 'package:warunk/app/features/customer/data/source/customer_merchant_api_service.dart';
 import 'package:warunk/app/features/customer/domain/entity/customer_merchant.dart';
 import 'package:warunk/app/features/customer/domain/entity/customer_merchant_category.dart';
+import 'package:warunk/app/features/customer/domain/entity/customer_merchant_quick_category.dart';
 import 'package:warunk/app/features/customer/domain/repository/customer_merchant_repository.dart';
 import 'package:warunk/core/network/data_state.dart';
 
@@ -53,6 +54,34 @@ class CustomerMerchantRepositoryImpl implements CustomerMerchantRepository {
   @override
   Future<DataState<List<CustomerMerchantEntity>>> getNearby({required double latitude, required double longitude}) {
     return handleResponse(() => _apiService.getNearby(latitude: latitude, longitude: longitude), (json) {
+      if (json is Map<String, dynamic> && json['merchants'] is List) {
+        return (json['merchants'] as List)
+            .map(
+              (e) => CustomerMerchantEntity.fromJson(e as Map<String, dynamic>),
+            )
+            .toList();
+      }
+      return <CustomerMerchantEntity>[];
+    });
+  }
+
+  @override
+  Future<DataState<List<CustomerMerchantQuickCategoryEntity>>> getQuickCategories() {
+    return handleResponse(() => _apiService.getQuickCategories(), (json) {
+      if (json is Map<String, dynamic> && json['categories'] is List) {
+        return (json['categories'] as List)
+            .map(
+              (e) => CustomerMerchantQuickCategoryEntity.fromJson(e as Map<String, dynamic>),
+            )
+            .toList();
+      }
+      return <CustomerMerchantQuickCategoryEntity>[];
+    });
+  }
+
+  @override
+  Future<DataState<List<CustomerMerchantEntity>>> getByQuickFilter({required String key, required double latitude, required double longitude}) {
+    return handleResponse(() => _apiService.getByQuickFilter(key: key, latitude: latitude, longitude: longitude), (json) {
       if (json is Map<String, dynamic> && json['merchants'] is List) {
         return (json['merchants'] as List)
             .map(

@@ -489,7 +489,7 @@ class CustomerHomeScreen extends StatelessWidget {
                               context,
                               Icons.category,
                               c.name,
-                              c.iconUrl,
+                              c.imageUrl,
                             ),
                           ),
                         ),
@@ -528,11 +528,14 @@ class CustomerHomeScreen extends StatelessWidget {
                     width: 24,
                     height: 24,
                     fit: BoxFit.contain,
-                    errorBuilder: (context, error, stackTrace) => Icon(
-                      icon,
-                      color: GlobalHelper.getColorSchema(context).primary,
-                      size: 24,
-                    ),
+                    errorBuilder: (context, error, stackTrace) {
+                      debugPrint('Error loading category image $iconUrl: $error');
+                      return Icon(
+                        icon,
+                        color: GlobalHelper.getColorSchema(context).primary,
+                        size: 24,
+                      );
+                    },
                   )
                 : Icon(
                     icon,

@@ -124,6 +124,8 @@ import 'package:warunk/app/features/customer/data/repository/customer_merchant_r
 import 'package:warunk/app/features/customer/domain/use_case/customer_merchant_get_use_case.dart';
 import 'package:warunk/app/features/customer/domain/use_case/customer_merchant_get_by_id_use_case.dart';
 import 'package:warunk/app/features/customer/domain/use_case/customer_merchant_get_category_use_case.dart';
+import 'package:warunk/app/features/customer/domain/use_case/customer_merchant_get_quick_category_use_case.dart';
+import 'package:warunk/app/features/customer/domain/use_case/customer_merchant_get_by_quick_filter_use_case.dart';
 import 'package:warunk/app/features/customer/domain/use_case/customer_merchant_get_nearby_use_case.dart';
 import 'package:warunk/app/features/customer/data/source/customer_cart_api_service.dart';
 import 'package:warunk/app/features/customer/domain/repository/customer_cart_repository.dart';
@@ -357,6 +359,12 @@ Future<void> initDependency() async {
     () => CustomerMerchantGetCategoryUseCase(repository: sl()),
   );
   sl.registerLazySingleton(
+    () => CustomerMerchantGetQuickCategoryUseCase(repository: sl()),
+  );
+  sl.registerLazySingleton(
+    () => CustomerMerchantGetByQuickFilterUseCase(repository: sl()),
+  );
+  sl.registerLazySingleton(
     () => CustomerMerchantGetNearbyUseCase(repository: sl()),
   );
   sl.registerLazySingleton(() => CustomerProductGetUseCase(repository: sl()));
@@ -458,7 +466,11 @@ Future<void> initDependency() async {
   sl.registerFactory(
     () => CustomerSearchBloc(getMerchantUseCase: sl(), productGetUseCase: sl()),
   );
-  sl.registerFactory(() => CustomerMerchantBloc(getUseCase: sl()));
+  sl.registerFactory(() => CustomerMerchantBloc(
+    getUseCase: sl(),
+    getByQuickFilterUseCase: sl(),
+    getCurrentLocationUseCase: sl(),
+  ));
   sl.registerFactory(
     () => CustomerDetailMerchantBloc(
       getByIdUseCase: sl(),
