@@ -22,7 +22,7 @@ CustomerMerchant _$CustomerMerchantFromJson(
 /// @nodoc
 mixin _$CustomerMerchant {
 
- String get id; String get name; String get slug; String? get photo; bool get isActive; bool get isOpen; int? get userId; String? get merchantCategory; String? get status; int? get statusChangedBy; String? get whatsappNumber; bool? get isOpenAllDay;@JsonKey(name: 'is_open_24_hours') bool? get isOpen24Hours; String? get timeOpen; String? get timeClose; bool? get internalCourier; bool? get instantCourier; bool? get pickupAtStore; List<String>? get courierCodeAvailable; int? get maxDistanceInternalCourier; List<CustomerMerchantAccountEntity>? get merchantAccounts; List<CustomerMerchantOpenEntity>? get merchantOpens; String? get address; String? get province; String? get city; String? get district; String? get postalCode; double? get longitude; double? get latitude; int? get balance; int? get currentBalance; double? get distance; List<String>? get promoBadges; CustomerMerchantUserEntity? get user; String? get chatUrl;
+ String get id; String get name; String get slug; String? get photo; bool get isActive; bool get isOpen; int? get userId; String? get merchantCategory; String? get status; int? get statusChangedBy; String? get whatsappNumber; bool? get isOpenAllDay;@JsonKey(name: 'is_open_24_hours') bool? get isOpen24Hours; String? get timeOpen; String? get timeClose; bool? get internalCourier; bool? get instantCourier; bool? get pickupAtStore; List<String>? get courierCodeAvailable; int? get maxDistanceInternalCourier; List<CustomerMerchantAccountEntity>? get merchantAccounts; List<CustomerMerchantOpenEntity>? get merchantOpens; String? get address; String? get province; String? get city; String? get district; String? get postalCode; double? get longitude; double? get latitude; int? get balance; int? get currentBalance; double? get distance; List<String>? get promoBadges; CustomerMerchantUserEntity? get user; String? get chatUrl; String? get about; int? get internalCourierShippingCost; List<CustomerMerchantAboutSectionEntity>? get aboutSections; CustomerMerchantReviewSummaryEntity? get reviewSummary; List<CustomerMerchantReviewBreakdownEntity>? get reviewBreakdown; List<dynamic>? get reviews; String? get reviewEmptyMessage; DateTime? get createdAt; DateTime? get updatedAt;
 /// Create a copy of CustomerMerchant
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -35,16 +35,16 @@ $CustomerMerchantCopyWith<CustomerMerchant> get copyWith => _$CustomerMerchantCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CustomerMerchant&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.slug, slug) || other.slug == slug)&&(identical(other.photo, photo) || other.photo == photo)&&(identical(other.isActive, isActive) || other.isActive == isActive)&&(identical(other.isOpen, isOpen) || other.isOpen == isOpen)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.merchantCategory, merchantCategory) || other.merchantCategory == merchantCategory)&&(identical(other.status, status) || other.status == status)&&(identical(other.statusChangedBy, statusChangedBy) || other.statusChangedBy == statusChangedBy)&&(identical(other.whatsappNumber, whatsappNumber) || other.whatsappNumber == whatsappNumber)&&(identical(other.isOpenAllDay, isOpenAllDay) || other.isOpenAllDay == isOpenAllDay)&&(identical(other.isOpen24Hours, isOpen24Hours) || other.isOpen24Hours == isOpen24Hours)&&(identical(other.timeOpen, timeOpen) || other.timeOpen == timeOpen)&&(identical(other.timeClose, timeClose) || other.timeClose == timeClose)&&(identical(other.internalCourier, internalCourier) || other.internalCourier == internalCourier)&&(identical(other.instantCourier, instantCourier) || other.instantCourier == instantCourier)&&(identical(other.pickupAtStore, pickupAtStore) || other.pickupAtStore == pickupAtStore)&&const DeepCollectionEquality().equals(other.courierCodeAvailable, courierCodeAvailable)&&(identical(other.maxDistanceInternalCourier, maxDistanceInternalCourier) || other.maxDistanceInternalCourier == maxDistanceInternalCourier)&&const DeepCollectionEquality().equals(other.merchantAccounts, merchantAccounts)&&const DeepCollectionEquality().equals(other.merchantOpens, merchantOpens)&&(identical(other.address, address) || other.address == address)&&(identical(other.province, province) || other.province == province)&&(identical(other.city, city) || other.city == city)&&(identical(other.district, district) || other.district == district)&&(identical(other.postalCode, postalCode) || other.postalCode == postalCode)&&(identical(other.longitude, longitude) || other.longitude == longitude)&&(identical(other.latitude, latitude) || other.latitude == latitude)&&(identical(other.balance, balance) || other.balance == balance)&&(identical(other.currentBalance, currentBalance) || other.currentBalance == currentBalance)&&(identical(other.distance, distance) || other.distance == distance)&&const DeepCollectionEquality().equals(other.promoBadges, promoBadges)&&const DeepCollectionEquality().equals(other.user, user)&&(identical(other.chatUrl, chatUrl) || other.chatUrl == chatUrl));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CustomerMerchant&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.slug, slug) || other.slug == slug)&&(identical(other.photo, photo) || other.photo == photo)&&(identical(other.isActive, isActive) || other.isActive == isActive)&&(identical(other.isOpen, isOpen) || other.isOpen == isOpen)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.merchantCategory, merchantCategory) || other.merchantCategory == merchantCategory)&&(identical(other.status, status) || other.status == status)&&(identical(other.statusChangedBy, statusChangedBy) || other.statusChangedBy == statusChangedBy)&&(identical(other.whatsappNumber, whatsappNumber) || other.whatsappNumber == whatsappNumber)&&(identical(other.isOpenAllDay, isOpenAllDay) || other.isOpenAllDay == isOpenAllDay)&&(identical(other.isOpen24Hours, isOpen24Hours) || other.isOpen24Hours == isOpen24Hours)&&(identical(other.timeOpen, timeOpen) || other.timeOpen == timeOpen)&&(identical(other.timeClose, timeClose) || other.timeClose == timeClose)&&(identical(other.internalCourier, internalCourier) || other.internalCourier == internalCourier)&&(identical(other.instantCourier, instantCourier) || other.instantCourier == instantCourier)&&(identical(other.pickupAtStore, pickupAtStore) || other.pickupAtStore == pickupAtStore)&&const DeepCollectionEquality().equals(other.courierCodeAvailable, courierCodeAvailable)&&(identical(other.maxDistanceInternalCourier, maxDistanceInternalCourier) || other.maxDistanceInternalCourier == maxDistanceInternalCourier)&&const DeepCollectionEquality().equals(other.merchantAccounts, merchantAccounts)&&const DeepCollectionEquality().equals(other.merchantOpens, merchantOpens)&&(identical(other.address, address) || other.address == address)&&(identical(other.province, province) || other.province == province)&&(identical(other.city, city) || other.city == city)&&(identical(other.district, district) || other.district == district)&&(identical(other.postalCode, postalCode) || other.postalCode == postalCode)&&(identical(other.longitude, longitude) || other.longitude == longitude)&&(identical(other.latitude, latitude) || other.latitude == latitude)&&(identical(other.balance, balance) || other.balance == balance)&&(identical(other.currentBalance, currentBalance) || other.currentBalance == currentBalance)&&(identical(other.distance, distance) || other.distance == distance)&&const DeepCollectionEquality().equals(other.promoBadges, promoBadges)&&const DeepCollectionEquality().equals(other.user, user)&&(identical(other.chatUrl, chatUrl) || other.chatUrl == chatUrl)&&(identical(other.about, about) || other.about == about)&&(identical(other.internalCourierShippingCost, internalCourierShippingCost) || other.internalCourierShippingCost == internalCourierShippingCost)&&const DeepCollectionEquality().equals(other.aboutSections, aboutSections)&&const DeepCollectionEquality().equals(other.reviewSummary, reviewSummary)&&const DeepCollectionEquality().equals(other.reviewBreakdown, reviewBreakdown)&&const DeepCollectionEquality().equals(other.reviews, reviews)&&(identical(other.reviewEmptyMessage, reviewEmptyMessage) || other.reviewEmptyMessage == reviewEmptyMessage)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hashAll([runtimeType,id,name,slug,photo,isActive,isOpen,userId,merchantCategory,status,statusChangedBy,whatsappNumber,isOpenAllDay,isOpen24Hours,timeOpen,timeClose,internalCourier,instantCourier,pickupAtStore,const DeepCollectionEquality().hash(courierCodeAvailable),maxDistanceInternalCourier,const DeepCollectionEquality().hash(merchantAccounts),const DeepCollectionEquality().hash(merchantOpens),address,province,city,district,postalCode,longitude,latitude,balance,currentBalance,distance,const DeepCollectionEquality().hash(promoBadges),const DeepCollectionEquality().hash(user),chatUrl]);
+int get hashCode => Object.hashAll([runtimeType,id,name,slug,photo,isActive,isOpen,userId,merchantCategory,status,statusChangedBy,whatsappNumber,isOpenAllDay,isOpen24Hours,timeOpen,timeClose,internalCourier,instantCourier,pickupAtStore,const DeepCollectionEquality().hash(courierCodeAvailable),maxDistanceInternalCourier,const DeepCollectionEquality().hash(merchantAccounts),const DeepCollectionEquality().hash(merchantOpens),address,province,city,district,postalCode,longitude,latitude,balance,currentBalance,distance,const DeepCollectionEquality().hash(promoBadges),const DeepCollectionEquality().hash(user),chatUrl,about,internalCourierShippingCost,const DeepCollectionEquality().hash(aboutSections),const DeepCollectionEquality().hash(reviewSummary),const DeepCollectionEquality().hash(reviewBreakdown),const DeepCollectionEquality().hash(reviews),reviewEmptyMessage,createdAt,updatedAt]);
 
 @override
 String toString() {
-  return 'CustomerMerchant(id: $id, name: $name, slug: $slug, photo: $photo, isActive: $isActive, isOpen: $isOpen, userId: $userId, merchantCategory: $merchantCategory, status: $status, statusChangedBy: $statusChangedBy, whatsappNumber: $whatsappNumber, isOpenAllDay: $isOpenAllDay, isOpen24Hours: $isOpen24Hours, timeOpen: $timeOpen, timeClose: $timeClose, internalCourier: $internalCourier, instantCourier: $instantCourier, pickupAtStore: $pickupAtStore, courierCodeAvailable: $courierCodeAvailable, maxDistanceInternalCourier: $maxDistanceInternalCourier, merchantAccounts: $merchantAccounts, merchantOpens: $merchantOpens, address: $address, province: $province, city: $city, district: $district, postalCode: $postalCode, longitude: $longitude, latitude: $latitude, balance: $balance, currentBalance: $currentBalance, distance: $distance, promoBadges: $promoBadges, user: $user, chatUrl: $chatUrl)';
+  return 'CustomerMerchant(id: $id, name: $name, slug: $slug, photo: $photo, isActive: $isActive, isOpen: $isOpen, userId: $userId, merchantCategory: $merchantCategory, status: $status, statusChangedBy: $statusChangedBy, whatsappNumber: $whatsappNumber, isOpenAllDay: $isOpenAllDay, isOpen24Hours: $isOpen24Hours, timeOpen: $timeOpen, timeClose: $timeClose, internalCourier: $internalCourier, instantCourier: $instantCourier, pickupAtStore: $pickupAtStore, courierCodeAvailable: $courierCodeAvailable, maxDistanceInternalCourier: $maxDistanceInternalCourier, merchantAccounts: $merchantAccounts, merchantOpens: $merchantOpens, address: $address, province: $province, city: $city, district: $district, postalCode: $postalCode, longitude: $longitude, latitude: $latitude, balance: $balance, currentBalance: $currentBalance, distance: $distance, promoBadges: $promoBadges, user: $user, chatUrl: $chatUrl, about: $about, internalCourierShippingCost: $internalCourierShippingCost, aboutSections: $aboutSections, reviewSummary: $reviewSummary, reviewBreakdown: $reviewBreakdown, reviews: $reviews, reviewEmptyMessage: $reviewEmptyMessage, createdAt: $createdAt, updatedAt: $updatedAt)';
 }
 
 
@@ -55,7 +55,7 @@ abstract mixin class $CustomerMerchantCopyWith<$Res>  {
   factory $CustomerMerchantCopyWith(CustomerMerchant value, $Res Function(CustomerMerchant) _then) = _$CustomerMerchantCopyWithImpl;
 @useResult
 $Res call({
- String id, String name, String slug, String? photo, bool isActive, bool isOpen, int? userId, String? merchantCategory, String? status, int? statusChangedBy, String? whatsappNumber, bool? isOpenAllDay,@JsonKey(name: 'is_open_24_hours') bool? isOpen24Hours, String? timeOpen, String? timeClose, bool? internalCourier, bool? instantCourier, bool? pickupAtStore, List<String>? courierCodeAvailable, int? maxDistanceInternalCourier, List<CustomerMerchantAccountEntity>? merchantAccounts, List<CustomerMerchantOpenEntity>? merchantOpens, String? address, String? province, String? city, String? district, String? postalCode, double? longitude, double? latitude, int? balance, int? currentBalance, double? distance, List<String>? promoBadges, CustomerMerchantUserEntity? user, String? chatUrl
+ String id, String name, String slug, String? photo, bool isActive, bool isOpen, int? userId, String? merchantCategory, String? status, int? statusChangedBy, String? whatsappNumber, bool? isOpenAllDay,@JsonKey(name: 'is_open_24_hours') bool? isOpen24Hours, String? timeOpen, String? timeClose, bool? internalCourier, bool? instantCourier, bool? pickupAtStore, List<String>? courierCodeAvailable, int? maxDistanceInternalCourier, List<CustomerMerchantAccountEntity>? merchantAccounts, List<CustomerMerchantOpenEntity>? merchantOpens, String? address, String? province, String? city, String? district, String? postalCode, double? longitude, double? latitude, int? balance, int? currentBalance, double? distance, List<String>? promoBadges, CustomerMerchantUserEntity? user, String? chatUrl, String? about, int? internalCourierShippingCost, List<CustomerMerchantAboutSectionEntity>? aboutSections, CustomerMerchantReviewSummaryEntity? reviewSummary, List<CustomerMerchantReviewBreakdownEntity>? reviewBreakdown, List<dynamic>? reviews, String? reviewEmptyMessage, DateTime? createdAt, DateTime? updatedAt
 });
 
 
@@ -72,7 +72,7 @@ class _$CustomerMerchantCopyWithImpl<$Res>
 
 /// Create a copy of CustomerMerchant
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? slug = null,Object? photo = freezed,Object? isActive = null,Object? isOpen = null,Object? userId = freezed,Object? merchantCategory = freezed,Object? status = freezed,Object? statusChangedBy = freezed,Object? whatsappNumber = freezed,Object? isOpenAllDay = freezed,Object? isOpen24Hours = freezed,Object? timeOpen = freezed,Object? timeClose = freezed,Object? internalCourier = freezed,Object? instantCourier = freezed,Object? pickupAtStore = freezed,Object? courierCodeAvailable = freezed,Object? maxDistanceInternalCourier = freezed,Object? merchantAccounts = freezed,Object? merchantOpens = freezed,Object? address = freezed,Object? province = freezed,Object? city = freezed,Object? district = freezed,Object? postalCode = freezed,Object? longitude = freezed,Object? latitude = freezed,Object? balance = freezed,Object? currentBalance = freezed,Object? distance = freezed,Object? promoBadges = freezed,Object? user = freezed,Object? chatUrl = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? slug = null,Object? photo = freezed,Object? isActive = null,Object? isOpen = null,Object? userId = freezed,Object? merchantCategory = freezed,Object? status = freezed,Object? statusChangedBy = freezed,Object? whatsappNumber = freezed,Object? isOpenAllDay = freezed,Object? isOpen24Hours = freezed,Object? timeOpen = freezed,Object? timeClose = freezed,Object? internalCourier = freezed,Object? instantCourier = freezed,Object? pickupAtStore = freezed,Object? courierCodeAvailable = freezed,Object? maxDistanceInternalCourier = freezed,Object? merchantAccounts = freezed,Object? merchantOpens = freezed,Object? address = freezed,Object? province = freezed,Object? city = freezed,Object? district = freezed,Object? postalCode = freezed,Object? longitude = freezed,Object? latitude = freezed,Object? balance = freezed,Object? currentBalance = freezed,Object? distance = freezed,Object? promoBadges = freezed,Object? user = freezed,Object? chatUrl = freezed,Object? about = freezed,Object? internalCourierShippingCost = freezed,Object? aboutSections = freezed,Object? reviewSummary = freezed,Object? reviewBreakdown = freezed,Object? reviews = freezed,Object? reviewEmptyMessage = freezed,Object? createdAt = freezed,Object? updatedAt = freezed,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
@@ -109,7 +109,16 @@ as int?,distance: freezed == distance ? _self.distance : distance // ignore: cas
 as double?,promoBadges: freezed == promoBadges ? _self.promoBadges : promoBadges // ignore: cast_nullable_to_non_nullable
 as List<String>?,user: freezed == user ? _self.user : user // ignore: cast_nullable_to_non_nullable
 as CustomerMerchantUserEntity?,chatUrl: freezed == chatUrl ? _self.chatUrl : chatUrl // ignore: cast_nullable_to_non_nullable
-as String?,
+as String?,about: freezed == about ? _self.about : about // ignore: cast_nullable_to_non_nullable
+as String?,internalCourierShippingCost: freezed == internalCourierShippingCost ? _self.internalCourierShippingCost : internalCourierShippingCost // ignore: cast_nullable_to_non_nullable
+as int?,aboutSections: freezed == aboutSections ? _self.aboutSections : aboutSections // ignore: cast_nullable_to_non_nullable
+as List<CustomerMerchantAboutSectionEntity>?,reviewSummary: freezed == reviewSummary ? _self.reviewSummary : reviewSummary // ignore: cast_nullable_to_non_nullable
+as CustomerMerchantReviewSummaryEntity?,reviewBreakdown: freezed == reviewBreakdown ? _self.reviewBreakdown : reviewBreakdown // ignore: cast_nullable_to_non_nullable
+as List<CustomerMerchantReviewBreakdownEntity>?,reviews: freezed == reviews ? _self.reviews : reviews // ignore: cast_nullable_to_non_nullable
+as List<dynamic>?,reviewEmptyMessage: freezed == reviewEmptyMessage ? _self.reviewEmptyMessage : reviewEmptyMessage // ignore: cast_nullable_to_non_nullable
+as String?,createdAt: freezed == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,updatedAt: freezed == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,
   ));
 }
 
@@ -191,10 +200,10 @@ return entity(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String id,  String name,  String slug,  String? photo,  bool isActive,  bool isOpen,  int? userId,  String? merchantCategory,  String? status,  int? statusChangedBy,  String? whatsappNumber,  bool? isOpenAllDay, @JsonKey(name: 'is_open_24_hours')  bool? isOpen24Hours,  String? timeOpen,  String? timeClose,  bool? internalCourier,  bool? instantCourier,  bool? pickupAtStore,  List<String>? courierCodeAvailable,  int? maxDistanceInternalCourier,  List<CustomerMerchantAccountEntity>? merchantAccounts,  List<CustomerMerchantOpenEntity>? merchantOpens,  String? address,  String? province,  String? city,  String? district,  String? postalCode,  double? longitude,  double? latitude,  int? balance,  int? currentBalance,  double? distance,  List<String>? promoBadges,  CustomerMerchantUserEntity? user,  String? chatUrl)?  entity,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String id,  String name,  String slug,  String? photo,  bool isActive,  bool isOpen,  int? userId,  String? merchantCategory,  String? status,  int? statusChangedBy,  String? whatsappNumber,  bool? isOpenAllDay, @JsonKey(name: 'is_open_24_hours')  bool? isOpen24Hours,  String? timeOpen,  String? timeClose,  bool? internalCourier,  bool? instantCourier,  bool? pickupAtStore,  List<String>? courierCodeAvailable,  int? maxDistanceInternalCourier,  List<CustomerMerchantAccountEntity>? merchantAccounts,  List<CustomerMerchantOpenEntity>? merchantOpens,  String? address,  String? province,  String? city,  String? district,  String? postalCode,  double? longitude,  double? latitude,  int? balance,  int? currentBalance,  double? distance,  List<String>? promoBadges,  CustomerMerchantUserEntity? user,  String? chatUrl,  String? about,  int? internalCourierShippingCost,  List<CustomerMerchantAboutSectionEntity>? aboutSections,  CustomerMerchantReviewSummaryEntity? reviewSummary,  List<CustomerMerchantReviewBreakdownEntity>? reviewBreakdown,  List<dynamic>? reviews,  String? reviewEmptyMessage,  DateTime? createdAt,  DateTime? updatedAt)?  entity,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case CustomerMerchantEntity() when entity != null:
-return entity(_that.id,_that.name,_that.slug,_that.photo,_that.isActive,_that.isOpen,_that.userId,_that.merchantCategory,_that.status,_that.statusChangedBy,_that.whatsappNumber,_that.isOpenAllDay,_that.isOpen24Hours,_that.timeOpen,_that.timeClose,_that.internalCourier,_that.instantCourier,_that.pickupAtStore,_that.courierCodeAvailable,_that.maxDistanceInternalCourier,_that.merchantAccounts,_that.merchantOpens,_that.address,_that.province,_that.city,_that.district,_that.postalCode,_that.longitude,_that.latitude,_that.balance,_that.currentBalance,_that.distance,_that.promoBadges,_that.user,_that.chatUrl);case _:
+return entity(_that.id,_that.name,_that.slug,_that.photo,_that.isActive,_that.isOpen,_that.userId,_that.merchantCategory,_that.status,_that.statusChangedBy,_that.whatsappNumber,_that.isOpenAllDay,_that.isOpen24Hours,_that.timeOpen,_that.timeClose,_that.internalCourier,_that.instantCourier,_that.pickupAtStore,_that.courierCodeAvailable,_that.maxDistanceInternalCourier,_that.merchantAccounts,_that.merchantOpens,_that.address,_that.province,_that.city,_that.district,_that.postalCode,_that.longitude,_that.latitude,_that.balance,_that.currentBalance,_that.distance,_that.promoBadges,_that.user,_that.chatUrl,_that.about,_that.internalCourierShippingCost,_that.aboutSections,_that.reviewSummary,_that.reviewBreakdown,_that.reviews,_that.reviewEmptyMessage,_that.createdAt,_that.updatedAt);case _:
   return orElse();
 
 }
@@ -212,10 +221,10 @@ return entity(_that.id,_that.name,_that.slug,_that.photo,_that.isActive,_that.is
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String id,  String name,  String slug,  String? photo,  bool isActive,  bool isOpen,  int? userId,  String? merchantCategory,  String? status,  int? statusChangedBy,  String? whatsappNumber,  bool? isOpenAllDay, @JsonKey(name: 'is_open_24_hours')  bool? isOpen24Hours,  String? timeOpen,  String? timeClose,  bool? internalCourier,  bool? instantCourier,  bool? pickupAtStore,  List<String>? courierCodeAvailable,  int? maxDistanceInternalCourier,  List<CustomerMerchantAccountEntity>? merchantAccounts,  List<CustomerMerchantOpenEntity>? merchantOpens,  String? address,  String? province,  String? city,  String? district,  String? postalCode,  double? longitude,  double? latitude,  int? balance,  int? currentBalance,  double? distance,  List<String>? promoBadges,  CustomerMerchantUserEntity? user,  String? chatUrl)  entity,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String id,  String name,  String slug,  String? photo,  bool isActive,  bool isOpen,  int? userId,  String? merchantCategory,  String? status,  int? statusChangedBy,  String? whatsappNumber,  bool? isOpenAllDay, @JsonKey(name: 'is_open_24_hours')  bool? isOpen24Hours,  String? timeOpen,  String? timeClose,  bool? internalCourier,  bool? instantCourier,  bool? pickupAtStore,  List<String>? courierCodeAvailable,  int? maxDistanceInternalCourier,  List<CustomerMerchantAccountEntity>? merchantAccounts,  List<CustomerMerchantOpenEntity>? merchantOpens,  String? address,  String? province,  String? city,  String? district,  String? postalCode,  double? longitude,  double? latitude,  int? balance,  int? currentBalance,  double? distance,  List<String>? promoBadges,  CustomerMerchantUserEntity? user,  String? chatUrl,  String? about,  int? internalCourierShippingCost,  List<CustomerMerchantAboutSectionEntity>? aboutSections,  CustomerMerchantReviewSummaryEntity? reviewSummary,  List<CustomerMerchantReviewBreakdownEntity>? reviewBreakdown,  List<dynamic>? reviews,  String? reviewEmptyMessage,  DateTime? createdAt,  DateTime? updatedAt)  entity,}) {final _that = this;
 switch (_that) {
 case CustomerMerchantEntity():
-return entity(_that.id,_that.name,_that.slug,_that.photo,_that.isActive,_that.isOpen,_that.userId,_that.merchantCategory,_that.status,_that.statusChangedBy,_that.whatsappNumber,_that.isOpenAllDay,_that.isOpen24Hours,_that.timeOpen,_that.timeClose,_that.internalCourier,_that.instantCourier,_that.pickupAtStore,_that.courierCodeAvailable,_that.maxDistanceInternalCourier,_that.merchantAccounts,_that.merchantOpens,_that.address,_that.province,_that.city,_that.district,_that.postalCode,_that.longitude,_that.latitude,_that.balance,_that.currentBalance,_that.distance,_that.promoBadges,_that.user,_that.chatUrl);}
+return entity(_that.id,_that.name,_that.slug,_that.photo,_that.isActive,_that.isOpen,_that.userId,_that.merchantCategory,_that.status,_that.statusChangedBy,_that.whatsappNumber,_that.isOpenAllDay,_that.isOpen24Hours,_that.timeOpen,_that.timeClose,_that.internalCourier,_that.instantCourier,_that.pickupAtStore,_that.courierCodeAvailable,_that.maxDistanceInternalCourier,_that.merchantAccounts,_that.merchantOpens,_that.address,_that.province,_that.city,_that.district,_that.postalCode,_that.longitude,_that.latitude,_that.balance,_that.currentBalance,_that.distance,_that.promoBadges,_that.user,_that.chatUrl,_that.about,_that.internalCourierShippingCost,_that.aboutSections,_that.reviewSummary,_that.reviewBreakdown,_that.reviews,_that.reviewEmptyMessage,_that.createdAt,_that.updatedAt);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -229,10 +238,10 @@ return entity(_that.id,_that.name,_that.slug,_that.photo,_that.isActive,_that.is
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String id,  String name,  String slug,  String? photo,  bool isActive,  bool isOpen,  int? userId,  String? merchantCategory,  String? status,  int? statusChangedBy,  String? whatsappNumber,  bool? isOpenAllDay, @JsonKey(name: 'is_open_24_hours')  bool? isOpen24Hours,  String? timeOpen,  String? timeClose,  bool? internalCourier,  bool? instantCourier,  bool? pickupAtStore,  List<String>? courierCodeAvailable,  int? maxDistanceInternalCourier,  List<CustomerMerchantAccountEntity>? merchantAccounts,  List<CustomerMerchantOpenEntity>? merchantOpens,  String? address,  String? province,  String? city,  String? district,  String? postalCode,  double? longitude,  double? latitude,  int? balance,  int? currentBalance,  double? distance,  List<String>? promoBadges,  CustomerMerchantUserEntity? user,  String? chatUrl)?  entity,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String id,  String name,  String slug,  String? photo,  bool isActive,  bool isOpen,  int? userId,  String? merchantCategory,  String? status,  int? statusChangedBy,  String? whatsappNumber,  bool? isOpenAllDay, @JsonKey(name: 'is_open_24_hours')  bool? isOpen24Hours,  String? timeOpen,  String? timeClose,  bool? internalCourier,  bool? instantCourier,  bool? pickupAtStore,  List<String>? courierCodeAvailable,  int? maxDistanceInternalCourier,  List<CustomerMerchantAccountEntity>? merchantAccounts,  List<CustomerMerchantOpenEntity>? merchantOpens,  String? address,  String? province,  String? city,  String? district,  String? postalCode,  double? longitude,  double? latitude,  int? balance,  int? currentBalance,  double? distance,  List<String>? promoBadges,  CustomerMerchantUserEntity? user,  String? chatUrl,  String? about,  int? internalCourierShippingCost,  List<CustomerMerchantAboutSectionEntity>? aboutSections,  CustomerMerchantReviewSummaryEntity? reviewSummary,  List<CustomerMerchantReviewBreakdownEntity>? reviewBreakdown,  List<dynamic>? reviews,  String? reviewEmptyMessage,  DateTime? createdAt,  DateTime? updatedAt)?  entity,}) {final _that = this;
 switch (_that) {
 case CustomerMerchantEntity() when entity != null:
-return entity(_that.id,_that.name,_that.slug,_that.photo,_that.isActive,_that.isOpen,_that.userId,_that.merchantCategory,_that.status,_that.statusChangedBy,_that.whatsappNumber,_that.isOpenAllDay,_that.isOpen24Hours,_that.timeOpen,_that.timeClose,_that.internalCourier,_that.instantCourier,_that.pickupAtStore,_that.courierCodeAvailable,_that.maxDistanceInternalCourier,_that.merchantAccounts,_that.merchantOpens,_that.address,_that.province,_that.city,_that.district,_that.postalCode,_that.longitude,_that.latitude,_that.balance,_that.currentBalance,_that.distance,_that.promoBadges,_that.user,_that.chatUrl);case _:
+return entity(_that.id,_that.name,_that.slug,_that.photo,_that.isActive,_that.isOpen,_that.userId,_that.merchantCategory,_that.status,_that.statusChangedBy,_that.whatsappNumber,_that.isOpenAllDay,_that.isOpen24Hours,_that.timeOpen,_that.timeClose,_that.internalCourier,_that.instantCourier,_that.pickupAtStore,_that.courierCodeAvailable,_that.maxDistanceInternalCourier,_that.merchantAccounts,_that.merchantOpens,_that.address,_that.province,_that.city,_that.district,_that.postalCode,_that.longitude,_that.latitude,_that.balance,_that.currentBalance,_that.distance,_that.promoBadges,_that.user,_that.chatUrl,_that.about,_that.internalCourierShippingCost,_that.aboutSections,_that.reviewSummary,_that.reviewBreakdown,_that.reviews,_that.reviewEmptyMessage,_that.createdAt,_that.updatedAt);case _:
   return null;
 
 }
@@ -244,7 +253,7 @@ return entity(_that.id,_that.name,_that.slug,_that.photo,_that.isActive,_that.is
 
 @JsonSerializable(fieldRename: FieldRename.snake, includeIfNull: false)
 class CustomerMerchantEntity implements CustomerMerchant {
-  const CustomerMerchantEntity({required this.id, required this.name, required this.slug, this.photo, required this.isActive, required this.isOpen, this.userId, this.merchantCategory, this.status, this.statusChangedBy, this.whatsappNumber, this.isOpenAllDay, @JsonKey(name: 'is_open_24_hours') this.isOpen24Hours, this.timeOpen, this.timeClose, this.internalCourier, this.instantCourier, this.pickupAtStore, final  List<String>? courierCodeAvailable, this.maxDistanceInternalCourier, final  List<CustomerMerchantAccountEntity>? merchantAccounts, final  List<CustomerMerchantOpenEntity>? merchantOpens, this.address, this.province, this.city, this.district, this.postalCode, this.longitude, this.latitude, this.balance, this.currentBalance, this.distance, final  List<String>? promoBadges, this.user, this.chatUrl}): _courierCodeAvailable = courierCodeAvailable,_merchantAccounts = merchantAccounts,_merchantOpens = merchantOpens,_promoBadges = promoBadges;
+  const CustomerMerchantEntity({required this.id, required this.name, required this.slug, this.photo, required this.isActive, required this.isOpen, this.userId, this.merchantCategory, this.status, this.statusChangedBy, this.whatsappNumber, this.isOpenAllDay, @JsonKey(name: 'is_open_24_hours') this.isOpen24Hours, this.timeOpen, this.timeClose, this.internalCourier, this.instantCourier, this.pickupAtStore, final  List<String>? courierCodeAvailable, this.maxDistanceInternalCourier, final  List<CustomerMerchantAccountEntity>? merchantAccounts, final  List<CustomerMerchantOpenEntity>? merchantOpens, this.address, this.province, this.city, this.district, this.postalCode, this.longitude, this.latitude, this.balance, this.currentBalance, this.distance, final  List<String>? promoBadges, this.user, this.chatUrl, this.about, this.internalCourierShippingCost, final  List<CustomerMerchantAboutSectionEntity>? aboutSections, this.reviewSummary, final  List<CustomerMerchantReviewBreakdownEntity>? reviewBreakdown, final  List<dynamic>? reviews, this.reviewEmptyMessage, this.createdAt, this.updatedAt}): _courierCodeAvailable = courierCodeAvailable,_merchantAccounts = merchantAccounts,_merchantOpens = merchantOpens,_promoBadges = promoBadges,_aboutSections = aboutSections,_reviewBreakdown = reviewBreakdown,_reviews = reviews;
   factory CustomerMerchantEntity.fromJson(Map<String, dynamic> json) => _$CustomerMerchantEntityFromJson(json);
 
 @override final  String id;
@@ -314,6 +323,39 @@ class CustomerMerchantEntity implements CustomerMerchant {
 
 @override final  CustomerMerchantUserEntity? user;
 @override final  String? chatUrl;
+@override final  String? about;
+@override final  int? internalCourierShippingCost;
+ final  List<CustomerMerchantAboutSectionEntity>? _aboutSections;
+@override List<CustomerMerchantAboutSectionEntity>? get aboutSections {
+  final value = _aboutSections;
+  if (value == null) return null;
+  if (_aboutSections is EqualUnmodifiableListView) return _aboutSections;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(value);
+}
+
+@override final  CustomerMerchantReviewSummaryEntity? reviewSummary;
+ final  List<CustomerMerchantReviewBreakdownEntity>? _reviewBreakdown;
+@override List<CustomerMerchantReviewBreakdownEntity>? get reviewBreakdown {
+  final value = _reviewBreakdown;
+  if (value == null) return null;
+  if (_reviewBreakdown is EqualUnmodifiableListView) return _reviewBreakdown;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(value);
+}
+
+ final  List<dynamic>? _reviews;
+@override List<dynamic>? get reviews {
+  final value = _reviews;
+  if (value == null) return null;
+  if (_reviews is EqualUnmodifiableListView) return _reviews;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(value);
+}
+
+@override final  String? reviewEmptyMessage;
+@override final  DateTime? createdAt;
+@override final  DateTime? updatedAt;
 
 /// Create a copy of CustomerMerchant
 /// with the given fields replaced by the non-null parameter values.
@@ -328,16 +370,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CustomerMerchantEntity&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.slug, slug) || other.slug == slug)&&(identical(other.photo, photo) || other.photo == photo)&&(identical(other.isActive, isActive) || other.isActive == isActive)&&(identical(other.isOpen, isOpen) || other.isOpen == isOpen)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.merchantCategory, merchantCategory) || other.merchantCategory == merchantCategory)&&(identical(other.status, status) || other.status == status)&&(identical(other.statusChangedBy, statusChangedBy) || other.statusChangedBy == statusChangedBy)&&(identical(other.whatsappNumber, whatsappNumber) || other.whatsappNumber == whatsappNumber)&&(identical(other.isOpenAllDay, isOpenAllDay) || other.isOpenAllDay == isOpenAllDay)&&(identical(other.isOpen24Hours, isOpen24Hours) || other.isOpen24Hours == isOpen24Hours)&&(identical(other.timeOpen, timeOpen) || other.timeOpen == timeOpen)&&(identical(other.timeClose, timeClose) || other.timeClose == timeClose)&&(identical(other.internalCourier, internalCourier) || other.internalCourier == internalCourier)&&(identical(other.instantCourier, instantCourier) || other.instantCourier == instantCourier)&&(identical(other.pickupAtStore, pickupAtStore) || other.pickupAtStore == pickupAtStore)&&const DeepCollectionEquality().equals(other._courierCodeAvailable, _courierCodeAvailable)&&(identical(other.maxDistanceInternalCourier, maxDistanceInternalCourier) || other.maxDistanceInternalCourier == maxDistanceInternalCourier)&&const DeepCollectionEquality().equals(other._merchantAccounts, _merchantAccounts)&&const DeepCollectionEquality().equals(other._merchantOpens, _merchantOpens)&&(identical(other.address, address) || other.address == address)&&(identical(other.province, province) || other.province == province)&&(identical(other.city, city) || other.city == city)&&(identical(other.district, district) || other.district == district)&&(identical(other.postalCode, postalCode) || other.postalCode == postalCode)&&(identical(other.longitude, longitude) || other.longitude == longitude)&&(identical(other.latitude, latitude) || other.latitude == latitude)&&(identical(other.balance, balance) || other.balance == balance)&&(identical(other.currentBalance, currentBalance) || other.currentBalance == currentBalance)&&(identical(other.distance, distance) || other.distance == distance)&&const DeepCollectionEquality().equals(other._promoBadges, _promoBadges)&&const DeepCollectionEquality().equals(other.user, user)&&(identical(other.chatUrl, chatUrl) || other.chatUrl == chatUrl));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CustomerMerchantEntity&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.slug, slug) || other.slug == slug)&&(identical(other.photo, photo) || other.photo == photo)&&(identical(other.isActive, isActive) || other.isActive == isActive)&&(identical(other.isOpen, isOpen) || other.isOpen == isOpen)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.merchantCategory, merchantCategory) || other.merchantCategory == merchantCategory)&&(identical(other.status, status) || other.status == status)&&(identical(other.statusChangedBy, statusChangedBy) || other.statusChangedBy == statusChangedBy)&&(identical(other.whatsappNumber, whatsappNumber) || other.whatsappNumber == whatsappNumber)&&(identical(other.isOpenAllDay, isOpenAllDay) || other.isOpenAllDay == isOpenAllDay)&&(identical(other.isOpen24Hours, isOpen24Hours) || other.isOpen24Hours == isOpen24Hours)&&(identical(other.timeOpen, timeOpen) || other.timeOpen == timeOpen)&&(identical(other.timeClose, timeClose) || other.timeClose == timeClose)&&(identical(other.internalCourier, internalCourier) || other.internalCourier == internalCourier)&&(identical(other.instantCourier, instantCourier) || other.instantCourier == instantCourier)&&(identical(other.pickupAtStore, pickupAtStore) || other.pickupAtStore == pickupAtStore)&&const DeepCollectionEquality().equals(other._courierCodeAvailable, _courierCodeAvailable)&&(identical(other.maxDistanceInternalCourier, maxDistanceInternalCourier) || other.maxDistanceInternalCourier == maxDistanceInternalCourier)&&const DeepCollectionEquality().equals(other._merchantAccounts, _merchantAccounts)&&const DeepCollectionEquality().equals(other._merchantOpens, _merchantOpens)&&(identical(other.address, address) || other.address == address)&&(identical(other.province, province) || other.province == province)&&(identical(other.city, city) || other.city == city)&&(identical(other.district, district) || other.district == district)&&(identical(other.postalCode, postalCode) || other.postalCode == postalCode)&&(identical(other.longitude, longitude) || other.longitude == longitude)&&(identical(other.latitude, latitude) || other.latitude == latitude)&&(identical(other.balance, balance) || other.balance == balance)&&(identical(other.currentBalance, currentBalance) || other.currentBalance == currentBalance)&&(identical(other.distance, distance) || other.distance == distance)&&const DeepCollectionEquality().equals(other._promoBadges, _promoBadges)&&const DeepCollectionEquality().equals(other.user, user)&&(identical(other.chatUrl, chatUrl) || other.chatUrl == chatUrl)&&(identical(other.about, about) || other.about == about)&&(identical(other.internalCourierShippingCost, internalCourierShippingCost) || other.internalCourierShippingCost == internalCourierShippingCost)&&const DeepCollectionEquality().equals(other._aboutSections, _aboutSections)&&const DeepCollectionEquality().equals(other.reviewSummary, reviewSummary)&&const DeepCollectionEquality().equals(other._reviewBreakdown, _reviewBreakdown)&&const DeepCollectionEquality().equals(other._reviews, _reviews)&&(identical(other.reviewEmptyMessage, reviewEmptyMessage) || other.reviewEmptyMessage == reviewEmptyMessage)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hashAll([runtimeType,id,name,slug,photo,isActive,isOpen,userId,merchantCategory,status,statusChangedBy,whatsappNumber,isOpenAllDay,isOpen24Hours,timeOpen,timeClose,internalCourier,instantCourier,pickupAtStore,const DeepCollectionEquality().hash(_courierCodeAvailable),maxDistanceInternalCourier,const DeepCollectionEquality().hash(_merchantAccounts),const DeepCollectionEquality().hash(_merchantOpens),address,province,city,district,postalCode,longitude,latitude,balance,currentBalance,distance,const DeepCollectionEquality().hash(_promoBadges),const DeepCollectionEquality().hash(user),chatUrl]);
+int get hashCode => Object.hashAll([runtimeType,id,name,slug,photo,isActive,isOpen,userId,merchantCategory,status,statusChangedBy,whatsappNumber,isOpenAllDay,isOpen24Hours,timeOpen,timeClose,internalCourier,instantCourier,pickupAtStore,const DeepCollectionEquality().hash(_courierCodeAvailable),maxDistanceInternalCourier,const DeepCollectionEquality().hash(_merchantAccounts),const DeepCollectionEquality().hash(_merchantOpens),address,province,city,district,postalCode,longitude,latitude,balance,currentBalance,distance,const DeepCollectionEquality().hash(_promoBadges),const DeepCollectionEquality().hash(user),chatUrl,about,internalCourierShippingCost,const DeepCollectionEquality().hash(_aboutSections),const DeepCollectionEquality().hash(reviewSummary),const DeepCollectionEquality().hash(_reviewBreakdown),const DeepCollectionEquality().hash(_reviews),reviewEmptyMessage,createdAt,updatedAt]);
 
 @override
 String toString() {
-  return 'CustomerMerchant.entity(id: $id, name: $name, slug: $slug, photo: $photo, isActive: $isActive, isOpen: $isOpen, userId: $userId, merchantCategory: $merchantCategory, status: $status, statusChangedBy: $statusChangedBy, whatsappNumber: $whatsappNumber, isOpenAllDay: $isOpenAllDay, isOpen24Hours: $isOpen24Hours, timeOpen: $timeOpen, timeClose: $timeClose, internalCourier: $internalCourier, instantCourier: $instantCourier, pickupAtStore: $pickupAtStore, courierCodeAvailable: $courierCodeAvailable, maxDistanceInternalCourier: $maxDistanceInternalCourier, merchantAccounts: $merchantAccounts, merchantOpens: $merchantOpens, address: $address, province: $province, city: $city, district: $district, postalCode: $postalCode, longitude: $longitude, latitude: $latitude, balance: $balance, currentBalance: $currentBalance, distance: $distance, promoBadges: $promoBadges, user: $user, chatUrl: $chatUrl)';
+  return 'CustomerMerchant.entity(id: $id, name: $name, slug: $slug, photo: $photo, isActive: $isActive, isOpen: $isOpen, userId: $userId, merchantCategory: $merchantCategory, status: $status, statusChangedBy: $statusChangedBy, whatsappNumber: $whatsappNumber, isOpenAllDay: $isOpenAllDay, isOpen24Hours: $isOpen24Hours, timeOpen: $timeOpen, timeClose: $timeClose, internalCourier: $internalCourier, instantCourier: $instantCourier, pickupAtStore: $pickupAtStore, courierCodeAvailable: $courierCodeAvailable, maxDistanceInternalCourier: $maxDistanceInternalCourier, merchantAccounts: $merchantAccounts, merchantOpens: $merchantOpens, address: $address, province: $province, city: $city, district: $district, postalCode: $postalCode, longitude: $longitude, latitude: $latitude, balance: $balance, currentBalance: $currentBalance, distance: $distance, promoBadges: $promoBadges, user: $user, chatUrl: $chatUrl, about: $about, internalCourierShippingCost: $internalCourierShippingCost, aboutSections: $aboutSections, reviewSummary: $reviewSummary, reviewBreakdown: $reviewBreakdown, reviews: $reviews, reviewEmptyMessage: $reviewEmptyMessage, createdAt: $createdAt, updatedAt: $updatedAt)';
 }
 
 
@@ -348,7 +390,7 @@ abstract mixin class $CustomerMerchantEntityCopyWith<$Res> implements $CustomerM
   factory $CustomerMerchantEntityCopyWith(CustomerMerchantEntity value, $Res Function(CustomerMerchantEntity) _then) = _$CustomerMerchantEntityCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String name, String slug, String? photo, bool isActive, bool isOpen, int? userId, String? merchantCategory, String? status, int? statusChangedBy, String? whatsappNumber, bool? isOpenAllDay,@JsonKey(name: 'is_open_24_hours') bool? isOpen24Hours, String? timeOpen, String? timeClose, bool? internalCourier, bool? instantCourier, bool? pickupAtStore, List<String>? courierCodeAvailable, int? maxDistanceInternalCourier, List<CustomerMerchantAccountEntity>? merchantAccounts, List<CustomerMerchantOpenEntity>? merchantOpens, String? address, String? province, String? city, String? district, String? postalCode, double? longitude, double? latitude, int? balance, int? currentBalance, double? distance, List<String>? promoBadges, CustomerMerchantUserEntity? user, String? chatUrl
+ String id, String name, String slug, String? photo, bool isActive, bool isOpen, int? userId, String? merchantCategory, String? status, int? statusChangedBy, String? whatsappNumber, bool? isOpenAllDay,@JsonKey(name: 'is_open_24_hours') bool? isOpen24Hours, String? timeOpen, String? timeClose, bool? internalCourier, bool? instantCourier, bool? pickupAtStore, List<String>? courierCodeAvailable, int? maxDistanceInternalCourier, List<CustomerMerchantAccountEntity>? merchantAccounts, List<CustomerMerchantOpenEntity>? merchantOpens, String? address, String? province, String? city, String? district, String? postalCode, double? longitude, double? latitude, int? balance, int? currentBalance, double? distance, List<String>? promoBadges, CustomerMerchantUserEntity? user, String? chatUrl, String? about, int? internalCourierShippingCost, List<CustomerMerchantAboutSectionEntity>? aboutSections, CustomerMerchantReviewSummaryEntity? reviewSummary, List<CustomerMerchantReviewBreakdownEntity>? reviewBreakdown, List<dynamic>? reviews, String? reviewEmptyMessage, DateTime? createdAt, DateTime? updatedAt
 });
 
 
@@ -365,7 +407,7 @@ class _$CustomerMerchantEntityCopyWithImpl<$Res>
 
 /// Create a copy of CustomerMerchant
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? slug = null,Object? photo = freezed,Object? isActive = null,Object? isOpen = null,Object? userId = freezed,Object? merchantCategory = freezed,Object? status = freezed,Object? statusChangedBy = freezed,Object? whatsappNumber = freezed,Object? isOpenAllDay = freezed,Object? isOpen24Hours = freezed,Object? timeOpen = freezed,Object? timeClose = freezed,Object? internalCourier = freezed,Object? instantCourier = freezed,Object? pickupAtStore = freezed,Object? courierCodeAvailable = freezed,Object? maxDistanceInternalCourier = freezed,Object? merchantAccounts = freezed,Object? merchantOpens = freezed,Object? address = freezed,Object? province = freezed,Object? city = freezed,Object? district = freezed,Object? postalCode = freezed,Object? longitude = freezed,Object? latitude = freezed,Object? balance = freezed,Object? currentBalance = freezed,Object? distance = freezed,Object? promoBadges = freezed,Object? user = freezed,Object? chatUrl = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? slug = null,Object? photo = freezed,Object? isActive = null,Object? isOpen = null,Object? userId = freezed,Object? merchantCategory = freezed,Object? status = freezed,Object? statusChangedBy = freezed,Object? whatsappNumber = freezed,Object? isOpenAllDay = freezed,Object? isOpen24Hours = freezed,Object? timeOpen = freezed,Object? timeClose = freezed,Object? internalCourier = freezed,Object? instantCourier = freezed,Object? pickupAtStore = freezed,Object? courierCodeAvailable = freezed,Object? maxDistanceInternalCourier = freezed,Object? merchantAccounts = freezed,Object? merchantOpens = freezed,Object? address = freezed,Object? province = freezed,Object? city = freezed,Object? district = freezed,Object? postalCode = freezed,Object? longitude = freezed,Object? latitude = freezed,Object? balance = freezed,Object? currentBalance = freezed,Object? distance = freezed,Object? promoBadges = freezed,Object? user = freezed,Object? chatUrl = freezed,Object? about = freezed,Object? internalCourierShippingCost = freezed,Object? aboutSections = freezed,Object? reviewSummary = freezed,Object? reviewBreakdown = freezed,Object? reviews = freezed,Object? reviewEmptyMessage = freezed,Object? createdAt = freezed,Object? updatedAt = freezed,}) {
   return _then(CustomerMerchantEntity(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
@@ -402,7 +444,16 @@ as int?,distance: freezed == distance ? _self.distance : distance // ignore: cas
 as double?,promoBadges: freezed == promoBadges ? _self._promoBadges : promoBadges // ignore: cast_nullable_to_non_nullable
 as List<String>?,user: freezed == user ? _self.user : user // ignore: cast_nullable_to_non_nullable
 as CustomerMerchantUserEntity?,chatUrl: freezed == chatUrl ? _self.chatUrl : chatUrl // ignore: cast_nullable_to_non_nullable
-as String?,
+as String?,about: freezed == about ? _self.about : about // ignore: cast_nullable_to_non_nullable
+as String?,internalCourierShippingCost: freezed == internalCourierShippingCost ? _self.internalCourierShippingCost : internalCourierShippingCost // ignore: cast_nullable_to_non_nullable
+as int?,aboutSections: freezed == aboutSections ? _self._aboutSections : aboutSections // ignore: cast_nullable_to_non_nullable
+as List<CustomerMerchantAboutSectionEntity>?,reviewSummary: freezed == reviewSummary ? _self.reviewSummary : reviewSummary // ignore: cast_nullable_to_non_nullable
+as CustomerMerchantReviewSummaryEntity?,reviewBreakdown: freezed == reviewBreakdown ? _self._reviewBreakdown : reviewBreakdown // ignore: cast_nullable_to_non_nullable
+as List<CustomerMerchantReviewBreakdownEntity>?,reviews: freezed == reviews ? _self._reviews : reviews // ignore: cast_nullable_to_non_nullable
+as List<dynamic>?,reviewEmptyMessage: freezed == reviewEmptyMessage ? _self.reviewEmptyMessage : reviewEmptyMessage // ignore: cast_nullable_to_non_nullable
+as String?,createdAt: freezed == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,updatedAt: freezed == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,
   ));
 }
 
@@ -1231,6 +1282,807 @@ as String,email: null == email ? _self.email : email // ignore: cast_nullable_to
 as String,phone: null == phone ? _self.phone : phone // ignore: cast_nullable_to_non_nullable
 as String,profilePhoto: freezed == profilePhoto ? _self.profilePhoto : profilePhoto // ignore: cast_nullable_to_non_nullable
 as String?,
+  ));
+}
+
+
+}
+
+CustomerMerchantAboutSection _$CustomerMerchantAboutSectionFromJson(
+  Map<String, dynamic> json
+) {
+    return CustomerMerchantAboutSectionEntity.fromJson(
+      json
+    );
+}
+
+/// @nodoc
+mixin _$CustomerMerchantAboutSection {
+
+ String get title; String get content;
+/// Create a copy of CustomerMerchantAboutSection
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$CustomerMerchantAboutSectionCopyWith<CustomerMerchantAboutSection> get copyWith => _$CustomerMerchantAboutSectionCopyWithImpl<CustomerMerchantAboutSection>(this as CustomerMerchantAboutSection, _$identity);
+
+  /// Serializes this CustomerMerchantAboutSection to a JSON map.
+  Map<String, dynamic> toJson();
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CustomerMerchantAboutSection&&(identical(other.title, title) || other.title == title)&&(identical(other.content, content) || other.content == content));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,title,content);
+
+@override
+String toString() {
+  return 'CustomerMerchantAboutSection(title: $title, content: $content)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $CustomerMerchantAboutSectionCopyWith<$Res>  {
+  factory $CustomerMerchantAboutSectionCopyWith(CustomerMerchantAboutSection value, $Res Function(CustomerMerchantAboutSection) _then) = _$CustomerMerchantAboutSectionCopyWithImpl;
+@useResult
+$Res call({
+ String title, String content
+});
+
+
+
+
+}
+/// @nodoc
+class _$CustomerMerchantAboutSectionCopyWithImpl<$Res>
+    implements $CustomerMerchantAboutSectionCopyWith<$Res> {
+  _$CustomerMerchantAboutSectionCopyWithImpl(this._self, this._then);
+
+  final CustomerMerchantAboutSection _self;
+  final $Res Function(CustomerMerchantAboutSection) _then;
+
+/// Create a copy of CustomerMerchantAboutSection
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? title = null,Object? content = null,}) {
+  return _then(_self.copyWith(
+title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
+as String,content: null == content ? _self.content : content // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [CustomerMerchantAboutSection].
+extension CustomerMerchantAboutSectionPatterns on CustomerMerchantAboutSection {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( CustomerMerchantAboutSectionEntity value)?  entity,required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case CustomerMerchantAboutSectionEntity() when entity != null:
+return entity(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( CustomerMerchantAboutSectionEntity value)  entity,}){
+final _that = this;
+switch (_that) {
+case CustomerMerchantAboutSectionEntity():
+return entity(_that);}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( CustomerMerchantAboutSectionEntity value)?  entity,}){
+final _that = this;
+switch (_that) {
+case CustomerMerchantAboutSectionEntity() when entity != null:
+return entity(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String title,  String content)?  entity,required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case CustomerMerchantAboutSectionEntity() when entity != null:
+return entity(_that.title,_that.content);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String title,  String content)  entity,}) {final _that = this;
+switch (_that) {
+case CustomerMerchantAboutSectionEntity():
+return entity(_that.title,_that.content);}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String title,  String content)?  entity,}) {final _that = this;
+switch (_that) {
+case CustomerMerchantAboutSectionEntity() when entity != null:
+return entity(_that.title,_that.content);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+
+@JsonSerializable(fieldRename: FieldRename.snake, includeIfNull: false)
+class CustomerMerchantAboutSectionEntity implements CustomerMerchantAboutSection {
+  const CustomerMerchantAboutSectionEntity({required this.title, required this.content});
+  factory CustomerMerchantAboutSectionEntity.fromJson(Map<String, dynamic> json) => _$CustomerMerchantAboutSectionEntityFromJson(json);
+
+@override final  String title;
+@override final  String content;
+
+/// Create a copy of CustomerMerchantAboutSection
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$CustomerMerchantAboutSectionEntityCopyWith<CustomerMerchantAboutSectionEntity> get copyWith => _$CustomerMerchantAboutSectionEntityCopyWithImpl<CustomerMerchantAboutSectionEntity>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$CustomerMerchantAboutSectionEntityToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CustomerMerchantAboutSectionEntity&&(identical(other.title, title) || other.title == title)&&(identical(other.content, content) || other.content == content));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,title,content);
+
+@override
+String toString() {
+  return 'CustomerMerchantAboutSection.entity(title: $title, content: $content)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $CustomerMerchantAboutSectionEntityCopyWith<$Res> implements $CustomerMerchantAboutSectionCopyWith<$Res> {
+  factory $CustomerMerchantAboutSectionEntityCopyWith(CustomerMerchantAboutSectionEntity value, $Res Function(CustomerMerchantAboutSectionEntity) _then) = _$CustomerMerchantAboutSectionEntityCopyWithImpl;
+@override @useResult
+$Res call({
+ String title, String content
+});
+
+
+
+
+}
+/// @nodoc
+class _$CustomerMerchantAboutSectionEntityCopyWithImpl<$Res>
+    implements $CustomerMerchantAboutSectionEntityCopyWith<$Res> {
+  _$CustomerMerchantAboutSectionEntityCopyWithImpl(this._self, this._then);
+
+  final CustomerMerchantAboutSectionEntity _self;
+  final $Res Function(CustomerMerchantAboutSectionEntity) _then;
+
+/// Create a copy of CustomerMerchantAboutSection
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? title = null,Object? content = null,}) {
+  return _then(CustomerMerchantAboutSectionEntity(
+title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
+as String,content: null == content ? _self.content : content // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
+
+CustomerMerchantReviewSummary _$CustomerMerchantReviewSummaryFromJson(
+  Map<String, dynamic> json
+) {
+    return CustomerMerchantReviewSummaryEntity.fromJson(
+      json
+    );
+}
+
+/// @nodoc
+mixin _$CustomerMerchantReviewSummary {
+
+ String get rating; int get total;
+/// Create a copy of CustomerMerchantReviewSummary
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$CustomerMerchantReviewSummaryCopyWith<CustomerMerchantReviewSummary> get copyWith => _$CustomerMerchantReviewSummaryCopyWithImpl<CustomerMerchantReviewSummary>(this as CustomerMerchantReviewSummary, _$identity);
+
+  /// Serializes this CustomerMerchantReviewSummary to a JSON map.
+  Map<String, dynamic> toJson();
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CustomerMerchantReviewSummary&&(identical(other.rating, rating) || other.rating == rating)&&(identical(other.total, total) || other.total == total));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,rating,total);
+
+@override
+String toString() {
+  return 'CustomerMerchantReviewSummary(rating: $rating, total: $total)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $CustomerMerchantReviewSummaryCopyWith<$Res>  {
+  factory $CustomerMerchantReviewSummaryCopyWith(CustomerMerchantReviewSummary value, $Res Function(CustomerMerchantReviewSummary) _then) = _$CustomerMerchantReviewSummaryCopyWithImpl;
+@useResult
+$Res call({
+ String rating, int total
+});
+
+
+
+
+}
+/// @nodoc
+class _$CustomerMerchantReviewSummaryCopyWithImpl<$Res>
+    implements $CustomerMerchantReviewSummaryCopyWith<$Res> {
+  _$CustomerMerchantReviewSummaryCopyWithImpl(this._self, this._then);
+
+  final CustomerMerchantReviewSummary _self;
+  final $Res Function(CustomerMerchantReviewSummary) _then;
+
+/// Create a copy of CustomerMerchantReviewSummary
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? rating = null,Object? total = null,}) {
+  return _then(_self.copyWith(
+rating: null == rating ? _self.rating : rating // ignore: cast_nullable_to_non_nullable
+as String,total: null == total ? _self.total : total // ignore: cast_nullable_to_non_nullable
+as int,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [CustomerMerchantReviewSummary].
+extension CustomerMerchantReviewSummaryPatterns on CustomerMerchantReviewSummary {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( CustomerMerchantReviewSummaryEntity value)?  entity,required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case CustomerMerchantReviewSummaryEntity() when entity != null:
+return entity(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( CustomerMerchantReviewSummaryEntity value)  entity,}){
+final _that = this;
+switch (_that) {
+case CustomerMerchantReviewSummaryEntity():
+return entity(_that);}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( CustomerMerchantReviewSummaryEntity value)?  entity,}){
+final _that = this;
+switch (_that) {
+case CustomerMerchantReviewSummaryEntity() when entity != null:
+return entity(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String rating,  int total)?  entity,required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case CustomerMerchantReviewSummaryEntity() when entity != null:
+return entity(_that.rating,_that.total);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String rating,  int total)  entity,}) {final _that = this;
+switch (_that) {
+case CustomerMerchantReviewSummaryEntity():
+return entity(_that.rating,_that.total);}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String rating,  int total)?  entity,}) {final _that = this;
+switch (_that) {
+case CustomerMerchantReviewSummaryEntity() when entity != null:
+return entity(_that.rating,_that.total);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+
+@JsonSerializable(fieldRename: FieldRename.snake, includeIfNull: false)
+class CustomerMerchantReviewSummaryEntity implements CustomerMerchantReviewSummary {
+  const CustomerMerchantReviewSummaryEntity({required this.rating, required this.total});
+  factory CustomerMerchantReviewSummaryEntity.fromJson(Map<String, dynamic> json) => _$CustomerMerchantReviewSummaryEntityFromJson(json);
+
+@override final  String rating;
+@override final  int total;
+
+/// Create a copy of CustomerMerchantReviewSummary
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$CustomerMerchantReviewSummaryEntityCopyWith<CustomerMerchantReviewSummaryEntity> get copyWith => _$CustomerMerchantReviewSummaryEntityCopyWithImpl<CustomerMerchantReviewSummaryEntity>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$CustomerMerchantReviewSummaryEntityToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CustomerMerchantReviewSummaryEntity&&(identical(other.rating, rating) || other.rating == rating)&&(identical(other.total, total) || other.total == total));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,rating,total);
+
+@override
+String toString() {
+  return 'CustomerMerchantReviewSummary.entity(rating: $rating, total: $total)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $CustomerMerchantReviewSummaryEntityCopyWith<$Res> implements $CustomerMerchantReviewSummaryCopyWith<$Res> {
+  factory $CustomerMerchantReviewSummaryEntityCopyWith(CustomerMerchantReviewSummaryEntity value, $Res Function(CustomerMerchantReviewSummaryEntity) _then) = _$CustomerMerchantReviewSummaryEntityCopyWithImpl;
+@override @useResult
+$Res call({
+ String rating, int total
+});
+
+
+
+
+}
+/// @nodoc
+class _$CustomerMerchantReviewSummaryEntityCopyWithImpl<$Res>
+    implements $CustomerMerchantReviewSummaryEntityCopyWith<$Res> {
+  _$CustomerMerchantReviewSummaryEntityCopyWithImpl(this._self, this._then);
+
+  final CustomerMerchantReviewSummaryEntity _self;
+  final $Res Function(CustomerMerchantReviewSummaryEntity) _then;
+
+/// Create a copy of CustomerMerchantReviewSummary
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? rating = null,Object? total = null,}) {
+  return _then(CustomerMerchantReviewSummaryEntity(
+rating: null == rating ? _self.rating : rating // ignore: cast_nullable_to_non_nullable
+as String,total: null == total ? _self.total : total // ignore: cast_nullable_to_non_nullable
+as int,
+  ));
+}
+
+
+}
+
+CustomerMerchantReviewBreakdown _$CustomerMerchantReviewBreakdownFromJson(
+  Map<String, dynamic> json
+) {
+    return CustomerMerchantReviewBreakdownEntity.fromJson(
+      json
+    );
+}
+
+/// @nodoc
+mixin _$CustomerMerchantReviewBreakdown {
+
+ String get label; int get percent;
+/// Create a copy of CustomerMerchantReviewBreakdown
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$CustomerMerchantReviewBreakdownCopyWith<CustomerMerchantReviewBreakdown> get copyWith => _$CustomerMerchantReviewBreakdownCopyWithImpl<CustomerMerchantReviewBreakdown>(this as CustomerMerchantReviewBreakdown, _$identity);
+
+  /// Serializes this CustomerMerchantReviewBreakdown to a JSON map.
+  Map<String, dynamic> toJson();
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CustomerMerchantReviewBreakdown&&(identical(other.label, label) || other.label == label)&&(identical(other.percent, percent) || other.percent == percent));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,label,percent);
+
+@override
+String toString() {
+  return 'CustomerMerchantReviewBreakdown(label: $label, percent: $percent)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $CustomerMerchantReviewBreakdownCopyWith<$Res>  {
+  factory $CustomerMerchantReviewBreakdownCopyWith(CustomerMerchantReviewBreakdown value, $Res Function(CustomerMerchantReviewBreakdown) _then) = _$CustomerMerchantReviewBreakdownCopyWithImpl;
+@useResult
+$Res call({
+ String label, int percent
+});
+
+
+
+
+}
+/// @nodoc
+class _$CustomerMerchantReviewBreakdownCopyWithImpl<$Res>
+    implements $CustomerMerchantReviewBreakdownCopyWith<$Res> {
+  _$CustomerMerchantReviewBreakdownCopyWithImpl(this._self, this._then);
+
+  final CustomerMerchantReviewBreakdown _self;
+  final $Res Function(CustomerMerchantReviewBreakdown) _then;
+
+/// Create a copy of CustomerMerchantReviewBreakdown
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? label = null,Object? percent = null,}) {
+  return _then(_self.copyWith(
+label: null == label ? _self.label : label // ignore: cast_nullable_to_non_nullable
+as String,percent: null == percent ? _self.percent : percent // ignore: cast_nullable_to_non_nullable
+as int,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [CustomerMerchantReviewBreakdown].
+extension CustomerMerchantReviewBreakdownPatterns on CustomerMerchantReviewBreakdown {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( CustomerMerchantReviewBreakdownEntity value)?  entity,required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case CustomerMerchantReviewBreakdownEntity() when entity != null:
+return entity(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( CustomerMerchantReviewBreakdownEntity value)  entity,}){
+final _that = this;
+switch (_that) {
+case CustomerMerchantReviewBreakdownEntity():
+return entity(_that);}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( CustomerMerchantReviewBreakdownEntity value)?  entity,}){
+final _that = this;
+switch (_that) {
+case CustomerMerchantReviewBreakdownEntity() when entity != null:
+return entity(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String label,  int percent)?  entity,required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case CustomerMerchantReviewBreakdownEntity() when entity != null:
+return entity(_that.label,_that.percent);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String label,  int percent)  entity,}) {final _that = this;
+switch (_that) {
+case CustomerMerchantReviewBreakdownEntity():
+return entity(_that.label,_that.percent);}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String label,  int percent)?  entity,}) {final _that = this;
+switch (_that) {
+case CustomerMerchantReviewBreakdownEntity() when entity != null:
+return entity(_that.label,_that.percent);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+
+@JsonSerializable(fieldRename: FieldRename.snake, includeIfNull: false)
+class CustomerMerchantReviewBreakdownEntity implements CustomerMerchantReviewBreakdown {
+  const CustomerMerchantReviewBreakdownEntity({required this.label, required this.percent});
+  factory CustomerMerchantReviewBreakdownEntity.fromJson(Map<String, dynamic> json) => _$CustomerMerchantReviewBreakdownEntityFromJson(json);
+
+@override final  String label;
+@override final  int percent;
+
+/// Create a copy of CustomerMerchantReviewBreakdown
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$CustomerMerchantReviewBreakdownEntityCopyWith<CustomerMerchantReviewBreakdownEntity> get copyWith => _$CustomerMerchantReviewBreakdownEntityCopyWithImpl<CustomerMerchantReviewBreakdownEntity>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$CustomerMerchantReviewBreakdownEntityToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CustomerMerchantReviewBreakdownEntity&&(identical(other.label, label) || other.label == label)&&(identical(other.percent, percent) || other.percent == percent));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,label,percent);
+
+@override
+String toString() {
+  return 'CustomerMerchantReviewBreakdown.entity(label: $label, percent: $percent)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $CustomerMerchantReviewBreakdownEntityCopyWith<$Res> implements $CustomerMerchantReviewBreakdownCopyWith<$Res> {
+  factory $CustomerMerchantReviewBreakdownEntityCopyWith(CustomerMerchantReviewBreakdownEntity value, $Res Function(CustomerMerchantReviewBreakdownEntity) _then) = _$CustomerMerchantReviewBreakdownEntityCopyWithImpl;
+@override @useResult
+$Res call({
+ String label, int percent
+});
+
+
+
+
+}
+/// @nodoc
+class _$CustomerMerchantReviewBreakdownEntityCopyWithImpl<$Res>
+    implements $CustomerMerchantReviewBreakdownEntityCopyWith<$Res> {
+  _$CustomerMerchantReviewBreakdownEntityCopyWithImpl(this._self, this._then);
+
+  final CustomerMerchantReviewBreakdownEntity _self;
+  final $Res Function(CustomerMerchantReviewBreakdownEntity) _then;
+
+/// Create a copy of CustomerMerchantReviewBreakdown
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? label = null,Object? percent = null,}) {
+  return _then(CustomerMerchantReviewBreakdownEntity(
+label: null == label ? _self.label : label // ignore: cast_nullable_to_non_nullable
+as String,percent: null == percent ? _self.percent : percent // ignore: cast_nullable_to_non_nullable
+as int,
   ));
 }
 

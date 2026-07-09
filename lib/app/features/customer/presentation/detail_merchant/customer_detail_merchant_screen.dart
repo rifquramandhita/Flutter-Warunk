@@ -57,17 +57,18 @@ class CustomerDetailMerchantScreen extends StatelessWidget {
 
   Widget _bodyLayout(BuildContext context) {
     final state = context.watch<CustomerDetailMerchantBloc>().state;
-    return Stack(
-      children: [
-        RefreshIndicator(
-          onRefresh: () async {
-            context.read<CustomerDetailMerchantBloc>().add(
-                  CustomerDetailMerchantEventGet(storeId: storeId),
-                );
-          },
-          child: CustomScrollView(
-            physics: const AlwaysScrollableScrollPhysics(),
-            slivers: [
+    return DefaultTabController(
+      length: 3,
+      child: Stack(
+        children: [
+          RefreshIndicator(
+            onRefresh: () async {
+              context.read<CustomerDetailMerchantBloc>().add(
+                    CustomerDetailMerchantEventGet(storeId: storeId),
+                  );
+            },
+            child: NestedScrollView(
+              headerSliverBuilder: (context, innerBoxIsScrolled) => [
             // ── Hero image ────────────────────────────────────────────────────
             SliverAppBar(
               pinned: true,
@@ -243,10 +244,34 @@ class CustomerDetailMerchantScreen extends StatelessWidget {
               ),
             ),
 
-            // ── Categories Tabs ───────────────────────────────────────────────────
+            // ── Main Tab Bar ───────────────────────────────────────────────────
             SliverPersistentHeader(
               pinned: true,
-              delegate: _SliverCategoryDelegate(
+              delegate: _SliverTabBarDelegate(
+                TabBar(
+                  labelStyle: GlobalHelper.getTextTheme(context, appTextStyle: AppTextStyle.LABEL_MEDIUM)?.copyWith(fontWeight: FontWeight.bold),
+                  unselectedLabelStyle: GlobalHelper.getTextTheme(context, appTextStyle: AppTextStyle.LABEL_MEDIUM),
+                  labelColor: GlobalHelper.getColorSchema(context).primary,
+                  unselectedLabelColor: GlobalHelper.getColorSchema(context).onSurface.withValues(alpha: 0.6),
+                  indicatorColor: GlobalHelper.getColorSchema(context).primary,
+                  tabs: const [
+                    Tab(text: 'Produk'),
+                    Tab(text: 'Tentang Toko'),
+                    Tab(text: 'Review'),
+                  ],
+                ),
+              ),
+            ),
+          ],
+          body: TabBarView(
+            children: [
+              // Tab 1: Produk
+              CustomScrollView(
+                slivers: [
+                  // ── Categories Tabs ───────────────────────────────────────────────────
+                  SliverPersistentHeader(
+                    pinned: true,
+                    delegate: _SliverCategoryDelegate(
                 child: Container(
                   height: 56,
                   color: GlobalHelper.getColorSchema(context).surface,
@@ -328,6 +353,37 @@ class CustomerDetailMerchantScreen extends StatelessWidget {
                             .where((p) => p.category == selectedCategoryName)
                             .toList();
 
+                  if (filteredProducts.isEmpty) {
+                    return SliverToBoxAdapter(
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 48.0, bottom: 48.0),
+                        child: Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.inventory_2_outlined,
+                                size: 64,
+                                color: GlobalHelper.getColorSchema(context).onSurface.withValues(alpha: 0.3),
+                              ),
+                              const SizedBox(height: 16),
+                              Text(
+                                'Tidak ada produk',
+                                style: GlobalHelper.getTextTheme(
+                                  context,
+                                  appTextStyle: AppTextStyle.BODY_LARGE,
+                                )?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  color: GlobalHelper.getColorSchema(context).onSurface.withValues(alpha: 0.6),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
+                  }
+
                   return SliverGrid(
                     gridDelegate:
                         const SliverGridDelegateWithFixedCrossAxisCount(
@@ -350,9 +406,26 @@ class CustomerDetailMerchantScreen extends StatelessWidget {
             ),
           ],
         ),
+
+        // Tab 2: Tentang Toko
+        CustomScrollView(
+          slivers: [
+            SliverToBoxAdapter(child: _buildAboutTab(context)),
+          ],
         ),
 
-        // ── Bottom Cart Bar ───────────────────────────────────────────────────
+        // Tab 3: Review
+        CustomScrollView(
+          slivers: [
+            SliverToBoxAdapter(child: _buildReviewTab(context)),
+          ],
+        ),
+      ],
+    ),
+  ),
+),
+
+// ── Bottom Cart Bar ───────────────────────────────────────────────────
         if (state.cartCount > 0)
           Positioned(
             left: 0,
@@ -465,7 +538,82 @@ class CustomerDetailMerchantScreen extends StatelessWidget {
               ),
             ),
           ),
-      ],
+        ],
+      ),
+    );
+  }
+
+  Widget _buildAboutTab(BuildContext context) {
+    final state = context.watch<CustomerDetailMerchantBloc>().state;
+    final merchant = state.merchantDetail;
+    if (merchant == null) return const SizedBox.shrink();
+
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (merchant.about != null) ...[
+            Text(
+              'Deskripsi Toko',
+              style: GlobalHelper.getTextTheme(context, appTextStyle: AppTextStyle.TITLE_SMALL)?.copyWith(fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              merchant.about!,
+              style: GlobalHelper.getTextTheme(context, appTextStyle: AppTextStyle.BODY_MEDIUM),
+            ),
+            const SizedBox(height: 24),
+          ],
+          if (merchant.aboutSections != null)
+            ...merchant.aboutSections!.map((section) {
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 24),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      section.title,
+                      style: GlobalHelper.getTextTheme(context, appTextStyle: AppTextStyle.TITLE_SMALL)?.copyWith(fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      section.content,
+                      style: GlobalHelper.getTextTheme(context, appTextStyle: AppTextStyle.BODY_MEDIUM),
+                    ),
+                  ],
+                ),
+              );
+            }),
+          const SizedBox(height: 100),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildReviewTab(BuildContext context) {
+    final state = context.watch<CustomerDetailMerchantBloc>().state;
+    final merchant = state.merchantDetail;
+    if (merchant == null) return const SizedBox.shrink();
+
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          const SizedBox(height: 32),
+          Icon(Icons.star_outline_rounded, size: 64, color: GlobalHelper.getColorSchema(context).primary.withValues(alpha: 0.5)),
+          const SizedBox(height: 16),
+          Text(
+            merchant.reviewEmptyMessage ?? 'Belum ada ulasan',
+            style: GlobalHelper.getTextTheme(context, appTextStyle: AppTextStyle.BODY_LARGE)?.copyWith(
+              fontWeight: FontWeight.bold,
+              color: GlobalHelper.getColorSchema(context).onSurface.withValues(alpha: 0.6),
+            ),
+          ),
+          const SizedBox(height: 100),
+        ],
+      ),
     );
   }
 
@@ -676,5 +824,32 @@ class _SliverCategoryDelegate extends SliverPersistentHeaderDelegate {
   @override
   bool shouldRebuild(covariant _SliverCategoryDelegate oldDelegate) {
     return true; // Simple re-build
+  }
+}
+
+class _SliverTabBarDelegate extends SliverPersistentHeaderDelegate {
+  final TabBar tabBar;
+  _SliverTabBarDelegate(this.tabBar);
+
+  @override
+  double get minExtent => tabBar.preferredSize.height;
+  @override
+  double get maxExtent => tabBar.preferredSize.height;
+
+  @override
+  Widget build(
+    BuildContext context,
+    double shrinkOffset,
+    bool overlapsContent,
+  ) {
+    return Container(
+      color: GlobalHelper.getColorSchema(context).surface,
+      child: tabBar,
+    );
+  }
+
+  @override
+  bool shouldRebuild(covariant _SliverTabBarDelegate oldDelegate) {
+    return tabBar != oldDelegate.tabBar;
   }
 }

@@ -62,6 +62,36 @@ CustomerMerchantEntity _$CustomerMerchantEntityFromJson(
           json['user'] as Map<String, dynamic>,
         ),
   chatUrl: json['chat_url'] as String?,
+  about: json['about'] as String?,
+  internalCourierShippingCost: (json['internal_courier_shipping_cost'] as num?)
+      ?.toInt(),
+  aboutSections: (json['about_sections'] as List<dynamic>?)
+      ?.map(
+        (e) => CustomerMerchantAboutSectionEntity.fromJson(
+          e as Map<String, dynamic>,
+        ),
+      )
+      .toList(),
+  reviewSummary: json['review_summary'] == null
+      ? null
+      : CustomerMerchantReviewSummaryEntity.fromJson(
+          json['review_summary'] as Map<String, dynamic>,
+        ),
+  reviewBreakdown: (json['review_breakdown'] as List<dynamic>?)
+      ?.map(
+        (e) => CustomerMerchantReviewBreakdownEntity.fromJson(
+          e as Map<String, dynamic>,
+        ),
+      )
+      .toList(),
+  reviews: json['reviews'] as List<dynamic>?,
+  reviewEmptyMessage: json['review_empty_message'] as String?,
+  createdAt: json['created_at'] == null
+      ? null
+      : DateTime.parse(json['created_at'] as String),
+  updatedAt: json['updated_at'] == null
+      ? null
+      : DateTime.parse(json['updated_at'] as String),
 );
 
 Map<String, dynamic> _$CustomerMerchantEntityToJson(
@@ -102,6 +132,15 @@ Map<String, dynamic> _$CustomerMerchantEntityToJson(
   'promo_badges': ?instance.promoBadges,
   'user': ?instance.user,
   'chat_url': ?instance.chatUrl,
+  'about': ?instance.about,
+  'internal_courier_shipping_cost': ?instance.internalCourierShippingCost,
+  'about_sections': ?instance.aboutSections,
+  'review_summary': ?instance.reviewSummary,
+  'review_breakdown': ?instance.reviewBreakdown,
+  'reviews': ?instance.reviews,
+  'review_empty_message': ?instance.reviewEmptyMessage,
+  'created_at': ?instance.createdAt?.toIso8601String(),
+  'updated_at': ?instance.updatedAt?.toIso8601String(),
 };
 
 CustomerMerchantAccountEntity _$CustomerMerchantAccountEntityFromJson(
@@ -163,3 +202,36 @@ Map<String, dynamic> _$CustomerMerchantUserEntityToJson(
   'phone': instance.phone,
   'profile_photo': ?instance.profilePhoto,
 };
+
+CustomerMerchantAboutSectionEntity _$CustomerMerchantAboutSectionEntityFromJson(
+  Map<String, dynamic> json,
+) => CustomerMerchantAboutSectionEntity(
+  title: json['title'] as String,
+  content: json['content'] as String,
+);
+
+Map<String, dynamic> _$CustomerMerchantAboutSectionEntityToJson(
+  CustomerMerchantAboutSectionEntity instance,
+) => <String, dynamic>{'title': instance.title, 'content': instance.content};
+
+CustomerMerchantReviewSummaryEntity
+_$CustomerMerchantReviewSummaryEntityFromJson(Map<String, dynamic> json) =>
+    CustomerMerchantReviewSummaryEntity(
+      rating: json['rating'] as String,
+      total: (json['total'] as num).toInt(),
+    );
+
+Map<String, dynamic> _$CustomerMerchantReviewSummaryEntityToJson(
+  CustomerMerchantReviewSummaryEntity instance,
+) => <String, dynamic>{'rating': instance.rating, 'total': instance.total};
+
+CustomerMerchantReviewBreakdownEntity
+_$CustomerMerchantReviewBreakdownEntityFromJson(Map<String, dynamic> json) =>
+    CustomerMerchantReviewBreakdownEntity(
+      label: json['label'] as String,
+      percent: (json['percent'] as num).toInt(),
+    );
+
+Map<String, dynamic> _$CustomerMerchantReviewBreakdownEntityToJson(
+  CustomerMerchantReviewBreakdownEntity instance,
+) => <String, dynamic>{'label': instance.label, 'percent': instance.percent};

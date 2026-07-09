@@ -42,6 +42,15 @@ sealed class CustomerMerchant with _$CustomerMerchant {
     List<String>? promoBadges,
     CustomerMerchantUserEntity? user,
     String? chatUrl,
+    String? about,
+    int? internalCourierShippingCost,
+    List<CustomerMerchantAboutSectionEntity>? aboutSections,
+    CustomerMerchantReviewSummaryEntity? reviewSummary,
+    List<CustomerMerchantReviewBreakdownEntity>? reviewBreakdown,
+    List<dynamic>? reviews,
+    String? reviewEmptyMessage,
+    DateTime? createdAt,
+    DateTime? updatedAt,
   }) = CustomerMerchantEntity;
 
   factory CustomerMerchant.fromJson(Map<String, dynamic> json) =>
@@ -91,4 +100,40 @@ sealed class CustomerMerchantUser with _$CustomerMerchantUser {
 
   factory CustomerMerchantUser.fromJson(Map<String, dynamic> json) =>
       _$CustomerMerchantUserFromJson(json);
+}
+
+@freezed
+sealed class CustomerMerchantAboutSection with _$CustomerMerchantAboutSection {
+  @JsonSerializable(fieldRename: FieldRename.snake, includeIfNull: false)
+  const factory CustomerMerchantAboutSection.entity({
+    required String title,
+    required String content,
+  }) = CustomerMerchantAboutSectionEntity;
+
+  factory CustomerMerchantAboutSection.fromJson(Map<String, dynamic> json) =>
+      _$CustomerMerchantAboutSectionFromJson(json);
+}
+
+@freezed
+sealed class CustomerMerchantReviewSummary with _$CustomerMerchantReviewSummary {
+  @JsonSerializable(fieldRename: FieldRename.snake, includeIfNull: false)
+  const factory CustomerMerchantReviewSummary.entity({
+    required String rating,
+    required int total,
+  }) = CustomerMerchantReviewSummaryEntity;
+
+  factory CustomerMerchantReviewSummary.fromJson(Map<String, dynamic> json) =>
+      _$CustomerMerchantReviewSummaryFromJson(json);
+}
+
+@freezed
+sealed class CustomerMerchantReviewBreakdown with _$CustomerMerchantReviewBreakdown {
+  @JsonSerializable(fieldRename: FieldRename.snake, includeIfNull: false)
+  const factory CustomerMerchantReviewBreakdown.entity({
+    required String label,
+    required int percent,
+  }) = CustomerMerchantReviewBreakdownEntity;
+
+  factory CustomerMerchantReviewBreakdown.fromJson(Map<String, dynamic> json) =>
+      _$CustomerMerchantReviewBreakdownFromJson(json);
 }
