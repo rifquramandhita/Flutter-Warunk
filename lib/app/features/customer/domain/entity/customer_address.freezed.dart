@@ -38,7 +38,7 @@ CustomerAddress _$CustomerAddressFromJson(
 /// @nodoc
 mixin _$CustomerAddress {
 
-@JsonKey(includeToJson: false, includeFromJson: false) String? get id; String get recipientName; String get phone; String get label; String get address; String get province; String get city; String get district; String get postalCode; double get longitude; double get latitude; String? get notes; bool get isDefault;
+@JsonKey(includeToJson: false, includeFromJson: false) String? get id; String get recipientName; String get phone; String get label; String get address; String? get province; String? get city; String? get district; String get postalCode; double get longitude; double get latitude; String? get notes; bool get isDefault;
 /// Create a copy of CustomerAddress
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -95,9 +95,9 @@ as String,recipientName: null == recipientName ? _self.recipientName : recipient
 as String,phone: null == phone ? _self.phone : phone // ignore: cast_nullable_to_non_nullable
 as String,label: null == label ? _self.label : label // ignore: cast_nullable_to_non_nullable
 as String,address: null == address ? _self.address : address // ignore: cast_nullable_to_non_nullable
-as String,province: null == province ? _self.province : province // ignore: cast_nullable_to_non_nullable
-as String,city: null == city ? _self.city : city // ignore: cast_nullable_to_non_nullable
-as String,district: null == district ? _self.district : district // ignore: cast_nullable_to_non_nullable
+as String,province: null == province ? _self.province! : province // ignore: cast_nullable_to_non_nullable
+as String,city: null == city ? _self.city! : city // ignore: cast_nullable_to_non_nullable
+as String,district: null == district ? _self.district! : district // ignore: cast_nullable_to_non_nullable
 as String,postalCode: null == postalCode ? _self.postalCode : postalCode // ignore: cast_nullable_to_non_nullable
 as String,longitude: null == longitude ? _self.longitude : longitude // ignore: cast_nullable_to_non_nullable
 as double,latitude: null == latitude ? _self.latitude : latitude // ignore: cast_nullable_to_non_nullable
@@ -188,7 +188,7 @@ return sendParam(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String id,  int userId,  String recipientName,  String phone,  String label,  String address,  String province,  String city,  String district,  String postalCode,  double longitude,  double latitude,  String? notes,  bool isDefault,  String fullAddress,  DateTime createdAt,  DateTime updatedAt)?  entity,TResult Function(@JsonKey(includeToJson: false, includeFromJson: false)  String? id,  String recipientName,  String phone,  String label,  String address,  String province,  String city,  String district,  String postalCode,  double longitude,  double latitude,  String? notes,  bool isDefault)?  sendParam,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String id,  int userId,  String recipientName,  String phone,  String label,  String address,  String? province,  String? city,  String? district,  String postalCode,  double longitude,  double latitude,  String? notes,  bool isDefault,  String fullAddress,  DateTime createdAt,  DateTime updatedAt)?  entity,TResult Function(@JsonKey(includeToJson: false, includeFromJson: false)  String? id,  String recipientName,  String phone,  String label,  String address,  String province,  String city,  String district,  String postalCode,  double longitude,  double latitude,  String? notes,  bool isDefault)?  sendParam,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case CustomerAddressEntity() when entity != null:
 return entity(_that.id,_that.userId,_that.recipientName,_that.phone,_that.label,_that.address,_that.province,_that.city,_that.district,_that.postalCode,_that.longitude,_that.latitude,_that.notes,_that.isDefault,_that.fullAddress,_that.createdAt,_that.updatedAt);case CustomerAddressSendParam() when sendParam != null:
@@ -210,7 +210,7 @@ return sendParam(_that.id,_that.recipientName,_that.phone,_that.label,_that.addr
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String id,  int userId,  String recipientName,  String phone,  String label,  String address,  String province,  String city,  String district,  String postalCode,  double longitude,  double latitude,  String? notes,  bool isDefault,  String fullAddress,  DateTime createdAt,  DateTime updatedAt)  entity,required TResult Function(@JsonKey(includeToJson: false, includeFromJson: false)  String? id,  String recipientName,  String phone,  String label,  String address,  String province,  String city,  String district,  String postalCode,  double longitude,  double latitude,  String? notes,  bool isDefault)  sendParam,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String id,  int userId,  String recipientName,  String phone,  String label,  String address,  String? province,  String? city,  String? district,  String postalCode,  double longitude,  double latitude,  String? notes,  bool isDefault,  String fullAddress,  DateTime createdAt,  DateTime updatedAt)  entity,required TResult Function(@JsonKey(includeToJson: false, includeFromJson: false)  String? id,  String recipientName,  String phone,  String label,  String address,  String province,  String city,  String district,  String postalCode,  double longitude,  double latitude,  String? notes,  bool isDefault)  sendParam,}) {final _that = this;
 switch (_that) {
 case CustomerAddressEntity():
 return entity(_that.id,_that.userId,_that.recipientName,_that.phone,_that.label,_that.address,_that.province,_that.city,_that.district,_that.postalCode,_that.longitude,_that.latitude,_that.notes,_that.isDefault,_that.fullAddress,_that.createdAt,_that.updatedAt);case CustomerAddressSendParam():
@@ -228,7 +228,7 @@ return sendParam(_that.id,_that.recipientName,_that.phone,_that.label,_that.addr
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String id,  int userId,  String recipientName,  String phone,  String label,  String address,  String province,  String city,  String district,  String postalCode,  double longitude,  double latitude,  String? notes,  bool isDefault,  String fullAddress,  DateTime createdAt,  DateTime updatedAt)?  entity,TResult? Function(@JsonKey(includeToJson: false, includeFromJson: false)  String? id,  String recipientName,  String phone,  String label,  String address,  String province,  String city,  String district,  String postalCode,  double longitude,  double latitude,  String? notes,  bool isDefault)?  sendParam,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String id,  int userId,  String recipientName,  String phone,  String label,  String address,  String? province,  String? city,  String? district,  String postalCode,  double longitude,  double latitude,  String? notes,  bool isDefault,  String fullAddress,  DateTime createdAt,  DateTime updatedAt)?  entity,TResult? Function(@JsonKey(includeToJson: false, includeFromJson: false)  String? id,  String recipientName,  String phone,  String label,  String address,  String province,  String city,  String district,  String postalCode,  double longitude,  double latitude,  String? notes,  bool isDefault)?  sendParam,}) {final _that = this;
 switch (_that) {
 case CustomerAddressEntity() when entity != null:
 return entity(_that.id,_that.userId,_that.recipientName,_that.phone,_that.label,_that.address,_that.province,_that.city,_that.district,_that.postalCode,_that.longitude,_that.latitude,_that.notes,_that.isDefault,_that.fullAddress,_that.createdAt,_that.updatedAt);case CustomerAddressSendParam() when sendParam != null:
@@ -253,9 +253,9 @@ class CustomerAddressEntity implements CustomerAddress {
 @override final  String phone;
 @override final  String label;
 @override final  String address;
-@override final  String province;
-@override final  String city;
-@override final  String district;
+@override final  String? province;
+@override final  String? city;
+@override final  String? district;
 @override final  String postalCode;
 @override final  double longitude;
 @override final  double latitude;
@@ -302,7 +302,7 @@ abstract mixin class $CustomerAddressEntityCopyWith<$Res> implements $CustomerAd
   factory $CustomerAddressEntityCopyWith(CustomerAddressEntity value, $Res Function(CustomerAddressEntity) _then) = _$CustomerAddressEntityCopyWithImpl;
 @override @useResult
 $Res call({
- String id, int userId, String recipientName, String phone, String label, String address, String province, String city, String district, String postalCode, double longitude, double latitude, String? notes, bool isDefault, String fullAddress, DateTime createdAt, DateTime updatedAt
+ String id, int userId, String recipientName, String phone, String label, String address, String? province, String? city, String? district, String postalCode, double longitude, double latitude, String? notes, bool isDefault, String fullAddress, DateTime createdAt, DateTime updatedAt
 });
 
 
@@ -319,7 +319,7 @@ class _$CustomerAddressEntityCopyWithImpl<$Res>
 
 /// Create a copy of CustomerAddress
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? userId = null,Object? recipientName = null,Object? phone = null,Object? label = null,Object? address = null,Object? province = null,Object? city = null,Object? district = null,Object? postalCode = null,Object? longitude = null,Object? latitude = null,Object? notes = freezed,Object? isDefault = null,Object? fullAddress = null,Object? createdAt = null,Object? updatedAt = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? userId = null,Object? recipientName = null,Object? phone = null,Object? label = null,Object? address = null,Object? province = freezed,Object? city = freezed,Object? district = freezed,Object? postalCode = null,Object? longitude = null,Object? latitude = null,Object? notes = freezed,Object? isDefault = null,Object? fullAddress = null,Object? createdAt = null,Object? updatedAt = null,}) {
   return _then(CustomerAddressEntity(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,userId: null == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
@@ -327,10 +327,10 @@ as int,recipientName: null == recipientName ? _self.recipientName : recipientNam
 as String,phone: null == phone ? _self.phone : phone // ignore: cast_nullable_to_non_nullable
 as String,label: null == label ? _self.label : label // ignore: cast_nullable_to_non_nullable
 as String,address: null == address ? _self.address : address // ignore: cast_nullable_to_non_nullable
-as String,province: null == province ? _self.province : province // ignore: cast_nullable_to_non_nullable
-as String,city: null == city ? _self.city : city // ignore: cast_nullable_to_non_nullable
-as String,district: null == district ? _self.district : district // ignore: cast_nullable_to_non_nullable
-as String,postalCode: null == postalCode ? _self.postalCode : postalCode // ignore: cast_nullable_to_non_nullable
+as String,province: freezed == province ? _self.province : province // ignore: cast_nullable_to_non_nullable
+as String?,city: freezed == city ? _self.city : city // ignore: cast_nullable_to_non_nullable
+as String?,district: freezed == district ? _self.district : district // ignore: cast_nullable_to_non_nullable
+as String?,postalCode: null == postalCode ? _self.postalCode : postalCode // ignore: cast_nullable_to_non_nullable
 as String,longitude: null == longitude ? _self.longitude : longitude // ignore: cast_nullable_to_non_nullable
 as double,latitude: null == latitude ? _self.latitude : latitude // ignore: cast_nullable_to_non_nullable
 as double,notes: freezed == notes ? _self.notes : notes // ignore: cast_nullable_to_non_nullable
