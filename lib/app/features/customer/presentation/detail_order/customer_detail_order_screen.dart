@@ -170,17 +170,16 @@ class CustomerDetailOrderScreen extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Row(
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: nextActions.asMap().entries.map((entry) {
               final index = entry.key;
               final action = entry.value;
               final isLast = index == nextActions.length - 1;
 
-              return Expanded(
-                child: Padding(
-                  padding: EdgeInsets.only(right: isLast ? 0 : 16),
-                  child: _buildActionButton(context, order, action),
-                ),
+              return Padding(
+                padding: EdgeInsets.only(bottom: isLast ? 0 : 16),
+                child: _buildActionButton(context, order, action),
               );
             }).toList(),
           ),
