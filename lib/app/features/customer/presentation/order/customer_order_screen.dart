@@ -380,6 +380,7 @@ class CustomerOrderScreen extends StatelessWidget {
         : '-';
     final orderId = tx.invoiceNumber;
     final status = tx.status;
+    final statusLabel = tx.statusLabel ?? tx.status?.label ?? 'Baru';
 
     return Container(
       decoration: BoxDecoration(
@@ -425,7 +426,7 @@ class CustomerOrderScreen extends StatelessWidget {
                     children: [
                       Align(
                         alignment: Alignment.centerRight,
-                        child: _statusBadge(context, status),
+                        child: _statusBadge(context, status, statusLabel),
                       ),
                       SizedBox(height: 6),
                       Text(
@@ -616,63 +617,53 @@ class CustomerOrderScreen extends StatelessWidget {
   }
 
   // ── Status badge ──────────────────────────────────────────────────────────
-  Widget _statusBadge(BuildContext context, OrderStatus? status) {
-    late String label;
+  Widget _statusBadge(BuildContext context, OrderStatus? status, String label) {
     late Color bgColor;
     late Color textColor;
     late bool outlined;
 
     switch (status) {
       case OrderStatus.waitingPayment:
-        label = 'Menunggu Pembayaran';
         bgColor = const Color(0xFFFFF3E0);
         textColor = const Color(0xFFF59E0B);
         outlined = false;
         break;
       case OrderStatus.waitingPaymentConfirmation:
-        label = 'Menunggu Konfirmasi Pembayaran';
         bgColor = const Color(0xFFFFF3E0);
         textColor = const Color(0xFFF59E0B);
         outlined = false;
         break;
       case OrderStatus.waitingCancel:
-        label = 'Menunggu Pembatalan';
         bgColor = const Color(0xFFFFEBEE);
         textColor = Colors.red;
         outlined = false;
         break;
       case OrderStatus.processing:
-        label = 'Diproses';
         bgColor = GlobalHelper.getColorSchema(context).primary;
         textColor = Colors.white;
         outlined = false;
         break;
       case OrderStatus.shipped:
-        label = 'Dikirim';
         bgColor = const Color(0xFFE3F2FD);
         textColor = const Color(0xFF1976D2);
         outlined = false;
         break;
       case OrderStatus.received:
-        label = 'Diterima';
         bgColor = const Color(0xFFE8F5E9);
         textColor = const Color(0xFF2E7D32);
         outlined = false;
         break;
       case OrderStatus.completed:
-        label = 'Selesai';
         bgColor = Colors.transparent;
         textColor = GlobalHelper.getColorSchema(context).primary;
         outlined = true;
         break;
       case OrderStatus.cancelled:
-        label = 'Dibatalkan';
         bgColor = const Color(0xFFFFEBEE);
         textColor = Colors.red;
         outlined = false;
         break;
       default:
-        label = status?.label ?? '-';
         bgColor = Colors.grey.shade200;
         textColor = Colors.black54;
         outlined = false;
