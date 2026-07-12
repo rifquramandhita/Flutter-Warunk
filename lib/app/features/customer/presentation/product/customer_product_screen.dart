@@ -457,16 +457,44 @@ class CustomerProductScreen extends StatelessWidget {
                 children: values.map((value) {
                   final isSelected =
                       state.selectedVariantCombination?[dimensionName] == value;
+
+                  final currentCombo = Map<String, String>.from(
+                    state.selectedVariantCombination ?? {},
+                  );
+                  currentCombo[dimensionName] = value;
+
+                  bool isVariantAvailable = false;
+                  if (state.product?.variants != null) {
+                    for (final variant in state.product!.variants!) {
+                      bool isMatch = true;
+                      for (final key in currentCombo.keys) {
+                        if (variant.variantCombination[key] !=
+                            currentCombo[key]) {
+                          isMatch = false;
+                          break;
+                        }
+                      }
+                      if (isMatch) {
+                        if (variant.stock > 0) {
+                          isVariantAvailable = true;
+                        }
+                        break;
+                      }
+                    }
+                  } else {
+                    isVariantAvailable = true;
+                  }
+
                   return GestureDetector(
-                    onTap: () {
-                      final currentCombo = Map<String, String>.from(
-                        state.selectedVariantCombination ?? {},
-                      );
-                      currentCombo[dimensionName] = value;
-                      context.read<CustomerProductBloc>().add(
-                        CustomerDetailProductEventVariantChanged(currentCombo),
-                      );
-                    },
+                    onTap: isVariantAvailable
+                        ? () {
+                            context.read<CustomerProductBloc>().add(
+                              CustomerDetailProductEventVariantChanged(
+                                currentCombo,
+                              ),
+                            );
+                          }
+                        : null,
                     child: Container(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 16,
@@ -475,14 +503,22 @@ class CustomerProductScreen extends StatelessWidget {
                       decoration: BoxDecoration(
                         color: isSelected
                             ? GlobalHelper.getColorSchema(context).primary
-                            : GlobalHelper.getColorSchema(context).surface,
+                            : isVariantAvailable
+                                ? GlobalHelper.getColorSchema(context).surface
+                                : GlobalHelper.getColorSchema(
+                                    context,
+                                  ).onSurface.withValues(alpha: 0.05),
                         borderRadius: BorderRadius.circular(20),
                         border: Border.all(
                           color: isSelected
                               ? GlobalHelper.getColorSchema(context).primary
-                              : GlobalHelper.getColorSchema(
-                                  context,
-                                ).outlineVariant,
+                              : isVariantAvailable
+                                  ? GlobalHelper.getColorSchema(
+                                      context,
+                                    ).outlineVariant
+                                  : GlobalHelper.getColorSchema(
+                                      context,
+                                    ).onSurface.withValues(alpha: 0.1),
                         ),
                       ),
                       child: Text(
@@ -499,9 +535,13 @@ class CustomerProductScreen extends StatelessWidget {
                                   ? GlobalHelper.getColorSchema(
                                       context,
                                     ).onPrimary
-                                  : GlobalHelper.getColorSchema(
-                                      context,
-                                    ).onSurface,
+                                  : isVariantAvailable
+                                      ? GlobalHelper.getColorSchema(
+                                          context,
+                                        ).onSurface
+                                      : GlobalHelper.getColorSchema(
+                                          context,
+                                        ).onSurface.withValues(alpha: 0.3),
                             ),
                       ),
                     ),
@@ -700,6 +740,22 @@ class CustomerProductScreen extends StatelessWidget {
     String totalPrice,
     TextEditingController noteCtrl,
   ) {
+    final state = context.watch<CustomerProductBloc>().state;
+    final product = state.product;
+
+    bool isButtonDisabled = false;
+    if (product == null) {
+      isButtonDisabled = true;
+    } else if (product.hasVariant ?? false) {
+      if (state.selectedVariant == null || state.selectedVariant!.stock == 0) {
+        isButtonDisabled = true;
+      }
+    } else {
+      if ((product.stock ?? 0) == 0) {
+        isButtonDisabled = true;
+      }
+    }
+
     return Positioned(
       bottom: 0,
       left: 0,
@@ -750,14 +806,16 @@ class CustomerProductScreen extends StatelessWidget {
             SizedBox(
               height: 48,
               child: ElevatedButton.icon(
-                onPressed: () {
-                  final notes = noteCtrl.text.trim();
-                  context.read<CustomerProductBloc>().add(
-                    CustomerDetailProductEventAddToCart(
-                      notes: notes.isNotEmpty ? notes : null,
-                    ),
-                  );
-                },
+                onPressed: isButtonDisabled
+                    ? null
+                    : () {
+                        final notes = noteCtrl.text.trim();
+                        context.read<CustomerProductBloc>().add(
+                          CustomerDetailProductEventAddToCart(
+                            notes: notes.isNotEmpty ? notes : null,
+                          ),
+                        );
+                      },
                 icon: const Icon(Icons.shopping_cart_outlined, size: 18),
                 label: const Text(
                   'Tambah ke Keranjang',
@@ -768,6 +826,12 @@ class CustomerProductScreen extends StatelessWidget {
                   foregroundColor: GlobalHelper.getColorSchema(
                     context,
                   ).onPrimary,
+                  disabledBackgroundColor: GlobalHelper.getColorSchema(
+                    context,
+                  ).onSurface.withValues(alpha: 0.12),
+                  disabledForegroundColor: GlobalHelper.getColorSchema(
+                    context,
+                  ).onSurface.withValues(alpha: 0.38),
                   elevation: 0,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),

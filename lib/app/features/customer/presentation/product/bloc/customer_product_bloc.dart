@@ -49,10 +49,18 @@ class CustomerProductBloc
 
       if (response.data?.variants != null &&
           response.data!.variants!.isNotEmpty) {
-        selectedVariant = response.data!.variants!.first;
-        selectedCombination = Map<String, String>.from(
-          selectedVariant.variantCombination,
+        final availableVariants = response.data!.variants!.where(
+          (variant) => variant.stock > 0,
         );
+        if (availableVariants.isNotEmpty) {
+          selectedVariant = availableVariants.first;
+          selectedCombination = Map<String, String>.from(
+            selectedVariant.variantCombination,
+          );
+        } else {
+          selectedVariant = null;
+          selectedCombination = null;
+        }
       }
 
       emit(
