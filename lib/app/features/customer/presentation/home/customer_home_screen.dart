@@ -83,15 +83,7 @@ class CustomerHomeScreen extends StatelessWidget {
   Widget _homeHeader(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 16, 20, 8),
-      child: Row(
-        children: [
-          Expanded(child: _greetingText(context)),
-          const SizedBox(width: 8),
-          _chatButton(context),
-          const SizedBox(width: 16),
-          _cartButton(context),
-        ],
-      ),
+      child: _greetingText(context),
     );
   }
 
@@ -125,32 +117,6 @@ class CustomerHomeScreen extends StatelessWidget {
               ),
         ),
       ],
-    );
-  }
-
-  Widget _cartButton(BuildContext context) {
-    return GestureDetector(
-      onTap: () => navigatorKey.currentState?.push(
-        MaterialPageRoute(builder: (_) => const CustomerCartScreen()),
-      ),
-      child: Icon(
-        Icons.shopping_cart_rounded,
-        color: GlobalHelper.getColorSchema(context).primary,
-        size: 20,
-      ),
-    );
-  }
-
-  Widget _chatButton(BuildContext context) {
-    return GestureDetector(
-      onTap: () => navigatorKey.currentState?.push(
-        MaterialPageRoute(builder: (_) => const CustomerChatWebviewScreen()),
-      ),
-      child: Icon(
-        Icons.chat_bubble_outline_rounded,
-        color: GlobalHelper.getColorSchema(context).primary,
-        size: 20,
-      ),
     );
   }
 

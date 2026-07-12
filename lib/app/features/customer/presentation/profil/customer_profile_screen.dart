@@ -37,7 +37,6 @@ class CustomerProfileScreen extends StatelessWidget {
         },
         builder: (context, state) {
           return Scaffold(
-            appBar: _appBarBuild(context),
             body: _bodyBuild(context),
           );
         },
@@ -45,59 +44,7 @@ class CustomerProfileScreen extends StatelessWidget {
     );
   }
 
-  AppBar _appBarBuild(BuildContext context) {
-    final state = context.watch<CustomerProfilBloc>().state;
-    return AppBar(
-      title: const Text('Profil'),
-      actions: [
-        Padding(
-          padding: const EdgeInsets.only(right: 16.0),
-          child: GestureDetector(
-            onTap: () => navigatorKey.currentState?.push(
-              MaterialPageRoute(
-                builder: (_) => const CustomerNotificationScreen(),
-              ),
-            ),
-            child: Stack(
-              alignment: Alignment.center,
-              children: [
-                Icon(
-                  Icons.notifications_outlined,
-                  color: GlobalHelper.getColorSchema(context).onSurface,
-                  size: 26,
-                ),
-                if (state.unreadNotifications > 0)
-                  Positioned(
-                    top: 8,
-                    right: 0,
-                    child: Container(
-                      padding: const EdgeInsets.all(2),
-                      decoration: const BoxDecoration(
-                        color: Colors.red,
-                        shape: BoxShape.circle,
-                      ),
-                      constraints: const BoxConstraints(
-                        minWidth: 14,
-                        minHeight: 14,
-                      ),
-                      child: Text(
-                        '${state.unreadNotifications}',
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 8,
-                          fontWeight: FontWeight.w700,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                  ),
-              ],
-            ),
-          ),
-        ),
-      ],
-    );
-  }
+
 
   Widget _bodyBuild(BuildContext context) {
     final state = context.watch<CustomerProfilBloc>().state;

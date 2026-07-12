@@ -28,15 +28,13 @@ class CustomerOrderScreen extends StatelessWidget {
           }
         },
         builder: (context, state) {
-          return Scaffold(appBar: _appBarBuild(), body: _bodyBuild(context));
+          return Scaffold(body: _bodyBuild(context));
         },
       ),
     );
   }
 
-  AppBar _appBarBuild() {
-    return AppBar(title: Text('Pesanan'));
-  }
+
 
   Widget _bodyBuild(BuildContext context) {
     final state = context.watch<CustomerOrderBloc>().state;
