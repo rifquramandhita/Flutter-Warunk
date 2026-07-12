@@ -491,15 +491,15 @@ class CustomerHomeScreen extends StatelessWidget {
             child: iconUrl != null && iconUrl.isNotEmpty
                 ? Image.network(
                     iconUrl,
-                    width: 24,
-                    height: 24,
-                    fit: BoxFit.contain,
+                    width: 36,
+                    height: 36,
+                    fit: BoxFit.cover,
                     errorBuilder: (context, error, stackTrace) {
                       debugPrint('Error loading category image $iconUrl: $error');
                       return Icon(
                         icon,
                         color: GlobalHelper.getColorSchema(context).primary,
-                        size: 24,
+                        size: 36,
                       );
                     },
                   )
