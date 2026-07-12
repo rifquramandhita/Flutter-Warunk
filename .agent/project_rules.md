@@ -113,6 +113,10 @@ This file serves as the main reference for AI agents and developers working on t
     }
     ```
   - **Pemisahan Code UI**: Jangan menulis semua kode UI dalam satu fungsi besar. Pecah komponen-komponen antarmuka ke dalam fungsi privat yang mengembalikan `Widget` (mulai dari `_bodyBuild`, `_bodyLayout`, hingga sub-komponen seperti `_emailTextFieldLayout`). Jangan menggunakan class terpisah untuk memecah UI utama.
+  - **Cara Menampilkan Loading**:
+    - **DILARANG KERAS** menggunakan `CircularProgressIndicator` secara langsung di UI *screen*.
+    - **WAJIB** menggunakan `LoadingAppWidget()` dari `lib/core/widgets/loading_app_widget.dart`.
+    - Implementasikan dengan menaruhnya di dalam `Stack` pada root UI (contoh: `if (state.isLoading) const LoadingAppWidget()`).
   - Untuk membaca state pada fungsi-fungsi privat tersebut, gunakan: `final state = context.watch<NamaBloc>().state;`.
   - Untuk memicu event, gunakan: `context.read<NamaBloc>().add(NamaEvent());`.
 - **BLoC (`..._bloc.dart`)**:
@@ -175,3 +179,10 @@ This file serves as the main reference for AI agents and developers working on t
   - `fix(merchant): resolve null pointer on product list`
   - `chore(core): update flutter dependencies`
 - **Aturan Generasi AI**: Saat AI diminta untuk men-generate commit message, AI **hanya boleh membaca dan memperhitungkan perubahan pada file yang berstatus "staged" (`git diff --cached`)**. Perubahan pada file yang *unstaged* harus diabaikan sepenuhnya dan tidak boleh dimasukkan ke dalam ringkasan commit.
+
+## 11. Terminologi & Standar Data UI
+- **Standar Istilah**:
+  - Gunakan istilah **"Wishlist"** dan **DILARANG** menggunakan "Favorit" untuk menyeragamkan bahasa UI di seluruh aplikasi.
+- **Standar Data**:
+  - **DILARANG KERAS** menggunakan data *mock* atau melakukan *hardcode* angka statis pada komponen UI (seperti jumlah transaksi, jumlah wishlist, dll).
+  - Semua bentuk data angka/statistik yang tampil di UI **WAJIB** bersumber dari *response* API yang relevan (menggunakan *UseCase* seperti `CustomerOrderGetUseCase` atau `CustomerWishlistsGetUseCase`).

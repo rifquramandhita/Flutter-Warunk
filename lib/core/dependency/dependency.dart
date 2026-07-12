@@ -457,7 +457,10 @@ Future<void> initDependency() async {
       createOrderUseCase: sl(),
     ),
   );
-  sl.registerFactory(() => CustomerProfilBloc());
+  sl.registerFactory(() => CustomerProfilBloc(
+    orderGetUseCase: sl(),
+    wishlistsGetUseCase: sl(),
+  ));
   sl.registerFactory(() => CustomerEditProfilBloc(updateUseCase: sl()));
   sl.registerFactory(
     () => CustomerAddressBloc(getUseCase: sl(), setDefaultUseCase: sl()),

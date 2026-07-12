@@ -12,6 +12,7 @@ import 'package:warunk/core/constants/constant.dart';
 import 'package:warunk/main.dart';
 import 'package:warunk/core/widgets/custom_dotted_divider.dart';
 import 'package:warunk/core/widgets/shadow_card.dart';
+import 'package:warunk/core/widgets/loading_app_widget.dart';
 import 'package:warunk/core/dependency/dependency.dart';
 import 'package:warunk/core/helper/global_helper.dart';
 import 'package:warunk/core/helper/dialog_helper.dart';
@@ -104,12 +105,7 @@ class CustomerProfileScreen extends StatelessWidget {
       child: Stack(
         children: [
           _bodyLayout(context),
-          if (state.isLoading)
-            Center(
-              child: CircularProgressIndicator(
-                color: GlobalHelper.getColorSchema(context).primary,
-              ),
-            ),
+          if (state.isLoading) const LoadingAppWidget(),
         ],
       ),
     );
@@ -228,22 +224,14 @@ class CustomerProfileScreen extends StatelessWidget {
             label: 'Transaksi',
             value: '${state.transactionCount}',
           ),
-          _verticalDivider(context),
-          _statItem(
-            context: context,
-            icon: Icons.confirmation_number_outlined,
-            iconColor: const Color(0xFFF59E0B),
-            iconBgColor: const Color(0xFFFFF3E0),
-            label: 'Voucher',
-            value: '${state.voucherCount}',
-          ),
+
           _verticalDivider(context),
           _statItem(
             context: context,
             icon: Icons.favorite_border_rounded,
             iconColor: const Color(0xFF3B82F6),
             iconBgColor: const Color(0xFFEFF6FF),
-            label: 'Favorit',
+            label: 'Wishlist',
             value: '${state.favoriteCount}',
             onTap: () {
               navigatorKey.currentState
@@ -361,13 +349,7 @@ class CustomerProfileScreen extends StatelessWidget {
             label: 'Metode Pembayaran',
             iconColor: GlobalHelper.getColorSchema(context).primary,
           ),
-          _divider(context),
-          _menuItem(
-            context: context,
-            icon: Icons.confirmation_number_outlined,
-            label: 'Voucher Saya',
-            iconColor: GlobalHelper.getColorSchema(context).primary,
-          ),
+
           const Padding(
             padding: EdgeInsets.symmetric(horizontal: 16),
             child: CustomDottedDivider(),
