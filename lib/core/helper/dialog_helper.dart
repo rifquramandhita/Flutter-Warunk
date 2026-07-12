@@ -9,11 +9,24 @@ class DialogHelper {
   }) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(
-          text,
-          style: const TextStyle(fontSize: 16),
-          maxLines: 5,
-          overflow: TextOverflow.ellipsis,
+        content: Row(
+          children: [
+            Expanded(
+              child: Text(
+                text,
+                style: const TextStyle(fontSize: 16),
+                maxLines: 5,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+            const SizedBox(width: 8),
+            GestureDetector(
+              onTap: () {
+                ScaffoldMessenger.of(context).hideCurrentSnackBar();
+              },
+              child: const Icon(Icons.close, color: Colors.white, size: 20),
+            ),
+          ],
         ),
         behavior: SnackBarBehavior.floating,
         margin: const EdgeInsets.all(16.0),

@@ -220,7 +220,6 @@ class CustomerProductBloc
         selectedVariantCombination: event.selectedCombination,
         selectedVariant: matchedVariant,
         quantity: newQuantity,
-        errorMessage: state.errorMessage,
       ),
     );
   }
