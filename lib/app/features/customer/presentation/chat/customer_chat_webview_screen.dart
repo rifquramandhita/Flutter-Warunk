@@ -48,7 +48,7 @@ class _CustomerChatWebviewScreenState extends State<CustomerChatWebviewScreen> {
       final encodedToken = Uri.encodeComponent(cleanToken);
       final url = widget.chatUrl != null
           ? widget.chatUrl!
-          : 'https://warunk.dewalabs.com/webview/auto-login?url=%2Fchats&bearer=$encodedToken';
+          : 'https://warunk.dewalabs.com/webview/auto-login?url=%2Fwebview%2Fchats&bearer=$encodedToken';
       _controller.loadRequest(Uri.parse(url));
     }
   }
