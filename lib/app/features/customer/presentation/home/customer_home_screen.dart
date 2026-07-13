@@ -14,6 +14,7 @@ import 'package:warunk/core/dependency/dependency.dart';
 import 'package:warunk/theme/app_colors.dart';
 import 'package:warunk/core/helper/global_helper.dart';
 import 'package:warunk/core/helper/dialog_helper.dart';
+import 'package:warunk/core/widgets/customer_merchant_item_widget.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Home Screen — entry point, menyediakan CustomerHomeBloc
@@ -470,7 +471,11 @@ class CustomerHomeScreen extends StatelessWidget {
   }
 
   Widget _categoryItem(
-      BuildContext context, IconData icon, String label, String? iconUrl) {
+    BuildContext context,
+    IconData icon,
+    String label,
+    String? iconUrl,
+  ) {
     return Column(
       children: [
         Container(
@@ -495,7 +500,9 @@ class CustomerHomeScreen extends StatelessWidget {
                     height: 36,
                     fit: BoxFit.cover,
                     errorBuilder: (context, error, stackTrace) {
-                      debugPrint('Error loading category image $iconUrl: $error');
+                      debugPrint(
+                        'Error loading category image $iconUrl: $error',
+                      );
                       return Icon(
                         icon,
                         color: GlobalHelper.getColorSchema(context).primary,
@@ -563,7 +570,8 @@ class CustomerHomeScreen extends StatelessWidget {
           else
             Column(
               children: state.nearbyMerchants.map((merchant) {
-                return GestureDetector(
+                return CustomerMerchantItemWidget(
+                  store: merchant,
                   onTap: () {
                     navigatorKey.currentState?.push(
                       MaterialPageRoute(
@@ -572,194 +580,11 @@ class CustomerHomeScreen extends StatelessWidget {
                       ),
                     );
                   },
-                  child: _storeCard(
-                    context,
-                    _StoreData(
-                      name: merchant.name,
-                      status: merchant.isOpen ? 'Buka' : 'Tutup',
-                      statusColor: merchant.isOpen
-                          ? GlobalHelper.getColorSchema(context).primary
-                          : GlobalHelper.getColorSchema(
-                              context,
-                            ).onSurfaceVariant,
-                      rating: '0',
-                      reviews: '0',
-                      distance: '${merchant.distance ?? 0} km',
-                      location: '',
-                      promo:
-                          (merchant.promoBadges != null &&
-                              merchant.promoBadges!.isNotEmpty)
-                          ? merchant.promoBadges!.first
-                          : '',
-                      emoji: '🏪',
-                      photo: merchant.photo,
-                    ),
-                  ),
                 );
               }).toList(),
             ),
         ],
       ),
-    );
-  }
-
-  Widget _storeCard(BuildContext context, _StoreData data) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 10),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          Container(
-            width: 90,
-            height: 90,
-            decoration: BoxDecoration(
-              color: GlobalHelper.getColorSchema(
-                context,
-              ).primary.withValues(alpha: 0.1),
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(12),
-                bottomLeft: Radius.circular(12),
-              ),
-              image: data.photo != null && data.photo!.isNotEmpty
-                  ? DecorationImage(
-                      image: NetworkImage(data.photo!),
-                      fit: BoxFit.cover,
-                    )
-                  : null,
-            ),
-            child: data.photo == null || data.photo!.isEmpty
-                ? Center(
-                    child: Text(
-                      data.emoji,
-                      style: GlobalHelper.getTextTheme(
-                        context,
-                        appTextStyle: AppTextStyle.DISPLAY_SMALL,
-                      )?.copyWith(fontSize: 40),
-                    ),
-                  )
-                : null,
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 12),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _storeNameRow(
-                    context,
-                    data.name,
-                    data.status,
-                    data.statusColor,
-                  ),
-                  const SizedBox(height: 4),
-                  _storeMetaRow(
-                    context,
-                    data.rating,
-                    data.reviews,
-                    data.distance,
-                  ),
-                  const SizedBox(height: 2),
-                  Text(
-                    data.location,
-                    style:
-                        GlobalHelper.getTextTheme(
-                          context,
-                          appTextStyle: AppTextStyle.LABEL_SMALL,
-                        )?.copyWith(
-                          color: GlobalHelper.getColorSchema(
-                            context,
-                          ).onSurfaceVariant,
-                        ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(right: 12),
-            child: Icon(
-              Icons.chevron_right,
-              color: GlobalHelper.getColorSchema(context).onSurfaceVariant,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _storeNameRow(
-    BuildContext context,
-    String name,
-    String status,
-    Color statusColor,
-  ) {
-    return Row(
-      children: [
-        Flexible(
-          child: Text(
-            name,
-            style: GlobalHelper.getTextTheme(
-              context,
-              appTextStyle: AppTextStyle.TITLE_SMALL,
-            )?.copyWith(fontWeight: FontWeight.bold),
-            overflow: TextOverflow.ellipsis,
-          ),
-        ),
-        const SizedBox(width: 6),
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-          decoration: BoxDecoration(
-            color: statusColor.withValues(alpha: 0.1),
-            borderRadius: BorderRadius.circular(4),
-            border: Border.all(color: statusColor.withValues(alpha: 0.4)),
-          ),
-          child: Text(
-            status,
-            style: GlobalHelper.getTextTheme(
-              context,
-              appTextStyle: AppTextStyle.LABEL_SMALL,
-            )?.copyWith(color: statusColor, fontWeight: FontWeight.w600),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _storeMetaRow(
-    BuildContext context,
-    String rating,
-    String reviews,
-    String distance,
-  ) {
-    return Row(
-      children: [
-        Icon(
-          Icons.location_on_outlined,
-          size: 11,
-          color: GlobalHelper.getColorSchema(context).onSurfaceVariant,
-        ),
-        Text(
-          ' $distance',
-          style:
-              GlobalHelper.getTextTheme(
-                context,
-                appTextStyle: AppTextStyle.LABEL_SMALL,
-              )?.copyWith(
-                color: GlobalHelper.getColorSchema(context).onSurfaceVariant,
-              ),
-        ),
-      ],
     );
   }
 
@@ -781,32 +606,6 @@ class CustomerHomeScreen extends StatelessWidget {
       ],
     );
   }
-}
-
-class _StoreData {
-  final String name;
-  final String status;
-  final Color statusColor;
-  final String rating;
-  final String reviews;
-  final String distance;
-  final String location;
-  final String promo;
-  final String emoji;
-  final String? photo;
-
-  const _StoreData({
-    required this.name,
-    required this.status,
-    required this.statusColor,
-    required this.rating,
-    required this.reviews,
-    required this.distance,
-    required this.location,
-    required this.promo,
-    required this.emoji,
-    this.photo,
-  });
 }
 
 // ─────────────────────────────────────────────────────────────────────────────

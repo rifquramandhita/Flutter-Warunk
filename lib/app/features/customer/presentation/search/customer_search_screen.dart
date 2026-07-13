@@ -12,6 +12,7 @@ import 'package:warunk/core/helper/dialog_helper.dart';
 import 'package:warunk/core/helper/number_helper.dart';
 import 'package:warunk/main.dart';
 import 'package:warunk/core/widgets/loading_app_widget.dart';
+import 'package:warunk/core/widgets/customer_merchant_item_widget.dart';
 
 class CustomerSearchScreen extends StatelessWidget {
   const CustomerSearchScreen({super.key});
@@ -190,147 +191,15 @@ class CustomerSearchScreen extends StatelessWidget {
             sliver: SliverList(
               delegate: SliverChildBuilderDelegate((_, i) {
                 final merchant = displayedStores[i];
-                final name = merchant.name;
-                final badges = merchant.isOpen ? ['Buka'] : ['Tutup'];
-                final photoUrl = merchant.photo;
-                return GestureDetector(
-                  onTap: () => navigatorKey.currentState?.push(
-                    MaterialPageRoute(
-                      builder: (_) =>
-                          CustomerDetailMerchantScreen(storeId: merchant.id),
-                    ),
-                  ),
-                  child: Container(
-                    margin: const EdgeInsets.only(bottom: 12),
-                    decoration: BoxDecoration(
-                      color: GlobalHelper.getColorSchema(context).surface,
-                      borderRadius: BorderRadius.circular(16),
-                      border: Border.all(
-                        color: GlobalHelper.getColorSchema(
-                          context,
-                        ).outline.withValues(alpha: 0.2),
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 12),
+                  child: CustomerMerchantItemWidget(
+                    store: merchant,
+                    onTap: () => navigatorKey.currentState?.push(
+                      MaterialPageRoute(
+                        builder: (_) =>
+                            CustomerDetailMerchantScreen(storeId: merchant.id),
                       ),
-                    ),
-                    child: Row(
-                      children: [
-                        ClipRRect(
-                          borderRadius: const BorderRadius.horizontal(
-                            left: Radius.circular(16),
-                          ),
-                          child: Container(
-                            width: 108,
-                            height: 108,
-                            color: GlobalHelper.getColorSchema(
-                              context,
-                            ).outline.withValues(alpha: 0.2),
-                            child: photoUrl != null
-                                ? Image.network(
-                                    photoUrl,
-                                    fit: BoxFit.cover,
-                                    errorBuilder:
-                                        (context, error, stackTrace) => Center(
-                                          child: Text(
-                                            name.isNotEmpty
-                                                ? name.substring(0, 1)
-                                                : '',
-                                            style:
-                                                GlobalHelper.getTextTheme(
-                                                  context,
-                                                  appTextStyle: AppTextStyle
-                                                      .HEADLINE_SMALL,
-                                                )?.copyWith(
-                                                  color:
-                                                      GlobalHelper.getColorSchema(
-                                                        context,
-                                                      ).onSurface,
-                                                  fontWeight: FontWeight.w900,
-                                                ),
-                                          ),
-                                        ),
-                                  )
-                                : Center(
-                                    child: Text(
-                                      name.isNotEmpty
-                                          ? name.substring(0, 1)
-                                          : '',
-                                      style:
-                                          GlobalHelper.getTextTheme(
-                                            context,
-                                            appTextStyle:
-                                                AppTextStyle.HEADLINE_SMALL,
-                                          )?.copyWith(
-                                            color: GlobalHelper.getColorSchema(
-                                              context,
-                                            ).onSurface,
-                                            fontWeight: FontWeight.w900,
-                                          ),
-                                    ),
-                                  ),
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 12),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  name,
-                                  style:
-                                      GlobalHelper.getTextTheme(
-                                        context,
-                                        appTextStyle: AppTextStyle.TITLE_SMALL,
-                                      )?.copyWith(
-                                        fontWeight: FontWeight.w800,
-                                        color: GlobalHelper.getColorSchema(
-                                          context,
-                                        ).primary,
-                                      ),
-                                ),
-                                const SizedBox(height: 5),
-                                Wrap(
-                                  spacing: 6,
-                                  children: (badges).map((b) {
-                                    final isPromo = b.contains('Promo');
-                                    return Container(
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 8,
-                                        vertical: 3,
-                                      ),
-                                      decoration: BoxDecoration(
-                                        color: isPromo
-                                            ? const Color(0xFFFFF3C4)
-                                            : GlobalHelper.getColorSchema(
-                                                context,
-                                              ).primary.withValues(alpha: 0.1),
-                                        borderRadius: BorderRadius.circular(6),
-                                      ),
-                                      child: Text(
-                                        b,
-                                        style:
-                                            GlobalHelper.getTextTheme(
-                                              context,
-                                              appTextStyle:
-                                                  AppTextStyle.LABEL_SMALL,
-                                            )?.copyWith(
-                                              fontWeight: FontWeight.w600,
-                                              color: isPromo
-                                                  ? const Color(0xFFF59E0B)
-                                                  : GlobalHelper.getColorSchema(
-                                                      context,
-                                                    ).primary,
-                                            ),
-                                      ),
-                                    );
-                                  }).toList(),
-                                ),
-                                const SizedBox(height: 6),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
                     ),
                   ),
                 );

@@ -77,115 +77,117 @@ class CustomerMerchantScreen extends StatelessWidget {
                 physics: const AlwaysScrollableScrollPhysics(),
                 padding: const EdgeInsets.all(20),
                 itemCount: state.merchants.length,
-              itemBuilder: (context, index) {
-                final merchant = state.merchants[index];
-                return GestureDetector(
-                  onTap: () {
-                    navigatorKey.currentState?.push(
-                      MaterialPageRoute(
-                        builder: (_) =>
-                            CustomerDetailMerchantScreen(storeId: merchant.id),
-                      ),
-                    );
-                  },
-                  child: Container(
-                    margin: const EdgeInsets.only(bottom: 12),
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: AppColors.white,
-                      borderRadius: BorderRadius.circular(12),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.05),
-                          blurRadius: 8,
-                          offset: const Offset(0, 2),
+                itemBuilder: (context, index) {
+                  final merchant = state.merchants[index];
+                  return GestureDetector(
+                    onTap: () {
+                      navigatorKey.currentState?.push(
+                        MaterialPageRoute(
+                          builder: (_) => CustomerDetailMerchantScreen(
+                            storeId: merchant.id,
+                          ),
                         ),
-                      ],
-                    ),
-                    child: Row(
-                      children: [
-                        // Merchant thumbnail
-                        Container(
-                          width: 60,
-                          height: 60,
-                          decoration: BoxDecoration(
-                            color: AppColors.primary.withValues(alpha: 0.1),
-                            borderRadius: BorderRadius.circular(8),
-                            image:
-                                merchant.photo != null &&
-                                    merchant.photo!.isNotEmpty
-                                ? DecorationImage(
-                                    image: NetworkImage(merchant.photo!),
-                                    fit: BoxFit.cover,
+                      );
+                    },
+                    child: Container(
+                      margin: const EdgeInsets.only(bottom: 12),
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: AppColors.white,
+                        borderRadius: BorderRadius.circular(12),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.05),
+                            blurRadius: 8,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
+                      ),
+                      child: Row(
+                        children: [
+                          // Merchant thumbnail
+                          Container(
+                            width: 60,
+                            height: 60,
+                            decoration: BoxDecoration(
+                              color: AppColors.primary.withValues(alpha: 0.1),
+                              borderRadius: BorderRadius.circular(8),
+                              image:
+                                  merchant.photo != null &&
+                                      merchant.photo!.isNotEmpty
+                                  ? DecorationImage(
+                                      image: NetworkImage(merchant.photo!),
+                                      fit: BoxFit.cover,
+                                    )
+                                  : null,
+                            ),
+                            child:
+                                merchant.photo == null ||
+                                    merchant.photo!.isEmpty
+                                ? const Center(
+                                    child: Icon(
+                                      Icons.storefront,
+                                      color: AppColors.primary,
+                                    ),
                                   )
                                 : null,
                           ),
-                          child:
-                              merchant.photo == null || merchant.photo!.isEmpty
-                              ? const Center(
-                                  child: Icon(
-                                    Icons.storefront,
-                                    color: AppColors.primary,
+                          const SizedBox(width: 12),
+                          // Merchant info
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  merchant.name,
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold,
+                                    color: AppColors.textDark,
                                   ),
-                                )
-                              : null,
-                        ),
-                        const SizedBox(width: 12),
-                        // Merchant info
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                merchant.name,
-                                style: const TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.bold,
-                                  color: AppColors.textDark,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
                                 ),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                              const SizedBox(height: 4),
-                              Row(
-                                children: [
-                                  Container(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 6,
-                                      vertical: 2,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: (merchant.isOpen)
-                                          ? AppColors.primary.withValues(
-                                              alpha: 0.1,
-                                            )
-                                          : Colors.red.withValues(alpha: 0.1),
-                                      borderRadius: BorderRadius.circular(4),
-                                    ),
-                                    child: Text(
-                                      (merchant.isOpen) ? 'Buka' : 'Tutup',
-                                      style: TextStyle(
-                                        fontSize: 10,
-                                        fontWeight: FontWeight.bold,
+                                const SizedBox(height: 4),
+                                Row(
+                                  children: [
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 6,
+                                        vertical: 2,
+                                      ),
+                                      decoration: BoxDecoration(
                                         color: (merchant.isOpen)
-                                            ? AppColors.primary
-                                            : Colors.red,
+                                            ? AppColors.primary.withValues(
+                                                alpha: 0.1,
+                                              )
+                                            : Colors.red.withValues(alpha: 0.1),
+                                        borderRadius: BorderRadius.circular(4),
+                                      ),
+                                      child: Text(
+                                        (merchant.isOpen) ? 'Buka' : 'Tutup',
+                                        style: TextStyle(
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.bold,
+                                          color: (merchant.isOpen)
+                                              ? AppColors.primary
+                                              : Colors.red,
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 4),
-                              Text(
-                                '${merchant.city ?? ''} ${merchant.district ?? ''}',
-                                style: const TextStyle(
-                                  fontSize: 12,
-                                  color: AppColors.greyText,
+                                  ],
                                 ),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ],
+                                const SizedBox(height: 4),
+                                Text(
+                                  '${merchant.city ?? ''} ${merchant.district ?? ''}',
+                                  style: const TextStyle(
+                                    fontSize: 12,
+                                    color: AppColors.greyText,
+                                  ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ],
                             ),
                           ),
                         ],
@@ -199,8 +201,8 @@ class CustomerMerchantScreen extends StatelessWidget {
             return RefreshIndicator(
               onRefresh: () async {
                 context.read<CustomerMerchantBloc>().add(
-                      CustomerMerchantEventGet(key: category.key),
-                    );
+                  CustomerMerchantEventGet(key: category.key),
+                );
               },
               child: content,
             );

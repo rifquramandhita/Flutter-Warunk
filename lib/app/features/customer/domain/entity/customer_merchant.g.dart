@@ -53,6 +53,8 @@ CustomerMerchantEntity _$CustomerMerchantEntityFromJson(
   balance: (json['balance'] as num?)?.toInt(),
   currentBalance: (json['current_balance'] as num?)?.toInt(),
   distance: (json['distance'] as num?)?.toDouble(),
+  rating: (json['rating'] as num?)?.toDouble(),
+  reviewsCount: (json['reviews_count'] as num?)?.toInt(),
   promoBadges: (json['promo_badges'] as List<dynamic>?)
       ?.map((e) => e as String)
       .toList(),
@@ -129,6 +131,8 @@ Map<String, dynamic> _$CustomerMerchantEntityToJson(
   'balance': ?instance.balance,
   'current_balance': ?instance.currentBalance,
   'distance': ?instance.distance,
+  'rating': ?instance.rating,
+  'reviews_count': ?instance.reviewsCount,
   'promo_badges': ?instance.promoBadges,
   'user': ?instance.user,
   'chat_url': ?instance.chatUrl,

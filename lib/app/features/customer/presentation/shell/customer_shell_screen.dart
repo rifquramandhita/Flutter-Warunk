@@ -48,7 +48,9 @@ class CustomerShellScreen extends StatelessWidget {
               actions: [
                 GestureDetector(
                   onTap: () => navigatorKey.currentState?.push(
-                    MaterialPageRoute(builder: (_) => const CustomerChatWebviewScreen()),
+                    MaterialPageRoute(
+                      builder: (_) => const CustomerChatWebviewScreen(),
+                    ),
                   ),
                   child: Icon(
                     Icons.chat_bubble_outline_rounded,
@@ -59,7 +61,9 @@ class CustomerShellScreen extends StatelessWidget {
                 const SizedBox(width: 16),
                 GestureDetector(
                   onTap: () => navigatorKey.currentState?.push(
-                    MaterialPageRoute(builder: (_) => const CustomerCartScreen()),
+                    MaterialPageRoute(
+                      builder: (_) => const CustomerCartScreen(),
+                    ),
                   ),
                   child: Icon(
                     Icons.shopping_cart_outlined,
@@ -80,7 +84,10 @@ class CustomerShellScreen extends StatelessWidget {
                   .add(CustomerShellTabChanged(index)),
               destinations: const [
                 NavigationDestination(
-                  selectedIcon: Icon(Icons.home_rounded, color: AppColors.primary),
+                  selectedIcon: Icon(
+                    Icons.home_rounded,
+                    color: AppColors.primary,
+                  ),
                   icon: Icon(Icons.home_outlined),
                   label: 'Home',
                 ),
@@ -90,12 +97,18 @@ class CustomerShellScreen extends StatelessWidget {
                   label: 'Map',
                 ),
                 NavigationDestination(
-                  selectedIcon: Icon(Icons.receipt_long, color: AppColors.primary),
+                  selectedIcon: Icon(
+                    Icons.receipt_long,
+                    color: AppColors.primary,
+                  ),
                   icon: Icon(Icons.receipt_long_outlined),
                   label: 'Transaksi',
                 ),
                 NavigationDestination(
-                  selectedIcon: Icon(Icons.notifications, color: AppColors.primary),
+                  selectedIcon: Icon(
+                    Icons.notifications,
+                    color: AppColors.primary,
+                  ),
                   icon: Icon(Icons.notifications_outlined),
                   label: 'Notifikasi',
                 ),

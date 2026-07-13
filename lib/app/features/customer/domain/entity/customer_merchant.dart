@@ -39,6 +39,8 @@ sealed class CustomerMerchant with _$CustomerMerchant {
     int? balance,
     int? currentBalance,
     double? distance,
+    double? rating,
+    int? reviewsCount,
     List<String>? promoBadges,
     CustomerMerchantUserEntity? user,
     String? chatUrl,
