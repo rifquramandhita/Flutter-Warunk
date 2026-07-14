@@ -12,6 +12,7 @@ import 'package:warunk/app/features/customer/domain/use_case/customer_promotion_
 import 'package:warunk/app/features/auth/domain/repository/auth_repository.dart';
 import 'package:warunk/app/features/auth/domain/use_case/auth_login_use_case.dart';
 import 'package:warunk/app/features/auth/domain/use_case/auth_login_google_use_case.dart';
+import 'package:warunk/app/features/customer/presentation/map/bloc/customer_map_bloc.dart';
 import 'package:warunk/app/features/auth/domain/use_case/auth_logout_use_case.dart';
 import 'package:warunk/app/features/auth/domain/use_case/auth_register_use_case.dart';
 import 'package:warunk/app/features/customer/presentation/profil/bloc/customer_profil_bloc.dart';
@@ -568,4 +569,10 @@ Future<void> initDependency() async {
   sl.registerFactory(() => MerchantDashboardBloc(getUseCase: sl()));
   sl.registerFactory(() => CustomerNotificationBloc(getUseCase: sl()));
   sl.registerFactory(() => MerchantNotificationBloc(getUseCase: sl()));
+  sl.registerFactory(
+    () => CustomerMapBloc(
+      getNearbyUseCase: sl(),
+      getCurrentLocationUseCase: sl(),
+    ),
+  );
 }

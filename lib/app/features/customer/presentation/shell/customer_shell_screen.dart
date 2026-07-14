@@ -19,7 +19,7 @@ class CustomerShellScreen extends StatelessWidget {
 
   static final List<Widget> _pages = [
     const CustomerHomeScreen(),
-    const CustomerMapScreen(),
+    CustomerMapScreen(),
     const CustomerOrderScreen(),
     const CustomerNotificationScreen(),
     const CustomerProfileScreen(),

@@ -1,230 +1,271 @@
+import 'dart:async';
+import 'dart:ui' as ui;
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:warunk/app/features/customer/presentation/map/bloc/customer_map_bloc.dart';
 import 'package:warunk/app/features/customer/presentation/map/bloc/customer_map_event.dart';
 import 'package:warunk/app/features/customer/presentation/map/bloc/customer_map_state.dart';
-import 'package:warunk/theme/app_colors.dart';
+import 'package:warunk/app/features/customer/presentation/detail_merchant/customer_detail_merchant_screen.dart';
+import 'package:warunk/core/dependency/dependency.dart';
+import 'package:warunk/core/helper/global_helper.dart';
+import 'package:warunk/core/helper/dialog_helper.dart';
+import 'package:warunk/core/widgets/loading_app_widget.dart';
+import 'package:warunk/main.dart';
+import 'package:warunk/app/features/customer/domain/entity/customer_merchant.dart';
 
 class CustomerMapScreen extends StatelessWidget {
-  const CustomerMapScreen({super.key});
+  final Completer<GoogleMapController> _controller =
+      Completer<GoogleMapController>();
+
+  CustomerMapScreen({super.key});
+
+  Future<void> _initCustomMarker(BuildContext context) async {
+    final bloc = context.read<CustomerMapBloc>();
+    if (bloc.state.storeMarker != null) return;
+
+    final ui.PictureRecorder pictureRecorder = ui.PictureRecorder();
+    final Canvas canvas = Canvas(pictureRecorder);
+    const Size size = Size(36.0, 50.0);
+
+    final double width = size.width;
+    final double height = size.height;
+    final double radius = width / 2;
+
+    final Path pinPath = Path();
+    pinPath.moveTo(0, radius);
+    pinPath.arcToPoint(
+      Offset(width, radius),
+      radius: Radius.circular(radius),
+      clockwise: true,
+    );
+    // Draw the bottom pointer using bezier curves for a smooth map pin shape
+    pinPath.quadraticBezierTo(width, radius + 11, radius, height);
+    pinPath.quadraticBezierTo(0, radius + 11, 0, radius);
+    pinPath.close();
+
+    // Shadow
+    final Paint shadowPaint = Paint()
+      ..color = Colors.black.withValues(alpha: 0.25)
+      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 2.0);
+    canvas.drawPath(pinPath.shift(const Offset(0, 2)), shadowPaint);
+
+    // Outer pin background (White)
+    final Paint borderPaint = Paint()
+      ..color = GlobalHelper.getColorSchema(context).onPrimary;
+    canvas.drawPath(pinPath, borderPaint);
+
+    // Inner circle (Primary Color)
+    final Paint primaryPaint = Paint()
+      ..color = GlobalHelper.getColorSchema(context).primary;
+    canvas.drawCircle(Offset(radius, radius), radius - 3.5, primaryPaint);
+
+    // Icon (storefront)
+    TextPainter textPainter = TextPainter(textDirection: TextDirection.ltr);
+    textPainter.text = TextSpan(
+      text: String.fromCharCode(Icons.storefront_rounded.codePoint),
+      style: TextStyle(
+        fontSize: 18.0,
+        fontFamily: Icons.storefront_rounded.fontFamily,
+        package: Icons.storefront_rounded.fontPackage,
+        color: GlobalHelper.getColorSchema(context).onPrimary,
+      ),
+    );
+    textPainter.layout();
+    textPainter.paint(
+      canvas,
+      Offset(
+        (width - textPainter.width) / 2,
+        (width - textPainter.height) / 2, // Centered inside the top circle
+      ),
+    );
+
+    final ui.Image image = await pictureRecorder.endRecording().toImage(
+      size.width.toInt(),
+      size.height.toInt(),
+    );
+    final ByteData? byteData = await image.toByteData(
+      format: ui.ImageByteFormat.png,
+    );
+    final Uint8List uint8List = byteData!.buffer.asUint8List();
+
+    bloc.add(CustomerMapMarkerInitialized(BitmapDescriptor.bytes(uint8List)));
+  }
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => CustomerMapBloc()..add(CustomerLoadMapData()),
-      child: const _MapView(),
+      create: (context) => sl<CustomerMapBloc>()..add(CustomerLoadMapData()),
+      child: BlocConsumer<CustomerMapBloc, CustomerMapState>(
+        listener: (context, state) async {
+          if (state.errorMessage != null) {
+            DialogHelper.showErrorSnackBar(
+              context: context,
+              text: state.errorMessage!,
+            );
+          }
+          if (state.currentLocation != null) {
+            if (_controller.isCompleted) {
+              final GoogleMapController controller = await _controller.future;
+              controller.animateCamera(
+                CameraUpdate.newCameraPosition(
+                  CameraPosition(target: state.currentLocation!, zoom: 14.4746),
+                ),
+              );
+            }
+          }
+        },
+        builder: (context, state) {
+          if (state.storeMarker == null && !state.isLoading) {
+            _initCustomMarker(context);
+          }
+          return Scaffold(
+            backgroundColor: const Color(0xFFE9F5EB),
+            body: _bodyBuild(context),
+          );
+        },
+      ),
     );
   }
-}
 
-class _MapView extends StatefulWidget {
-  const _MapView();
+  Widget _bodyBuild(BuildContext context) {
+    final state = context.watch<CustomerMapBloc>().state;
+    return Stack(
+      children: [
+        _bodyLayout(context),
+        if (state.isLoading) const LoadingAppWidget(),
+      ],
+    );
+  }
 
-  @override
-  State<_MapView> createState() => _MapViewState();
-}
+  Widget _bodyLayout(BuildContext context) {
+    final state = context.watch<CustomerMapBloc>().state;
+    final initialPosition = CameraPosition(
+      target: state.currentLocation ?? const LatLng(-6.200000, 106.816666),
+      zoom: 14.4746,
+    );
 
-class _MapViewState extends State<_MapView> {
-  final List<String> _filters = [
-    'Semua',
-    'Warung Madura',
-    'Kelontong',
-    'Kaki Lima',
-    'Promo',
-  ];
+    final markers = state.stores.map((store) {
+      final status = store.isOpen ? 'Buka' : 'Tutup';
+      final distance = '${store.distance?.toStringAsFixed(1) ?? "0.0"} km';
+      final coordinates = LatLng(store.latitude ?? 0.0, store.longitude ?? 0.0);
+      return Marker(
+        markerId: MarkerId(store.id),
+        position: coordinates,
+        icon: state.storeMarker ?? BitmapDescriptor.defaultMarker,
+        onTap: () {
+          context.read<CustomerMapBloc>().add(
+            CustomerMapSelectedStoreChanged(store),
+          );
+        },
+        infoWindow: InfoWindow(
+          title: store.name,
+          snippet: '$status - $distance',
+        ),
+      );
+    }).toSet();
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFFE9F5EB), // Light green map background
-      body: Stack(
-        children: [
-          // ── Map Background Layer ──────────────────────────────────────
-          Positioned.fill(child: CustomPaint(painter: _DetailedMapPainter())),
-
-          // ── Pins Layer ────────────────────────────────────────────────
-          BlocBuilder<CustomerMapBloc, CustomerMapState>(
-            builder: (context, state) {
-              return Stack(
-                children: state.stores.map((store) {
-                  return Positioned(
-                    left:
-                        MediaQuery.of(context).size.width *
-                        store.coordinates.dx,
-                    top:
-                        MediaQuery.of(context).size.height *
-                        store.coordinates.dy,
-                    child: const _MapPin(),
-                  );
-                }).toList(),
+    return Stack(
+      children: [
+        Positioned.fill(
+          child: GoogleMap(
+            mapType: MapType.normal,
+            initialCameraPosition: initialPosition,
+            onMapCreated: (GoogleMapController controller) {
+              if (!_controller.isCompleted) {
+                _controller.complete(controller);
+              }
+            },
+            onTap: (_) {
+              context.read<CustomerMapBloc>().add(
+                CustomerMapSelectedStoreChanged(null),
               );
             },
+            markers: markers,
+            compassEnabled: true,
+            myLocationEnabled: true,
+            myLocationButtonEnabled: true,
+            zoomControlsEnabled: true,
+            padding: const EdgeInsets.only(top: 80, bottom: 200),
           ),
-
-          // ── Top Bar (Search & Filters) ────────────────────────────────
-          Positioned(
-            top: 0,
-            left: 0,
-            right: 0,
-            child: SafeArea(
-              bottom: false,
-              child: Column(
-                children: [
-                  const SizedBox(height: 16),
-                  _buildSearchBar(),
-                  const SizedBox(height: 12),
-                  _buildFilters(),
-                ],
-              ),
+        ),
+        Positioned(
+          top: 0,
+          left: 0,
+          right: 0,
+          child: SafeArea(
+            bottom: false,
+            child: Column(
+              children: [const SizedBox(height: 16), _buildSearchBar(context)],
             ),
           ),
-
-          // ── Bottom Sheet (Stores List) ────────────────────────────────
-          Align(alignment: Alignment.bottomCenter, child: _buildBottomSheet()),
-        ],
-      ),
+        ),
+        Align(
+          alignment: Alignment.bottomCenter,
+          child: _buildBottomSheet(context),
+        ),
+      ],
     );
   }
 
-  // ── Search Bar ────────────────────────────────────────────────────────────
-  Widget _buildSearchBar() {
+  Widget _buildSearchBar(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Row(
-        children: [
-          // Back Button
-          Container(
-            width: 44,
-            height: 44,
-            decoration: BoxDecoration(
-              color: AppColors.white,
-              borderRadius: BorderRadius.circular(12),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.05),
-                  blurRadius: 10,
-                  offset: const Offset(0, 2),
-                ),
-              ],
+      child: Container(
+        height: 44,
+        decoration: BoxDecoration(
+          color: GlobalHelper.getColorSchema(context).surface,
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.05),
+              blurRadius: 10,
+              offset: const Offset(0, 2),
             ),
-            child: const Icon(
-              Icons.arrow_back_rounded,
-              color: AppColors.textDark,
+          ],
+        ),
+        child: Row(
+          children: [
+            const SizedBox(width: 14),
+            Icon(
+              Icons.search_rounded,
+              color: GlobalHelper.getColorSchema(
+                context,
+              ).onSurface.withValues(alpha: 0.5),
+              size: 20,
             ),
-          ),
-          const SizedBox(width: 10),
-          // Search Field
-          Expanded(
-            child: Container(
-              height: 44,
-              decoration: BoxDecoration(
-                color: AppColors.white,
-                borderRadius: BorderRadius.circular(12),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.05),
-                    blurRadius: 10,
-                    offset: const Offset(0, 2),
+            const SizedBox(width: 8),
+            Text(
+              'Cari warung atau area',
+              style:
+                  GlobalHelper.getTextTheme(
+                    context,
+                    appTextStyle: AppTextStyle.BODY_MEDIUM,
+                  )?.copyWith(
+                    color: GlobalHelper.getColorSchema(
+                      context,
+                    ).onSurface.withValues(alpha: 0.5),
                   ),
-                ],
-              ),
-              child: const Row(
-                children: [
-                  SizedBox(width: 14),
-                  Icon(
-                    Icons.search_rounded,
-                    color: AppColors.greyText,
-                    size: 20,
-                  ),
-                  SizedBox(width: 8),
-                  Text(
-                    'Cari warung atau area',
-                    style: TextStyle(color: AppColors.greyText, fontSize: 13),
-                  ),
-                ],
-              ),
             ),
-          ),
-          const SizedBox(width: 10),
-          // List/Menu Button
-          Container(
-            width: 44,
-            height: 44,
-            decoration: BoxDecoration(
-              color: AppColors.white,
-              borderRadius: BorderRadius.circular(12),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.05),
-                  blurRadius: 10,
-                  offset: const Offset(0, 2),
-                ),
-              ],
-            ),
-            child: const Icon(
-              Icons.format_list_bulleted_rounded,
-              color: AppColors.textDark,
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 
-  // ── Filters ───────────────────────────────────────────────────────────────
-  Widget _buildFilters() {
-    return BlocBuilder<CustomerMapBloc, CustomerMapState>(
-      builder: (context, state) {
-        return SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Row(
-            children: _filters.map((filter) {
-              final isActive = state.activeFilter == filter;
-              return GestureDetector(
-                onTap: () => context.read<CustomerMapBloc>().add(
-                  CustomerMapFilterChanged(filter),
-                ),
-                child: Container(
-                  margin: const EdgeInsets.only(right: 8),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 8,
-                  ),
-                  decoration: BoxDecoration(
-                    color: isActive ? const Color(0xFF3B8251) : AppColors.white,
-                    borderRadius: BorderRadius.circular(20),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.05),
-                        blurRadius: 4,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
-                  ),
-                  child: Text(
-                    filter,
-                    style: TextStyle(
-                      color: isActive ? AppColors.white : AppColors.textDark,
-                      fontSize: 12,
-                      fontWeight: isActive ? FontWeight.w700 : FontWeight.w600,
-                    ),
-                  ),
-                ),
-              );
-            }).toList(),
-          ),
-        );
-      },
-    );
-  }
+  Widget _buildBottomSheet(BuildContext context) {
+    final state = context.watch<CustomerMapBloc>().state;
+    final selectedStore = state.selectedStore;
 
-  // ── Bottom Sheet ──────────────────────────────────────────────────────────
-  Widget _buildBottomSheet() {
+    if (selectedStore == null) {
+      return const SizedBox.shrink();
+    }
+
     return Container(
-      decoration: const BoxDecoration(
-        color: AppColors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      decoration: BoxDecoration(
+        color: GlobalHelper.getColorSchema(context).surface,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -237,151 +278,69 @@ class _MapViewState extends State<_MapView> {
               width: 40,
               height: 4,
               decoration: BoxDecoration(
-                color: AppColors.greyBorder,
+                color: GlobalHelper.getColorSchema(context).outlineVariant,
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
           ),
 
           // Title
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Text(
-              'Warung Terdekat',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w800,
-                color: AppColors.textDark,
-              ),
+              'Warung Yang Dipilih',
+              style:
+                  GlobalHelper.getTextTheme(
+                    context,
+                    appTextStyle: AppTextStyle.TITLE_LARGE,
+                  )?.copyWith(
+                    fontWeight: FontWeight.w800,
+                    color: GlobalHelper.getColorSchema(context).onSurface,
+                  ),
             ),
           ),
           const SizedBox(height: 12),
 
-          // Stores List
-          BlocBuilder<CustomerMapBloc, CustomerMapState>(
-            builder: (context, state) {
-              if (state.isLoading) {
-                return const Center(
-                  child: Padding(
-                    padding: EdgeInsets.all(20),
-                    child: CircularProgressIndicator(),
-                  ),
-                );
-              }
-
-              // Take first two for the UI mock
-              final stores = state.stores.take(2).toList();
-
-              return Column(
-                children: stores.map((store) {
-                  return _StoreCard(store: store);
-                }).toList(),
+          // Selected Store Card
+          GestureDetector(
+            onTap: () {
+              navigatorKey.currentState?.push(
+                MaterialPageRoute(
+                  builder: (context) =>
+                      CustomerDetailMerchantScreen(storeId: selectedStore.id),
+                ),
               );
             },
+            child: _buildStoreCard(context, selectedStore),
           ),
 
-          // Action Button
-          Padding(
-            padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
-            child: SizedBox(
-              width: double.infinity,
-              height: 50,
-              child: ElevatedButton(
-                onPressed: () {},
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF3B8251),
-                  foregroundColor: Colors.white,
-                  elevation: 0,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(14),
-                  ),
-                ),
-                child: const Text(
-                  'Lihat Detail',
-                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700),
-                ),
-              ),
-            ),
-          ),
+          const SizedBox(height: 24),
         ],
       ),
     );
   }
-}
 
-// ── Custom Map Pin ──────────────────────────────────────────────────────────
-class _MapPin extends StatelessWidget {
-  const _MapPin();
+  Widget _buildStoreCard(BuildContext context, CustomerMerchantEntity store) {
+    final status = store.isOpen ? 'Buka' : 'Tutup';
+    final statusColor = store.isOpen
+        ? GlobalHelper.getColorSchema(context).primary
+        : GlobalHelper.getColorSchema(context).onSurface.withValues(alpha: 0.5);
+    final rating = store.rating ?? 0.0;
+    final reviews = store.reviewsCount ?? 0;
+    final distance = '${store.distance?.toStringAsFixed(1) ?? "0.0"} km';
+    final location = store.district ?? '';
+    final promo = store.promoBadges?.isNotEmpty == true
+        ? store.promoBadges!.first
+        : '';
 
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Container(
-          width: 32,
-          height: 32,
-          decoration: BoxDecoration(
-            color: const Color(0xFF3B8251),
-            shape: BoxShape.circle,
-            border: Border.all(color: Colors.white, width: 2.5),
-            boxShadow: [
-              BoxShadow(
-                color: const Color(0xFF3B8251).withValues(alpha: 0.4),
-                blurRadius: 8,
-                offset: const Offset(0, 4),
-              ),
-            ],
-          ),
-          child: const Center(
-            child: Icon(
-              Icons.storefront_rounded,
-              color: Colors.white,
-              size: 16,
-            ),
-          ),
-        ),
-        // Arrow down part of the pin
-        CustomPaint(size: const Size(12, 10), painter: _PinArrowPainter()),
-      ],
-    );
-  }
-}
-
-class _PinArrowPainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = const Color(0xFF3B8251)
-      ..style = PaintingStyle.fill;
-
-    final path = Path()
-      ..moveTo(0, 0)
-      ..lineTo(size.width, 0)
-      ..lineTo(size.width / 2, size.height)
-      ..close();
-
-    canvas.drawPath(path, paint);
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
-}
-
-// ── Store Card ──────────────────────────────────────────────────────────────
-class _StoreCard extends StatelessWidget {
-  final CustomerMapStore store;
-
-  const _StoreCard({required this.store});
-
-  @override
-  Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.only(left: 20, right: 20, bottom: 12),
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: GlobalHelper.getColorSchema(context).surface,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.greyBorder),
+        border: Border.all(
+          color: GlobalHelper.getColorSchema(context).outlineVariant,
+        ),
       ),
       child: Row(
         children: [
@@ -390,7 +349,9 @@ class _StoreCard extends StatelessWidget {
             width: 86,
             height: 86,
             decoration: BoxDecoration(
-              color: AppColors.primary.withValues(alpha: 0.1),
+              color: GlobalHelper.getColorSchema(
+                context,
+              ).primary.withValues(alpha: 0.1),
               borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(16),
                 bottomLeft: Radius.circular(16),
@@ -413,11 +374,16 @@ class _StoreCard extends StatelessWidget {
                       Expanded(
                         child: Text(
                           store.name,
-                          style: const TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w800,
-                            color: AppColors.textDark,
-                          ),
+                          style:
+                              GlobalHelper.getTextTheme(
+                                context,
+                                appTextStyle: AppTextStyle.BODY_MEDIUM,
+                              )?.copyWith(
+                                fontWeight: FontWeight.w800,
+                                color: GlobalHelper.getColorSchema(
+                                  context,
+                                ).onSurface,
+                              ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -429,16 +395,20 @@ class _StoreCard extends StatelessWidget {
                           vertical: 2,
                         ),
                         decoration: BoxDecoration(
-                          color: store.statusColor.withValues(alpha: 0.15),
+                          color: statusColor.withValues(alpha: 0.15),
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: Text(
-                          store.status,
-                          style: TextStyle(
-                            color: store.statusColor,
-                            fontSize: 10,
-                            fontWeight: FontWeight.w700,
-                          ),
+                          status,
+                          style:
+                              GlobalHelper.getTextTheme(
+                                context,
+                                appTextStyle: AppTextStyle.BODY_SMALL,
+                              )?.copyWith(
+                                color: statusColor,
+                                fontSize: 10,
+                                fontWeight: FontWeight.w700,
+                              ),
                         ),
                       ),
                     ],
@@ -453,54 +423,84 @@ class _StoreCard extends StatelessWidget {
                       ),
                       const SizedBox(width: 4),
                       Text(
-                        '${store.rating} (${store.reviews})',
-                        style: const TextStyle(
-                          fontSize: 12,
-                          color: AppColors.textDark,
-                        ),
+                        '$rating ($reviews)',
+                        style:
+                            GlobalHelper.getTextTheme(
+                              context,
+                              appTextStyle: AppTextStyle.BODY_SMALL,
+                            )?.copyWith(
+                              color: GlobalHelper.getColorSchema(
+                                context,
+                              ).onSurface,
+                            ),
                       ),
                       const SizedBox(width: 6),
-                      const Text(
+                      Text(
                         '•',
-                        style: TextStyle(color: AppColors.greyText),
+                        style:
+                            GlobalHelper.getTextTheme(
+                              context,
+                              appTextStyle: AppTextStyle.BODY_SMALL,
+                            )?.copyWith(
+                              color: GlobalHelper.getColorSchema(
+                                context,
+                              ).onSurface.withValues(alpha: 0.5),
+                            ),
                       ),
                       const SizedBox(width: 6),
-                      const Icon(
+                      Icon(
                         Icons.radio_button_unchecked,
                         size: 10,
-                        color: AppColors.greyText,
+                        color: GlobalHelper.getColorSchema(
+                          context,
+                        ).onSurface.withValues(alpha: 0.5),
                       ),
                       const SizedBox(width: 4),
                       Text(
-                        store.distance,
-                        style: const TextStyle(
-                          fontSize: 12,
-                          color: AppColors.greyText,
-                        ),
+                        distance,
+                        style:
+                            GlobalHelper.getTextTheme(
+                              context,
+                              appTextStyle: AppTextStyle.BODY_SMALL,
+                            )?.copyWith(
+                              color: GlobalHelper.getColorSchema(
+                                context,
+                              ).onSurface.withValues(alpha: 0.5),
+                            ),
                       ),
                     ],
                   ),
                   const SizedBox(height: 2),
                   Text(
-                    store.location,
-                    style: const TextStyle(
-                      fontSize: 12,
-                      color: AppColors.greyText,
-                    ),
+                    location,
+                    style:
+                        GlobalHelper.getTextTheme(
+                          context,
+                          appTextStyle: AppTextStyle.BODY_SMALL,
+                        )?.copyWith(
+                          color: GlobalHelper.getColorSchema(
+                            context,
+                          ).onSurface.withValues(alpha: 0.5),
+                        ),
                   ),
                   const SizedBox(height: 6),
-                  if (store.promo.isNotEmpty)
+                  if (promo.isNotEmpty)
                     Row(
                       children: [
                         const Text('🛵', style: TextStyle(fontSize: 12)),
                         const SizedBox(width: 4),
                         Text(
-                          store.promo,
-                          style: const TextStyle(
-                            fontSize: 11,
-                            fontWeight: FontWeight.w600,
-                            color: Color(0xFF3B8251),
-                          ),
+                          promo,
+                          style:
+                              GlobalHelper.getTextTheme(
+                                context,
+                                appTextStyle: AppTextStyle.BODY_SMALL,
+                              )?.copyWith(
+                                fontWeight: FontWeight.w600,
+                                color: GlobalHelper.getColorSchema(
+                                  context,
+                                ).primary,
+                              ),
                         ),
                       ],
                     ),
@@ -508,109 +508,17 @@ class _StoreCard extends StatelessWidget {
               ),
             ),
           ),
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16),
-            child: Icon(Icons.chevron_right_rounded, color: AppColors.greyText),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Icon(
+              Icons.chevron_right_rounded,
+              color: GlobalHelper.getColorSchema(
+                context,
+              ).onSurface.withValues(alpha: 0.5),
+            ),
           ),
         ],
       ),
     );
   }
-}
-
-// ── Detailed Map Background Painter ─────────────────────────────────────────
-class _DetailedMapPainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    // Street lines
-    final streetPaint = Paint()
-      ..color = Colors.white
-      ..strokeWidth = 6
-      ..strokeCap = StrokeCap.round
-      ..style = PaintingStyle.stroke;
-
-    final thinStreetPaint = Paint()
-      ..color = Colors.white
-      ..strokeWidth = 3
-      ..strokeCap = StrokeCap.round
-      ..style = PaintingStyle.stroke;
-
-    // River
-    final riverPaint = Paint()
-      ..color =
-          const Color(0xFFBCE3F9) // Light blue river
-      ..strokeWidth = 12
-      ..strokeCap = StrokeCap.round
-      ..style = PaintingStyle.stroke;
-
-    // Draw some thick streets
-    canvas.drawLine(
-      Offset(0, size.height * 0.3),
-      Offset(size.width, size.height * 0.4),
-      streetPaint,
-    );
-    canvas.drawLine(
-      Offset(size.width * 0.2, 0),
-      Offset(size.width * 0.4, size.height),
-      streetPaint,
-    );
-    canvas.drawLine(
-      Offset(size.width * 0.7, 0),
-      Offset(size.width * 0.6, size.height),
-      streetPaint,
-    );
-    canvas.drawLine(
-      Offset(0, size.height * 0.7),
-      Offset(size.width, size.height * 0.6),
-      streetPaint,
-    );
-
-    // Draw some thin streets
-    canvas.drawLine(
-      Offset(0, size.height * 0.1),
-      Offset(size.width * 0.4, size.height * 0.2),
-      thinStreetPaint,
-    );
-    canvas.drawLine(
-      Offset(size.width * 0.5, size.height * 0.4),
-      Offset(size.width * 0.9, size.height * 0.2),
-      thinStreetPaint,
-    );
-    canvas.drawLine(
-      Offset(size.width * 0.1, size.height * 0.5),
-      Offset(size.width * 0.3, size.height * 0.8),
-      thinStreetPaint,
-    );
-    canvas.drawLine(
-      Offset(size.width * 0.6, size.height * 0.7),
-      Offset(size.width * 0.9, size.height * 0.9),
-      thinStreetPaint,
-    );
-    canvas.drawLine(
-      Offset(size.width * 0.4, 0),
-      Offset(size.width * 0.8, size.height * 0.4),
-      thinStreetPaint,
-    );
-
-    // Draw river
-    final riverPath = Path()
-      ..moveTo(size.width * 0.8, 0)
-      ..quadraticBezierTo(
-        size.width * 0.6,
-        size.height * 0.3,
-        size.width * 0.4,
-        size.height * 0.5,
-      )
-      ..quadraticBezierTo(
-        size.width * 0.2,
-        size.height * 0.7,
-        size.width * 0.1,
-        size.height,
-      );
-
-    canvas.drawPath(riverPath, riverPaint);
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
