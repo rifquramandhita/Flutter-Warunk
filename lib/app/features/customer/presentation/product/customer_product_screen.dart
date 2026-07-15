@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:warunk/core/dependency/dependency.dart';
 import 'package:warunk/core/helper/dialog_helper.dart';
 import 'package:warunk/core/helper/global_helper.dart';
+import 'package:warunk/core/helper/number_helper.dart';
 import 'package:warunk/core/widgets/loading_app_widget.dart';
 import 'package:warunk/app/features/customer/presentation/product/bloc/customer_product_bloc.dart';
 import 'package:warunk/app/features/customer/presentation/product/bloc/customer_product_event.dart';
@@ -87,8 +88,8 @@ class CustomerProductScreen extends StatelessWidget {
     }
 
     final displayPrice = state.selectedVariant?.price ?? product.price;
-    final price = 'Rp$displayPrice';
-    final totalPrice = 'Rp${displayPrice * state.quantity}';
+    final price = NumberHelper.formatIDR(displayPrice.toInt());
+    final totalPrice = NumberHelper.formatIDR((displayPrice * state.quantity).toInt());
 
     final Map<String, Set<String>> dimensions = {};
     if (product.variants != null) {

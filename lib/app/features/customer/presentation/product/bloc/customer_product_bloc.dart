@@ -102,12 +102,7 @@ class CustomerProductBloc
         return;
       }
 
-      emit(
-        state.copyWith(
-          quantity: event.quantity,
-          errorMessage: state.errorMessage,
-        ),
-      ); // preserve error if any
+      emit(state.copyWith(quantity: event.quantity)); // preserve error if any
     }
   }
 
