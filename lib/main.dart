@@ -20,6 +20,7 @@ import 'package:warunk/theme/app_theme.dart';
 
 bool isProduction = false;
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -57,6 +58,7 @@ class WarunkApp extends StatelessWidget {
         title: 'Warunk',
         debugShowCheckedModeBanner: !isProduction,
         navigatorKey: navigatorKey,
+        navigatorObservers: [routeObserver],
         theme: AppTheme.lightTheme,
         home: BlocBuilder<AuthBloc, AuthState>(
           builder: (context, state) {

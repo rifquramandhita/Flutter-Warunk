@@ -6,3 +6,5 @@ final class CustomerShellTabChanged extends CustomerShellEvent {
   final int index;
   CustomerShellTabChanged(this.index);
 }
+
+final class CustomerShellLoadCartCount extends CustomerShellEvent {}
