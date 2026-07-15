@@ -97,34 +97,58 @@ class CustomerMapScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => sl<CustomerMapBloc>()..add(CustomerLoadMapData()),
-      child: BlocConsumer<CustomerMapBloc, CustomerMapState>(
-        listener: (context, state) async {
-          if (state.errorMessage != null) {
-            DialogHelper.showErrorSnackBar(
-              context: context,
-              text: state.errorMessage!,
-            );
-          }
-          if (state.currentLocation != null) {
-            if (_controller.isCompleted) {
-              final GoogleMapController controller = await _controller.future;
-              controller.animateCamera(
-                CameraUpdate.newCameraPosition(
-                  CameraPosition(target: state.currentLocation!, zoom: 14.4746),
-                ),
+      child: MultiBlocListener(
+        listeners: [
+          BlocListener<CustomerMapBloc, CustomerMapState>(
+            listenWhen: (previous, current) => previous.errorMessage != current.errorMessage && current.errorMessage != null,
+            listener: (context, state) {
+              DialogHelper.showErrorSnackBar(
+                context: context,
+                text: state.errorMessage!,
               );
+            },
+          ),
+          BlocListener<CustomerMapBloc, CustomerMapState>(
+            listenWhen: (previous, current) => previous.currentLocation != current.currentLocation && current.currentLocation != null,
+            listener: (context, state) async {
+              if (_controller.isCompleted) {
+                final GoogleMapController controller = await _controller.future;
+                controller.animateCamera(
+                  CameraUpdate.newCameraPosition(
+                    CameraPosition(target: state.currentLocation!, zoom: 14.4746),
+                  ),
+                );
+              }
+            },
+          ),
+          BlocListener<CustomerMapBloc, CustomerMapState>(
+            listenWhen: (previous, current) => previous.selectedStore != current.selectedStore && current.selectedStore != null,
+            listener: (context, state) async {
+              if (_controller.isCompleted) {
+                final GoogleMapController controller = await _controller.future;
+                controller.animateCamera(
+                  CameraUpdate.newCameraPosition(
+                    CameraPosition(
+                      target: LatLng(state.selectedStore!.latitude ?? 0.0, state.selectedStore!.longitude ?? 0.0),
+                      zoom: 16.0,
+                    ),
+                  ),
+                );
+              }
+            },
+          ),
+        ],
+        child: BlocBuilder<CustomerMapBloc, CustomerMapState>(
+          builder: (context, state) {
+            if (state.storeMarker == null && !state.isLoading) {
+              _initCustomMarker(context);
             }
-          }
-        },
-        builder: (context, state) {
-          if (state.storeMarker == null && !state.isLoading) {
-            _initCustomMarker(context);
-          }
-          return Scaffold(
-            backgroundColor: const Color(0xFFE9F5EB),
-            body: _bodyBuild(context),
-          );
-        },
+            return Scaffold(
+              backgroundColor: const Color(0xFFE9F5EB),
+              body: _bodyBuild(context),
+            );
+          },
+        ),
       ),
     );
   }
@@ -197,7 +221,10 @@ class CustomerMapScreen extends StatelessWidget {
           child: SafeArea(
             bottom: false,
             child: Column(
-              children: [const SizedBox(height: 16), _buildSearchBar(context)],
+              children: [
+                const SizedBox(height: 16),
+                _MapSearchBarWidget(mapController: _controller),
+              ],
             ),
           ),
         ),
@@ -206,51 +233,6 @@ class CustomerMapScreen extends StatelessWidget {
           child: _buildBottomSheet(context),
         ),
       ],
-    );
-  }
-
-  Widget _buildSearchBar(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Container(
-        height: 44,
-        decoration: BoxDecoration(
-          color: GlobalHelper.getColorSchema(context).surface,
-          borderRadius: BorderRadius.circular(12),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.05),
-              blurRadius: 10,
-              offset: const Offset(0, 2),
-            ),
-          ],
-        ),
-        child: Row(
-          children: [
-            const SizedBox(width: 14),
-            Icon(
-              Icons.search_rounded,
-              color: GlobalHelper.getColorSchema(
-                context,
-              ).onSurface.withValues(alpha: 0.5),
-              size: 20,
-            ),
-            const SizedBox(width: 8),
-            Text(
-              'Cari warung atau area',
-              style:
-                  GlobalHelper.getTextTheme(
-                    context,
-                    appTextStyle: AppTextStyle.BODY_MEDIUM,
-                  )?.copyWith(
-                    color: GlobalHelper.getColorSchema(
-                      context,
-                    ).onSurface.withValues(alpha: 0.5),
-                  ),
-            ),
-          ],
-        ),
-      ),
     );
   }
 
@@ -517,6 +499,222 @@ class CustomerMapScreen extends StatelessWidget {
               ).onSurface.withValues(alpha: 0.5),
             ),
           ),
+        ],
+      ),
+    );
+  }
+}
+
+class _MapSearchBarWidget extends StatefulWidget {
+  final Completer<GoogleMapController> mapController;
+
+  const _MapSearchBarWidget({required this.mapController});
+
+  @override
+  State<_MapSearchBarWidget> createState() => _MapSearchBarWidgetState();
+}
+
+class _MapSearchBarWidgetState extends State<_MapSearchBarWidget> {
+  final FocusNode _focusNode = FocusNode();
+  final TextEditingController _controller = TextEditingController();
+  Timer? _debounce;
+
+  @override
+  void initState() {
+    super.initState();
+    _focusNode.addListener(() {
+      setState(() {});
+    });
+  }
+
+  @override
+  void dispose() {
+    _focusNode.dispose();
+    _controller.dispose();
+    _debounce?.cancel();
+    super.dispose();
+  }
+
+  void _onSearchChanged(String query, BuildContext context) {
+    if (_debounce?.isActive ?? false) _debounce!.cancel();
+    _debounce = Timer(const Duration(milliseconds: 500), () {
+      context.read<CustomerMapBloc>().add(CustomerMapSearchQueryChanged(query));
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final state = context.watch<CustomerMapBloc>().state;
+
+    if (state.searchQuery != _controller.text && !_focusNode.hasFocus) {
+      _controller.text = state.searchQuery;
+    }
+
+    final bool showSuggestions =
+        _focusNode.hasFocus &&
+        state.stores.isNotEmpty &&
+        _controller.text.isNotEmpty;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              color: GlobalHelper.getColorSchema(context).surface,
+              borderRadius: BorderRadius.circular(14),
+              border: Border.all(
+                color: GlobalHelper.getColorSchema(
+                  context,
+                ).outline.withValues(alpha: 0.2),
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.05),
+                  blurRadius: 10,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            child: TextFormField(
+              controller: _controller,
+              focusNode: _focusNode,
+              textInputAction: TextInputAction.search,
+              onChanged: (v) => _onSearchChanged(v, context),
+              onFieldSubmitted: (v) {
+                _focusNode.unfocus();
+                context.read<CustomerMapBloc>().add(
+                  CustomerMapSearchQueryChanged(v),
+                );
+              },
+              style:
+                  GlobalHelper.getTextTheme(
+                    context,
+                    appTextStyle: AppTextStyle.BODY_MEDIUM,
+                  )?.copyWith(
+                    color: GlobalHelper.getColorSchema(context).onSurface,
+                  ),
+              decoration: InputDecoration(
+                hintText: 'Cari warung atau area',
+                hintStyle:
+                    GlobalHelper.getTextTheme(
+                      context,
+                      appTextStyle: AppTextStyle.BODY_MEDIUM,
+                    )?.copyWith(
+                      color: GlobalHelper.getColorSchema(
+                        context,
+                      ).onSurface.withValues(alpha: 0.5),
+                    ),
+                prefixIcon: Icon(
+                  Icons.search_rounded,
+                  color: GlobalHelper.getColorSchema(
+                    context,
+                  ).onSurface.withValues(alpha: 0.5),
+                  size: 22,
+                ),
+                suffixIcon:
+                    state.searchQuery.isNotEmpty || _controller.text.isNotEmpty
+                    ? IconButton(
+                        icon: Icon(
+                          Icons.close_rounded,
+                          color: GlobalHelper.getColorSchema(
+                            context,
+                          ).onSurface.withValues(alpha: 0.5),
+                        ),
+                        onPressed: () {
+                          _controller.clear();
+                          context.read<CustomerMapBloc>().add(
+                            CustomerMapSearchQueryChanged(''),
+                          );
+                        },
+                      )
+                    : null,
+                border: InputBorder.none,
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 13,
+                ),
+              ),
+            ),
+          ),
+          if (showSuggestions) ...[
+            const SizedBox(height: 8),
+            Container(
+              constraints: const BoxConstraints(maxHeight: 250),
+              decoration: BoxDecoration(
+                color: GlobalHelper.getColorSchema(context).surface,
+                borderRadius: BorderRadius.circular(14),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.05),
+                    blurRadius: 10,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: ListView.separated(
+                shrinkWrap: true,
+                padding: EdgeInsets.zero,
+                itemCount: state.stores.length,
+                separatorBuilder: (context, index) => Divider(
+                  height: 1,
+                  color: GlobalHelper.getColorSchema(context).outlineVariant,
+                ),
+                itemBuilder: (context, index) {
+                  final store = state.stores[index];
+                  return ListTile(
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 4,
+                    ),
+                    leading: Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: GlobalHelper.getColorSchema(
+                          context,
+                        ).primary.withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Icon(
+                        Icons.storefront_rounded,
+                        color: GlobalHelper.getColorSchema(context).primary,
+                      ),
+                    ),
+                    title: Text(
+                      store.name,
+                      style: GlobalHelper.getTextTheme(
+                        context,
+                        appTextStyle: AppTextStyle.BODY_MEDIUM,
+                      )?.copyWith(fontWeight: FontWeight.w600),
+                    ),
+                    subtitle: Text(
+                      store.district ?? 'Tidak ada alamat',
+                      style:
+                          GlobalHelper.getTextTheme(
+                            context,
+                            appTextStyle: AppTextStyle.BODY_SMALL,
+                          )?.copyWith(
+                            color: GlobalHelper.getColorSchema(
+                              context,
+                            ).onSurface.withValues(alpha: 0.5),
+                          ),
+                    ),
+                    onTap: () async {
+                      _focusNode.unfocus();
+                      _controller.text = store.name;
+                      context.read<CustomerMapBloc>().add(
+                        CustomerMapSearchQueryChanged(store.name),
+                      );
+                      context.read<CustomerMapBloc>().add(
+                        CustomerMapSelectedStoreChanged(store),
+                      );
+                    },
+                  );
+                },
+              ),
+            ),
+          ],
         ],
       ),
     );

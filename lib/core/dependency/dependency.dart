@@ -573,6 +573,7 @@ Future<void> initDependency() async {
     () => CustomerMapBloc(
       getNearbyUseCase: sl(),
       getCurrentLocationUseCase: sl(),
+      getMerchantUseCase: sl(),
     ),
   );
 }
