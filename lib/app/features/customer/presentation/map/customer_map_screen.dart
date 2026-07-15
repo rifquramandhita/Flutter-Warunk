@@ -100,7 +100,9 @@ class CustomerMapScreen extends StatelessWidget {
       child: MultiBlocListener(
         listeners: [
           BlocListener<CustomerMapBloc, CustomerMapState>(
-            listenWhen: (previous, current) => previous.errorMessage != current.errorMessage && current.errorMessage != null,
+            listenWhen: (previous, current) =>
+                previous.errorMessage != current.errorMessage &&
+                current.errorMessage != null,
             listener: (context, state) {
               DialogHelper.showErrorSnackBar(
                 context: context,
@@ -109,27 +111,37 @@ class CustomerMapScreen extends StatelessWidget {
             },
           ),
           BlocListener<CustomerMapBloc, CustomerMapState>(
-            listenWhen: (previous, current) => previous.currentLocation != current.currentLocation && current.currentLocation != null,
-            listener: (context, state) async {
-              if (_controller.isCompleted) {
-                final GoogleMapController controller = await _controller.future;
-                controller.animateCamera(
-                  CameraUpdate.newCameraPosition(
-                    CameraPosition(target: state.currentLocation!, zoom: 14.4746),
-                  ),
-                );
-              }
-            },
-          ),
-          BlocListener<CustomerMapBloc, CustomerMapState>(
-            listenWhen: (previous, current) => previous.selectedStore != current.selectedStore && current.selectedStore != null,
+            listenWhen: (previous, current) =>
+                previous.currentLocation != current.currentLocation &&
+                current.currentLocation != null,
             listener: (context, state) async {
               if (_controller.isCompleted) {
                 final GoogleMapController controller = await _controller.future;
                 controller.animateCamera(
                   CameraUpdate.newCameraPosition(
                     CameraPosition(
-                      target: LatLng(state.selectedStore!.latitude ?? 0.0, state.selectedStore!.longitude ?? 0.0),
+                      target: state.currentLocation!,
+                      zoom: 14.4746,
+                    ),
+                  ),
+                );
+              }
+            },
+          ),
+          BlocListener<CustomerMapBloc, CustomerMapState>(
+            listenWhen: (previous, current) =>
+                previous.selectedStore != current.selectedStore &&
+                current.selectedStore != null,
+            listener: (context, state) async {
+              if (_controller.isCompleted) {
+                final GoogleMapController controller = await _controller.future;
+                controller.animateCamera(
+                  CameraUpdate.newCameraPosition(
+                    CameraPosition(
+                      target: LatLng(
+                        state.selectedStore!.latitude ?? 0.0,
+                        state.selectedStore!.longitude ?? 0.0,
+                      ),
                       zoom: 16.0,
                     ),
                   ),
@@ -689,7 +701,7 @@ class _MapSearchBarWidgetState extends State<_MapSearchBarWidget> {
                       )?.copyWith(fontWeight: FontWeight.w600),
                     ),
                     subtitle: Text(
-                      store.district ?? 'Tidak ada alamat',
+                      store.city ?? 'Tidak ada kota',
                       style:
                           GlobalHelper.getTextTheme(
                             context,
