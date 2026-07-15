@@ -175,7 +175,11 @@ class CustomerMerchantItemWidget extends StatelessWidget {
                     if (_promo.isNotEmpty)
                       Row(
                         children: [
-                          const Text('🛵', style: TextStyle(fontSize: 12)),
+                          const Icon(
+                            Icons.local_offer_rounded,
+                            size: 14,
+                            color: Color(0xFF3B8251),
+                          ),
                           const SizedBox(width: 4),
                           Text(
                             _promo,
