@@ -1,5 +1,6 @@
 import 'package:warunk/app/features/merchant/data/source/merchant_promotion_api_service.dart';
 import 'package:warunk/app/features/merchant/domain/entity/merchant_promotion.dart';
+import 'package:warunk/app/features/merchant/domain/entity/merchant_promotion_national.dart';
 import 'package:warunk/app/features/merchant/domain/repository/merchant_promotion_repository.dart';
 import 'package:warunk/core/network/data_state.dart';
 
@@ -15,6 +16,14 @@ class MerchantPromotionRepositoryImpl implements MerchantPromotionRepository {
     return handleResponse(() => _apiService.getPromotions(), (responseData) {
       final data = responseData['promotions'] as List;
       return data.map((e) => MerchantPromotionEntity.fromJson(e)).toList();
+    });
+  }
+
+  @override
+  Future<DataState<List<MerchantPromotionNationalEntity>>> getNationalPromotions() async {
+    return handleResponse(() => _apiService.getNationalPromotions(), (responseData) {
+      final data = responseData['promotions'] as List;
+      return data.map((e) => MerchantPromotionNationalEntity.fromJson(e)).toList();
     });
   }
   @override
@@ -49,6 +58,14 @@ class MerchantPromotionRepositoryImpl implements MerchantPromotionRepository {
   Future<DataState> deletePromotion(String id) async {
     return handleResponse(
       () => _apiService.deletePromotion(id),
+      (responseData) => true,
+    );
+  }
+
+  @override
+  Future<DataState<bool>> joinNationalPromotion(String id) async {
+    return handleResponse(
+      () => _apiService.joinNationalPromotion(id),
       (responseData) => true,
     );
   }

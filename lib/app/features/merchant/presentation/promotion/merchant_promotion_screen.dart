@@ -34,6 +34,14 @@ class MerchantPromotionScreen extends StatelessWidget {
               color: Colors.green,
             );
           }
+          if (state.isJoinSuccess) {
+            DialogHelper.showSnackBar(
+              context: context,
+              text: 'Berhasil mengikuti promo nasional',
+              color: Colors.green,
+            );
+            context.read<MerchantPromotionBloc>().add(MerchantPromotionEventGet());
+          }
         },
         builder: (context, state) {
           return Scaffold(
@@ -63,10 +71,147 @@ class MerchantPromotionScreen extends StatelessWidget {
     return Column(
       children: [
         const SizedBox(height: 12),
+        _buildNationalPromoBanner(context),
         _buildTabFilter(context),
         const SizedBox(height: 12),
         Expanded(child: _buildPromoList(context)),
       ],
+    );
+  }
+
+  Widget _buildNationalPromoBanner(BuildContext context) {
+    final state = context.watch<MerchantPromotionBloc>().state;
+    if (state.nationalPromos.isEmpty) return const SizedBox.shrink();
+
+    return Container(
+      height: 150,
+      margin: const EdgeInsets.only(bottom: 12),
+      child: PageView.builder(
+        controller: PageController(viewportFraction: 0.9),
+        itemCount: state.nationalPromos.length,
+        itemBuilder: (context, index) {
+          final promo = state.nationalPromos[index];
+          final colors = GlobalHelper.getColorSchema(context);
+          return Container(
+            margin: const EdgeInsets.symmetric(horizontal: 6),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(16),
+              gradient: LinearGradient(
+                colors: [
+                  colors.primary,
+                  colors.primary.withValues(alpha: 0.7),
+                ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              image: promo.bannerImage != null
+                  ? DecorationImage(
+                      image: NetworkImage(promo.bannerImage!),
+                      fit: BoxFit.cover,
+                      colorFilter: ColorFilter.mode(
+                          Colors.black.withValues(alpha: 0.4), BlendMode.darken),
+                    )
+                  : null,
+            ),
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                borderRadius: BorderRadius.circular(16),
+                onTap: () {},
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withValues(alpha: 0.25),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Text(
+                              'PROMO NASIONAL',
+                              style: GlobalHelper.getTextTheme(context, appTextStyle: AppTextStyle.LABEL_SMALL)?.copyWith(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          if (promo.hasJoined)
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(Icons.check_circle, color: colors.primary, size: 14),
+                                  const SizedBox(width: 4),
+                                  Text(
+                                    'Sudah Join',
+                                    style: GlobalHelper.getTextTheme(context, appTextStyle: AppTextStyle.LABEL_SMALL)?.copyWith(
+                                      color: colors.primary,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            )
+                          else if (promo.isOpenToJoin && promo.joinUrl != null && promo.joinUrl!.isNotEmpty)
+                            GestureDetector(
+                              onTap: () {
+                                context.read<MerchantPromotionBloc>().add(
+                                  MerchantPromotionEventJoinNational(promo.id, joinUrl: promo.joinUrl),
+                                );
+                              },
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                child: Text(
+                                  'Join',
+                                  style: GlobalHelper.getTextTheme(context, appTextStyle: AppTextStyle.LABEL_SMALL)?.copyWith(
+                                    color: colors.primary,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ),
+                        ],
+                      ),
+                      const Spacer(),
+                      Text(
+                        promo.title,
+                        style: GlobalHelper.getTextTheme(context, appTextStyle: AppTextStyle.TITLE_MEDIUM)?.copyWith(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        promo.periodLabel,
+                        style: GlobalHelper.getTextTheme(context, appTextStyle: AppTextStyle.BODY_SMALL)?.copyWith(
+                          color: Colors.white.withValues(alpha: 0.9),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          );
+        },
+      ),
     );
   }
 

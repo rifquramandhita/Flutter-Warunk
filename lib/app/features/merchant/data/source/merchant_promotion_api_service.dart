@@ -1,7 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
 import 'package:warunk/core/constants/constant.dart';
-import 'package:warunk/app/features/merchant/domain/entity/merchant_promotion.dart';
 
 part 'merchant_promotion_api_service.g.dart';
 
@@ -12,6 +11,9 @@ abstract class MerchantPromotionApiService {
 
   @GET(MERCHANT_PROMOTIONS)
   Future<HttpResponse<dynamic>> getPromotions();
+
+  @GET('$MERCHANT_PROMOTIONS/national')
+  Future<HttpResponse<dynamic>> getNationalPromotions();
 
   @GET('$MERCHANT_PROMOTIONS/{id}')
   Future<HttpResponse<dynamic>> getPromotionById(
@@ -31,6 +33,11 @@ abstract class MerchantPromotionApiService {
 
   @DELETE('$MERCHANT_PROMOTIONS/{id}')
   Future<HttpResponse<dynamic>> deletePromotion(
+    @Path('id') String id,
+  );
+
+  @POST('$MERCHANT_PROMOTIONS/national/{id}/join')
+  Future<HttpResponse<dynamic>> joinNationalPromotion(
     @Path('id') String id,
   );
 }

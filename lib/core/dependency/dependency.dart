@@ -81,9 +81,11 @@ import 'package:warunk/app/features/merchant/domain/use_case/merchant_merchant_u
 import 'package:warunk/app/features/merchant/domain/use_case/merchant_merchant_get_courier_use_case.dart';
 import 'package:warunk/app/features/merchant/domain/use_case/merchant_merchant_update_shipping_use_case.dart';
 import 'package:warunk/app/features/merchant/domain/use_case/merchant_promotion_add_use_case.dart';
-import 'package:warunk/app/features/merchant/domain/use_case/merchant_promotion_send_use_case.dart';
-import 'package:warunk/app/features/merchant/domain/use_case/merchant_promotion_get_by_id_use_case.dart';
 import 'package:warunk/app/features/merchant/domain/use_case/merchant_promotion_delete_use_case.dart';
+import 'package:warunk/app/features/merchant/domain/use_case/merchant_promotion_get_by_id_use_case.dart';
+import 'package:warunk/app/features/merchant/domain/use_case/merchant_promotion_get_national_use_case.dart';
+import 'package:warunk/app/features/merchant/domain/use_case/merchant_promotion_join_national_use_case.dart';
+import 'package:warunk/app/features/merchant/domain/use_case/merchant_promotion_send_use_case.dart';
 import 'package:warunk/core/bloc/auth/auth_bloc.dart';
 import 'package:warunk/app/features/merchant/presentation/operational_hours/bloc/merchant_operational_hours_bloc.dart';
 import 'package:warunk/app/features/merchant/presentation/shipping/bloc/merchant_shipping_bloc.dart';
@@ -339,6 +341,8 @@ Future<void> initDependency() async {
   sl.registerLazySingleton(() => MerchantOrderAcceptCancelUseCase(sl()));
   sl.registerLazySingleton(() => MerchantOrderRejectCancelUseCase(sl()));
   sl.registerLazySingleton(() => MerchantPromotionAddUseCase(repository: sl()));
+  sl.registerLazySingleton(() => MerchantPromotionGetNationalUseCase(sl()));
+  sl.registerLazySingleton(() => MerchantPromotionJoinNationalUseCase(sl()));
   sl.registerLazySingleton(() => MerchantPromotionSendUseCase(sl()));
   sl.registerLazySingleton(() => MerchantPromotionGetByIdUseCase(sl()));
   sl.registerLazySingleton(() => MerchantPromotionDeleteUseCase(sl()));
@@ -529,8 +533,8 @@ Future<void> initDependency() async {
       completeUseCase: sl(),
     ),
   );
-  sl.registerFactory(
-    () => MerchantPromotionBloc(useCase: sl(), deleteUseCase: sl()),
+  sl.registerFactory<MerchantPromotionBloc>(
+    () => MerchantPromotionBloc(useCase: sl(), deleteUseCase: sl(), getNationalUseCase: sl(), joinNationalUseCase: sl()),
   );
   sl.registerFactory(() => MerchantInputPromotionBloc(sl(), sl(), sl()));
   sl.registerFactoryParam<MerchantShipOrderBloc, String, void>(

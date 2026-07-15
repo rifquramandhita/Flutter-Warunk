@@ -13,3 +13,10 @@ class MerchantPromotionEventDeleted extends MerchantPromotionEvent {
   final String promoId;
   MerchantPromotionEventDeleted(this.promoId);
 }
+
+class MerchantPromotionEventJoinNational extends MerchantPromotionEvent {
+  final String promoId;
+  final String? joinUrl;
+
+  MerchantPromotionEventJoinNational(this.promoId, {this.joinUrl});
+}

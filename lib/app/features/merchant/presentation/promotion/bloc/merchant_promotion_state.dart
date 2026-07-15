@@ -5,15 +5,21 @@ enum PromoTabStatus { semua, aktif, akanDatang, selesai }
 class MerchantPromotionState extends Equatable {
   final int selectedTab; // 0=Semua, 1=Aktif, 2=Akan Datang, 3=Selesai
   final List<MerchantPromotionEntity> allPromos;
+  final List<MerchantPromotionNationalEntity> nationalPromos;
   final bool isLoading;
   final bool isSuccess;
+  final bool isJoinSuccess;
+  final String? joinUrl;
   final String? errorMessage;
 
   const MerchantPromotionState({
     this.selectedTab = 0,
     this.allPromos = const [],
+    this.nationalPromos = const [],
     this.isLoading = false,
     this.isSuccess = false,
+    this.isJoinSuccess = false,
+    this.joinUrl,
     this.errorMessage,
   });
 
@@ -36,20 +42,26 @@ class MerchantPromotionState extends Equatable {
   }
 
   @override
-  List<Object?> get props => [selectedTab, allPromos, isLoading, isSuccess, errorMessage];
+  List<Object?> get props => [selectedTab, allPromos, nationalPromos, isLoading, isSuccess, isJoinSuccess, joinUrl, errorMessage];
 
   MerchantPromotionState copyWith({
     int? selectedTab,
     List<MerchantPromotionEntity>? allPromos,
+    List<MerchantPromotionNationalEntity>? nationalPromos,
     bool? isLoading,
     bool? isSuccess,
+    bool? isJoinSuccess,
+    String? joinUrl,
     String? errorMessage,
   }) =>
       MerchantPromotionState(
         selectedTab: selectedTab ?? this.selectedTab,
         allPromos: allPromos ?? this.allPromos,
+        nationalPromos: nationalPromos ?? this.nationalPromos,
         isLoading: isLoading ?? this.isLoading,
-        isSuccess: isSuccess ?? false, // reset isSuccess to false on copy unless explicitly passed true
-        errorMessage: errorMessage, // without fallback so it can be reset to empty
+        isSuccess: isSuccess ?? false,
+        isJoinSuccess: isJoinSuccess ?? false,
+        joinUrl: joinUrl,
+        errorMessage: errorMessage,
       );
 }
