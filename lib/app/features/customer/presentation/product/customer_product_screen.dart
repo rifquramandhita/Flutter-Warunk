@@ -149,6 +149,18 @@ class CustomerProductScreen extends StatelessWidget {
   }
 
   Widget _imageLayout(BuildContext context, String? imgUrl) {
+    final state = context.watch<CustomerProductBloc>().state;
+    final product = state.product;
+    
+    bool isOutOfStock = false;
+    if (product != null) {
+      if (product.hasVariant == true && product.variants != null && product.variants!.isNotEmpty) {
+        isOutOfStock = product.variants!.every((v) => v.stock == 0);
+      } else {
+        isOutOfStock = (product.stock ?? 0) == 0;
+      }
+    }
+
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
       child: Container(
@@ -159,23 +171,48 @@ class CustomerProductScreen extends StatelessWidget {
           borderRadius: BorderRadius.circular(20),
         ),
         child: Center(
-          child: imgUrl != null
-              ? ClipRRect(
-                  borderRadius: BorderRadius.circular(20),
-                  child: Image.network(
-                    imgUrl,
-                    fit: BoxFit.cover,
-                    width: double.infinity,
-                    height: double.infinity,
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              imgUrl != null
+                  ? ClipRRect(
+                      borderRadius: BorderRadius.circular(20),
+                      child: Image.network(
+                        imgUrl,
+                        fit: BoxFit.cover,
+                        width: double.infinity,
+                        height: double.infinity,
+                      ),
+                    )
+                  : Icon(
+                      Icons.inventory_2_rounded,
+                      size: 110,
+                      color: GlobalHelper.getColorSchema(
+                        context,
+                      ).primary.withValues(alpha: 0.5),
+                    ),
+              if (isOutOfStock)
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.black.withValues(alpha: 0.5),
+                    borderRadius: BorderRadius.circular(20),
                   ),
-                )
-              : Icon(
-                  Icons.inventory_2_rounded,
-                  size: 110,
-                  color: GlobalHelper.getColorSchema(
-                    context,
-                  ).primary.withValues(alpha: 0.5),
+                  child: Center(
+                    child: Text(
+                      'HABIS',
+                      style: GlobalHelper.getTextTheme(
+                        context,
+                        appTextStyle: AppTextStyle.HEADLINE_MEDIUM,
+                      )?.copyWith(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w900,
+                        letterSpacing: 2.0,
+                      ),
+                    ),
+                  ),
                 ),
+            ],
+          ),
         ),
       ),
     );

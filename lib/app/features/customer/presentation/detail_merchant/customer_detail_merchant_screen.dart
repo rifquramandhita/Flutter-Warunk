@@ -662,6 +662,10 @@ class CustomerDetailMerchantScreen extends StatelessWidget {
         ? p.images!.first.url
         : null;
 
+    final isOutOfStock = (p.hasVariant == true && p.variants != null && p.variants!.isNotEmpty)
+        ? p.variants!.every((v) => v.stock == 0)
+        : (p.stock ?? 0) == 0;
+
     return GestureDetector(
       onTap: () => _onPressItem(context, p),
       child: Container(
@@ -685,23 +689,50 @@ class CustomerDetailMerchantScreen extends StatelessWidget {
                   ),
                 ),
                 child: Center(
-                  child: imgUrl != null
-                      ? ClipRRect(
-                          borderRadius: const BorderRadius.vertical(
-                            top: Radius.circular(13),
+                  child: Stack(
+                    fit: StackFit.expand,
+                    children: [
+                      imgUrl != null
+                          ? ClipRRect(
+                              borderRadius: const BorderRadius.vertical(
+                                top: Radius.circular(13),
+                              ),
+                              child: Image.network(
+                                imgUrl,
+                                fit: BoxFit.cover,
+                                width: double.infinity,
+                                height: double.infinity,
+                              ),
+                            )
+                          : Icon(
+                              Icons.inventory_2_rounded,
+                              size: 48,
+                              color: GlobalHelper.getColorSchema(context).primary,
+                            ),
+                      if (isOutOfStock)
+                        Container(
+                          decoration: BoxDecoration(
+                            color: Colors.black.withValues(alpha: 0.5),
+                            borderRadius: const BorderRadius.vertical(
+                              top: Radius.circular(13),
+                            ),
                           ),
-                          child: Image.network(
-                            imgUrl,
-                            fit: BoxFit.cover,
-                            width: double.infinity,
-                            height: double.infinity,
+                          child: Center(
+                            child: Text(
+                              'HABIS',
+                              style: GlobalHelper.getTextTheme(
+                                context,
+                                appTextStyle: AppTextStyle.TITLE_MEDIUM,
+                              )?.copyWith(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w900,
+                                letterSpacing: 1.2,
+                              ),
+                            ),
                           ),
-                        )
-                      : Icon(
-                          Icons.inventory_2_rounded,
-                          size: 48,
-                          color: GlobalHelper.getColorSchema(context).primary,
                         ),
+                    ],
+                  ),
                 ),
               ),
             ),
