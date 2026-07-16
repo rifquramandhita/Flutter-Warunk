@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:warunk/app/features/customer/domain/entity/customer_merchant.dart';
+import 'package:warunk/app/features/customer/domain/entity/customer_merchant_category.dart';
 
 class CustomerMapState extends Equatable {
   final bool isLoading;
@@ -8,9 +9,12 @@ class CustomerMapState extends Equatable {
   final String searchQuery;
   final String activeFilter;
   final List<CustomerMerchantEntity> stores;
+  final List<CustomerMerchantEntity> allStores;
   final LatLng? currentLocation;
   final CustomerMerchantEntity? selectedStore;
   final BitmapDescriptor? storeMarker;
+  final List<CustomerMerchantCategoryEntity> categories;
+  final CustomerMerchantCategoryEntity? activeCategory;
 
   const CustomerMapState({
     this.isLoading = false,
@@ -18,9 +22,12 @@ class CustomerMapState extends Equatable {
     this.searchQuery = '',
     this.activeFilter = 'Semua',
     this.stores = const [],
+    this.allStores = const [],
     this.currentLocation,
     this.selectedStore,
     this.storeMarker,
+    this.categories = const [],
+    this.activeCategory,
   });
 
   CustomerMapState copyWith({
@@ -29,10 +36,14 @@ class CustomerMapState extends Equatable {
     String? searchQuery,
     String? activeFilter,
     List<CustomerMerchantEntity>? stores,
+    List<CustomerMerchantEntity>? allStores,
     LatLng? currentLocation,
     CustomerMerchantEntity? selectedStore,
     BitmapDescriptor? storeMarker,
     bool nullifySelectedStore = false,
+    List<CustomerMerchantCategoryEntity>? categories,
+    CustomerMerchantCategoryEntity? activeCategory,
+    bool nullifyActiveCategory = false,
   }) {
     return CustomerMapState(
       isLoading: isLoading ?? this.isLoading,
@@ -40,9 +51,16 @@ class CustomerMapState extends Equatable {
       searchQuery: searchQuery ?? this.searchQuery,
       activeFilter: activeFilter ?? this.activeFilter,
       stores: stores ?? this.stores,
+      allStores: allStores ?? this.allStores,
       currentLocation: currentLocation ?? this.currentLocation,
-      selectedStore: nullifySelectedStore ? null : (selectedStore ?? this.selectedStore),
+      selectedStore: nullifySelectedStore
+          ? null
+          : (selectedStore ?? this.selectedStore),
       storeMarker: storeMarker ?? this.storeMarker,
+      categories: categories ?? this.categories,
+      activeCategory: nullifyActiveCategory
+          ? null
+          : (activeCategory ?? this.activeCategory),
     );
   }
 
@@ -53,8 +71,11 @@ class CustomerMapState extends Equatable {
     searchQuery,
     activeFilter,
     stores,
+    allStores,
     currentLocation,
     selectedStore,
     storeMarker,
+    categories,
+    activeCategory,
   ];
 }

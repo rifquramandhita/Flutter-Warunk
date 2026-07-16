@@ -14,7 +14,6 @@ import 'package:warunk/core/helper/dialog_helper.dart';
 import 'package:warunk/core/widgets/loading_app_widget.dart';
 import 'package:warunk/main.dart';
 import 'package:warunk/app/features/customer/domain/entity/customer_merchant.dart';
-
 class CustomerMapScreen extends StatelessWidget {
   final Completer<GoogleMapController> _controller =
       Completer<GoogleMapController>();
@@ -97,26 +96,17 @@ class CustomerMapScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => sl<CustomerMapBloc>()..add(CustomerLoadMapData()),
-      child: MultiBlocListener(
-        listeners: [
-          BlocListener<CustomerMapBloc, CustomerMapState>(
-            listenWhen: (previous, current) =>
-                previous.errorMessage != current.errorMessage &&
-                current.errorMessage != null,
-            listener: (context, state) {
-              DialogHelper.showErrorSnackBar(
-                context: context,
-                text: state.errorMessage!,
-              );
-            },
-          ),
-          BlocListener<CustomerMapBloc, CustomerMapState>(
-            listenWhen: (previous, current) =>
-                previous.currentLocation != current.currentLocation &&
-                current.currentLocation != null,
-            listener: (context, state) async {
-              if (_controller.isCompleted) {
-                final GoogleMapController controller = await _controller.future;
+      child: BlocConsumer<CustomerMapBloc, CustomerMapState>(
+        listener: (context, state) {
+          if (state.errorMessage != null) {
+            DialogHelper.showErrorSnackBar(
+              context: context,
+              text: state.errorMessage!,
+            );
+          }
+          if (state.currentLocation != null) {
+            if (_controller.isCompleted) {
+              _controller.future.then((controller) {
                 controller.animateCamera(
                   CameraUpdate.newCameraPosition(
                     CameraPosition(
@@ -125,16 +115,12 @@ class CustomerMapScreen extends StatelessWidget {
                     ),
                   ),
                 );
-              }
-            },
-          ),
-          BlocListener<CustomerMapBloc, CustomerMapState>(
-            listenWhen: (previous, current) =>
-                previous.selectedStore != current.selectedStore &&
-                current.selectedStore != null,
-            listener: (context, state) async {
-              if (_controller.isCompleted) {
-                final GoogleMapController controller = await _controller.future;
+              });
+            }
+          }
+          if (state.selectedStore != null) {
+            if (_controller.isCompleted) {
+              _controller.future.then((controller) {
                 controller.animateCamera(
                   CameraUpdate.newCameraPosition(
                     CameraPosition(
@@ -146,21 +132,19 @@ class CustomerMapScreen extends StatelessWidget {
                     ),
                   ),
                 );
-              }
-            },
-          ),
-        ],
-        child: BlocBuilder<CustomerMapBloc, CustomerMapState>(
-          builder: (context, state) {
-            if (state.storeMarker == null && !state.isLoading) {
-              _initCustomMarker(context);
+              });
             }
-            return Scaffold(
-              backgroundColor: const Color(0xFFE9F5EB),
-              body: _bodyBuild(context),
-            );
-          },
-        ),
+          }
+        },
+        builder: (context, state) {
+          if (state.storeMarker == null && !state.isLoading) {
+            _initCustomMarker(context);
+          }
+          return Scaffold(
+            backgroundColor: GlobalHelper.getColorSchema(context).surface,
+            body: _bodyBuild(context),
+          );
+        },
       ),
     );
   }
@@ -351,8 +335,14 @@ class CustomerMapScreen extends StatelessWidget {
                 bottomLeft: Radius.circular(16),
               ),
             ),
-            child: const Center(
-              child: Text('🏪', style: TextStyle(fontSize: 40)),
+            child: Center(
+              child: Text(
+                '🏪',
+                style: GlobalHelper.getTextTheme(
+                  context,
+                  appTextStyle: AppTextStyle.DISPLAY_MEDIUM,
+                ),
+              ),
             ),
           ),
           const SizedBox(width: 12),
@@ -410,9 +400,9 @@ class CustomerMapScreen extends StatelessWidget {
                   const SizedBox(height: 6),
                   Row(
                     children: [
-                      const Icon(
+                      Icon(
                         Icons.star_rounded,
-                        color: Color(0xFFF59E0B),
+                        color: GlobalHelper.getColorSchema(context).primary,
                         size: 14,
                       ),
                       const SizedBox(width: 4),
@@ -481,7 +471,13 @@ class CustomerMapScreen extends StatelessWidget {
                   if (promo.isNotEmpty)
                     Row(
                       children: [
-                        const Text('🛵', style: TextStyle(fontSize: 12)),
+                        Text(
+                          '🛵',
+                          style: GlobalHelper.getTextTheme(
+                            context,
+                            appTextStyle: AppTextStyle.BODY_SMALL,
+                          ),
+                        ),
                         const SizedBox(width: 4),
                         Text(
                           promo,
@@ -572,8 +568,11 @@ class _MapSearchBarWidgetState extends State<_MapSearchBarWidget> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Container(
-            decoration: BoxDecoration(
+          Row(
+            children: [
+              Expanded(
+                child: Container(
+                  decoration: BoxDecoration(
               color: GlobalHelper.getColorSchema(context).surface,
               borderRadius: BorderRadius.circular(14),
               border: Border.all(
@@ -649,6 +648,11 @@ class _MapSearchBarWidgetState extends State<_MapSearchBarWidget> {
                 ),
               ),
             ),
+          ),
+              ),
+              const SizedBox(width: 8),
+              _categoryButtonWidget(context),
+            ],
           ),
           if (showSuggestions) ...[
             const SizedBox(height: 8),
@@ -728,6 +732,163 @@ class _MapSearchBarWidgetState extends State<_MapSearchBarWidget> {
             ),
           ],
         ],
+      ),
+    );
+  }
+
+  Widget _categoryButtonWidget(BuildContext context) {
+    final state = context.watch<CustomerMapBloc>().state;
+    final bool hasActiveCategory = state.activeCategory != null;
+
+    return GestureDetector(
+      onTap: () {
+        _showCategoryBottomSheet(context);
+      },
+      child: Container(
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: hasActiveCategory 
+              ? GlobalHelper.getColorSchema(context).primary 
+              : GlobalHelper.getColorSchema(context).surface,
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(
+            color: hasActiveCategory 
+                ? GlobalHelper.getColorSchema(context).primary 
+                : GlobalHelper.getColorSchema(context).outline.withValues(alpha: 0.2),
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.05),
+              blurRadius: 10,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Icon(
+          Icons.tune_rounded,
+          color: hasActiveCategory 
+              ? GlobalHelper.getColorSchema(context).onPrimary 
+              : GlobalHelper.getColorSchema(context).onSurface.withValues(alpha: 0.7),
+          size: 24,
+        ),
+      ),
+    );
+  }
+
+  void _showCategoryBottomSheet(BuildContext context) {
+    final bloc = context.read<CustomerMapBloc>();
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: GlobalHelper.getColorSchema(context).surface,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (bottomSheetContext) {
+        return BlocProvider.value(
+          value: bloc,
+          child: Builder(
+            builder: (ctx) => _categoryBottomSheetContent(ctx),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _categoryBottomSheetContent(BuildContext context) {
+    final state = context.watch<CustomerMapBloc>().state;
+    
+    return SafeArea(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Center(
+          child: Container(
+            margin: const EdgeInsets.only(top: 12, bottom: 16),
+            width: 40,
+            height: 4,
+            decoration: BoxDecoration(
+              color: GlobalHelper.getColorSchema(context).outlineVariant,
+              borderRadius: BorderRadius.circular(2),
+            ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: Text(
+            'Kategori Warung',
+            style: GlobalHelper.getTextTheme(
+              context,
+              appTextStyle: AppTextStyle.TITLE_LARGE,
+            )?.copyWith(
+              fontWeight: FontWeight.w800,
+              color: GlobalHelper.getColorSchema(context).onSurface,
+            ),
+          ),
+        ),
+        const SizedBox(height: 16),
+        Flexible(
+          child: ListView.separated(
+            shrinkWrap: true,
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+            itemCount: state.categories.length + 1,
+            separatorBuilder: (context, index) => const SizedBox(height: 12),
+            itemBuilder: (context, index) {
+              final isAll = index == 0;
+              final category = isAll ? null : state.categories[index - 1];
+              final isSelected = isAll 
+                  ? state.activeCategory == null 
+                  : state.activeCategory?.id == category!.id;
+
+              return InkWell(
+                onTap: () {
+                  context.read<CustomerMapBloc>().add(CustomerMapCategorySelected(category));
+                  navigatorKey.currentState?.pop();
+                },
+                borderRadius: BorderRadius.circular(12),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  decoration: BoxDecoration(
+                    color: isSelected 
+                        ? GlobalHelper.getColorSchema(context).primary.withValues(alpha: 0.1)
+                        : Colors.transparent,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: isSelected 
+                          ? GlobalHelper.getColorSchema(context).primary 
+                          : GlobalHelper.getColorSchema(context).outlineVariant,
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        isAll ? 'Semua' : category!.name,
+                        style: GlobalHelper.getTextTheme(
+                          context,
+                          appTextStyle: AppTextStyle.BODY_MEDIUM,
+                        )?.copyWith(
+                          color: isSelected 
+                              ? GlobalHelper.getColorSchema(context).primary 
+                              : GlobalHelper.getColorSchema(context).onSurface,
+                          fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                        ),
+                      ),
+                      if (isSelected)
+                        Icon(
+                          Icons.check_circle_rounded,
+                          color: GlobalHelper.getColorSchema(context).primary,
+                          size: 20,
+                        ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+        const SizedBox(height: 24),
+      ],
       ),
     );
   }

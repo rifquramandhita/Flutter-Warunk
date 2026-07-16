@@ -1,5 +1,6 @@
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:warunk/app/features/customer/domain/entity/customer_merchant.dart';
+import 'package:warunk/app/features/customer/domain/entity/customer_merchant_category.dart';
 
 abstract class CustomerMapEvent {}
 
@@ -23,4 +24,9 @@ class CustomerMapSelectedStoreChanged extends CustomerMapEvent {
 class CustomerMapMarkerInitialized extends CustomerMapEvent {
   final BitmapDescriptor marker;
   CustomerMapMarkerInitialized(this.marker);
+}
+
+class CustomerMapCategorySelected extends CustomerMapEvent {
+  final CustomerMerchantCategoryEntity? category;
+  CustomerMapCategorySelected(this.category);
 }

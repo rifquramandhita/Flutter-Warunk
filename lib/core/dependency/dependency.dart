@@ -578,6 +578,7 @@ Future<void> initDependency() async {
       getNearbyUseCase: sl(),
       getCurrentLocationUseCase: sl(),
       getMerchantUseCase: sl(),
+      getCategoryUseCase: sl(),
     ),
   );
 }
