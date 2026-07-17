@@ -202,7 +202,7 @@ Future<void> initDependency() async {
         responseHeader: true,
       ),
     );
-    dio.interceptors.add(CurlLoggerDioInterceptor());
+    dio.interceptors.add(CurlLoggerDioInterceptor(printOnSuccess: true));
   }
 
   sl.registerLazySingleton(() => dio);
@@ -462,10 +462,9 @@ Future<void> initDependency() async {
       createOrderUseCase: sl(),
     ),
   );
-  sl.registerFactory(() => CustomerProfilBloc(
-    orderGetUseCase: sl(),
-    wishlistsGetUseCase: sl(),
-  ));
+  sl.registerFactory(
+    () => CustomerProfilBloc(orderGetUseCase: sl(), wishlistsGetUseCase: sl()),
+  );
   sl.registerFactory(() => CustomerEditProfilBloc(updateUseCase: sl()));
   sl.registerFactory(
     () => CustomerAddressBloc(getUseCase: sl(), setDefaultUseCase: sl()),
@@ -474,11 +473,13 @@ Future<void> initDependency() async {
   sl.registerFactory(
     () => CustomerSearchBloc(getMerchantUseCase: sl(), productGetUseCase: sl()),
   );
-  sl.registerFactory(() => CustomerMerchantBloc(
-    getUseCase: sl(),
-    getByQuickFilterUseCase: sl(),
-    getCurrentLocationUseCase: sl(),
-  ));
+  sl.registerFactory(
+    () => CustomerMerchantBloc(
+      getUseCase: sl(),
+      getByQuickFilterUseCase: sl(),
+      getCurrentLocationUseCase: sl(),
+    ),
+  );
   sl.registerFactory(
     () => CustomerDetailMerchantBloc(
       getByIdUseCase: sl(),
@@ -534,7 +535,12 @@ Future<void> initDependency() async {
     ),
   );
   sl.registerFactory<MerchantPromotionBloc>(
-    () => MerchantPromotionBloc(useCase: sl(), deleteUseCase: sl(), getNationalUseCase: sl(), joinNationalUseCase: sl()),
+    () => MerchantPromotionBloc(
+      useCase: sl(),
+      deleteUseCase: sl(),
+      getNationalUseCase: sl(),
+      joinNationalUseCase: sl(),
+    ),
   );
   sl.registerFactory(() => MerchantInputPromotionBloc(sl(), sl(), sl()));
   sl.registerFactoryParam<MerchantShipOrderBloc, String, void>(

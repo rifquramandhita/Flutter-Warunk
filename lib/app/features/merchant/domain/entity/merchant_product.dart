@@ -19,7 +19,6 @@ sealed class MerchantProduct with _$MerchantProduct {
     required String merchantId,
     required String productCategoryId,
     required String category,
-    required String branch,
     String? description,
     required int stock,
     required int orderCount,
