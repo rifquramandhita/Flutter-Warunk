@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:warunk/app/features/merchant/domain/entity/merchant_promotion.dart';
 import 'package:warunk/app/features/merchant/presentation/input_promotion/merchant_input_promotion_screen.dart';
 import 'package:warunk/app/features/merchant/presentation/promotion/bloc/merchant_promotion_bloc.dart';
+import 'package:warunk/app/features/merchant/presentation/promotion/merchant_detail_promotion_screen.dart';
 import 'package:warunk/core/dependency/dependency.dart';
 import 'package:warunk/core/helper/global_helper.dart';
 import 'package:warunk/core/helper/dialog_helper.dart';
@@ -117,7 +118,14 @@ class MerchantPromotionScreen extends StatelessWidget {
               color: Colors.transparent,
               child: InkWell(
                 borderRadius: BorderRadius.circular(16),
-                onTap: () {},
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => MerchantDetailPromotionScreen(promo: promo),
+                    ),
+                  );
+                },
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Column(
@@ -199,7 +207,7 @@ class MerchantPromotionScreen extends StatelessWidget {
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        promo.periodLabel,
+                        '${DateFormat('d MMM yyyy').format(promo.datetimeStart)} - ${DateFormat('d MMM yyyy').format(promo.datetimeEnd)}',
                         style: GlobalHelper.getTextTheme(context, appTextStyle: AppTextStyle.BODY_SMALL)?.copyWith(
                           color: Colors.white.withValues(alpha: 0.9),
                         ),
