@@ -126,6 +126,8 @@ _$CustomerCheckoutShippingOptionEntityFromJson(Map<String, dynamic> json) =>
       description: json['description'] as String?,
       price: (json['price'] as num?)?.toInt(),
       eta: json['eta'] as String?,
+      isCanUsed: json['is_can_used'] as bool?,
+      disabledReason: json['disabled_reason'] as String?,
     );
 
 Map<String, dynamic> _$CustomerCheckoutShippingOptionEntityToJson(
@@ -136,6 +138,8 @@ Map<String, dynamic> _$CustomerCheckoutShippingOptionEntityToJson(
   'description': ?instance.description,
   'price': ?instance.price,
   'eta': ?instance.eta,
+  'is_can_used': ?instance.isCanUsed,
+  'disabled_reason': ?instance.disabledReason,
 };
 
 CustomerCheckoutPaymentMethodEntity

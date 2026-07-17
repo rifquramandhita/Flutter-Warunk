@@ -51,6 +51,8 @@ sealed class CustomerCheckoutShippingOption
     String? description,
     int? price,
     String? eta,
+    bool? isCanUsed,
+    String? disabledReason,
   }) = CustomerCheckoutShippingOptionEntity;
 
   factory CustomerCheckoutShippingOption.fromJson(Map<String, dynamic> json) =>

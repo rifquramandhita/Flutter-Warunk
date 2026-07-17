@@ -519,7 +519,7 @@ CustomerCheckoutShippingOption _$CustomerCheckoutShippingOptionFromJson(
 /// @nodoc
 mixin _$CustomerCheckoutShippingOption {
 
- String? get key; String? get title; String? get description; int? get price; String? get eta;
+ String? get key; String? get title; String? get description; int? get price; String? get eta; bool? get isCanUsed; String? get disabledReason;
 /// Create a copy of CustomerCheckoutShippingOption
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -532,16 +532,16 @@ $CustomerCheckoutShippingOptionCopyWith<CustomerCheckoutShippingOption> get copy
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CustomerCheckoutShippingOption&&(identical(other.key, key) || other.key == key)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.price, price) || other.price == price)&&(identical(other.eta, eta) || other.eta == eta));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CustomerCheckoutShippingOption&&(identical(other.key, key) || other.key == key)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.price, price) || other.price == price)&&(identical(other.eta, eta) || other.eta == eta)&&(identical(other.isCanUsed, isCanUsed) || other.isCanUsed == isCanUsed)&&(identical(other.disabledReason, disabledReason) || other.disabledReason == disabledReason));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,key,title,description,price,eta);
+int get hashCode => Object.hash(runtimeType,key,title,description,price,eta,isCanUsed,disabledReason);
 
 @override
 String toString() {
-  return 'CustomerCheckoutShippingOption(key: $key, title: $title, description: $description, price: $price, eta: $eta)';
+  return 'CustomerCheckoutShippingOption(key: $key, title: $title, description: $description, price: $price, eta: $eta, isCanUsed: $isCanUsed, disabledReason: $disabledReason)';
 }
 
 
@@ -552,7 +552,7 @@ abstract mixin class $CustomerCheckoutShippingOptionCopyWith<$Res>  {
   factory $CustomerCheckoutShippingOptionCopyWith(CustomerCheckoutShippingOption value, $Res Function(CustomerCheckoutShippingOption) _then) = _$CustomerCheckoutShippingOptionCopyWithImpl;
 @useResult
 $Res call({
- String? key, String? title, String? description, int? price, String? eta
+ String? key, String? title, String? description, int? price, String? eta, bool? isCanUsed, String? disabledReason
 });
 
 
@@ -569,13 +569,15 @@ class _$CustomerCheckoutShippingOptionCopyWithImpl<$Res>
 
 /// Create a copy of CustomerCheckoutShippingOption
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? key = freezed,Object? title = freezed,Object? description = freezed,Object? price = freezed,Object? eta = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? key = freezed,Object? title = freezed,Object? description = freezed,Object? price = freezed,Object? eta = freezed,Object? isCanUsed = freezed,Object? disabledReason = freezed,}) {
   return _then(_self.copyWith(
 key: freezed == key ? _self.key : key // ignore: cast_nullable_to_non_nullable
 as String?,title: freezed == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
 as String?,description: freezed == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
 as String?,price: freezed == price ? _self.price : price // ignore: cast_nullable_to_non_nullable
 as int?,eta: freezed == eta ? _self.eta : eta // ignore: cast_nullable_to_non_nullable
+as String?,isCanUsed: freezed == isCanUsed ? _self.isCanUsed : isCanUsed // ignore: cast_nullable_to_non_nullable
+as bool?,disabledReason: freezed == disabledReason ? _self.disabledReason : disabledReason // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }
@@ -658,10 +660,10 @@ return entity(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String? key,  String? title,  String? description,  int? price,  String? eta)?  entity,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String? key,  String? title,  String? description,  int? price,  String? eta,  bool? isCanUsed,  String? disabledReason)?  entity,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case CustomerCheckoutShippingOptionEntity() when entity != null:
-return entity(_that.key,_that.title,_that.description,_that.price,_that.eta);case _:
+return entity(_that.key,_that.title,_that.description,_that.price,_that.eta,_that.isCanUsed,_that.disabledReason);case _:
   return orElse();
 
 }
@@ -679,10 +681,10 @@ return entity(_that.key,_that.title,_that.description,_that.price,_that.eta);cas
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String? key,  String? title,  String? description,  int? price,  String? eta)  entity,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String? key,  String? title,  String? description,  int? price,  String? eta,  bool? isCanUsed,  String? disabledReason)  entity,}) {final _that = this;
 switch (_that) {
 case CustomerCheckoutShippingOptionEntity():
-return entity(_that.key,_that.title,_that.description,_that.price,_that.eta);}
+return entity(_that.key,_that.title,_that.description,_that.price,_that.eta,_that.isCanUsed,_that.disabledReason);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -696,10 +698,10 @@ return entity(_that.key,_that.title,_that.description,_that.price,_that.eta);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String? key,  String? title,  String? description,  int? price,  String? eta)?  entity,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String? key,  String? title,  String? description,  int? price,  String? eta,  bool? isCanUsed,  String? disabledReason)?  entity,}) {final _that = this;
 switch (_that) {
 case CustomerCheckoutShippingOptionEntity() when entity != null:
-return entity(_that.key,_that.title,_that.description,_that.price,_that.eta);case _:
+return entity(_that.key,_that.title,_that.description,_that.price,_that.eta,_that.isCanUsed,_that.disabledReason);case _:
   return null;
 
 }
@@ -711,7 +713,7 @@ return entity(_that.key,_that.title,_that.description,_that.price,_that.eta);cas
 
 @JsonSerializable(fieldRename: FieldRename.snake, includeIfNull: false)
 class CustomerCheckoutShippingOptionEntity implements CustomerCheckoutShippingOption {
-  const CustomerCheckoutShippingOptionEntity({this.key, this.title, this.description, this.price, this.eta});
+  const CustomerCheckoutShippingOptionEntity({this.key, this.title, this.description, this.price, this.eta, this.isCanUsed, this.disabledReason});
   factory CustomerCheckoutShippingOptionEntity.fromJson(Map<String, dynamic> json) => _$CustomerCheckoutShippingOptionEntityFromJson(json);
 
 @override final  String? key;
@@ -719,6 +721,8 @@ class CustomerCheckoutShippingOptionEntity implements CustomerCheckoutShippingOp
 @override final  String? description;
 @override final  int? price;
 @override final  String? eta;
+@override final  bool? isCanUsed;
+@override final  String? disabledReason;
 
 /// Create a copy of CustomerCheckoutShippingOption
 /// with the given fields replaced by the non-null parameter values.
@@ -733,16 +737,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CustomerCheckoutShippingOptionEntity&&(identical(other.key, key) || other.key == key)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.price, price) || other.price == price)&&(identical(other.eta, eta) || other.eta == eta));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CustomerCheckoutShippingOptionEntity&&(identical(other.key, key) || other.key == key)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.price, price) || other.price == price)&&(identical(other.eta, eta) || other.eta == eta)&&(identical(other.isCanUsed, isCanUsed) || other.isCanUsed == isCanUsed)&&(identical(other.disabledReason, disabledReason) || other.disabledReason == disabledReason));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,key,title,description,price,eta);
+int get hashCode => Object.hash(runtimeType,key,title,description,price,eta,isCanUsed,disabledReason);
 
 @override
 String toString() {
-  return 'CustomerCheckoutShippingOption.entity(key: $key, title: $title, description: $description, price: $price, eta: $eta)';
+  return 'CustomerCheckoutShippingOption.entity(key: $key, title: $title, description: $description, price: $price, eta: $eta, isCanUsed: $isCanUsed, disabledReason: $disabledReason)';
 }
 
 
@@ -753,7 +757,7 @@ abstract mixin class $CustomerCheckoutShippingOptionEntityCopyWith<$Res> impleme
   factory $CustomerCheckoutShippingOptionEntityCopyWith(CustomerCheckoutShippingOptionEntity value, $Res Function(CustomerCheckoutShippingOptionEntity) _then) = _$CustomerCheckoutShippingOptionEntityCopyWithImpl;
 @override @useResult
 $Res call({
- String? key, String? title, String? description, int? price, String? eta
+ String? key, String? title, String? description, int? price, String? eta, bool? isCanUsed, String? disabledReason
 });
 
 
@@ -770,13 +774,15 @@ class _$CustomerCheckoutShippingOptionEntityCopyWithImpl<$Res>
 
 /// Create a copy of CustomerCheckoutShippingOption
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? key = freezed,Object? title = freezed,Object? description = freezed,Object? price = freezed,Object? eta = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? key = freezed,Object? title = freezed,Object? description = freezed,Object? price = freezed,Object? eta = freezed,Object? isCanUsed = freezed,Object? disabledReason = freezed,}) {
   return _then(CustomerCheckoutShippingOptionEntity(
 key: freezed == key ? _self.key : key // ignore: cast_nullable_to_non_nullable
 as String?,title: freezed == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
 as String?,description: freezed == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
 as String?,price: freezed == price ? _self.price : price // ignore: cast_nullable_to_non_nullable
 as int?,eta: freezed == eta ? _self.eta : eta // ignore: cast_nullable_to_non_nullable
+as String?,isCanUsed: freezed == isCanUsed ? _self.isCanUsed : isCanUsed // ignore: cast_nullable_to_non_nullable
+as bool?,disabledReason: freezed == disabledReason ? _self.disabledReason : disabledReason // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }

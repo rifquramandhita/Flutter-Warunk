@@ -462,7 +462,7 @@ class CustomerCheckoutScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               GestureDetector(
-                onTap: () => context.read<CustomerCheckoutBloc>().add(
+                onTap: opt.isCanUsed == false ? null : () => context.read<CustomerCheckoutBloc>().add(
                   CustomerCheckoutEventDeliveryChanged(deliveryMethodEnum),
                 ),
                 child: Padding(
@@ -472,7 +472,7 @@ class CustomerCheckoutScreen extends StatelessWidget {
                       Radio<DeliveryMethodEnum>(
                         value: deliveryMethodEnum,
                         groupValue: state.deliveryMethod,
-                        onChanged: (v) => context
+                        onChanged: opt.isCanUsed == false ? null : (v) => context
                             .read<CustomerCheckoutBloc>()
                             .add(CustomerCheckoutEventDeliveryChanged(v!)),
                         activeColor: GlobalHelper.getColorSchema(
@@ -493,7 +493,9 @@ class CustomerCheckoutScreen extends StatelessWidget {
                                     appTextStyle: AppTextStyle.BODY_LARGE,
                                   )?.copyWith(
                                     fontWeight: FontWeight.w600,
-                                    color: GlobalHelper.getColorSchema(
+                                    color: opt.isCanUsed == false
+                                        ? GlobalHelper.getColorSchema(context).outline
+                                        : GlobalHelper.getColorSchema(
                                       context,
                                     ).onSurface,
                                   ),
@@ -511,6 +513,21 @@ class CustomerCheckoutScreen extends StatelessWidget {
                                         context,
                                       ).outline,
                                     ),
+                              ),
+                            if (opt.isCanUsed == false &&
+                                opt.disabledReason != null &&
+                                opt.disabledReason!.isNotEmpty)
+                              Padding(
+                                padding: const EdgeInsets.only(top: 2),
+                                child: Text(
+                                  opt.disabledReason!,
+                                  style: GlobalHelper.getTextTheme(
+                                    context,
+                                    appTextStyle: AppTextStyle.LABEL_SMALL,
+                                  )?.copyWith(
+                                    color: GlobalHelper.getColorSchema(context).error,
+                                  ),
+                                ),
                               ),
                           ],
                         ),
