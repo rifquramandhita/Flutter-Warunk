@@ -53,6 +53,20 @@ class NotificationService {
       onDidReceiveNotificationResponse: onDidReceiveNotificationResponse,
     );
 
+    final AndroidFlutterLocalNotificationsPlugin? androidPlatform =
+        flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>();
+    if (androidPlatform != null) {
+      const AndroidNotificationChannel channel = AndroidNotificationChannel(
+        'warunk_custom_channel',
+        'Warunk Notification',
+        description: 'This channel is used for important notifications.',
+        importance: Importance.max,
+        sound: RawResourceAndroidNotificationSound('notification'),
+      );
+      await androidPlatform.createNotificationChannel(channel);
+    }
+
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
     try {
@@ -71,11 +85,18 @@ class NotificationService {
           id: notification.hashCode,
           title: notification.title,
           body: notification.body,
-          notificationDetails: NotificationDetails(
+          notificationDetails: const NotificationDetails(
             android: AndroidNotificationDetails(
-              'channel_id',
-              'channel_name',
+              'warunk_custom_channel',
+              'Warunk Notification',
               icon: '@drawable/ic_notification',
+              sound: RawResourceAndroidNotificationSound('notification'),
+              importance: Importance.max,
+              priority: Priority.high,
+            ),
+            iOS: DarwinNotificationDetails(
+              sound: 'notification.mp3',
+              presentSound: true,
             ),
           ),
           payload: jsonEncode(message.data),
