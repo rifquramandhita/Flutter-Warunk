@@ -63,6 +63,84 @@ class _CustomerPaymentProofScreenState extends State<CustomerPaymentProofScreen>
     );
   }
 
+  Widget _buildPaymentDestination() {
+    String bankName = '-';
+    String accountName = '-';
+    String accountNumber = '-';
+
+    final account = widget.order.merchantAccount;
+    if (account != null) {
+      if (account is Map) {
+        bankName = account['bank_name']?.toString() ?? '-';
+        accountName = account['account_name']?.toString() ?? '-';
+        accountNumber = account['account_number']?.toString() ?? '-';
+      } else {
+        try {
+          bankName = (account as dynamic).bankName ?? '-';
+          accountName = (account as dynamic).accountName ?? '-';
+          accountNumber = (account as dynamic).accountNumber ?? '-';
+        } catch (_) {}
+      }
+    }
+
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: AppColors.primary.withValues(alpha: 0.05),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppColors.primary.withValues(alpha: 0.2)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'Tujuan Pembayaran Transfer',
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w700,
+              color: AppColors.primary,
+            ),
+          ),
+          const SizedBox(height: 12),
+          _buildInfoRow('Bank', bankName),
+          const SizedBox(height: 8),
+          _buildInfoRow('Atas Nama', accountName),
+          const SizedBox(height: 8),
+          _buildInfoRow('No. Rekening', accountNumber),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildInfoRow(String label, String value) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(
+          width: 90,
+          child: Text(
+            label,
+            style: const TextStyle(fontSize: 14, color: AppColors.greyText),
+          ),
+        ),
+        const Text(
+          ': ',
+          style: TextStyle(fontSize: 14, color: AppColors.greyText),
+        ),
+        Expanded(
+          child: Text(
+            value,
+            style: const TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+              color: Colors.black87,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -96,11 +174,13 @@ class _CustomerPaymentProofScreenState extends State<CustomerPaymentProofScreen>
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
+                  _buildPaymentDestination(),
+                  const SizedBox(height: 24),
                   const Text(
                     'Silakan unggah foto bukti transfer Anda.',
                     style: TextStyle(fontSize: 14, color: AppColors.greyText),
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 12),
                   GestureDetector(
                     onTap: isLoading ? null : _showPickerBottomSheet,
                     child: Container(
