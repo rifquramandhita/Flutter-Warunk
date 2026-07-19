@@ -31,6 +31,7 @@ class CustomerMapBloc extends Bloc<CustomerMapEvent, CustomerMapState> {
     on<CustomerMapSelectedStoreChanged>(_onMapSelectedStoreChanged);
     on<CustomerMapMarkerInitialized>(_onMapMarkerInitialized);
     on<CustomerMapCategorySelected>(_onMapCategorySelected);
+    on<CustomerMapDistanceSelected>(_onMapDistanceSelected);
   }
 
   Future<void> _onLoadMapData(
@@ -77,7 +78,9 @@ class CustomerMapBloc extends Bloc<CustomerMapEvent, CustomerMapState> {
       final stores = merchantsResult.data ?? [];
       final categories = categoryResult.data ?? [];
 
-      emit(state.copyWith(isLoading: false, stores: stores, allStores: stores, categories: categories, nullifyActiveCategory: true));
+      final filteredStores = stores.where((s) => (s.distance ?? 0.0) <= state.maxDistance).toList();
+
+      emit(state.copyWith(isLoading: false, stores: filteredStores, allStores: stores, categories: categories, nullifyActiveCategory: true));
     } catch (e) {
       emit(
         state.copyWith(isLoading: false, errorMessage: 'Terjadi kesalahan: $e'),
@@ -112,10 +115,12 @@ class CustomerMapBloc extends Bloc<CustomerMapEvent, CustomerMapState> {
             longitude: state.currentLocation!.longitude,
           );
           if (merchantsResult.success) {
+            final stores = merchantsResult.data ?? [];
+            final filteredStores = stores.where((s) => (s.distance ?? 0.0) <= state.maxDistance).toList();
             emit(
               state.copyWith(
-                stores: merchantsResult.data ?? [],
-                allStores: merchantsResult.data ?? [],
+                stores: filteredStores,
+                allStores: stores,
                 isLoading: false,
                 nullifyActiveCategory: true,
               ),
@@ -134,9 +139,11 @@ class CustomerMapBloc extends Bloc<CustomerMapEvent, CustomerMapState> {
       } else {
         final result = await _getMerchantUseCase(keyword: event.query);
         if (result.success) {
+          final stores = result.data ?? [];
+          final filteredStores = stores.where((s) => (s.distance ?? 0.0) <= state.maxDistance).toList();
           emit(state.copyWith(
-            stores: result.data ?? [], 
-            allStores: result.data ?? [],
+            stores: filteredStores, 
+            allStores: stores,
             isLoading: false,
             nullifyActiveCategory: true,
           ));
@@ -178,13 +185,31 @@ class CustomerMapBloc extends Bloc<CustomerMapEvent, CustomerMapState> {
     CustomerMapCategorySelected event,
     Emitter<CustomerMapState> emit,
   ) {
-    final filteredStores = event.category == null 
-        ? state.allStores 
-        : state.allStores.where((s) => s.merchantCategory == event.category!.name).toList();
+    final filteredStores = state.allStores.where((s) {
+      final matchCategory = event.category == null || s.merchantCategory == event.category!.name;
+      final matchDistance = (s.distance ?? 0.0) <= state.maxDistance;
+      return matchCategory && matchDistance;
+    }).toList();
         
     emit(state.copyWith(
       activeCategory: event.category, 
       nullifyActiveCategory: event.category == null,
+      stores: filteredStores,
+    ));
+  }
+
+  void _onMapDistanceSelected(
+    CustomerMapDistanceSelected event,
+    Emitter<CustomerMapState> emit,
+  ) {
+    final filteredStores = state.allStores.where((s) {
+      final matchCategory = state.activeCategory == null || s.merchantCategory == state.activeCategory!.name;
+      final matchDistance = (s.distance ?? 0.0) <= event.distance;
+      return matchCategory && matchDistance;
+    }).toList();
+
+    emit(state.copyWith(
+      maxDistance: event.distance,
       stores: filteredStores,
     ));
   }

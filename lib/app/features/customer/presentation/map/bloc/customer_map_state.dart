@@ -15,6 +15,7 @@ class CustomerMapState extends Equatable {
   final BitmapDescriptor? storeMarker;
   final List<CustomerMerchantCategoryEntity> categories;
   final CustomerMerchantCategoryEntity? activeCategory;
+  final double maxDistance;
 
   const CustomerMapState({
     this.isLoading = false,
@@ -28,6 +29,7 @@ class CustomerMapState extends Equatable {
     this.storeMarker,
     this.categories = const [],
     this.activeCategory,
+    this.maxDistance = 0.5, // Default to 0.5 km
   });
 
   CustomerMapState copyWith({
@@ -44,6 +46,7 @@ class CustomerMapState extends Equatable {
     List<CustomerMerchantCategoryEntity>? categories,
     CustomerMerchantCategoryEntity? activeCategory,
     bool nullifyActiveCategory = false,
+    double? maxDistance,
   }) {
     return CustomerMapState(
       isLoading: isLoading ?? this.isLoading,
@@ -61,6 +64,7 @@ class CustomerMapState extends Equatable {
       activeCategory: nullifyActiveCategory
           ? null
           : (activeCategory ?? this.activeCategory),
+      maxDistance: maxDistance ?? this.maxDistance,
     );
   }
 
@@ -77,5 +81,6 @@ class CustomerMapState extends Equatable {
     storeMarker,
     categories,
     activeCategory,
+    maxDistance,
   ];
 }

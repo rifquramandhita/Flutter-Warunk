@@ -30,3 +30,8 @@ class CustomerMapCategorySelected extends CustomerMapEvent {
   final CustomerMerchantCategoryEntity? category;
   CustomerMapCategorySelected(this.category);
 }
+
+class CustomerMapDistanceSelected extends CustomerMapEvent {
+  final double distance;
+  CustomerMapDistanceSelected(this.distance);
+}

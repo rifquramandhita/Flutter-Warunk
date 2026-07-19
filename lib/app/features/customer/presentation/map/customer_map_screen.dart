@@ -813,6 +813,13 @@ class _MapSearchBarWidgetState extends State<_MapSearchBarWidget> {
             ),
           ),
         ),
+        const _MapDistanceFilterWidget(),
+        const SizedBox(height: 8),
+        Divider(
+          height: 1,
+          color: GlobalHelper.getColorSchema(context).outlineVariant,
+        ),
+        const SizedBox(height: 16),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Text(
@@ -890,6 +897,119 @@ class _MapSearchBarWidgetState extends State<_MapSearchBarWidget> {
         const SizedBox(height: 24),
       ],
       ),
+    );
+  }
+}
+
+class _MapDistanceFilterWidget extends StatefulWidget {
+  const _MapDistanceFilterWidget();
+
+  @override
+  State<_MapDistanceFilterWidget> createState() => _MapDistanceFilterWidgetState();
+}
+
+class _MapDistanceFilterWidgetState extends State<_MapDistanceFilterWidget> {
+  final TextEditingController _controller = TextEditingController();
+  final FocusNode _focusNode = FocusNode();
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    _focusNode.dispose();
+    super.dispose();
+  }
+
+  void _onInputSubmitted(String value, BuildContext context) {
+    double? val = double.tryParse(value);
+    if (val != null) {
+      if (val < 0.5) val = 0.5;
+      if (val > 5000.0) val = 5000.0;
+      context.read<CustomerMapBloc>().add(CustomerMapDistanceSelected(val));
+      _controller.text = val.toStringAsFixed(1);
+    } else {
+      final state = context.read<CustomerMapBloc>().state;
+      _controller.text = state.maxDistance.toStringAsFixed(1);
+    }
+    _focusNode.unfocus();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final state = context.watch<CustomerMapBloc>().state;
+    
+    if (!_focusNode.hasFocus) {
+      _controller.text = state.maxDistance.toStringAsFixed(1);
+    }
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Jarak Maksimal',
+                style: GlobalHelper.getTextTheme(
+                  context,
+                  appTextStyle: AppTextStyle.TITLE_LARGE,
+                )?.copyWith(
+                  fontWeight: FontWeight.w800,
+                  color: GlobalHelper.getColorSchema(context).onSurface,
+                ),
+              ),
+              Row(
+                children: [
+                  SizedBox(
+                    width: 70,
+                    child: TextField(
+                      controller: _controller,
+                      focusNode: _focusNode,
+                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                      textAlign: TextAlign.right,
+                      style: GlobalHelper.getTextTheme(
+                        context,
+                        appTextStyle: AppTextStyle.BODY_LARGE,
+                      )?.copyWith(
+                        fontWeight: FontWeight.w700,
+                        color: GlobalHelper.getColorSchema(context).primary,
+                      ),
+                      decoration: const InputDecoration(
+                        isDense: true,
+                        contentPadding: EdgeInsets.zero,
+                        border: InputBorder.none,
+                      ),
+                      onSubmitted: (val) => _onInputSubmitted(val, context),
+                      onTapOutside: (_) => _onInputSubmitted(_controller.text, context),
+                    ),
+                  ),
+                  Text(
+                    ' km',
+                    style: GlobalHelper.getTextTheme(
+                      context,
+                      appTextStyle: AppTextStyle.BODY_LARGE,
+                    )?.copyWith(
+                      fontWeight: FontWeight.w700,
+                      color: GlobalHelper.getColorSchema(context).primary,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+        Slider(
+          value: state.maxDistance,
+          min: 0.5,
+          max: 5000.0,
+          activeColor: GlobalHelper.getColorSchema(context).primary,
+          onChanged: (value) {
+            context.read<CustomerMapBloc>().add(CustomerMapDistanceSelected(value));
+          },
+        ),
+      ],
     );
   }
 }
