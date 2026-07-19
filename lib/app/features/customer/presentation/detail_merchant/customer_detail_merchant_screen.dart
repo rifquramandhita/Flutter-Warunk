@@ -596,21 +596,251 @@ class CustomerDetailMerchantScreen extends StatelessWidget {
     final merchant = state.merchantDetail;
     if (merchant == null) return const SizedBox.shrink();
 
+    final reviewSummary = merchant.reviewSummary;
+    final reviewBreakdown = merchant.reviewBreakdown;
+
+    if (reviewSummary == null || reviewBreakdown == null || reviewBreakdown.isEmpty) {
+      return Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            const SizedBox(height: 32),
+            Icon(Icons.star_outline_rounded, size: 64, color: GlobalHelper.getColorSchema(context).primary.withValues(alpha: 0.5)),
+            const SizedBox(height: 16),
+            Text(
+              merchant.reviewEmptyMessage ?? 'Belum ada ulasan',
+              style: GlobalHelper.getTextTheme(context, appTextStyle: AppTextStyle.BODY_LARGE)?.copyWith(
+                fontWeight: FontWeight.bold,
+                color: GlobalHelper.getColorSchema(context).onSurface.withValues(alpha: 0.6),
+              ),
+            ),
+            const SizedBox(height: 100),
+          ],
+        ),
+      );
+    }
+
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const SizedBox(height: 32),
-          Icon(Icons.star_outline_rounded, size: 64, color: GlobalHelper.getColorSchema(context).primary.withValues(alpha: 0.5)),
-          const SizedBox(height: 16),
           Text(
-            merchant.reviewEmptyMessage ?? 'Belum ada ulasan',
-            style: GlobalHelper.getTextTheme(context, appTextStyle: AppTextStyle.BODY_LARGE)?.copyWith(
-              fontWeight: FontWeight.bold,
-              color: GlobalHelper.getColorSchema(context).onSurface.withValues(alpha: 0.6),
-            ),
+            'Ulasan & Penilaian',
+            style: GlobalHelper.getTextTheme(context, appTextStyle: AppTextStyle.TITLE_SMALL)?.copyWith(fontWeight: FontWeight.bold),
           ),
+          const SizedBox(height: 16),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              // Left side: big score and total reviews
+              Column(
+                children: [
+                  Text(
+                    reviewSummary.rating,
+                    style: GlobalHelper.getTextTheme(context, appTextStyle: AppTextStyle.DISPLAY_MEDIUM)?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: GlobalHelper.getColorSchema(context).onSurface,
+                    ),
+                  ),
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: List.generate(5, (index) {
+                      final ratingValue = double.tryParse(reviewSummary.rating) ?? 0.0;
+                      if (index < ratingValue.floor()) {
+                        return const Icon(Icons.star_rounded, color: Colors.amber, size: 18);
+                      } else if (index < ratingValue && ratingValue % 1 != 0) {
+                        return const Icon(Icons.star_half_rounded, color: Colors.amber, size: 18);
+                      } else {
+                        return const Icon(Icons.star_outline_rounded, color: Colors.amber, size: 18);
+                      }
+                    }),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    '${reviewSummary.total} Ulasan',
+                    style: GlobalHelper.getTextTheme(context, appTextStyle: AppTextStyle.BODY_SMALL)?.copyWith(
+                      color: GlobalHelper.getColorSchema(context).onSurface.withValues(alpha: 0.6),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(width: 32),
+              // Right side: breakdown bars
+              Expanded(
+                child: Column(
+                  children: List.generate(5, (index) {
+                    final starLabel = (5 - index).toString(); // '5', '4', '3', '2', '1'
+                    final breakdownIndex = reviewBreakdown.indexWhere((b) => b.label == starLabel || b.label.startsWith(starLabel));
+                    final percent = breakdownIndex != -1 ? reviewBreakdown[breakdownIndex].percent : 0;
+                    
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 4.0),
+                      child: Row(
+                        children: [
+                          Text(
+                            starLabel,
+                            style: GlobalHelper.getTextTheme(context, appTextStyle: AppTextStyle.LABEL_MEDIUM)?.copyWith(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(width: 4),
+                          const Icon(Icons.star_rounded, color: Colors.amber, size: 14),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(4),
+                              child: LinearProgressIndicator(
+                                value: percent / 100,
+                                backgroundColor: GlobalHelper.getColorSchema(context).outlineVariant.withValues(alpha: 0.3),
+                                valueColor: const AlwaysStoppedAnimation<Color>(Colors.amber),
+                                minHeight: 8,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          SizedBox(
+                            width: 24,
+                            child: Text(
+                              '${(percent * reviewSummary.total / 100).round()}',
+                              style: GlobalHelper.getTextTheme(context, appTextStyle: AppTextStyle.BODY_SMALL)?.copyWith(
+                                color: GlobalHelper.getColorSchema(context).onSurface.withValues(alpha: 0.6),
+                              ),
+                              textAlign: TextAlign.right,
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  }),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 32),
+          Text(
+            'Ulasan Pelanggan',
+            style: GlobalHelper.getTextTheme(context, appTextStyle: AppTextStyle.TITLE_SMALL)?.copyWith(fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 16),
+          if (merchant.reviews == null || merchant.reviews!.isEmpty)
+            Text(
+              'Belum ada ulasan teks',
+              style: GlobalHelper.getTextTheme(context, appTextStyle: AppTextStyle.BODY_MEDIUM)?.copyWith(
+                color: GlobalHelper.getColorSchema(context).onSurface.withValues(alpha: 0.6),
+              ),
+            )
+          else
+            ...merchant.reviews!.map((reviewData) {
+              final reviewMap = reviewData as Map<String, dynamic>? ?? {};
+              final rating = double.tryParse(reviewMap['rating']?.toString() ?? '0') ?? 0;
+              final comment = reviewMap['review']?.toString() 
+                  ?? reviewMap['comment']?.toString() 
+                  ?? reviewMap['text']?.toString() 
+                  ?? reviewMap['content']?.toString() 
+                  ?? reviewMap['notes']?.toString() 
+                  ?? '';
+              final dateStr = reviewMap['created_at']?.toString() ?? '';
+              
+              String name = 'Pelanggan';
+              String? photo;
+              
+              if (reviewMap['user'] != null && reviewMap['user'] is Map) {
+                name = reviewMap['user']['name']?.toString() ?? reviewMap['user']['first_name']?.toString() ?? 'Pelanggan';
+                photo = reviewMap['user']['profile_photo']?.toString() ?? reviewMap['user']['avatar']?.toString();
+              } else if (reviewMap['customer'] != null && reviewMap['customer'] is Map) {
+                name = reviewMap['customer']['name']?.toString() ?? reviewMap['customer']['first_name']?.toString() ?? 'Pelanggan';
+                photo = reviewMap['customer']['profile_photo']?.toString() ?? reviewMap['customer']['avatar']?.toString();
+              } else {
+                name = reviewMap['name']?.toString() 
+                    ?? reviewMap['customer_name']?.toString() 
+                    ?? reviewMap['user_name']?.toString() 
+                    ?? reviewMap['reviewer_name']?.toString() 
+                    ?? 'Pelanggan';
+                photo = reviewMap['photo']?.toString() 
+                    ?? reviewMap['profile_photo']?.toString() 
+                    ?? reviewMap['avatar']?.toString();
+              }
+              
+              String displayDate = dateStr;
+              if (dateStr.length >= 10) displayDate = dateStr.substring(0, 10);
+
+              return Container(
+                margin: const EdgeInsets.only(bottom: 16),
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: GlobalHelper.getColorSchema(context).surface,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: GlobalHelper.getColorSchema(context).outlineVariant.withValues(alpha: 0.5)),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        CircleAvatar(
+                          radius: 16,
+                          backgroundColor: GlobalHelper.getColorSchema(context).primary.withValues(alpha: 0.2),
+                          backgroundImage: (photo != null && photo.isNotEmpty) ? NetworkImage(photo) : null,
+                          child: (photo == null || photo.isEmpty) 
+                            ? Icon(Icons.person, size: 16, color: GlobalHelper.getColorSchema(context).primary)
+                            : null,
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                name,
+                                style: GlobalHelper.getTextTheme(context, appTextStyle: AppTextStyle.LABEL_MEDIUM)?.copyWith(fontWeight: FontWeight.bold),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              Row(
+                                children: [
+                                  Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: List.generate(5, (index) {
+                                      if (index < rating.floor()) {
+                                        return const Icon(Icons.star_rounded, color: Colors.amber, size: 12);
+                                      } else if (index < rating && rating % 1 != 0) {
+                                        return const Icon(Icons.star_half_rounded, color: Colors.amber, size: 12);
+                                      } else {
+                                        return const Icon(Icons.star_outline_rounded, color: Colors.amber, size: 12);
+                                      }
+                                    }),
+                                  ),
+                                  if (displayDate.isNotEmpty) ...[
+                                    const SizedBox(width: 6),
+                                    Text(
+                                      displayDate,
+                                      style: GlobalHelper.getTextTheme(context, appTextStyle: AppTextStyle.LABEL_SMALL)?.copyWith(
+                                        color: GlobalHelper.getColorSchema(context).onSurface.withValues(alpha: 0.5),
+                                      ),
+                                    ),
+                                  ],
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    if (comment.isNotEmpty) ...[
+                      const SizedBox(height: 12),
+                      Text(
+                        comment,
+                        style: GlobalHelper.getTextTheme(context, appTextStyle: AppTextStyle.BODY_SMALL)?.copyWith(
+                          color: GlobalHelper.getColorSchema(context).onSurface.withValues(alpha: 0.8),
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
+              );
+            }),
           const SizedBox(height: 100),
         ],
       ),
