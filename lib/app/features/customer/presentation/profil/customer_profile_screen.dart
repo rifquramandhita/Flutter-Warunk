@@ -69,137 +69,28 @@ class CustomerProfileScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildUserCard(context),
-            const SizedBox(height: 16),
-            _buildStatsCard(context),
-            const SizedBox(height: 16),
-            _buildMenuList(context),
-            const SizedBox(height: 16),
-            _buildPromoBanner(context),
+            _buildAccountMenu(context),
+            const SizedBox(height: 24),
+            Text(
+              'Bantuan & Informasi',
+              style: GlobalHelper.getTextTheme(
+                context,
+                appTextStyle: AppTextStyle.TITLE_SMALL,
+              )?.copyWith(fontWeight: FontWeight.w700),
+            ),
+            const SizedBox(height: 12),
+            _buildInfoMenu(context),
+            const SizedBox(height: 24),
+            _logoutButton(context),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildUserCard(BuildContext context) {
-    final authState = context.watch<AuthBloc>().state;
-    return ShadowCard(
-      child: Row(
-        children: [
-          Container(
-            width: 70,
-            height: 70,
-            decoration: BoxDecoration(
-              color: const Color(0xFFB9E4C9),
-              shape: BoxShape.circle,
-              border: Border.all(color: Colors.white, width: 2),
-            ),
-            child: authState.photoUrl.isNotEmpty
-                ? ClipOval(
-                    child: Image.network(
-                      authState.photoUrl,
-                      fit: BoxFit.cover,
-                      width: 70,
-                      height: 70,
-                      errorBuilder: (context, error, stackTrace) =>
-                          const Center(
-                            child: Text('👨🏻', style: TextStyle(fontSize: 40)),
-                          ),
-                    ),
-                  )
-                : const Center(
-                    child: Text('👨🏻', style: TextStyle(fontSize: 40)),
-                  ),
-          ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  authState.name,
-                  style: GlobalHelper.getTextTheme(
-                    context,
-                    appTextStyle: AppTextStyle.BODY_LARGE,
-                  )?.copyWith(fontWeight: FontWeight.w800),
-                ),
-                const SizedBox(height: 6),
-                Row(
-                  children: [
-                    Icon(
-                      Icons.email_outlined,
-                      size: 14,
-                      color: GlobalHelper.getColorSchema(context).primary,
-                    ),
-                    const SizedBox(width: 6),
-                    Text(
-                      authState.email,
-                      style:
-                          GlobalHelper.getTextTheme(
-                            context,
-                            appTextStyle: AppTextStyle.LABEL_SMALL,
-                          )?.copyWith(
-                            color: GlobalHelper.getColorSchema(
-                              context,
-                            ).onSurfaceVariant,
-                          ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 
-  Widget _buildStatsCard(BuildContext context) {
-    final state = context.watch<CustomerProfilBloc>().state;
-    return ShadowCard(
-      padding: const EdgeInsets.symmetric(vertical: 16),
-      child: Row(
-        children: [
-          _statItem(
-            context: context,
-            icon: Icons.shopping_bag_outlined,
-            iconColor: GlobalHelper.getColorSchema(context).primary,
-            iconBgColor: GlobalHelper.getColorSchema(
-              context,
-            ).primary.withValues(alpha: 0.1),
-            label: 'Transaksi',
-            value: '${state.transactionCount}',
-          ),
 
-          _verticalDivider(context),
-          _statItem(
-            context: context,
-            icon: Icons.favorite_border_rounded,
-            iconColor: const Color(0xFF3B82F6),
-            iconBgColor: const Color(0xFFEFF6FF),
-            label: 'Wishlist',
-            value: '${state.favoriteCount}',
-            onTap: () {
-              navigatorKey.currentState
-                  ?.push(
-                    MaterialPageRoute(
-                      builder: (_) => const CustomerWishlistScreen(),
-                    ),
-                  )
-                  .then((_) {
-                    if (context.mounted) {
-                      context.read<CustomerProfilBloc>().add(
-                        CustomerLoadProfilData(),
-                      );
-                    }
-                  });
-            },
-          ),
-        ],
-      ),
-    );
-  }
+
 
   Widget _statItem({
     required BuildContext context,
@@ -267,11 +158,139 @@ class CustomerProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildMenuList(BuildContext context) {
+  Widget _buildAccountMenu(BuildContext context) {
+    final state = context.watch<CustomerProfilBloc>().state;
+    final authState = context.watch<AuthBloc>().state;
     return ShadowCard(
       padding: EdgeInsets.zero,
       child: Column(
         children: [
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Row(
+              children: [
+                Container(
+                  width: 70,
+                  height: 70,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFB9E4C9),
+                    shape: BoxShape.circle,
+                    border: Border.all(color: Colors.white, width: 2),
+                  ),
+                  child: authState.photoUrl.isNotEmpty
+                      ? ClipOval(
+                          child: Image.network(
+                            authState.photoUrl,
+                            fit: BoxFit.cover,
+                            width: 70,
+                            height: 70,
+                            errorBuilder: (context, error, stackTrace) =>
+                                const Center(
+                                  child: Text('👨🏻', style: TextStyle(fontSize: 40)),
+                                ),
+                          ),
+                        )
+                      : const Center(
+                          child: Text('👨🏻', style: TextStyle(fontSize: 40)),
+                        ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        authState.name,
+                        style: GlobalHelper.getTextTheme(
+                          context,
+                          appTextStyle: AppTextStyle.BODY_LARGE,
+                        )?.copyWith(fontWeight: FontWeight.w800),
+                      ),
+                      const SizedBox(height: 6),
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.email_outlined,
+                            size: 14,
+                            color: GlobalHelper.getColorSchema(context).primary,
+                          ),
+                          const SizedBox(width: 6),
+                          Text(
+                            authState.email,
+                            style:
+                                GlobalHelper.getTextTheme(
+                                  context,
+                                  appTextStyle: AppTextStyle.LABEL_SMALL,
+                                )?.copyWith(
+                                  color: GlobalHelper.getColorSchema(
+                                    context,
+                                  ).onSurfaceVariant,
+                                ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+            child: Container(
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              decoration: BoxDecoration(
+                color: GlobalHelper.getColorSchema(context).surface,
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                  BoxShadow(
+                    color: GlobalHelper.getColorSchema(context).shadow.withValues(alpha: 0.08),
+                    blurRadius: 12,
+                    spreadRadius: 1,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: Row(
+                children: [
+                  _statItem(
+                    context: context,
+                    icon: Icons.shopping_bag_outlined,
+                    iconColor: GlobalHelper.getColorSchema(context).primary,
+                    iconBgColor: GlobalHelper.getColorSchema(
+                      context,
+                    ).primary.withValues(alpha: 0.1),
+                    label: 'Transaksi',
+                    value: '${state.transactionCount}',
+                  ),
+                  _verticalDivider(context),
+                  _statItem(
+                    context: context,
+                    icon: Icons.favorite_border_rounded,
+                    iconColor: const Color(0xFF3B82F6),
+                    iconBgColor: const Color(0xFFEFF6FF),
+                    label: 'Wishlist',
+                    value: '${state.favoriteCount}',
+                    onTap: () {
+                      navigatorKey.currentState
+                          ?.push(
+                            MaterialPageRoute(
+                              builder: (_) => const CustomerWishlistScreen(),
+                            ),
+                          )
+                          .then((_) {
+                            if (context.mounted) {
+                              context.read<CustomerProfilBloc>().add(
+                                CustomerLoadProfilData(),
+                              );
+                            }
+                          });
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ),
           _menuItem(
             context: context,
             icon: Icons.person_outline,
@@ -289,18 +308,16 @@ class CustomerProfileScreen extends StatelessWidget {
               MaterialPageRoute(builder: (_) => const CustomerAddressScreen()),
             ),
           ),
-          _divider(context),
-          _menuItem(
-            context: context,
-            icon: Icons.credit_card_outlined,
-            label: 'Metode Pembayaran',
-            iconColor: GlobalHelper.getColorSchema(context).primary,
-          ),
+        ],
+      ),
+    );
+  }
 
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16),
-            child: CustomDottedDivider(),
-          ),
+  Widget _buildInfoMenu(BuildContext context) {
+    return ShadowCard(
+      padding: EdgeInsets.zero,
+      child: Column(
+        children: [
           _menuItem(
             context: context,
             icon: Icons.help_outline_rounded,
@@ -348,19 +365,38 @@ class CustomerProfileScreen extends StatelessWidget {
               ),
             ),
           ),
-          _divider(context),
-          _menuItem(
-            context: context,
-            icon: Icons.logout_rounded,
-            label: 'Keluar',
-            iconColor: Colors.red,
-            textColor: Colors.red,
-            hideChevron: true,
-            onTap: () => navigatorKey.currentState?.push(
-              MaterialPageRoute(builder: (context) => AuthLogoutScreen()),
-            ),
-          ),
         ],
+      ),
+    );
+  }
+
+  Widget _logoutButton(BuildContext context) {
+    final titleStyle = GlobalHelper.getTextTheme(
+      context,
+      appTextStyle: AppTextStyle.TITLE_SMALL,
+    );
+
+    return SizedBox(
+      width: double.infinity,
+      height: 52,
+      child: OutlinedButton(
+        onPressed: () => navigatorKey.currentState?.push(
+          MaterialPageRoute(builder: (_) => const AuthLogoutScreen()),
+        ),
+        style: OutlinedButton.styleFrom(
+          side: const BorderSide(color: Colors.red, width: 1.5),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(14),
+          ),
+          foregroundColor: Colors.red,
+        ),
+        child: Text(
+          'Logout',
+          style: titleStyle?.copyWith(
+            fontWeight: FontWeight.w600,
+            color: Colors.red,
+          ),
+        ),
       ),
     );
   }
@@ -427,78 +463,7 @@ class CustomerProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildPromoBanner(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: const Color(0xFFF0FDF4),
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: GlobalHelper.getColorSchema(
-            context,
-          ).primary.withValues(alpha: 0.2),
-        ),
-      ),
-      child: Row(
-        children: [
-          const Text('🎁', style: TextStyle(fontSize: 48)),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Ajak teman,\ndapat voucher gratis ongkir',
-                  style: GlobalHelper.getTextTheme(
-                    context,
-                    appTextStyle: AppTextStyle.BODY_SMALL,
-                  )?.copyWith(fontWeight: FontWeight.w800),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  'Semakin banyak teman, semakin banyak\nvoucher yang kamu dapatkan!',
-                  style:
-                      GlobalHelper.getTextTheme(
-                        context,
-                        appTextStyle: AppTextStyle.LABEL_SMALL,
-                      )?.copyWith(
-                        color: GlobalHelper.getColorSchema(
-                          context,
-                        ).onSurfaceVariant,
-                        height: 1.4,
-                      ),
-                ),
-                const SizedBox(height: 10),
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 6,
-                  ),
-                  decoration: BoxDecoration(
-                    color: GlobalHelper.getColorSchema(
-                      context,
-                    ).primary.withValues(alpha: 0.15),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Text(
-                    'Ajak Sekarang',
-                    style:
-                        GlobalHelper.getTextTheme(
-                          context,
-                          appTextStyle: AppTextStyle.LABEL_SMALL,
-                        )?.copyWith(
-                          fontWeight: FontWeight.w700,
-                          color: GlobalHelper.getColorSchema(context).primary,
-                        ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+
 
   void _onPressEditProfil(BuildContext context) async {
     final bloc = context.read<AuthBloc>();
