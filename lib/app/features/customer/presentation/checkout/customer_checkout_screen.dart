@@ -80,8 +80,8 @@ class CustomerCheckoutScreen extends StatelessWidget {
           child: RefreshIndicator(
             onRefresh: () async {
               context.read<CustomerCheckoutBloc>().add(
-                    CustomerCheckoutEventFetchStarted(selectedItems),
-                  );
+                CustomerCheckoutEventFetchStarted(selectedItems),
+              );
             },
             child: SingleChildScrollView(
               physics: const AlwaysScrollableScrollPhysics(),
@@ -90,23 +90,23 @@ class CustomerCheckoutScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   _addressSection(context, state),
-                const SizedBox(height: 12),
-                _orderSection(context, state),
-                const SizedBox(height: 12),
-                _deliverySection(context, state),
-                const SizedBox(height: 12),
-                _paymentMethodDropdownSection(context, state),
-                const SizedBox(height: 12),
-                _voucherSection(context, state),
-                const SizedBox(height: 12),
-                _notesSection(context, state),
-                const SizedBox(height: 12),
+                  const SizedBox(height: 12),
+                  _orderSection(context, state),
+                  const SizedBox(height: 12),
+                  _deliverySection(context, state),
+                  const SizedBox(height: 12),
+                  _paymentMethodDropdownSection(context, state),
+                  const SizedBox(height: 12),
+                  _voucherSection(context, state),
+                  const SizedBox(height: 12),
+                  _notesSection(context, state),
+                  const SizedBox(height: 12),
 
-                const SizedBox(height: 12),
-                _paymentSummarySection(context, state),
-              ],
+                  const SizedBox(height: 12),
+                  _paymentSummarySection(context, state),
+                ],
+              ),
             ),
-          ),
           ),
         ),
         _bottomBar(context, state),
@@ -115,10 +115,22 @@ class CustomerCheckoutScreen extends StatelessWidget {
   }
 
   Widget _addressSection(BuildContext context, CustomerCheckoutState state) {
+    final isPickup = state.deliveryMethod == DeliveryMethodEnum.pickup;
+    final title = isPickup ? 'Alamat Pengambilan' : 'Alamat Pengiriman';
+    final name = isPickup
+        ? (state.merchant?.name ?? '-')
+        : (state.address?.recipientName ?? '-');
+    final phone = isPickup
+        ? (state.merchant?.whatsappNumber ?? state.merchant?.user?.phone ?? '-')
+        : (state.address?.phone ?? '-');
+    final fullAddress = isPickup
+        ? (state.merchant?.address ?? state.merchant?.district ?? '-')
+        : (state.address?.fullAddress ?? '-');
+
     return _sectionCard(
       context: context,
       icon: Icons.location_on_rounded,
-      title: 'Alamat Pengiriman',
+      title: title,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -127,7 +139,7 @@ class CustomerCheckoutScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  state.address?.recipientName ?? '-',
+                  name,
                   style:
                       GlobalHelper.getTextTheme(
                         context,
@@ -139,7 +151,7 @@ class CustomerCheckoutScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 3),
                 Text(
-                  state.address?.phone ?? '-',
+                  phone,
                   style:
                       GlobalHelper.getTextTheme(
                         context,
@@ -150,7 +162,7 @@ class CustomerCheckoutScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 3),
                 Text(
-                  state.address?.fullAddress ?? '-',
+                  fullAddress,
                   style:
                       GlobalHelper.getTextTheme(
                         context,
@@ -162,56 +174,61 @@ class CustomerCheckoutScreen extends StatelessWidget {
               ],
             ),
           ),
-          const SizedBox(width: 10),
-          GestureDetector(
-            onTap: () async {
-              final newAddress = await navigatorKey.currentState?.push(
-                MaterialPageRoute(
-                  builder: (_) => CustomerAddressScreen(
-                    isSelectionMode: true,
-                    selectedAddressId: state.address?.id,
+          if (!isPickup) ...[
+            const SizedBox(width: 10),
+            GestureDetector(
+              onTap: () async {
+                final newAddress = await navigatorKey.currentState?.push(
+                  MaterialPageRoute(
+                    builder: (_) => CustomerAddressScreen(
+                      isSelectionMode: true,
+                      selectedAddressId: state.address?.id,
+                    ),
                   ),
-                ),
-              );
-              if (newAddress != null && newAddress is CustomerAddressEntity) {
-                if (context.mounted) {
-                  context.read<CustomerCheckoutBloc>().add(
-                    CustomerCheckoutEventAddressChanged(newAddress),
-                  );
+                );
+                if (newAddress != null && newAddress is CustomerAddressEntity) {
+                  if (context.mounted) {
+                    context.read<CustomerCheckoutBloc>().add(
+                      CustomerCheckoutEventAddressChanged(newAddress),
+                    );
+                  }
                 }
-              }
-            },
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-              decoration: BoxDecoration(
-                color: GlobalHelper.getColorSchema(
-                  context,
-                ).primary.withValues(alpha: 0.08),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    'Ubah',
-                    style:
-                        GlobalHelper.getTextTheme(
-                          context,
-                          appTextStyle: AppTextStyle.LABEL_MEDIUM,
-                        )?.copyWith(
-                          fontWeight: FontWeight.w700,
-                          color: GlobalHelper.getColorSchema(context).primary,
-                        ),
-                  ),
-                  Icon(
-                    Icons.chevron_right_rounded,
-                    size: 14,
-                    color: GlobalHelper.getColorSchema(context).primary,
-                  ),
-                ],
+              },
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 5,
+                ),
+                decoration: BoxDecoration(
+                  color: GlobalHelper.getColorSchema(
+                    context,
+                  ).primary.withValues(alpha: 0.08),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      'Ubah',
+                      style:
+                          GlobalHelper.getTextTheme(
+                            context,
+                            appTextStyle: AppTextStyle.LABEL_MEDIUM,
+                          )?.copyWith(
+                            fontWeight: FontWeight.w700,
+                            color: GlobalHelper.getColorSchema(context).primary,
+                          ),
+                    ),
+                    Icon(
+                      Icons.chevron_right_rounded,
+                      size: 14,
+                      color: GlobalHelper.getColorSchema(context).primary,
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
+          ],
         ],
       ),
     );
@@ -462,9 +479,13 @@ class CustomerCheckoutScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               GestureDetector(
-                onTap: opt.isCanUsed == false ? null : () => context.read<CustomerCheckoutBloc>().add(
-                  CustomerCheckoutEventDeliveryChanged(deliveryMethodEnum),
-                ),
+                onTap: opt.isCanUsed == false
+                    ? null
+                    : () => context.read<CustomerCheckoutBloc>().add(
+                        CustomerCheckoutEventDeliveryChanged(
+                          deliveryMethodEnum,
+                        ),
+                      ),
                 child: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 5),
                   child: Row(
@@ -472,9 +493,11 @@ class CustomerCheckoutScreen extends StatelessWidget {
                       Radio<DeliveryMethodEnum>(
                         value: deliveryMethodEnum,
                         groupValue: state.deliveryMethod,
-                        onChanged: opt.isCanUsed == false ? null : (v) => context
-                            .read<CustomerCheckoutBloc>()
-                            .add(CustomerCheckoutEventDeliveryChanged(v!)),
+                        onChanged: opt.isCanUsed == false
+                            ? null
+                            : (v) => context.read<CustomerCheckoutBloc>().add(
+                                CustomerCheckoutEventDeliveryChanged(v!),
+                              ),
                         activeColor: GlobalHelper.getColorSchema(
                           context,
                         ).primary,
@@ -494,10 +517,12 @@ class CustomerCheckoutScreen extends StatelessWidget {
                                   )?.copyWith(
                                     fontWeight: FontWeight.w600,
                                     color: opt.isCanUsed == false
-                                        ? GlobalHelper.getColorSchema(context).outline
+                                        ? GlobalHelper.getColorSchema(
+                                            context,
+                                          ).outline
                                         : GlobalHelper.getColorSchema(
-                                      context,
-                                    ).onSurface,
+                                            context,
+                                          ).onSurface,
                                   ),
                             ),
                             if (opt.description != null &&
@@ -521,12 +546,15 @@ class CustomerCheckoutScreen extends StatelessWidget {
                                 padding: const EdgeInsets.only(top: 2),
                                 child: Text(
                                   opt.disabledReason!,
-                                  style: GlobalHelper.getTextTheme(
-                                    context,
-                                    appTextStyle: AppTextStyle.LABEL_SMALL,
-                                  )?.copyWith(
-                                    color: GlobalHelper.getColorSchema(context).error,
-                                  ),
+                                  style:
+                                      GlobalHelper.getTextTheme(
+                                        context,
+                                        appTextStyle: AppTextStyle.LABEL_SMALL,
+                                      )?.copyWith(
+                                        color: GlobalHelper.getColorSchema(
+                                          context,
+                                        ).error,
+                                      ),
                                 ),
                               ),
                           ],
