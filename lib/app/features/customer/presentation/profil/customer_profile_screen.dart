@@ -5,6 +5,7 @@ import 'package:warunk/app/features/customer/presentation/address/customer_addre
 import 'package:warunk/app/features/customer/presentation/notification/customer_notification_screen.dart';
 import 'package:warunk/app/features/customer/presentation/edit_profil/customer_edit_profile_screen.dart';
 import 'package:warunk/app/features/customer/presentation/wishlist/customer_wishlist_screen.dart';
+import 'package:warunk/app/features/customer/presentation/shell/bloc/customer_shell_bloc.dart';
 import 'package:warunk/app/features/customer/presentation/profil/bloc/customer_profil_bloc.dart';
 import 'package:warunk/app/features/customer/presentation/profil/bloc/customer_profil_event.dart';
 import 'package:warunk/app/features/customer/presentation/profil/bloc/customer_profil_state.dart';
@@ -262,6 +263,9 @@ class CustomerProfileScreen extends StatelessWidget {
                     ).primary.withValues(alpha: 0.1),
                     label: 'Transaksi',
                     value: '${state.transactionCount}',
+                    onTap: () {
+                      context.read<CustomerShellBloc>().add(CustomerShellTabChanged(2));
+                    },
                   ),
                   _verticalDivider(context),
                   _statItem(
