@@ -12,6 +12,7 @@ import 'package:warunk/core/dependency/dependency.dart';
 import 'package:warunk/core/helper/global_helper.dart';
 import 'package:warunk/core/helper/dialog_helper.dart';
 import 'package:warunk/core/widgets/loading_app_widget.dart';
+import 'package:warunk/core/widgets/customer_merchant_item_widget.dart';
 import 'package:warunk/main.dart';
 import 'package:warunk/app/features/customer/domain/entity/customer_merchant.dart';
 class CustomerMapScreen extends StatelessWidget {
@@ -280,16 +281,19 @@ class CustomerMapScreen extends StatelessWidget {
           const SizedBox(height: 12),
 
           // Selected Store Card
-          GestureDetector(
-            onTap: () {
-              navigatorKey.currentState?.push(
-                MaterialPageRoute(
-                  builder: (context) =>
-                      CustomerDetailMerchantScreen(storeId: selectedStore.id),
-                ),
-              );
-            },
-            child: _buildStoreCard(context, selectedStore),
+          Padding(
+            padding: const EdgeInsets.only(left: 20, right: 20, bottom: 12),
+            child: CustomerMerchantItemWidget(
+              store: selectedStore,
+              onTap: () {
+                navigatorKey.currentState?.push(
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        CustomerDetailMerchantScreen(storeId: selectedStore.id),
+                  ),
+                );
+              },
+            ),
           ),
 
           const SizedBox(height: 24),
@@ -298,219 +302,6 @@ class CustomerMapScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildStoreCard(BuildContext context, CustomerMerchantEntity store) {
-    final status = store.isOpen ? 'Buka' : 'Tutup';
-    final statusColor = store.isOpen
-        ? GlobalHelper.getColorSchema(context).primary
-        : GlobalHelper.getColorSchema(context).onSurface.withValues(alpha: 0.5);
-    final rating = store.rating ?? 0.0;
-    final reviews = store.reviewsCount ?? 0;
-    final distance = '${store.distance?.toStringAsFixed(1) ?? "0.0"} km';
-    final location = store.district ?? '';
-    final promo = store.promoBadges?.isNotEmpty == true
-        ? store.promoBadges!.first
-        : '';
-
-    return Container(
-      margin: const EdgeInsets.only(left: 20, right: 20, bottom: 12),
-      decoration: BoxDecoration(
-        color: GlobalHelper.getColorSchema(context).surface,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: GlobalHelper.getColorSchema(context).outlineVariant,
-        ),
-      ),
-      child: Row(
-        children: [
-          // Image placeholder
-          Container(
-            width: 86,
-            height: 86,
-            decoration: BoxDecoration(
-              color: GlobalHelper.getColorSchema(
-                context,
-              ).primary.withValues(alpha: 0.1),
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(16),
-                bottomLeft: Radius.circular(16),
-              ),
-            ),
-            child: Center(
-              child: Text(
-                '🏪',
-                style: GlobalHelper.getTextTheme(
-                  context,
-                  appTextStyle: AppTextStyle.DISPLAY_MEDIUM,
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(width: 12),
-          // Info
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 12),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          store.name,
-                          style:
-                              GlobalHelper.getTextTheme(
-                                context,
-                                appTextStyle: AppTextStyle.BODY_MEDIUM,
-                              )?.copyWith(
-                                fontWeight: FontWeight.w800,
-                                color: GlobalHelper.getColorSchema(
-                                  context,
-                                ).onSurface,
-                              ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                      const SizedBox(width: 6),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 8,
-                          vertical: 2,
-                        ),
-                        decoration: BoxDecoration(
-                          color: statusColor.withValues(alpha: 0.15),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Text(
-                          status,
-                          style:
-                              GlobalHelper.getTextTheme(
-                                context,
-                                appTextStyle: AppTextStyle.BODY_SMALL,
-                              )?.copyWith(
-                                color: statusColor,
-                                fontSize: 10,
-                                fontWeight: FontWeight.w700,
-                              ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 6),
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.star_rounded,
-                        color: GlobalHelper.getColorSchema(context).primary,
-                        size: 14,
-                      ),
-                      const SizedBox(width: 4),
-                      Text(
-                        '$rating ($reviews)',
-                        style:
-                            GlobalHelper.getTextTheme(
-                              context,
-                              appTextStyle: AppTextStyle.BODY_SMALL,
-                            )?.copyWith(
-                              color: GlobalHelper.getColorSchema(
-                                context,
-                              ).onSurface,
-                            ),
-                      ),
-                      const SizedBox(width: 6),
-                      Text(
-                        '•',
-                        style:
-                            GlobalHelper.getTextTheme(
-                              context,
-                              appTextStyle: AppTextStyle.BODY_SMALL,
-                            )?.copyWith(
-                              color: GlobalHelper.getColorSchema(
-                                context,
-                              ).onSurface.withValues(alpha: 0.5),
-                            ),
-                      ),
-                      const SizedBox(width: 6),
-                      Icon(
-                        Icons.radio_button_unchecked,
-                        size: 10,
-                        color: GlobalHelper.getColorSchema(
-                          context,
-                        ).onSurface.withValues(alpha: 0.5),
-                      ),
-                      const SizedBox(width: 4),
-                      Text(
-                        distance,
-                        style:
-                            GlobalHelper.getTextTheme(
-                              context,
-                              appTextStyle: AppTextStyle.BODY_SMALL,
-                            )?.copyWith(
-                              color: GlobalHelper.getColorSchema(
-                                context,
-                              ).onSurface.withValues(alpha: 0.5),
-                            ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 2),
-                  Text(
-                    location,
-                    style:
-                        GlobalHelper.getTextTheme(
-                          context,
-                          appTextStyle: AppTextStyle.BODY_SMALL,
-                        )?.copyWith(
-                          color: GlobalHelper.getColorSchema(
-                            context,
-                          ).onSurface.withValues(alpha: 0.5),
-                        ),
-                  ),
-                  const SizedBox(height: 6),
-                  if (promo.isNotEmpty)
-                    Row(
-                      children: [
-                        Text(
-                          '🛵',
-                          style: GlobalHelper.getTextTheme(
-                            context,
-                            appTextStyle: AppTextStyle.BODY_SMALL,
-                          ),
-                        ),
-                        const SizedBox(width: 4),
-                        Text(
-                          promo,
-                          style:
-                              GlobalHelper.getTextTheme(
-                                context,
-                                appTextStyle: AppTextStyle.BODY_SMALL,
-                              )?.copyWith(
-                                fontWeight: FontWeight.w600,
-                                color: GlobalHelper.getColorSchema(
-                                  context,
-                                ).primary,
-                              ),
-                        ),
-                      ],
-                    ),
-                ],
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Icon(
-              Icons.chevron_right_rounded,
-              color: GlobalHelper.getColorSchema(
-                context,
-              ).onSurface.withValues(alpha: 0.5),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 }
 
 class _MapSearchBarWidget extends StatefulWidget {

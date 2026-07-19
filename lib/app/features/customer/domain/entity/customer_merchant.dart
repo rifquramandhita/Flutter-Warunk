@@ -36,6 +36,7 @@ sealed class CustomerMerchant with _$CustomerMerchant {
     String? postalCode,
     double? longitude,
     double? latitude,
+    bool? isVerified,
     int? balance,
     int? currentBalance,
     double? distance,
@@ -117,7 +118,8 @@ sealed class CustomerMerchantAboutSection with _$CustomerMerchantAboutSection {
 }
 
 @freezed
-sealed class CustomerMerchantReviewSummary with _$CustomerMerchantReviewSummary {
+sealed class CustomerMerchantReviewSummary
+    with _$CustomerMerchantReviewSummary {
   @JsonSerializable(fieldRename: FieldRename.snake, includeIfNull: false)
   const factory CustomerMerchantReviewSummary.entity({
     required String rating,
@@ -129,7 +131,8 @@ sealed class CustomerMerchantReviewSummary with _$CustomerMerchantReviewSummary 
 }
 
 @freezed
-sealed class CustomerMerchantReviewBreakdown with _$CustomerMerchantReviewBreakdown {
+sealed class CustomerMerchantReviewBreakdown
+    with _$CustomerMerchantReviewBreakdown {
   @JsonSerializable(fieldRename: FieldRename.snake, includeIfNull: false)
   const factory CustomerMerchantReviewBreakdown.entity({
     required String label,
