@@ -783,9 +783,8 @@ Widget _statusBadge(BuildContext context, {required OrderStatus? status}) {
     OrderStatus.processing => const Color(0xFFF97316),
     OrderStatus.shipped || OrderStatus.received => colorSchema.primary,
     OrderStatus.completed => const Color(0xFF22C55E),
-    OrderStatus.waitingCancel || 
-    OrderStatus.cancelled || 
-    OrderStatus.rejected => colorSchema.error,
+
+    OrderStatus.cancelled || OrderStatus.rejected => colorSchema.error,
   };
 
   return Container(

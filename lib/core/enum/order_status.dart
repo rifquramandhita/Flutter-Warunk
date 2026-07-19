@@ -7,8 +7,6 @@ enum OrderStatus {
   waitingPayment,
   @JsonValue('waiting_payment_confirmation')
   waitingPaymentConfirmation,
-  @JsonValue('waiting_cancel')
-  waitingCancel,
   @JsonValue('processing')
   processing,
   @JsonValue('shipped')
@@ -30,8 +28,6 @@ enum OrderStatus {
         return 'Menunggu Pembayaran Customer';
       case OrderStatus.waitingPaymentConfirmation:
         return 'Dibayar';
-      case OrderStatus.waitingCancel:
-        return 'Menunggu Pembatalan';
       case OrderStatus.processing:
         return 'Diproses';
       case OrderStatus.shipped:
@@ -55,8 +51,6 @@ enum OrderStatus {
         return 'waiting_payment';
       case OrderStatus.waitingPaymentConfirmation:
         return 'waiting_payment_confirmation';
-      case OrderStatus.waitingCancel:
-        return 'waiting_cancel';
       case OrderStatus.processing:
         return 'processing';
       case OrderStatus.shipped:

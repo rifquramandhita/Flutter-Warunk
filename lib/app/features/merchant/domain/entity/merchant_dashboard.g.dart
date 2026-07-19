@@ -166,7 +166,6 @@ const _$OrderStatusEnumMap = {
   OrderStatus.waitingMerchantConfirmation: 'waiting_merchant_confirmation',
   OrderStatus.waitingPayment: 'waiting_payment',
   OrderStatus.waitingPaymentConfirmation: 'waiting_payment_confirmation',
-  OrderStatus.waitingCancel: 'waiting_cancel',
   OrderStatus.processing: 'processing',
   OrderStatus.shipped: 'shipped',
   OrderStatus.received: 'received',

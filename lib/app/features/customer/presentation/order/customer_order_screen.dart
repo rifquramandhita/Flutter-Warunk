@@ -34,8 +34,6 @@ class CustomerOrderScreen extends StatelessWidget {
     );
   }
 
-
-
   Widget _bodyBuild(BuildContext context) {
     final state = context.watch<CustomerOrderBloc>().state;
     return SafeArea(
@@ -629,11 +627,6 @@ class CustomerOrderScreen extends StatelessWidget {
       case OrderStatus.waitingPaymentConfirmation:
         bgColor = const Color(0xFFFFF3E0);
         textColor = const Color(0xFFF59E0B);
-        outlined = false;
-        break;
-      case OrderStatus.waitingCancel:
-        bgColor = const Color(0xFFFFEBEE);
-        textColor = Colors.red;
         outlined = false;
         break;
       case OrderStatus.processing:
