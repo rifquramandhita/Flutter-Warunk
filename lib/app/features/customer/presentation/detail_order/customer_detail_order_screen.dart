@@ -281,6 +281,9 @@ class CustomerDetailOrderScreen extends StatelessWidget {
       case 'complete_order':
       case 'receive_order':
       case 'review_order':
+      case 'create_review':
+      case 'submit_review':
+      case 'add_review':
         final result = await Navigator.push(
           context,
           MaterialPageRoute(
