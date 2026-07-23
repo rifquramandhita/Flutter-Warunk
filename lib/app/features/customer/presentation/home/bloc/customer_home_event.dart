@@ -9,7 +9,10 @@ final class CustomerHomeBannerChanged extends CustomerHomeEvent {
 
 final class CustomerHomeGetCategoriesStarted extends CustomerHomeEvent {}
 
-final class CustomerHomeGetNearbyStarted extends CustomerHomeEvent {}
+final class CustomerHomeGetNearbyStarted extends CustomerHomeEvent {
+  final CustomerMerchantQuickCategoryEntity? category;
+  CustomerHomeGetNearbyStarted({this.category});
+}
 
 final class CustomerHomeGetBannersStarted extends CustomerHomeEvent {}
 

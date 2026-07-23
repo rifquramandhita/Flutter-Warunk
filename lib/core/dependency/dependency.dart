@@ -139,6 +139,7 @@ import 'package:warunk/app/features/customer/domain/use_case/customer_cart_delet
 import 'package:warunk/app/features/customer/domain/use_case/customer_cart_update_use_case.dart';
 import 'package:warunk/app/features/customer/presentation/cart/bloc/customer_cart_bloc.dart';
 import 'package:warunk/app/features/customer/presentation/home/bloc/customer_home_bloc.dart';
+import 'package:warunk/app/features/customer/presentation/category/bloc/customer_category_bloc.dart';
 import 'package:warunk/app/features/customer/presentation/merchant/bloc/customer_merchant_bloc.dart';
 import 'package:warunk/app/features/customer/presentation/checkout/bloc/customer_checkout_bloc.dart';
 import 'package:warunk/app/features/customer/presentation/review_order/bloc/customer_review_order_bloc.dart';
@@ -419,6 +420,11 @@ Future<void> initDependency() async {
       getNearbyUseCase: sl(),
       getCurrentLocationUseCase: sl(),
       getBannerUseCase: sl(),
+    ),
+  );
+  sl.registerFactory(
+    () => CustomerCategoryBloc(
+      getCategoryUseCase: sl(),
     ),
   );
   sl.registerFactory(

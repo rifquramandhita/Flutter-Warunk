@@ -20,8 +20,11 @@ import 'package:warunk/core/widgets/customer_merchant_item_widget.dart';
 // Home Screen — entry point, menyediakan CustomerHomeBloc
 // ─────────────────────────────────────────────────────────────────────────────
 
+import 'package:warunk/app/features/customer/domain/entity/customer_merchant_quick_category.dart';
+
 class CustomerHomeScreen extends StatelessWidget {
-  const CustomerHomeScreen({super.key});
+  final CustomerMerchantQuickCategoryEntity? selectedCategory;
+  const CustomerHomeScreen({super.key, this.selectedCategory});
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +32,7 @@ class CustomerHomeScreen extends StatelessWidget {
       create: (_) => sl<CustomerHomeBloc>()
         ..add(CustomerHomeGetUserNameStarted())
         ..add(CustomerHomeGetCategoriesStarted())
-        ..add(CustomerHomeGetNearbyStarted())
+        ..add(CustomerHomeGetNearbyStarted(category: selectedCategory))
         ..add(CustomerHomeGetBannersStarted()),
       child: BlocConsumer<CustomerHomeBloc, CustomerHomeState>(
         listener: (context, state) {
@@ -57,7 +60,7 @@ class CustomerHomeScreen extends StatelessWidget {
           final bloc = context.read<CustomerHomeBloc>();
           bloc.add(CustomerHomeGetUserNameStarted());
           bloc.add(CustomerHomeGetCategoriesStarted());
-          bloc.add(CustomerHomeGetNearbyStarted());
+          bloc.add(CustomerHomeGetNearbyStarted(category: selectedCategory));
           bloc.add(CustomerHomeGetBannersStarted());
         },
         child: SingleChildScrollView(

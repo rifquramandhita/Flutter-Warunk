@@ -108,10 +108,17 @@ class CustomerHomeBloc extends Bloc<CustomerHomeEvent, CustomerHomeState> {
         state.copyWith(isLoadingNearby: false, errorMessage: result.message),
       );
     } else {
+      var merchants = result.data ?? [];
+      if (event.category != null && event.category!.key != 'all') {
+        merchants = merchants.where((m) => 
+          m.merchantCategory == event.category!.name || 
+          m.merchantCategory == event.category!.key
+        ).toList();
+      }
       emit(
         state.copyWith(
           isLoadingNearby: false,
-          nearbyMerchants: result.data ?? [],
+          nearbyMerchants: merchants,
         ),
       );
     }

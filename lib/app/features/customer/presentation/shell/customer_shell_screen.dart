@@ -13,35 +13,45 @@ import 'package:warunk/app/features/customer/presentation/chat/customer_chat_web
 import 'package:warunk/core/helper/global_helper.dart';
 import 'package:warunk/core/dependency/dependency.dart';
 
+import 'package:warunk/app/features/customer/domain/entity/customer_merchant_quick_category.dart';
+
 /// CustomerShellScreen mengelola bottom navigation dan menampilkan
 /// halaman yang sesuai berdasarkan tab yang dipilih.
 class CustomerShellScreen extends StatelessWidget {
-  const CustomerShellScreen({super.key});
+  final CustomerMerchantQuickCategoryEntity? selectedCategory;
+  const CustomerShellScreen({super.key, this.selectedCategory});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => CustomerShellBloc(cartGetUseCase: sl())..add(CustomerShellLoadCartCount()),
-      child: const _CustomerShellContent(),
+      child: _CustomerShellContent(selectedCategory: selectedCategory),
     );
   }
 }
 
 class _CustomerShellContent extends StatefulWidget {
-  const _CustomerShellContent();
+  final CustomerMerchantQuickCategoryEntity? selectedCategory;
+  const _CustomerShellContent({this.selectedCategory});
 
   @override
   State<_CustomerShellContent> createState() => _CustomerShellContentState();
 }
 
 class _CustomerShellContentState extends State<_CustomerShellContent> with RouteAware {
-  static final List<Widget> _pages = [
-    const CustomerHomeScreen(),
-    CustomerMapScreen(),
-    const CustomerOrderScreen(),
-    const CustomerNotificationScreen(),
-    const CustomerProfileScreen(),
-  ];
+  late final List<Widget> _pages;
+
+  @override
+  void initState() {
+    super.initState();
+    _pages = [
+      CustomerHomeScreen(selectedCategory: widget.selectedCategory),
+      CustomerMapScreen(),
+      const CustomerOrderScreen(),
+      const CustomerNotificationScreen(),
+      const CustomerProfileScreen(),
+    ];
+  }
 
   static final List<String> _titles = [
     'Warunk',

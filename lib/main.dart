@@ -7,7 +7,7 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:warunk/app/features/auth/presentation/login/auth_login_screen.dart';
 import 'package:warunk/app/features/auth/presentation/splash/auth_splash_screen.dart';
-import 'package:warunk/app/features/customer/presentation/shell/customer_shell_screen.dart';
+import 'package:warunk/app/features/customer/presentation/category/customer_category_screen.dart';
 import 'package:warunk/app/features/merchant/presentation/shell/merchant_shell_screen.dart';
 import 'package:warunk/core/bloc/auth/auth_bloc.dart';
 import 'package:warunk/core/dependency/dependency.dart';
@@ -71,7 +71,7 @@ class WarunkApp extends StatelessWidget {
             return state.isAuthenticated
                 ? (state.role == RoleEnum.merchant)
                       ? const MerchantShellScreen()
-                      : const CustomerShellScreen()
+                      : const CustomerCategoryScreen()
                 : const AuthLoginScreen();
           },
         ),
