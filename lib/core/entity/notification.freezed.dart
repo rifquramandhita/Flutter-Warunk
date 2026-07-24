@@ -22,7 +22,7 @@ Notification _$NotificationFromJson(
 /// @nodoc
 mixin _$Notification {
 
- NotificationModelType? get modelType; String? get modelId;
+@JsonKey(name: 'indicator') NotificationIndicatorEntity? get indicator; String? get modelId;
 /// Create a copy of Notification
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -35,16 +35,16 @@ $NotificationCopyWith<Notification> get copyWith => _$NotificationCopyWithImpl<N
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Notification&&(identical(other.modelType, modelType) || other.modelType == modelType)&&(identical(other.modelId, modelId) || other.modelId == modelId));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Notification&&(identical(other.indicator, indicator) || other.indicator == indicator)&&(identical(other.modelId, modelId) || other.modelId == modelId));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,modelType,modelId);
+int get hashCode => Object.hash(runtimeType,indicator,modelId);
 
 @override
 String toString() {
-  return 'Notification(modelType: $modelType, modelId: $modelId)';
+  return 'Notification(indicator: $indicator, modelId: $modelId)';
 }
 
 
@@ -55,7 +55,7 @@ abstract mixin class $NotificationCopyWith<$Res>  {
   factory $NotificationCopyWith(Notification value, $Res Function(Notification) _then) = _$NotificationCopyWithImpl;
 @useResult
 $Res call({
- NotificationModelType? modelType, String? modelId
+@JsonKey(name: 'indicator') NotificationIndicatorEntity? indicator, String? modelId
 });
 
 
@@ -72,10 +72,10 @@ class _$NotificationCopyWithImpl<$Res>
 
 /// Create a copy of Notification
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? modelType = freezed,Object? modelId = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? indicator = freezed,Object? modelId = freezed,}) {
   return _then(_self.copyWith(
-modelType: freezed == modelType ? _self.modelType : modelType // ignore: cast_nullable_to_non_nullable
-as NotificationModelType?,modelId: freezed == modelId ? _self.modelId : modelId // ignore: cast_nullable_to_non_nullable
+indicator: freezed == indicator ? _self.indicator : indicator // ignore: cast_nullable_to_non_nullable
+as NotificationIndicatorEntity?,modelId: freezed == modelId ? _self.modelId : modelId // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }
@@ -158,10 +158,10 @@ return entity(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( NotificationModelType? modelType,  String? modelId)?  entity,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function(@JsonKey(name: 'indicator')  NotificationIndicatorEntity? indicator,  String? modelId)?  entity,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case NotificationEntity() when entity != null:
-return entity(_that.modelType,_that.modelId);case _:
+return entity(_that.indicator,_that.modelId);case _:
   return orElse();
 
 }
@@ -179,10 +179,10 @@ return entity(_that.modelType,_that.modelId);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( NotificationModelType? modelType,  String? modelId)  entity,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function(@JsonKey(name: 'indicator')  NotificationIndicatorEntity? indicator,  String? modelId)  entity,}) {final _that = this;
 switch (_that) {
 case NotificationEntity():
-return entity(_that.modelType,_that.modelId);}
+return entity(_that.indicator,_that.modelId);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -196,10 +196,10 @@ return entity(_that.modelType,_that.modelId);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( NotificationModelType? modelType,  String? modelId)?  entity,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function(@JsonKey(name: 'indicator')  NotificationIndicatorEntity? indicator,  String? modelId)?  entity,}) {final _that = this;
 switch (_that) {
 case NotificationEntity() when entity != null:
-return entity(_that.modelType,_that.modelId);case _:
+return entity(_that.indicator,_that.modelId);case _:
   return null;
 
 }
@@ -211,10 +211,10 @@ return entity(_that.modelType,_that.modelId);case _:
 
 @JsonSerializable(fieldRename: FieldRename.snake, includeIfNull: false)
 class NotificationEntity implements Notification {
-  const NotificationEntity({this.modelType, this.modelId});
+  const NotificationEntity({@JsonKey(name: 'indicator') this.indicator, this.modelId});
   factory NotificationEntity.fromJson(Map<String, dynamic> json) => _$NotificationEntityFromJson(json);
 
-@override final  NotificationModelType? modelType;
+@override@JsonKey(name: 'indicator') final  NotificationIndicatorEntity? indicator;
 @override final  String? modelId;
 
 /// Create a copy of Notification
@@ -230,16 +230,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is NotificationEntity&&(identical(other.modelType, modelType) || other.modelType == modelType)&&(identical(other.modelId, modelId) || other.modelId == modelId));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is NotificationEntity&&(identical(other.indicator, indicator) || other.indicator == indicator)&&(identical(other.modelId, modelId) || other.modelId == modelId));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,modelType,modelId);
+int get hashCode => Object.hash(runtimeType,indicator,modelId);
 
 @override
 String toString() {
-  return 'Notification.entity(modelType: $modelType, modelId: $modelId)';
+  return 'Notification.entity(indicator: $indicator, modelId: $modelId)';
 }
 
 
@@ -250,7 +250,7 @@ abstract mixin class $NotificationEntityCopyWith<$Res> implements $NotificationC
   factory $NotificationEntityCopyWith(NotificationEntity value, $Res Function(NotificationEntity) _then) = _$NotificationEntityCopyWithImpl;
 @override @useResult
 $Res call({
- NotificationModelType? modelType, String? modelId
+@JsonKey(name: 'indicator') NotificationIndicatorEntity? indicator, String? modelId
 });
 
 
@@ -267,10 +267,10 @@ class _$NotificationEntityCopyWithImpl<$Res>
 
 /// Create a copy of Notification
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? modelType = freezed,Object? modelId = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? indicator = freezed,Object? modelId = freezed,}) {
   return _then(NotificationEntity(
-modelType: freezed == modelType ? _self.modelType : modelType // ignore: cast_nullable_to_non_nullable
-as NotificationModelType?,modelId: freezed == modelId ? _self.modelId : modelId // ignore: cast_nullable_to_non_nullable
+indicator: freezed == indicator ? _self.indicator : indicator // ignore: cast_nullable_to_non_nullable
+as NotificationIndicatorEntity?,modelId: freezed == modelId ? _self.modelId : modelId // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }

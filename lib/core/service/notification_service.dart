@@ -4,17 +4,22 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:warunk/app/features/customer/presentation/cart/customer_cart_screen.dart';
+import 'package:warunk/app/features/customer/presentation/chat/customer_chat_webview_screen.dart';
 import 'package:warunk/app/features/customer/presentation/detail_order/customer_detail_order_screen.dart';
 import 'package:warunk/app/features/customer/presentation/product/customer_product_screen.dart';
+import 'package:warunk/app/features/customer/presentation/wishlist/customer_wishlist_screen.dart';
 import 'package:warunk/app/features/merchant/presentation/balance_history/merchant_balance_history_screen.dart';
+import 'package:warunk/app/features/merchant/presentation/chat/merchant_chat_webview_screen.dart';
 import 'package:warunk/app/features/merchant/presentation/detail_order/merchant_detail_order_screen.dart';
 import 'package:warunk/app/features/merchant/presentation/input_product/merchant_input_product_screen.dart';
+import 'package:warunk/app/features/merchant/presentation/promotion/merchant_promotion_screen.dart';
 import 'package:warunk/core/constants/constant.dart';
 import 'package:warunk/core/entity/notification.dart';
 import 'package:warunk/core/enum/role.dart';
 import 'package:warunk/core/helper/shared_preferences_helper.dart';
 import 'package:warunk/main.dart';
-import 'package:warunk/core/enum/notification_model_type.dart';
+import 'package:warunk/core/enum/notification_indicator_entity.dart';
 // import 'package:mimicici_cake/app/presentation/detail_order_online/detail_order_online_screen.dart';
 
 class NotificationService {
@@ -54,8 +59,10 @@ class NotificationService {
     );
 
     final AndroidFlutterLocalNotificationsPlugin? androidPlatform =
-        flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin>();
+        flutterLocalNotificationsPlugin
+            .resolvePlatformSpecificImplementation<
+              AndroidFlutterLocalNotificationsPlugin
+            >();
     if (androidPlatform != null) {
       const AndroidNotificationChannel channel = AndroidNotificationChannel(
         'warunk_custom_channel',
@@ -65,6 +72,27 @@ class NotificationService {
         sound: RawResourceAndroidNotificationSound('notification'),
       );
       await androidPlatform.createNotificationChannel(channel);
+
+      const AndroidNotificationChannel orderChannel =
+          AndroidNotificationChannel(
+            'warunk_order_channel',
+            'Warunk Order Notification',
+            description: 'This channel is used for new order notifications.',
+            importance: Importance.max,
+            sound: RawResourceAndroidNotificationSound(
+              'notification_new_order',
+            ),
+          );
+      await androidPlatform.createNotificationChannel(orderChannel);
+
+      const AndroidNotificationChannel chatChannel = AndroidNotificationChannel(
+        'warunk_chat_channel',
+        'Warunk Chat Notification',
+        description: 'This channel is used for new chat messages.',
+        importance: Importance.max,
+        sound: RawResourceAndroidNotificationSound('notification_chat'),
+      );
+      await androidPlatform.createNotificationChannel(chatChannel);
     }
 
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
@@ -81,23 +109,47 @@ class NotificationService {
       AndroidNotification? android = notification?.android;
 
       if (notification != null && android != null) {
+        NotificationEntity? entity;
+        try {
+          entity = NotificationEntity.fromJson(message.data);
+        } catch (e) {
+          debugPrint('Error parsing notification data for sound: $e');
+        }
+
+        String channelId = 'warunk_custom_channel';
+        String channelName = 'Warunk Notification';
+        String androidSound = 'notification';
+        String iosSound = 'notification.mp3';
+
+        if (entity?.indicator == NotificationIndicatorEntity.merchantNewOrder) {
+          channelId = 'warunk_order_channel';
+          channelName = 'Warunk Order Notification';
+          androidSound = 'notification_new_order';
+          iosSound = 'notification_new_order.mp3';
+        } else if (entity?.indicator ==
+                NotificationIndicatorEntity.userIncomingChat ||
+            entity?.indicator ==
+                NotificationIndicatorEntity.merchantIncomingChat) {
+          channelId = 'warunk_chat_channel';
+          channelName = 'Warunk Chat Notification';
+          androidSound = 'notification_chat';
+          iosSound = 'notification_chat.mp3';
+        }
+
         flutterLocalNotificationsPlugin.show(
           id: notification.hashCode,
           title: notification.title,
           body: notification.body,
-          notificationDetails: const NotificationDetails(
+          notificationDetails: NotificationDetails(
             android: AndroidNotificationDetails(
-              'warunk_custom_channel',
-              'Warunk Notification',
+              channelId,
+              channelName,
               icon: '@drawable/ic_notification',
-              sound: RawResourceAndroidNotificationSound('notification'),
+              sound: RawResourceAndroidNotificationSound(androidSound),
               importance: Importance.max,
               priority: Priority.high,
             ),
-            iOS: DarwinNotificationDetails(
-              sound: 'notification.mp3',
-              presentSound: true,
-            ),
+            iOS: DarwinNotificationDetails(sound: iosSound, presentSound: true),
           ),
           payload: jsonEncode(message.data),
         );
@@ -142,40 +194,72 @@ void onDidReceiveNotificationResponse(
 }
 
 void _handleOpenNotification(NotificationEntity notification) async {
-  final role = RoleEnum.fromString(
-    await SharedPreferencesHelper.getString(PREF_ROLE),
-  );
-  switch (notification.modelType) {
+  switch (notification.indicator) {
     case null:
       break;
-    case NotificationModelType.order:
+    case NotificationIndicatorEntity.userOrderStatus:
       final id = notification.modelId ?? '';
       navigatorKey.currentState?.push(
         MaterialPageRoute(
-          builder: (context) => (role == RoleEnum.customer)
-              ? CustomerDetailOrderScreen(orderId: id)
-              : MerchantDetailOrderScreen(orderId: id),
+          builder: (context) => CustomerDetailOrderScreen(orderId: id),
         ),
       );
-    case NotificationModelType.product:
+    case NotificationIndicatorEntity.merchantNewOrder:
       final id = notification.modelId ?? '';
       navigatorKey.currentState?.push(
         MaterialPageRoute(
-          builder: (context) => (role == RoleEnum.customer)
-              ? CustomerProductScreen(productId: id)
-              : MerchantInputProductScreen(id: id),
+          builder: (context) => MerchantDetailOrderScreen(orderId: id),
         ),
       );
-    case NotificationModelType.merchant:
-      break;
-    case NotificationModelType.promotion:
-      break;
-    case NotificationModelType.merchantBalanceHistory:
+    case NotificationIndicatorEntity.userCartRestock:
+      navigatorKey.currentState?.push(
+        MaterialPageRoute(builder: (context) => CustomerCartScreen()),
+      );
+    case NotificationIndicatorEntity.userWishlistRestock:
+      navigatorKey.currentState?.push(
+        MaterialPageRoute(builder: (context) => CustomerWishlistScreen()),
+      );
+    case NotificationIndicatorEntity.userCartOutOfStock:
+      navigatorKey.currentState?.push(
+        MaterialPageRoute(builder: (context) => CustomerCartScreen()),
+      );
+    case NotificationIndicatorEntity.userWishlistOutOfStock:
+      navigatorKey.currentState?.push(
+        MaterialPageRoute(builder: (context) => CustomerWishlistScreen()),
+      );
+    case NotificationIndicatorEntity.userProductPromotion:
+      final id = notification.modelId ?? '';
+      navigatorKey.currentState?.push(
+        MaterialPageRoute(
+          builder: (context) => CustomerProductScreen(productId: id),
+        ),
+      );
+    case NotificationIndicatorEntity.merchantLowBalance:
+    case NotificationIndicatorEntity.merchantTopUpSuccess:
       navigatorKey.currentState?.push(
         MaterialPageRoute(builder: (context) => MerchantBalanceHistoryScreen()),
       );
       break;
-    case NotificationModelType.unknown:
+    case NotificationIndicatorEntity.userIncomingChat:
+      navigatorKey.currentState?.push(
+        MaterialPageRoute(builder: (context) => CustomerChatWebviewScreen()),
+      );
+      break;
+    case NotificationIndicatorEntity.merchantIncomingChat:
+      navigatorKey.currentState?.push(
+        MaterialPageRoute(builder: (context) => MerchantChatWebViewScreen()),
+      );
+      break;
+    case NotificationIndicatorEntity.merchantPromoInvitation:
+      navigatorKey.currentState?.push(
+        MaterialPageRoute(builder: (context) => MerchantPromotionScreen()),
+      );
+      break;
+    case NotificationIndicatorEntity.userNationalPromotion:
+    case NotificationIndicatorEntity.userCheckoutAvailable:
+    case NotificationIndicatorEntity.merchantCheckoutBlocked:
+    case NotificationIndicatorEntity.merchantSuspended:
+    case NotificationIndicatorEntity.unknown:
       break;
   }
 }

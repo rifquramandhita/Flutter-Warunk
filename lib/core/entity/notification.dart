@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:warunk/core/enum/notification_model_type.dart';
+import 'package:warunk/core/enum/notification_indicator_entity.dart';
 
 part 'notification.freezed.dart';
 part 'notification.g.dart';
@@ -8,7 +8,7 @@ part 'notification.g.dart';
 sealed class Notification with _$Notification {
   @JsonSerializable(fieldRename: FieldRename.snake, includeIfNull: false)
   const factory Notification.entity({
-    NotificationModelType? modelType,
+    @JsonKey(name: 'indicator') NotificationIndicatorEntity? indicator,
     String? modelId,
   }) = NotificationEntity;
 
