@@ -10,6 +10,7 @@ sealed class CustomerMerchantCategory with _$CustomerMerchantCategory {
     required String id,
     required String name,
     required String slug,
+    String? backgroundCardUrl,
     String? iconUrl,
   }) = CustomerMerchantCategoryEntity;
 

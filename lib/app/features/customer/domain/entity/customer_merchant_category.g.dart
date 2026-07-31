@@ -12,6 +12,7 @@ CustomerMerchantCategoryEntity _$CustomerMerchantCategoryEntityFromJson(
   id: json['id'] as String,
   name: json['name'] as String,
   slug: json['slug'] as String,
+  backgroundCardUrl: json['background_card_url'] as String?,
   iconUrl: json['icon_url'] as String?,
 );
 
@@ -21,5 +22,6 @@ Map<String, dynamic> _$CustomerMerchantCategoryEntityToJson(
   'id': instance.id,
   'name': instance.name,
   'slug': instance.slug,
+  'background_card_url': ?instance.backgroundCardUrl,
   'icon_url': ?instance.iconUrl,
 };

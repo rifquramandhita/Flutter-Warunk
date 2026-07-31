@@ -9,8 +9,15 @@ import 'package:warunk/app/features/customer/presentation/shell/customer_shell_s
 import 'package:warunk/app/features/customer/domain/entity/customer_merchant_quick_category.dart';
 import 'package:warunk/core/widgets/loading_app_widget.dart';
 
-class CustomerCategoryScreen extends StatelessWidget {
+class CustomerCategoryScreen extends StatefulWidget {
   const CustomerCategoryScreen({super.key});
+
+  @override
+  State<CustomerCategoryScreen> createState() => _CustomerCategoryScreenState();
+}
+
+class _CustomerCategoryScreenState extends State<CustomerCategoryScreen> {
+  bool isGridView = false;
 
   @override
   Widget build(BuildContext context) {
@@ -58,16 +65,32 @@ class CustomerCategoryScreen extends StatelessWidget {
         const SizedBox(height: 24),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20.0),
-          child: Text(
-            'Menu Utama',
-            style:
-                GlobalHelper.getTextTheme(
-                  context,
-                  appTextStyle: AppTextStyle.TITLE_MEDIUM,
-                )?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: GlobalHelper.getColorSchema(context).onSurface,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Menu Utama',
+                style:
+                    GlobalHelper.getTextTheme(
+                      context,
+                      appTextStyle: AppTextStyle.TITLE_MEDIUM,
+                    )?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: GlobalHelper.getColorSchema(context).onSurface,
+                    ),
+              ),
+              IconButton(
+                onPressed: () {
+                  setState(() {
+                    isGridView = !isGridView;
+                  });
+                },
+                icon: Icon(
+                  isGridView ? Icons.view_list_rounded : Icons.grid_view_rounded,
+                  color: GlobalHelper.getColorSchema(context).primary,
                 ),
+              ),
+            ],
           ),
         ),
         const SizedBox(height: 16),
@@ -216,88 +239,146 @@ class CustomerCategoryScreen extends StatelessWidget {
       );
     }
 
-    final categoryColors = const [
-      Color(0xFFC8E6C9), // Light Green
-      Color(0xFFFFF9C4), // Light Yellow
-      Color(0xFFFFE0B2), // Light Orange
-      Color(0xFFDCEDC8), // Lighter Green
-      Color(0xFFFFCCBC), // Light Deep Orange/Pinkish
-      Color(0xFFBBDEFB), // Light Blue
-    ];
-
     return RefreshIndicator(
       onRefresh: () async {
         context.read<CustomerCategoryBloc>().add(CustomerCategoryStarted());
       },
-      child: ListView.separated(
-        padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),
-        physics: const AlwaysScrollableScrollPhysics(),
-        itemCount: filteredCategories.length,
-        separatorBuilder: (context, index) => const SizedBox(height: 16),
-        itemBuilder: (context, index) {
-        final category = filteredCategories[index];
-        final color = categoryColors[index % categoryColors.length];
-
-        return GestureDetector(
-          onTap: () async {
-            await navigatorKey.currentState?.push(
-              MaterialPageRoute(
-                builder: (_) => CustomerShellScreen(
-                  selectedCategory: CustomerMerchantQuickCategoryEntity(
-                    key: category.slug,
-                    name: category.name,
-                    imageUrl: category.iconUrl ?? '',
-                  ),
-                ),
+      child: isGridView
+          ? GridView.builder(
+              padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),
+              physics: const AlwaysScrollableScrollPhysics(),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                crossAxisSpacing: 16,
+                mainAxisSpacing: 16,
+                childAspectRatio: 0.9,
               ),
-            );
-            if (context.mounted) {
-              context.read<CustomerCategoryBloc>().add(CustomerCategoryStarted());
-            }
-          },
-          child: Container(
-            height: 72,
-            decoration: BoxDecoration(
-              color: color,
-              borderRadius: BorderRadius.circular(16),
+              itemCount: filteredCategories.length,
+              itemBuilder: (context, index) {
+                return _buildCategoryCard(context, filteredCategories[index]);
+              },
+            )
+          : ListView.separated(
+              padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),
+              physics: const AlwaysScrollableScrollPhysics(),
+              itemCount: filteredCategories.length,
+              separatorBuilder: (context, index) => const SizedBox(height: 16),
+              itemBuilder: (context, index) {
+                return _buildCategoryCard(context, filteredCategories[index]);
+              },
             ),
-            child: Row(
-              children: [
-                const SizedBox(width: 24),
-                _buildIcon(context, category.iconUrl),
-                const SizedBox(width: 24),
-                Expanded(
-                  child: Text(
-                    category.name,
-                    style:
-                        GlobalHelper.getTextTheme(
-                          context,
-                          appTextStyle: AppTextStyle.TITLE_MEDIUM,
-                        )?.copyWith(
-                          fontWeight: FontWeight.w600,
-                          color: const Color(0xFF2C3E50),
-                        ),
-                  ),
-                ),
-              ],
+    );
+  }
+
+  Widget _buildCategoryCard(BuildContext context, dynamic category) {
+    return GestureDetector(
+      onTap: () async {
+        await navigatorKey.currentState?.push(
+          MaterialPageRoute(
+            builder: (_) => CustomerShellScreen(
+              selectedCategory: CustomerMerchantQuickCategoryEntity(
+                key: category.slug,
+                name: category.name,
+                imageUrl: category.iconUrl ?? '',
+              ),
             ),
           ),
         );
+        if (context.mounted) {
+          context.read<CustomerCategoryBloc>().add(CustomerCategoryStarted());
+        }
       },
-    ),
-  );
+      child: Container(
+        height: isGridView ? 160 : 180,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(16),
+          color: Colors.grey[200],
+          image: category.slug == 'all'
+              ? const DecorationImage(
+                  image: AssetImage('assets/images/semua_warung_bg.png'),
+                  fit: BoxFit.cover,
+                )
+              : (category.backgroundCardUrl != null && category.backgroundCardUrl!.isNotEmpty
+                  ? DecorationImage(
+                      image: NetworkImage(category.backgroundCardUrl!),
+                      fit: BoxFit.cover,
+                    )
+                  : null),
+        ),
+        child: Stack(
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(16),
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Colors.transparent,
+                    Colors.green.shade800.withOpacity(0.9),
+                  ],
+                  stops: const [0.4, 1.0],
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: Colors.green.shade300,
+                        width: 3,
+                      ),
+                    ),
+                    child: _buildIcon(context, category),
+                  ),
+                  Text(
+                    category.name,
+                    style: GlobalHelper.getTextTheme(
+                      context,
+                      appTextStyle: isGridView ? AppTextStyle.TITLE_MEDIUM : AppTextStyle.HEADLINE_SMALL,
+                    )?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
-  Widget _buildIcon(BuildContext context, String? iconUrl) {
+  Widget _buildIcon(BuildContext context, dynamic category) {
+    if (category.slug == 'all') {
+      return Image.asset(
+        'assets/images/semua_warung_icon.png',
+        width: 32,
+        height: 32,
+      );
+    }
+    
+    final iconUrl = category.iconUrl;
     if (iconUrl != null && iconUrl.isNotEmpty) {
       return Image.network(
         iconUrl,
         width: 32,
         height: 32,
         errorBuilder: (context, error, stackTrace) =>
-            const Icon(Icons.storefront, size: 32, color: Color(0xFF2C3E50)),
+            Icon(Icons.storefront, size: 32, color: Colors.green.shade700),
       );
     }
-    return const Icon(Icons.storefront, size: 32, color: Color(0xFF2C3E50));
+    return Icon(Icons.storefront, size: 32, color: Colors.green.shade700);
   }
 }
