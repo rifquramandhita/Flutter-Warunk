@@ -64,7 +64,7 @@ class _MerchantInputTopupScreenState extends State<MerchantInputTopupScreen> {
           return Scaffold(
             backgroundColor: Colors.white,
             appBar: AppBar(
-              title: const Text('Top Up Saldo'),
+              title: const Text('Top Up Saldo UANK'),
               backgroundColor: Colors.white,
               elevation: 0,
               iconTheme: IconThemeData(color: colorSchema.primary),
@@ -121,7 +121,8 @@ class _MerchantInputTopupScreenState extends State<MerchantInputTopupScreen> {
                   return 'Nominal tidak boleh kosong';
                 }
                 final cleanValue = value.replaceAll('.', '');
-                if (int.tryParse(cleanValue) == null || int.parse(cleanValue) < 10000) {
+                if (int.tryParse(cleanValue) == null ||
+                    int.parse(cleanValue) < 10000) {
                   return 'Minimal top up Rp 10.000';
                 }
                 return null;
@@ -131,7 +132,9 @@ class _MerchantInputTopupScreenState extends State<MerchantInputTopupScreen> {
             PrimaryButton(
               onPressed: () {
                 if (_formKey.currentState?.validate() ?? false) {
-                  final amount = int.parse(_amountController.text.replaceAll('.', ''));
+                  final amount = int.parse(
+                    _amountController.text.replaceAll('.', ''),
+                  );
                   context.read<MerchantInputTopupBloc>().add(
                     MerchantInputTopupEventSubmit(amount: amount),
                   );

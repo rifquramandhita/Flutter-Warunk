@@ -40,7 +40,7 @@ class MerchantBalanceHistoryScreen extends StatelessWidget {
               return Scaffold(
                 backgroundColor: Colors.grey[50],
                 appBar: AppBar(
-                  title: const Text('Riwayat Saldo'),
+                  title: const Text('Riwayat Saldo UANK'),
                   backgroundColor: Colors.white,
                   elevation: 0,
                   iconTheme: IconThemeData(color: colorSchema.primary),
@@ -125,7 +125,7 @@ class MerchantBalanceHistoryScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Saldo Saat Ini',
+              'Saldo UANK anda saat ini',
               style: bodyMedium?.copyWith(color: Colors.white70),
             ),
             const SizedBox(height: 8),

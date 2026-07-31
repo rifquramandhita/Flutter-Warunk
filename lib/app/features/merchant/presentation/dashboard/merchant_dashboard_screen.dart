@@ -292,7 +292,7 @@ class MerchantDashboardScreen extends StatelessWidget {
                   iconBg: const Color(0xFFF0FDF4),
                   icon: Icons.account_balance_wallet_outlined,
                   iconColor: colorSchema.primary,
-                  label: 'Saldo Masuk',
+                  label: 'Saldo UANK Masuk',
                   value: currency.format(state.balance),
                   valueColor: colorSchema.primary,
                   subtitle: 'Dapat ditarik',

@@ -265,7 +265,7 @@ class MerchantProfilScreen extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Saldo Saat Ini',
+                            'Saldo UANK Saat Ini',
                             style: labelSmall?.copyWith(color: Colors.white70),
                           ),
                           const SizedBox(height: 2),
