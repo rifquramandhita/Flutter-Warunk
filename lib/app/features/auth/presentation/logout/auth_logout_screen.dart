@@ -25,7 +25,7 @@ class AuthLogoutScreen extends StatelessWidget {
             );
           }
           if (state.isSuccess) {
-            navigatorKey.currentState?.pop();
+            navigatorKey.currentState?.popUntil((route) => route.isFirst);
           }
         },
         builder: (context, state) {
