@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:warunk/core/helper/shared_preferences_helper.dart';
 import 'package:warunk/core/constants/constant.dart';
+import 'package:webview_flutter_android/webview_flutter_android.dart';
+import 'package:file_picker/file_picker.dart';
 
 class MerchantChatWebViewScreen extends StatefulWidget {
   final String? chatUrl;
@@ -33,6 +35,26 @@ class _MerchantChatWebViewScreenState extends State<MerchantChatWebViewScreen> {
           onWebResourceError: (WebResourceError error) {},
         ),
       );
+
+    if (_controller.platform is AndroidWebViewController) {
+      (_controller.platform as AndroidWebViewController)
+          .setOnShowFileSelector((FileSelectorParams params) async {
+        try {
+          final result = await FilePicker.pickFiles(
+            allowMultiple: params.mode == FileSelectorMode.openMultiple,
+          );
+          if (result != null && result.files.isNotEmpty) {
+            return result.files
+                .where((e) => e.identifier != null || e.path != null)
+                .map((e) => e.identifier ?? Uri.file(e.path!).toString())
+                .toList();
+          }
+        } catch (e) {
+          debugPrint('File picker error: $e');
+        }
+        return [];
+      });
+    }
 
     _initWebview();
   }
