@@ -7,7 +7,8 @@ class DialogHelper {
     required String text,
     Color? color,
   }) {
-    ScaffoldMessenger.of(context).showSnackBar(
+    final messenger = ScaffoldMessenger.of(context);
+    messenger.showSnackBar(
       SnackBar(
         content: Row(
           children: [
@@ -22,7 +23,7 @@ class DialogHelper {
             const SizedBox(width: 8),
             GestureDetector(
               onTap: () {
-                ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                messenger.hideCurrentSnackBar();
               },
               child: const Icon(Icons.close, color: Colors.white, size: 20),
             ),
