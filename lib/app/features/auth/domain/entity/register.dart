@@ -13,6 +13,8 @@ sealed class Register with _$Register {
     required String password,
     @JsonKey(name: 'password_confirmation')
     required String passwordConfirmation,
+    @JsonKey(name: 'merchant_name')
+    String? merchantName,
   }) = RegisterSendParam;
 
   factory Register.fromJson(Map<String, Object?> json) =>

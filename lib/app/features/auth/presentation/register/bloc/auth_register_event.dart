@@ -22,6 +22,11 @@ class AuthRegisterEventEmailChanged extends AuthRegisterEvent {
   AuthRegisterEventEmailChanged(this.email);
 }
 
+class AuthRegisterEventMerchantNameChanged extends AuthRegisterEvent {
+  final String merchantName;
+  AuthRegisterEventMerchantNameChanged(this.merchantName);
+}
+
 class AuthRegisterEventPhoneChanged extends AuthRegisterEvent {
   final String phone;
   AuthRegisterEventPhoneChanged(this.phone);

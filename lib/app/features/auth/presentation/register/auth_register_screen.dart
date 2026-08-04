@@ -102,6 +102,17 @@ class AuthRegisterScreen extends StatelessWidget {
             const SizedBox(height: 28),
 
             // ── Form fields ─────────────────────────────────────────
+            if (state.selectedRole == 1) ...[
+              _buildField(
+                hint: 'Nama Toko (Merchant)',
+                icon: Icons.storefront_outlined,
+                onChanged: (v) => context.read<AuthRegisterBloc>().add(
+                  AuthRegisterEventMerchantNameChanged(v),
+                ),
+              ),
+              const SizedBox(height: 14),
+            ],
+            
             _buildField(
               hint: 'Nama Lengkap',
               icon: Icons.person_outline_rounded,

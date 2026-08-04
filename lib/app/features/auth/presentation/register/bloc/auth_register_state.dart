@@ -13,6 +13,7 @@ class AuthRegisterState extends Equatable {
   final String phone;
   final String password;
   final String passwordConfirmation;
+  final String merchantName;
 
   const AuthRegisterState({
     this.selectedRole = 0,
@@ -26,6 +27,7 @@ class AuthRegisterState extends Equatable {
     this.phone = '',
     this.password = '',
     this.passwordConfirmation = '',
+    this.merchantName = '',
   });
 
   AuthRegisterState copyWith({
@@ -40,6 +42,7 @@ class AuthRegisterState extends Equatable {
     String? phone,
     String? password,
     String? passwordConfirmation,
+    String? merchantName,
   }) {
     return AuthRegisterState(
       selectedRole: selectedRole ?? this.selectedRole,
@@ -53,6 +56,7 @@ class AuthRegisterState extends Equatable {
       phone: phone ?? this.phone,
       password: password ?? this.password,
       passwordConfirmation: passwordConfirmation ?? this.passwordConfirmation,
+      merchantName: merchantName ?? this.merchantName,
     );
   }
 
@@ -69,5 +73,6 @@ class AuthRegisterState extends Equatable {
     phone,
     password,
     passwordConfirmation,
+    merchantName,
   ];
 }

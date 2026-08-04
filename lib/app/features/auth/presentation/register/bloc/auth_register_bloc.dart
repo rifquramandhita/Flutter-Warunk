@@ -16,6 +16,7 @@ class AuthRegisterBloc extends Bloc<AuthRegisterEvent, AuthRegisterState> {
     on<AuthRegisterEventTermsToggled>(_onTermsToggled);
     on<AuthRegisterEventNameChanged>(_onNameChanged);
     on<AuthRegisterEventEmailChanged>(_onEmailChanged);
+    on<AuthRegisterEventMerchantNameChanged>(_onMerchantNameChanged);
     on<AuthRegisterEventPhoneChanged>(_onPhoneChanged);
     on<AuthRegisterEventPasswordChanged>(_onPasswordChanged);
     on<AuthRegisterEventPasswordConfirmationChanged>(
@@ -64,6 +65,13 @@ class AuthRegisterBloc extends Bloc<AuthRegisterEvent, AuthRegisterState> {
     emit(state.copyWith(email: event.email, errorMessage: null));
   }
 
+  void _onMerchantNameChanged(
+    AuthRegisterEventMerchantNameChanged event,
+    Emitter<AuthRegisterState> emit,
+  ) {
+    emit(state.copyWith(merchantName: event.merchantName, errorMessage: null));
+  }
+
   void _onPhoneChanged(
     AuthRegisterEventPhoneChanged event,
     Emitter<AuthRegisterState> emit,
@@ -100,7 +108,8 @@ class AuthRegisterBloc extends Bloc<AuthRegisterEvent, AuthRegisterState> {
         state.email.isEmpty ||
         state.phone.isEmpty ||
         state.password.isEmpty ||
-        state.passwordConfirmation.isEmpty) {
+        state.passwordConfirmation.isEmpty ||
+        (state.selectedRole == 1 && state.merchantName.isEmpty)) {
       emit(
         state.copyWith(
           isLoading: false,
@@ -136,6 +145,7 @@ class AuthRegisterBloc extends Bloc<AuthRegisterEvent, AuthRegisterState> {
       phone: state.phone,
       password: state.password,
       passwordConfirmation: state.passwordConfirmation,
+      merchantName: state.selectedRole == 1 ? state.merchantName : null,
     );
 
     final response = await _useCase.call(

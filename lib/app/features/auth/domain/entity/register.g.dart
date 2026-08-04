@@ -13,6 +13,7 @@ RegisterSendParam _$RegisterSendParamFromJson(Map<String, dynamic> json) =>
       phone: json['phone'] as String,
       password: json['password'] as String,
       passwordConfirmation: json['password_confirmation'] as String,
+      merchantName: json['merchant_name'] as String?,
     );
 
 Map<String, dynamic> _$RegisterSendParamToJson(RegisterSendParam instance) =>
@@ -22,4 +23,5 @@ Map<String, dynamic> _$RegisterSendParamToJson(RegisterSendParam instance) =>
       'phone': instance.phone,
       'password': instance.password,
       'password_confirmation': instance.passwordConfirmation,
+      'merchant_name': ?instance.merchantName,
     };
