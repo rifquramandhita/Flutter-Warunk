@@ -18,7 +18,7 @@ class CustomerOrderPaymentProofUseCase {
       return ErrorState(message: 'File gambar tidak ditemukan atau sudah dihapus dari penyimpanan.');
     }
 
-    final int maxSize = 5 * 1024 * 1024; // 5 MB
+    final int maxSize = 500 * 1024; // 500 KB
     int fileSize = await fileToSubmit.length();
 
     if (fileSize > maxSize) {
@@ -43,7 +43,7 @@ class CustomerOrderPaymentProofUseCase {
             fileSize = await fileToSubmit.length();
             quality -= 20;
           } else {
-            break; // Fallback to current fileToSubmit if compression fails
+            throw Exception('Native compression returned null');
           }
         } catch (e, stackTrace) {
           print('Native compression failed ($e). Falling back to pure Dart image package...');
@@ -58,6 +58,7 @@ class CustomerOrderPaymentProofUseCase {
                await dartCompressedFile.writeAsBytes(compressedBytes);
                
                fileToSubmit = dartCompressedFile;
+               fileSize = await fileToSubmit.length();
                break;
             } else {
                print('Dart image package also failed to decode the image.');
@@ -69,6 +70,17 @@ class CustomerOrderPaymentProofUseCase {
           }
         }
       }
+    }
+
+    if (fileSize > maxSize) {
+      return ErrorState(message: 'Ukuran gambar masih terlalu besar walau sudah dikompres. Mohon pilih gambar dengan ukuran lebih kecil.');
+    }
+
+    final String pathToLower = fileToSubmit.path.toLowerCase();
+    if (!pathToLower.endsWith('.jpg') && !pathToLower.endsWith('.jpeg') && !pathToLower.endsWith('.png')) {
+      final tempDir = await getTemporaryDirectory();
+      final newPath = '${tempDir.path}/payment_proof_ext_${DateTime.now().millisecondsSinceEpoch}.jpg';
+      fileToSubmit = await fileToSubmit.copy(newPath);
     }
 
     return _repository.submitPaymentProof(id, fileToSubmit);
