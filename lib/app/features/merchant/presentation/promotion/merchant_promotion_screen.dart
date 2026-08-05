@@ -135,20 +135,7 @@ class MerchantPromotionScreen extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                            decoration: BoxDecoration(
-                              color: Colors.white.withValues(alpha: 0.25),
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: Text(
-                              'PROMO NASIONAL',
-                              style: GlobalHelper.getTextTheme(context, appTextStyle: AppTextStyle.LABEL_SMALL)?.copyWith(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
+                          const SizedBox.shrink(),
                           if (promo.hasJoined)
                             Container(
                               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
@@ -206,11 +193,33 @@ class MerchantPromotionScreen extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                       ),
                       const SizedBox(height: 4),
-                      Text(
-                        '${DateFormat('d MMM yyyy').format(promo.datetimeStart)} - ${DateFormat('d MMM yyyy').format(promo.datetimeEnd)}',
-                        style: GlobalHelper.getTextTheme(context, appTextStyle: AppTextStyle.BODY_SMALL)?.copyWith(
-                          color: Colors.white.withValues(alpha: 0.9),
-                        ),
+                      Row(
+                        children: [
+                          Text(
+                            '${DateFormat('d MMM yyyy').format(promo.datetimeStart)} - ${DateFormat('d MMM yyyy').format(promo.datetimeEnd)}',
+                            style: GlobalHelper.getTextTheme(context, appTextStyle: AppTextStyle.BODY_SMALL)?.copyWith(
+                              color: Colors.white.withValues(alpha: 0.9),
+                            ),
+                          ),
+                          if (promo.datetimeStart.isAfter(DateTime.now())) ...[
+                            const SizedBox(width: 8),
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                              decoration: BoxDecoration(
+                                color: Colors.orange,
+                                borderRadius: BorderRadius.circular(6),
+                              ),
+                              child: Text(
+                                'Akan Datang',
+                                style: GlobalHelper.getTextTheme(context, appTextStyle: AppTextStyle.LABEL_SMALL)?.copyWith(
+                                  color: Colors.white,
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ],
                       ),
                     ],
                   ),
