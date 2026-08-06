@@ -7,6 +7,7 @@ import 'package:warunk/app/features/merchant/domain/entity/merchant_product.dart
 import 'package:warunk/app/features/merchant/domain/entity/merchant_promotion_product_assignment.dart';
 import 'package:warunk/app/features/merchant/domain/use_case/merchant_products_get_use_case.dart';
 import 'package:warunk/app/features/merchant/domain/use_case/merchant_promotion_get_by_id_use_case.dart';
+import 'package:warunk/core/helper/date_time_helper.dart';
 import 'package:warunk/core/network/data_state.dart';
 
 part 'merchant_input_promotion_event.dart';
@@ -313,23 +314,21 @@ class MerchantInputPromotionBloc
     emit(state.copyWith(isLoading: true, errorMessage: null));
 
     try {
-      final formatter = DateFormat('yyyy-MM-dd HH:mm:ss');
-
       final request = MerchantPromotionSendParam(
         code: !state.isShow ? state.kode.trim() : null,
         title: state.nama.trim(),
         isShow: state.isShow,
         type: state.tipe,
-        datetimeStart: formatter.format(state.mulai!),
-        datetimeEnd: formatter.format(state.selesai!),
+        datetimeStart: DateTimeHelper.formatDateTime(dateTime: state.mulai!, format: 'yyyy-MM-dd HH:mm:ss'),
+        datetimeEnd: DateTimeHelper.formatDateTime(dateTime: state.selesai!, format: 'yyyy-MM-dd HH:mm:ss'),
         discountType: state.tipeDiskon,
         discount: int.tryParse(state.nilai) ?? 0,
         minPurchase: int.tryParse(state.minBeli) ?? 0,
         eligibility: state.targetPengguna,
         isUnlimitedUse: state.isUnlimitedUse,
         maxUse: state.isUnlimitedUse ? null : int.tryParse(state.kuota),
-        merchantDatetimeStart: formatter.format(state.mulai!),
-        merchantDatetimeEnd: formatter.format(state.selesai!),
+        merchantDatetimeStart: DateTimeHelper.formatDateTime(dateTime: state.mulai!, format: 'yyyy-MM-dd HH:mm:ss'),
+        merchantDatetimeEnd: DateTimeHelper.formatDateTime(dateTime: state.selesai!, format: 'yyyy-MM-dd HH:mm:ss'),
         productAssignments: state.tipe == 'product'
             ? () {
                 final assignments = <MerchantPromotionProductAssignmentParamEntity>[];

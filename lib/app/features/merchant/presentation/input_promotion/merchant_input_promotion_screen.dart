@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
 import 'package:warunk/app/features/merchant/presentation/input_promotion/bloc/merchant_input_promotion_bloc.dart';
+import 'package:warunk/core/helper/date_time_helper.dart';
 import 'package:warunk/core/dependency/dependency.dart';
 import 'package:warunk/core/helper/dialog_helper.dart';
 import 'package:warunk/core/helper/global_helper.dart';
@@ -741,7 +741,6 @@ class MerchantInputPromotionScreen extends StatelessWidget {
     required DateTime lastDate,
     required ValueChanged<DateTime> onPicked,
   }) {
-    final fmt = DateFormat('d MMM yyyy', 'id');
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -759,13 +758,40 @@ class MerchantInputPromotionScreen extends StatelessWidget {
         const SizedBox(height: 6),
         GestureDetector(
           onTap: () async {
-            final picked = await showDatePicker(
+            final now = DateTime.now();
+            final initial = date ?? now;
+            final validInitialDate = initial.isBefore(firstDate) ? firstDate : initial;
+            
+            final pickedDate = await showDatePicker(
               context: context,
-              initialDate: date ?? DateTime.now(),
+              initialDate: validInitialDate,
               firstDate: firstDate,
               lastDate: lastDate,
             );
-            if (picked != null) onPicked(picked);
+            if (pickedDate != null) {
+              final pickedTime = await showTimePicker(
+                context: context,
+                initialTime: date != null
+                    ? TimeOfDay.fromDateTime(date)
+                    : TimeOfDay.now(),
+                builder: (BuildContext context, Widget? child) {
+                  return MediaQuery(
+                    data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
+                    child: child!,
+                  );
+                },
+              );
+              if (pickedTime != null) {
+                final finalDateTime = DateTime(
+                  pickedDate.year,
+                  pickedDate.month,
+                  pickedDate.day,
+                  pickedTime.hour,
+                  pickedTime.minute,
+                );
+                onPicked(finalDateTime);
+              }
+            }
           },
           child: Container(
             height: 48,
@@ -789,7 +815,7 @@ class MerchantInputPromotionScreen extends StatelessWidget {
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
-                    date != null ? fmt.format(date) : '––',
+                    date != null ? DateTimeHelper.formatDateTime(dateTime: date, format: 'd MMM yyyy HH:mm') : '––',
                     style:
                         GlobalHelper.getTextTheme(
                           context,

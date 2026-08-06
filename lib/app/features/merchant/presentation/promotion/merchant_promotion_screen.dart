@@ -5,6 +5,7 @@ import 'package:warunk/app/features/merchant/domain/entity/merchant_promotion.da
 import 'package:warunk/app/features/merchant/presentation/input_promotion/merchant_input_promotion_screen.dart';
 import 'package:warunk/app/features/merchant/presentation/promotion/bloc/merchant_promotion_bloc.dart';
 import 'package:warunk/app/features/merchant/presentation/promotion/merchant_detail_promotion_screen.dart';
+import 'package:warunk/core/helper/date_time_helper.dart';
 import 'package:warunk/core/dependency/dependency.dart';
 import 'package:warunk/core/helper/global_helper.dart';
 import 'package:warunk/core/helper/dialog_helper.dart';
@@ -196,7 +197,7 @@ class MerchantPromotionScreen extends StatelessWidget {
                       Row(
                         children: [
                           Text(
-                            '${DateFormat('d MMM yyyy').format(promo.datetimeStart)} - ${DateFormat('d MMM yyyy').format(promo.datetimeEnd)}',
+                            '${DateTimeHelper.formatDateTime(dateTime: promo.datetimeStart, format: 'd MMM yyyy HH:mm')} - ${DateTimeHelper.formatDateTime(dateTime: promo.datetimeEnd, format: 'd MMM yyyy HH:mm')}',
                             style: GlobalHelper.getTextTheme(context, appTextStyle: AppTextStyle.BODY_SMALL)?.copyWith(
                               color: Colors.white.withValues(alpha: 0.9),
                             ),
@@ -408,7 +409,7 @@ class MerchantPromotionScreen extends StatelessWidget {
     final minPurchaseStr =
         'Min. Pembelian ${NumberHelper.formatIDR(promo.minPurchase)}';
     final dateRangeStr =
-        '${DateFormat('d MMM').format(promo.datetimeStart)} - ${DateFormat('d MMM yyyy').format(promo.datetimeEnd)}';
+        '${DateTimeHelper.formatDateTime(dateTime: promo.datetimeStart, format: 'd MMM yyyy HH:mm')} - ${DateTimeHelper.formatDateTime(dateTime: promo.datetimeEnd, format: 'd MMM yyyy HH:mm')}';
     final usedCount = promo.maxUse ?? 0;
 
     return GestureDetector(

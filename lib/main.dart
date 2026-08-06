@@ -24,6 +24,7 @@ final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await initializeDateFormatting('id');
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   await NotificationService.init();
@@ -38,8 +39,6 @@ void main() async {
       return true;
     };
   }
-
-  await initializeDateFormatting('id', null);
   await initDependency();
   isProduction = await GlobalHelper.isProduction();
   runApp(const WarunkApp());
