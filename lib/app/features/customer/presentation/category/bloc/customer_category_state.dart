@@ -5,12 +5,14 @@ class CustomerCategoryState extends Equatable {
   final String? errorMessage;
   final List<CustomerMerchantCategoryEntity> categories;
   final String searchQuery;
+  final int cartCount;
 
   const CustomerCategoryState({
     this.isLoading = false,
     this.errorMessage,
     this.categories = const [],
     this.searchQuery = '',
+    this.cartCount = 0,
   });
 
   CustomerCategoryState copyWith({
@@ -18,15 +20,17 @@ class CustomerCategoryState extends Equatable {
     String? errorMessage,
     List<CustomerMerchantCategoryEntity>? categories,
     String? searchQuery,
+    int? cartCount,
   }) {
     return CustomerCategoryState(
       isLoading: isLoading ?? this.isLoading,
       errorMessage: errorMessage,
       categories: categories ?? this.categories,
       searchQuery: searchQuery ?? this.searchQuery,
+      cartCount: cartCount ?? this.cartCount,
     );
   }
 
   @override
-  List<Object?> get props => [isLoading, errorMessage, categories, searchQuery];
+  List<Object?> get props => [isLoading, errorMessage, categories, searchQuery, cartCount];
 }

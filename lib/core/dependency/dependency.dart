@@ -425,6 +425,7 @@ Future<void> initDependency() async {
   sl.registerFactory(
     () => CustomerCategoryBloc(
       getCategoryUseCase: sl(),
+      getCartUseCase: sl(),
     ),
   );
   sl.registerFactory(
