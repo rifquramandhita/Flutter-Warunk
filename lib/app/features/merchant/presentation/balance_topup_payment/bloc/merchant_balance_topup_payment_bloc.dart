@@ -7,6 +7,7 @@ class MerchantBalanceTopupPaymentBloc extends Bloc<
   MerchantBalanceTopupPaymentBloc()
       : super(const MerchantBalanceTopupPaymentState()) {
     on<MerchantBalanceTopupPaymentEventPageFinished>(_onPageFinished);
+    on<MerchantBalanceTopupPaymentEventPaymentFinished>(_onPaymentFinished);
   }
 
   void _onPageFinished(
@@ -14,5 +15,12 @@ class MerchantBalanceTopupPaymentBloc extends Bloc<
     Emitter<MerchantBalanceTopupPaymentState> emit,
   ) {
     emit(state.copyWith(isLoading: false));
+  }
+
+  void _onPaymentFinished(
+    MerchantBalanceTopupPaymentEventPaymentFinished event,
+    Emitter<MerchantBalanceTopupPaymentState> emit,
+  ) {
+    emit(state.copyWith(isPaymentFinished: true));
   }
 }

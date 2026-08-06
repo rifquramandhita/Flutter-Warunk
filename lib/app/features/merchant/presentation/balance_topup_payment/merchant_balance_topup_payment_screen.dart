@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:warunk/main.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:warunk/app/features/merchant/presentation/balance_topup_payment/bloc/merchant_balance_topup_payment_bloc.dart';
 import 'package:warunk/app/features/merchant/presentation/balance_topup_payment/bloc/merchant_balance_topup_payment_event.dart';
@@ -12,37 +13,45 @@ class MerchantBalanceTopupPaymentScreen extends StatelessWidget {
   final String paymentUrl;
   WebViewController? _controller;
 
-  MerchantBalanceTopupPaymentScreen({
-    super.key,
-    required this.paymentUrl,
-  });
+  MerchantBalanceTopupPaymentScreen({super.key, required this.paymentUrl});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => sl<MerchantBalanceTopupPaymentBloc>(),
-      child: BlocConsumer<MerchantBalanceTopupPaymentBloc,
-          MerchantBalanceTopupPaymentState>(
-        listener: (context, state) {},
-        builder: (context, state) {
-          final colorSchema = GlobalHelper.getColorSchema(context);
-          final titleLarge = GlobalHelper.getTextTheme(context,
-              appTextStyle: AppTextStyle.TITLE_LARGE);
+      child:
+          BlocConsumer<
+            MerchantBalanceTopupPaymentBloc,
+            MerchantBalanceTopupPaymentState
+          >(
+            listener: (context, state) {
+              if (state.isPaymentFinished) {
+                navigatorKey.currentState?.pop();
+              }
+            },
+            builder: (context, state) {
+              final colorSchema = GlobalHelper.getColorSchema(context);
+              final titleLarge = GlobalHelper.getTextTheme(
+                context,
+                appTextStyle: AppTextStyle.TITLE_LARGE,
+              );
 
-          return Scaffold(
-            backgroundColor: Colors.white,
-            appBar: AppBar(
-              title: const Text('Pembayaran'),
-              backgroundColor: Colors.white,
-              elevation: 0,
-              iconTheme: IconThemeData(color: colorSchema.primary),
-              titleTextStyle: titleLarge?.copyWith(
-                  fontWeight: FontWeight.bold, color: Colors.black87),
-            ),
-            body: _bodyBuild(context),
-          );
-        },
-      ),
+              return Scaffold(
+                backgroundColor: Colors.white,
+                appBar: AppBar(
+                  title: const Text('Pembayaran'),
+                  backgroundColor: Colors.white,
+                  elevation: 0,
+                  iconTheme: IconThemeData(color: colorSchema.primary),
+                  titleTextStyle: titleLarge?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
+                  ),
+                ),
+                body: _bodyBuild(context),
+              );
+            },
+          ),
     );
   }
 
@@ -67,10 +76,20 @@ class MerchantBalanceTopupPaymentScreen extends StatelessWidget {
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
       ..setNavigationDelegate(
         NavigationDelegate(
+          onNavigationRequest: (NavigationRequest request) {
+            if (request.url.contains('https://app.sandbox.midtrans.com')) {
+              return NavigationDecision.navigate;
+            }
+            
+            context.read<MerchantBalanceTopupPaymentBloc>().add(
+              MerchantBalanceTopupPaymentEventPaymentFinished(),
+            );
+            return NavigationDecision.prevent;
+          },
           onPageFinished: (String url) {
             context.read<MerchantBalanceTopupPaymentBloc>().add(
-                  MerchantBalanceTopupPaymentEventPageFinished(),
-                );
+              MerchantBalanceTopupPaymentEventPageFinished(),
+            );
           },
         ),
       )

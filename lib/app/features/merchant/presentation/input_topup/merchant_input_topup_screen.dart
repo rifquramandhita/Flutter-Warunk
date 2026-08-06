@@ -36,7 +36,7 @@ class _MerchantInputTopupScreenState extends State<MerchantInputTopupScreen> {
     return BlocProvider(
       create: (context) => sl<MerchantInputTopupBloc>(),
       child: BlocConsumer<MerchantInputTopupBloc, MerchantInputTopupState>(
-        listener: (context, state) {
+        listener: (context, state) async {
           if (state.errorMessage != null) {
             DialogHelper.showErrorSnackBar(
               context: context,
@@ -45,13 +45,14 @@ class _MerchantInputTopupScreenState extends State<MerchantInputTopupScreen> {
           }
 
           if (state.paymentUrl != null) {
-            navigatorKey.currentState?.pushReplacement(
+            await navigatorKey.currentState?.push(
               MaterialPageRoute(
                 builder: (context) => MerchantBalanceTopupPaymentScreen(
                   paymentUrl: state.paymentUrl!,
                 ),
               ),
             );
+            navigatorKey.currentState?.pop();
           }
         },
         builder: (context, state) {
