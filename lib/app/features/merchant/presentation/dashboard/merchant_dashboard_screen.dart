@@ -16,9 +16,107 @@ import 'package:warunk/core/helper/global_helper.dart';
 import 'package:warunk/core/helper/dialog_helper.dart';
 import 'package:warunk/core/enum/order_status.dart';
 import 'package:warunk/main.dart';
+import 'package:warunk/app/features/merchant/presentation/edit_profil/merchant_edit_profil_screen.dart';
 
-class MerchantDashboardScreen extends StatelessWidget {
+class MerchantDashboardScreen extends StatefulWidget {
   const MerchantDashboardScreen({super.key});
+
+  @override
+  State<MerchantDashboardScreen> createState() =>
+      _MerchantDashboardScreenState();
+}
+
+class _MerchantDashboardScreenState extends State<MerchantDashboardScreen> {
+  bool _hasShownWelcomePopup = false;
+  bool _isCheckingPopup = false;
+
+  Future<void> _checkAndShowPopups(
+      BuildContext context, MerchantDashboardState state) async {
+    _isCheckingPopup = true;
+
+    if (!_hasShownWelcomePopup) {
+      _hasShownWelcomePopup = true;
+      await showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (dialogContext) => AlertDialog(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          title: const Text('Selamat akun Merchant Anda sudah aktif',
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+          content: const Text(
+              'Anda bisa gunakan akun merchant Anda juga untuk berbelanja sebagai customer.'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(dialogContext),
+              child: const Text('Tutup',
+                  style: TextStyle(fontWeight: FontWeight.bold)),
+            ),
+          ],
+        ),
+      );
+    }
+
+    if (!mounted) return;
+
+    if (state.merchantName.trim().isEmpty || 
+        state.merchantName == 'Warunk Bu Siti' || 
+        state.merchantCategory.trim().isEmpty) {
+      await showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (dialogContext) => AlertDialog(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          title: const Text('Toko Anda berhasil dibuat!',
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+          content: const Text(
+              'Yuk Atur Toko Anda supaya bisa diakses pelanggan'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(dialogContext);
+              },
+              child: const Text('Nanti saja!',
+                  style: TextStyle(color: Colors.grey)),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pop(dialogContext);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => const MerchantEditProfilScreen(isSetupMode: true),
+                  ),
+                ).then((_) {
+                  if (mounted) {
+                    context
+                        .read<MerchantDashboardBloc>()
+                        .add(MerchantDashboardEventGet());
+                  }
+                });
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: GlobalHelper.getColorSchema(context).primary,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              child: const Text('Atur toko sekarang!',
+                  style: TextStyle(
+                      color: Colors.white, fontWeight: FontWeight.bold)),
+            ),
+          ],
+        ),
+      );
+    }
+    
+    // Reset checking status so if state changes again (e.g. pull to refresh),
+    // it will check if store is still not setup and show popup 2 again.
+    if (mounted) {
+      _isCheckingPopup = false;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,6 +130,9 @@ class MerchantDashboardScreen extends StatelessWidget {
               context: context,
               text: state.errorMessage!,
             );
+          }
+          if (!state.isLoading && !_isCheckingPopup && state.errorMessage == null) {
+            _checkAndShowPopups(context, state);
           }
         },
         builder: (context, state) {

@@ -671,7 +671,7 @@ class MerchantProfilScreen extends StatelessWidget {
 
   void _onPressEditProfil(BuildContext context) async {
     await navigatorKey.currentState?.push(
-      MaterialPageRoute(builder: (_) => const MerchantEditProfilScreen()),
+      MaterialPageRoute(builder: (_) => MerchantEditProfilScreen()),
     );
     context.read<MerchantProfilBloc>().add(MerchantProfilEventGet());
   }

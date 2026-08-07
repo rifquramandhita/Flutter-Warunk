@@ -11,8 +11,17 @@ import 'package:warunk/main.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:warunk/app/features/merchant/domain/entity/merchant_category.dart';
 
-class MerchantEditProfilScreen extends StatelessWidget {
-  const MerchantEditProfilScreen({super.key});
+class MerchantEditProfilScreen extends StatefulWidget {
+  final bool isSetupMode;
+  const MerchantEditProfilScreen({super.key, this.isSetupMode = false});
+
+  @override
+  State<MerchantEditProfilScreen> createState() =>
+      _MerchantEditProfilScreenState();
+}
+
+class _MerchantEditProfilScreenState extends State<MerchantEditProfilScreen> {
+  int _currentStep = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +47,10 @@ class MerchantEditProfilScreen extends StatelessWidget {
                   PrimaryButton(
                     label: "Tutup",
                     onPressed: () {
-                      navigatorKey.currentState?.pop();
+                      navigatorKey.currentState?.pop(); // close dialog
+                      if (widget.isSetupMode) {
+                        navigatorKey.currentState?.pop(); // go back to previous screen
+                      }
                     },
                   ),
                 ],
@@ -76,111 +88,218 @@ class MerchantEditProfilScreen extends StatelessWidget {
   }
 
   Widget _bodyLayout(BuildContext context, MerchantEditProfilState state) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.fromLTRB(20, 8, 20, 32),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SizedBox(height: 8),
-          Center(child: _avatarPicker(context, state)),
-          const SizedBox(height: 32),
-          _fieldLabel(context, 'Nama Toko'),
-          const SizedBox(height: 8),
-          _editField(
-            context: context,
-            initialValue: state.name,
-            hintText: 'Masukkan nama toko',
-            keyboardType: TextInputType.text,
-            onChanged: (v) => context.read<MerchantEditProfilBloc>().add(
-              MerchantEditProfilEventNameChanged(v),
+    if (widget.isSetupMode) {
+      return _buildWizardForm(context, state);
+    }
+    return _buildRegularForm(context, state);
+  }
+
+  Widget _buildWizardForm(BuildContext context, MerchantEditProfilState state) {
+    return Theme(
+      data: Theme.of(context).copyWith(
+        colorScheme: Theme.of(context).colorScheme.copyWith(
+              primary: GlobalHelper.getColorSchema(context).primary,
             ),
-          ),
-          const SizedBox(height: 20),
-          _fieldLabel(context, 'Kategori Toko'),
-          const SizedBox(height: 8),
-          DropdownSearch<MerchantCategoryEntity>(
-            selectedItem: state.selectedCategory,
-            items: (filter, loadProps) => state.categories,
-            itemAsString: (MerchantCategoryEntity? u) => u?.name ?? '',
-            compareFn: (item1, item2) => item1.id == item2.id,
-            onSelected: (MerchantCategoryEntity? data) {
-              context.read<MerchantEditProfilBloc>().add(
-                MerchantEditProfilEventCategoryChanged(data),
-              );
-            },
-            decoratorProps: DropDownDecoratorProps(
-              decoration: InputDecoration(
-                hintText: "Pilih kategori toko",
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 14,
-                ),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide(
-                    color: GlobalHelper.getColorSchema(context).outlineVariant,
+      ),
+      child: Stepper(
+        currentStep: _currentStep,
+        type: StepperType.vertical,
+        physics: const ClampingScrollPhysics(),
+        onStepTapped: (step) => setState(() => _currentStep = step),
+        onStepContinue: () {
+          if (_currentStep < 4) {
+            setState(() => _currentStep += 1);
+          } else {
+            context
+                .read<MerchantEditProfilBloc>()
+                .add(MerchantEditProfilEventSubmit());
+          }
+        },
+        onStepCancel: () {
+          if (_currentStep > 0) {
+            setState(() => _currentStep -= 1);
+          }
+        },
+        controlsBuilder: (context, details) {
+          return Container(
+            margin: const EdgeInsets.only(top: 24),
+            child: Row(
+              children: [
+                if (_currentStep < 4)
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: details.onStepContinue,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor:
+                            GlobalHelper.getColorSchema(context).primary,
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12)),
+                      ),
+                      child: const Text('Selanjutnya',
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold)),
+                    ),
+                  )
+                else
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: details.onStepContinue,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor:
+                            GlobalHelper.getColorSchema(context).primary,
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12)),
+                      ),
+                      child: const Text('Simpan Perubahan',
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold)),
+                    ),
                   ),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide(
-                    color: GlobalHelper.getColorSchema(context).outlineVariant,
+                if (_currentStep > 0) ...[
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: details.onStepCancel,
+                      style: OutlinedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12)),
+                        side: BorderSide(
+                            color: GlobalHelper.getColorSchema(context).outline),
+                      ),
+                      child: Text('Kembali',
+                          style: TextStyle(
+                              color: GlobalHelper.getColorSchema(context).primary,
+                              fontWeight: FontWeight.bold)),
+                    ),
                   ),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide(
-                    color: GlobalHelper.getColorSchema(context).primary,
-                  ),
-                ),
-                filled: true,
-                fillColor: GlobalHelper.getColorSchema(context).surface,
+                ],
+              ],
+            ),
+          );
+        },
+        steps: [
+          Step(
+            title: _fieldLabel(context, 'Foto Toko'),
+            content: Center(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                child: _avatarPicker(context, state),
               ),
             ),
-            popupProps: PopupProps.menu(
-              showSearchBox: true,
-              searchFieldProps: TextFieldProps(
-                decoration: InputDecoration(
-                  hintText: "Cari kategori...",
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
+            isActive: _currentStep >= 0,
+            state: _currentStep > 0 ? StepState.complete : StepState.indexed,
+          ),
+          Step(
+            title: _fieldLabel(context, 'Nama Toko'),
+            content: _editField(
+              context: context,
+              initialValue: state.name,
+              hintText: 'Masukkan nama toko',
+              keyboardType: TextInputType.text,
+              onChanged: (v) => context.read<MerchantEditProfilBloc>().add(
+                    MerchantEditProfilEventNameChanged(v),
                   ),
+            ),
+            isActive: _currentStep >= 1,
+            state: _currentStep > 1 ? StepState.complete : StepState.indexed,
+          ),
+          Step(
+            title: _fieldLabel(context, 'Kategori Toko'),
+            content: DropdownSearch<MerchantCategoryEntity>(
+              selectedItem: state.selectedCategory,
+              items: (filter, loadProps) => state.categories,
+              itemAsString: (MerchantCategoryEntity? u) => u?.name ?? '',
+              compareFn: (item1, item2) => item1.id == item2.id,
+              onSelected: (MerchantCategoryEntity? data) {
+                context.read<MerchantEditProfilBloc>().add(
+                      MerchantEditProfilEventCategoryChanged(data),
+                    );
+              },
+              decoratorProps: DropDownDecoratorProps(
+                decoration: InputDecoration(
+                  hintText: "Pilih kategori toko",
                   contentPadding: const EdgeInsets.symmetric(
                     horizontal: 16,
                     vertical: 14,
                   ),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(
+                      color:
+                          GlobalHelper.getColorSchema(context).outlineVariant,
+                    ),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(
+                      color:
+                          GlobalHelper.getColorSchema(context).outlineVariant,
+                    ),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(
+                      color: GlobalHelper.getColorSchema(context).primary,
+                    ),
+                  ),
+                  filled: true,
+                  fillColor: GlobalHelper.getColorSchema(context).surface,
+                ),
+              ),
+              popupProps: PopupProps.menu(
+                showSearchBox: true,
+                searchFieldProps: TextFieldProps(
+                  decoration: InputDecoration(
+                    hintText: "Cari kategori...",
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 14,
+                    ),
+                  ),
                 ),
               ),
             ),
+            isActive: _currentStep >= 2,
+            state: _currentStep > 2 ? StepState.complete : StepState.indexed,
           ),
-          const SizedBox(height: 20),
-          _fieldLabel(context, 'No. WhatsApp'),
-          const SizedBox(height: 8),
-          _editField(
-            context: context,
-            initialValue: state.whatsappNumber,
-            hintText: 'Masukkan nomor WhatsApp',
-            keyboardType: TextInputType.phone,
-            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-            onChanged: (v) => context.read<MerchantEditProfilBloc>().add(
-              MerchantEditProfilEventWhatsappChanged(v),
+          Step(
+            title: _fieldLabel(context, 'No. WhatsApp'),
+            content: _editField(
+              context: context,
+              initialValue: state.whatsappNumber,
+              hintText: 'Masukkan nomor WhatsApp',
+              keyboardType: TextInputType.phone,
+              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+              onChanged: (v) => context.read<MerchantEditProfilBloc>().add(
+                    MerchantEditProfilEventWhatsappChanged(v),
+                  ),
             ),
+            isActive: _currentStep >= 3,
+            state: _currentStep > 3 ? StepState.complete : StepState.indexed,
           ),
-          const SizedBox(height: 20),
-          _fieldLabel(context, 'Tentang Toko'),
-          const SizedBox(height: 8),
-          _editField(
-            context: context,
-            initialValue: state.about,
-            hintText: 'Tuliskan deskripsi singkat tentang toko',
-            keyboardType: TextInputType.multiline,
-            maxLines: 4,
-            onChanged: (v) => context.read<MerchantEditProfilBloc>().add(
-              MerchantEditProfilEventAboutChanged(v),
+          Step(
+            title: _fieldLabel(context, 'Tentang Toko'),
+            content: _editField(
+              context: context,
+              initialValue: state.about,
+              hintText: 'Tuliskan deskripsi singkat tentang toko',
+              keyboardType: TextInputType.multiline,
+              maxLines: 4,
+              onChanged: (v) => context.read<MerchantEditProfilBloc>().add(
+                    MerchantEditProfilEventAboutChanged(v),
+                  ),
             ),
+            isActive: _currentStep >= 4,
+            state: _currentStep > 4 ? StepState.complete : StepState.indexed,
           ),
-          const SizedBox(height: 32),
-          _saveButton(context, state),
         ],
       ),
     );
@@ -321,6 +440,116 @@ class MerchantEditProfilScreen extends StatelessWidget {
       ),
     );
   }
+  Widget _buildRegularForm(BuildContext context, MerchantEditProfilState state) {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.fromLTRB(20, 8, 20, 32),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SizedBox(height: 8),
+          Center(child: _avatarPicker(context, state)),
+          const SizedBox(height: 32),
+          _fieldLabel(context, 'Nama Toko'),
+          const SizedBox(height: 8),
+          _editField(
+            context: context,
+            initialValue: state.name,
+            hintText: 'Masukkan nama toko',
+            keyboardType: TextInputType.text,
+            onChanged: (v) => context.read<MerchantEditProfilBloc>().add(
+              MerchantEditProfilEventNameChanged(v),
+            ),
+          ),
+          const SizedBox(height: 20),
+          _fieldLabel(context, 'Kategori Toko'),
+          const SizedBox(height: 8),
+          DropdownSearch<MerchantCategoryEntity>(
+            selectedItem: state.selectedCategory,
+            items: (filter, loadProps) => state.categories,
+            itemAsString: (MerchantCategoryEntity? u) => u?.name ?? '',
+            compareFn: (item1, item2) => item1.id == item2.id,
+            onSelected: (MerchantCategoryEntity? data) {
+              context.read<MerchantEditProfilBloc>().add(
+                MerchantEditProfilEventCategoryChanged(data),
+              );
+            },
+            decoratorProps: DropDownDecoratorProps(
+              decoration: InputDecoration(
+                hintText: "Pilih kategori toko",
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 14,
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(
+                    color: GlobalHelper.getColorSchema(context).outlineVariant,
+                  ),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(
+                    color: GlobalHelper.getColorSchema(context).outlineVariant,
+                  ),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(
+                    color: GlobalHelper.getColorSchema(context).primary,
+                  ),
+                ),
+                filled: true,
+                fillColor: GlobalHelper.getColorSchema(context).surface,
+              ),
+            ),
+            popupProps: PopupProps.menu(
+              showSearchBox: true,
+              searchFieldProps: TextFieldProps(
+                decoration: InputDecoration(
+                  hintText: "Cari kategori...",
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 14,
+                  ),
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 20),
+          _fieldLabel(context, 'No. WhatsApp'),
+          const SizedBox(height: 8),
+          _editField(
+            context: context,
+            initialValue: state.whatsappNumber,
+            hintText: 'Masukkan nomor WhatsApp',
+            keyboardType: TextInputType.phone,
+            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+            onChanged: (v) => context.read<MerchantEditProfilBloc>().add(
+              MerchantEditProfilEventWhatsappChanged(v),
+            ),
+          ),
+          const SizedBox(height: 20),
+          _fieldLabel(context, 'Tentang Toko'),
+          const SizedBox(height: 8),
+          _editField(
+            context: context,
+            initialValue: state.about,
+            hintText: 'Tuliskan deskripsi singkat tentang toko',
+            keyboardType: TextInputType.multiline,
+            maxLines: 4,
+            onChanged: (v) => context.read<MerchantEditProfilBloc>().add(
+              MerchantEditProfilEventAboutChanged(v),
+            ),
+          ),
+          const SizedBox(height: 32),
+          _saveButton(context, state),
+        ],
+      ),
+    );
+  }
 
   Widget _saveButton(BuildContext context, MerchantEditProfilState state) {
     final titleStyle = GlobalHelper.getTextTheme(
@@ -353,4 +582,5 @@ class MerchantEditProfilScreen extends StatelessWidget {
       ),
     );
   }
+
 }

@@ -102,17 +102,6 @@ class AuthRegisterScreen extends StatelessWidget {
             const SizedBox(height: 28),
 
             // ── Form fields ─────────────────────────────────────────
-            if (state.selectedRole == 1) ...[
-              _buildField(
-                hint: 'Nama Toko (Merchant)',
-                icon: Icons.storefront_outlined,
-                onChanged: (v) => context.read<AuthRegisterBloc>().add(
-                  AuthRegisterEventMerchantNameChanged(v),
-                ),
-              ),
-              const SizedBox(height: 14),
-            ],
-            
             _buildField(
               hint: 'Nama Lengkap',
               icon: Icons.person_outline_rounded,
@@ -121,6 +110,23 @@ class AuthRegisterScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 14),
+            
+            AnimatedSize(
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.easeInOut,
+              child: state.selectedRole == 1
+                  ? Padding(
+                      padding: const EdgeInsets.only(bottom: 14),
+                      child: _buildField(
+                        hint: 'Nama Toko (Merchant)',
+                        icon: Icons.storefront_outlined,
+                        onChanged: (v) => context.read<AuthRegisterBloc>().add(
+                          AuthRegisterEventMerchantNameChanged(v),
+                        ),
+                      ),
+                    )
+                  : const SizedBox.shrink(),
+            ),
             _buildField(
               hint: 'Email',
               icon: Icons.mail_outline_rounded,
