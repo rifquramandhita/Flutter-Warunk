@@ -14,6 +14,7 @@ import 'package:warunk/core/dependency/dependency.dart';
 import 'package:warunk/core/enum/role.dart';
 import 'package:warunk/core/helper/global_helper.dart';
 import 'package:warunk/core/service/notification_service.dart';
+import 'package:warunk/core/service/deeplink_service.dart';
 import 'package:warunk/core/widgets/loading_app_widget.dart';
 import 'package:warunk/firebase_options.dart';
 import 'package:warunk/theme/app_theme.dart';
@@ -28,6 +29,7 @@ void main() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   await NotificationService.init();
+  DeeplinkService().init();
 
   if (!kDebugMode) {
     FlutterError.onError = (errorDetails) {
