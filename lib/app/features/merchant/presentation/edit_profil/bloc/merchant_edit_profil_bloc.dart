@@ -30,6 +30,7 @@ class MerchantEditProfilBloc
     on<MerchantEditProfilEventGet>(_onGet);
     on<MerchantEditProfilEventNameChanged>(_onNameChanged);
     on<MerchantEditProfilEventWhatsappChanged>(_onWhatsappChanged);
+    on<MerchantEditProfilEventAboutChanged>(_onAboutChanged);
     on<MerchantEditProfilEventCategoryChanged>(_onCategoryChanged);
     on<MerchantEditProfilEventPhotoPicked>(_onPhotoPicked);
     on<MerchantEditProfilEventSubmit>(_onSubmit);
@@ -61,6 +62,7 @@ class MerchantEditProfilBloc
           state.copyWith(
             name: merchant.name,
             whatsappNumber: merchant.phone ?? '',
+            about: merchant.about ?? '',
             merchantCategoryId: merchant.merchantCategory ?? '',
             selectedCategory: selectedCategory,
             categories: categories,
@@ -92,6 +94,13 @@ class MerchantEditProfilBloc
     Emitter<MerchantEditProfilState> emit,
   ) {
     emit(state.copyWith(whatsappNumber: event.value));
+  }
+
+  void _onAboutChanged(
+    MerchantEditProfilEventAboutChanged event,
+    Emitter<MerchantEditProfilState> emit,
+  ) {
+    emit(state.copyWith(about: event.value));
   }
 
   void _onCategoryChanged(
@@ -128,6 +137,7 @@ class MerchantEditProfilBloc
           ? state.merchantCategoryId
           : null,
       whatsappNumber: state.whatsappNumber,
+      about: state.about,
     );
 
     final response = await _updateUseCase.call(param: param);

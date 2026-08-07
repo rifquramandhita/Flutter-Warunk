@@ -31,6 +31,7 @@ abstract class MerchantMerchantApiService {
     @Part(name: 'slug') String slug,
     @Part(name: 'merchant_category') String? merchantCategory,
     @Part(name: 'whatsapp_number') String? whatsappNumber,
+    @Part(name: 'about') String? about,
   );
 
   @PUT('/api/seller/merchant/location')

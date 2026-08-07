@@ -116,6 +116,7 @@ class _MerchantMerchantApiService implements MerchantMerchantApiService {
     String slug,
     String? merchantCategory,
     String? whatsappNumber,
+    String? about,
   ) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
@@ -140,6 +141,9 @@ class _MerchantMerchantApiService implements MerchantMerchantApiService {
     }
     if (whatsappNumber != null) {
       _data.fields.add(MapEntry('whatsapp_number', whatsappNumber));
+    }
+    if (about != null) {
+      _data.fields.add(MapEntry('about', about));
     }
     final _options = _setStreamType<HttpResponse<dynamic>>(
       Options(

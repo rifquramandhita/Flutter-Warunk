@@ -48,7 +48,7 @@ class MerchantProfilScreen extends StatelessWidget {
     return AppBar(
       backgroundColor: GlobalHelper.getColorSchema(context).primary,
       title: Text(
-        "Profil",
+        "Toko",
         style: TextStyle(color: GlobalHelper.getColorSchema(context).onPrimary),
       ),
       actions: [
@@ -232,6 +232,50 @@ class MerchantProfilScreen extends StatelessWidget {
                   ),
                 ],
               ),
+              if (state.merchant?.about != null && state.merchant!.about!.isNotEmpty) ...[
+                const SizedBox(height: 16),
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 12,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: 0.15),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: Colors.white.withValues(alpha: 0.3),
+                    ),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          const Icon(
+                            Icons.info_outline,
+                            color: Colors.white70,
+                            size: 16,
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            'Tentang Toko',
+                            style: labelSmall?.copyWith(
+                              color: Colors.white70,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 6),
+                      Text(
+                        state.merchant!.about!,
+                        style: bodySmall?.copyWith(color: Colors.white),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
               const SizedBox(height: 16),
               Container(
                 padding: const EdgeInsets.symmetric(
@@ -332,7 +376,7 @@ class MerchantProfilScreen extends StatelessWidget {
   Widget _infoAkunCard(BuildContext context, MerchantProfilState state) {
     return _sectionCard(
       context: context,
-      title: 'Informasi Akun',
+      title: 'Informasi Merchant',
       children: [
         _infoRow(context: context, label: 'Nama Pemilik', value: state.name),
         _divider(context),

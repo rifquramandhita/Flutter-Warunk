@@ -40,6 +40,7 @@ sealed class MerchantMerchant with _$MerchantMerchant {
     double? longitude,
     double? latitude,
     String? photo,
+    String? about,
     int? balance,
     bool? isActive,
     required bool isOpen,
@@ -52,6 +53,7 @@ sealed class MerchantMerchant with _$MerchantMerchant {
     required String slug,
     String? merchantCategoryName,
     String? whatsappNumber,
+    String? about,
   }) = MerchantMerchantUpdateParam;
 
   factory MerchantMerchant.fromJson(Map<String, dynamic> json) =>

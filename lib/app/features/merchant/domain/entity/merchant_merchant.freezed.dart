@@ -38,7 +38,7 @@ MerchantMerchant _$MerchantMerchantFromJson(
 /// @nodoc
 mixin _$MerchantMerchant {
 
- String get name; String get slug;@JsonKey(includeFromJson: false, includeToJson: false) Object? get photo;
+ String get name; String get slug;@JsonKey(includeFromJson: false, includeToJson: false) Object? get photo; String? get about;
 /// Create a copy of MerchantMerchant
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -51,16 +51,16 @@ $MerchantMerchantCopyWith<MerchantMerchant> get copyWith => _$MerchantMerchantCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MerchantMerchant&&(identical(other.name, name) || other.name == name)&&(identical(other.slug, slug) || other.slug == slug)&&const DeepCollectionEquality().equals(other.photo, photo));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MerchantMerchant&&(identical(other.name, name) || other.name == name)&&(identical(other.slug, slug) || other.slug == slug)&&const DeepCollectionEquality().equals(other.photo, photo)&&(identical(other.about, about) || other.about == about));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,name,slug,const DeepCollectionEquality().hash(photo));
+int get hashCode => Object.hash(runtimeType,name,slug,const DeepCollectionEquality().hash(photo),about);
 
 @override
 String toString() {
-  return 'MerchantMerchant(name: $name, slug: $slug, photo: $photo)';
+  return 'MerchantMerchant(name: $name, slug: $slug, photo: $photo, about: $about)';
 }
 
 
@@ -71,7 +71,7 @@ abstract mixin class $MerchantMerchantCopyWith<$Res>  {
   factory $MerchantMerchantCopyWith(MerchantMerchant value, $Res Function(MerchantMerchant) _then) = _$MerchantMerchantCopyWithImpl;
 @useResult
 $Res call({
- String name, String slug
+ String name, String slug, String? about
 });
 
 
@@ -88,11 +88,12 @@ class _$MerchantMerchantCopyWithImpl<$Res>
 
 /// Create a copy of MerchantMerchant
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? name = null,Object? slug = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? name = null,Object? slug = null,Object? about = freezed,}) {
   return _then(_self.copyWith(
 name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,slug: null == slug ? _self.slug : slug // ignore: cast_nullable_to_non_nullable
-as String,
+as String,about: freezed == about ? _self.about : about // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 
@@ -177,11 +178,11 @@ return updateParam(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String id,  String name,  String slug,  int? userId,  String? merchantCategoryId,  String? merchantCategory,  String? status,  int? statusChangedBy, @JsonKey(name: 'whatsapp_number')  String? phone,  bool? isOpenAllDay, @JsonKey(name: 'is_open_24_hours')  bool? isOpen24Hours,  String? timeOpen,  String? timeClose,  bool? internalCourier,  int? internalCourierShippingCost,  bool? instantCourier,  bool? pickupAtStore,  int? maxDistanceInternalCourier,  List<String> courierCodeAvailable,  List<MerchantAccountEntity> merchantAccounts,  List<MerchantOperationalHourItemEntity> merchantOpens,  String? address,  String? province,  String? city,  String? district,  String? postalCode,  double? longitude,  double? latitude,  String? photo,  int? balance,  bool? isActive,  bool isOpen)?  entity,TResult Function(@JsonKey(includeFromJson: false, includeToJson: false)  File? photo,  String name,  String slug,  String? merchantCategoryName,  String? whatsappNumber)?  updateParam,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String id,  String name,  String slug,  int? userId,  String? merchantCategoryId,  String? merchantCategory,  String? status,  int? statusChangedBy, @JsonKey(name: 'whatsapp_number')  String? phone,  bool? isOpenAllDay, @JsonKey(name: 'is_open_24_hours')  bool? isOpen24Hours,  String? timeOpen,  String? timeClose,  bool? internalCourier,  int? internalCourierShippingCost,  bool? instantCourier,  bool? pickupAtStore,  int? maxDistanceInternalCourier,  List<String> courierCodeAvailable,  List<MerchantAccountEntity> merchantAccounts,  List<MerchantOperationalHourItemEntity> merchantOpens,  String? address,  String? province,  String? city,  String? district,  String? postalCode,  double? longitude,  double? latitude,  String? photo,  String? about,  int? balance,  bool? isActive,  bool isOpen)?  entity,TResult Function(@JsonKey(includeFromJson: false, includeToJson: false)  File? photo,  String name,  String slug,  String? merchantCategoryName,  String? whatsappNumber,  String? about)?  updateParam,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case MerchantMerchantEntity() when entity != null:
-return entity(_that.id,_that.name,_that.slug,_that.userId,_that.merchantCategoryId,_that.merchantCategory,_that.status,_that.statusChangedBy,_that.phone,_that.isOpenAllDay,_that.isOpen24Hours,_that.timeOpen,_that.timeClose,_that.internalCourier,_that.internalCourierShippingCost,_that.instantCourier,_that.pickupAtStore,_that.maxDistanceInternalCourier,_that.courierCodeAvailable,_that.merchantAccounts,_that.merchantOpens,_that.address,_that.province,_that.city,_that.district,_that.postalCode,_that.longitude,_that.latitude,_that.photo,_that.balance,_that.isActive,_that.isOpen);case MerchantMerchantUpdateParam() when updateParam != null:
-return updateParam(_that.photo,_that.name,_that.slug,_that.merchantCategoryName,_that.whatsappNumber);case _:
+return entity(_that.id,_that.name,_that.slug,_that.userId,_that.merchantCategoryId,_that.merchantCategory,_that.status,_that.statusChangedBy,_that.phone,_that.isOpenAllDay,_that.isOpen24Hours,_that.timeOpen,_that.timeClose,_that.internalCourier,_that.internalCourierShippingCost,_that.instantCourier,_that.pickupAtStore,_that.maxDistanceInternalCourier,_that.courierCodeAvailable,_that.merchantAccounts,_that.merchantOpens,_that.address,_that.province,_that.city,_that.district,_that.postalCode,_that.longitude,_that.latitude,_that.photo,_that.about,_that.balance,_that.isActive,_that.isOpen);case MerchantMerchantUpdateParam() when updateParam != null:
+return updateParam(_that.photo,_that.name,_that.slug,_that.merchantCategoryName,_that.whatsappNumber,_that.about);case _:
   return orElse();
 
 }
@@ -199,11 +200,11 @@ return updateParam(_that.photo,_that.name,_that.slug,_that.merchantCategoryName,
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String id,  String name,  String slug,  int? userId,  String? merchantCategoryId,  String? merchantCategory,  String? status,  int? statusChangedBy, @JsonKey(name: 'whatsapp_number')  String? phone,  bool? isOpenAllDay, @JsonKey(name: 'is_open_24_hours')  bool? isOpen24Hours,  String? timeOpen,  String? timeClose,  bool? internalCourier,  int? internalCourierShippingCost,  bool? instantCourier,  bool? pickupAtStore,  int? maxDistanceInternalCourier,  List<String> courierCodeAvailable,  List<MerchantAccountEntity> merchantAccounts,  List<MerchantOperationalHourItemEntity> merchantOpens,  String? address,  String? province,  String? city,  String? district,  String? postalCode,  double? longitude,  double? latitude,  String? photo,  int? balance,  bool? isActive,  bool isOpen)  entity,required TResult Function(@JsonKey(includeFromJson: false, includeToJson: false)  File? photo,  String name,  String slug,  String? merchantCategoryName,  String? whatsappNumber)  updateParam,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String id,  String name,  String slug,  int? userId,  String? merchantCategoryId,  String? merchantCategory,  String? status,  int? statusChangedBy, @JsonKey(name: 'whatsapp_number')  String? phone,  bool? isOpenAllDay, @JsonKey(name: 'is_open_24_hours')  bool? isOpen24Hours,  String? timeOpen,  String? timeClose,  bool? internalCourier,  int? internalCourierShippingCost,  bool? instantCourier,  bool? pickupAtStore,  int? maxDistanceInternalCourier,  List<String> courierCodeAvailable,  List<MerchantAccountEntity> merchantAccounts,  List<MerchantOperationalHourItemEntity> merchantOpens,  String? address,  String? province,  String? city,  String? district,  String? postalCode,  double? longitude,  double? latitude,  String? photo,  String? about,  int? balance,  bool? isActive,  bool isOpen)  entity,required TResult Function(@JsonKey(includeFromJson: false, includeToJson: false)  File? photo,  String name,  String slug,  String? merchantCategoryName,  String? whatsappNumber,  String? about)  updateParam,}) {final _that = this;
 switch (_that) {
 case MerchantMerchantEntity():
-return entity(_that.id,_that.name,_that.slug,_that.userId,_that.merchantCategoryId,_that.merchantCategory,_that.status,_that.statusChangedBy,_that.phone,_that.isOpenAllDay,_that.isOpen24Hours,_that.timeOpen,_that.timeClose,_that.internalCourier,_that.internalCourierShippingCost,_that.instantCourier,_that.pickupAtStore,_that.maxDistanceInternalCourier,_that.courierCodeAvailable,_that.merchantAccounts,_that.merchantOpens,_that.address,_that.province,_that.city,_that.district,_that.postalCode,_that.longitude,_that.latitude,_that.photo,_that.balance,_that.isActive,_that.isOpen);case MerchantMerchantUpdateParam():
-return updateParam(_that.photo,_that.name,_that.slug,_that.merchantCategoryName,_that.whatsappNumber);}
+return entity(_that.id,_that.name,_that.slug,_that.userId,_that.merchantCategoryId,_that.merchantCategory,_that.status,_that.statusChangedBy,_that.phone,_that.isOpenAllDay,_that.isOpen24Hours,_that.timeOpen,_that.timeClose,_that.internalCourier,_that.internalCourierShippingCost,_that.instantCourier,_that.pickupAtStore,_that.maxDistanceInternalCourier,_that.courierCodeAvailable,_that.merchantAccounts,_that.merchantOpens,_that.address,_that.province,_that.city,_that.district,_that.postalCode,_that.longitude,_that.latitude,_that.photo,_that.about,_that.balance,_that.isActive,_that.isOpen);case MerchantMerchantUpdateParam():
+return updateParam(_that.photo,_that.name,_that.slug,_that.merchantCategoryName,_that.whatsappNumber,_that.about);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -217,11 +218,11 @@ return updateParam(_that.photo,_that.name,_that.slug,_that.merchantCategoryName,
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String id,  String name,  String slug,  int? userId,  String? merchantCategoryId,  String? merchantCategory,  String? status,  int? statusChangedBy, @JsonKey(name: 'whatsapp_number')  String? phone,  bool? isOpenAllDay, @JsonKey(name: 'is_open_24_hours')  bool? isOpen24Hours,  String? timeOpen,  String? timeClose,  bool? internalCourier,  int? internalCourierShippingCost,  bool? instantCourier,  bool? pickupAtStore,  int? maxDistanceInternalCourier,  List<String> courierCodeAvailable,  List<MerchantAccountEntity> merchantAccounts,  List<MerchantOperationalHourItemEntity> merchantOpens,  String? address,  String? province,  String? city,  String? district,  String? postalCode,  double? longitude,  double? latitude,  String? photo,  int? balance,  bool? isActive,  bool isOpen)?  entity,TResult? Function(@JsonKey(includeFromJson: false, includeToJson: false)  File? photo,  String name,  String slug,  String? merchantCategoryName,  String? whatsappNumber)?  updateParam,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String id,  String name,  String slug,  int? userId,  String? merchantCategoryId,  String? merchantCategory,  String? status,  int? statusChangedBy, @JsonKey(name: 'whatsapp_number')  String? phone,  bool? isOpenAllDay, @JsonKey(name: 'is_open_24_hours')  bool? isOpen24Hours,  String? timeOpen,  String? timeClose,  bool? internalCourier,  int? internalCourierShippingCost,  bool? instantCourier,  bool? pickupAtStore,  int? maxDistanceInternalCourier,  List<String> courierCodeAvailable,  List<MerchantAccountEntity> merchantAccounts,  List<MerchantOperationalHourItemEntity> merchantOpens,  String? address,  String? province,  String? city,  String? district,  String? postalCode,  double? longitude,  double? latitude,  String? photo,  String? about,  int? balance,  bool? isActive,  bool isOpen)?  entity,TResult? Function(@JsonKey(includeFromJson: false, includeToJson: false)  File? photo,  String name,  String slug,  String? merchantCategoryName,  String? whatsappNumber,  String? about)?  updateParam,}) {final _that = this;
 switch (_that) {
 case MerchantMerchantEntity() when entity != null:
-return entity(_that.id,_that.name,_that.slug,_that.userId,_that.merchantCategoryId,_that.merchantCategory,_that.status,_that.statusChangedBy,_that.phone,_that.isOpenAllDay,_that.isOpen24Hours,_that.timeOpen,_that.timeClose,_that.internalCourier,_that.internalCourierShippingCost,_that.instantCourier,_that.pickupAtStore,_that.maxDistanceInternalCourier,_that.courierCodeAvailable,_that.merchantAccounts,_that.merchantOpens,_that.address,_that.province,_that.city,_that.district,_that.postalCode,_that.longitude,_that.latitude,_that.photo,_that.balance,_that.isActive,_that.isOpen);case MerchantMerchantUpdateParam() when updateParam != null:
-return updateParam(_that.photo,_that.name,_that.slug,_that.merchantCategoryName,_that.whatsappNumber);case _:
+return entity(_that.id,_that.name,_that.slug,_that.userId,_that.merchantCategoryId,_that.merchantCategory,_that.status,_that.statusChangedBy,_that.phone,_that.isOpenAllDay,_that.isOpen24Hours,_that.timeOpen,_that.timeClose,_that.internalCourier,_that.internalCourierShippingCost,_that.instantCourier,_that.pickupAtStore,_that.maxDistanceInternalCourier,_that.courierCodeAvailable,_that.merchantAccounts,_that.merchantOpens,_that.address,_that.province,_that.city,_that.district,_that.postalCode,_that.longitude,_that.latitude,_that.photo,_that.about,_that.balance,_that.isActive,_that.isOpen);case MerchantMerchantUpdateParam() when updateParam != null:
+return updateParam(_that.photo,_that.name,_that.slug,_that.merchantCategoryName,_that.whatsappNumber,_that.about);case _:
   return null;
 
 }
@@ -233,7 +234,7 @@ return updateParam(_that.photo,_that.name,_that.slug,_that.merchantCategoryName,
 
 @JsonSerializable(fieldRename: FieldRename.snake, includeIfNull: false)
 class MerchantMerchantEntity implements MerchantMerchant {
-  const MerchantMerchantEntity({required this.id, required this.name, required this.slug, this.userId, this.merchantCategoryId, this.merchantCategory, this.status, this.statusChangedBy, @JsonKey(name: 'whatsapp_number') this.phone, this.isOpenAllDay, @JsonKey(name: 'is_open_24_hours') this.isOpen24Hours, this.timeOpen, this.timeClose, this.internalCourier, this.internalCourierShippingCost, this.instantCourier, this.pickupAtStore, this.maxDistanceInternalCourier, final  List<String> courierCodeAvailable = const [], final  List<MerchantAccountEntity> merchantAccounts = const [], final  List<MerchantOperationalHourItemEntity> merchantOpens = const [], this.address, this.province, this.city, this.district, this.postalCode, this.longitude, this.latitude, this.photo, this.balance, this.isActive, required this.isOpen, final  String? $type}): _courierCodeAvailable = courierCodeAvailable,_merchantAccounts = merchantAccounts,_merchantOpens = merchantOpens,$type = $type ?? 'entity';
+  const MerchantMerchantEntity({required this.id, required this.name, required this.slug, this.userId, this.merchantCategoryId, this.merchantCategory, this.status, this.statusChangedBy, @JsonKey(name: 'whatsapp_number') this.phone, this.isOpenAllDay, @JsonKey(name: 'is_open_24_hours') this.isOpen24Hours, this.timeOpen, this.timeClose, this.internalCourier, this.internalCourierShippingCost, this.instantCourier, this.pickupAtStore, this.maxDistanceInternalCourier, final  List<String> courierCodeAvailable = const [], final  List<MerchantAccountEntity> merchantAccounts = const [], final  List<MerchantOperationalHourItemEntity> merchantOpens = const [], this.address, this.province, this.city, this.district, this.postalCode, this.longitude, this.latitude, this.photo, this.about, this.balance, this.isActive, required this.isOpen, final  String? $type}): _courierCodeAvailable = courierCodeAvailable,_merchantAccounts = merchantAccounts,_merchantOpens = merchantOpens,$type = $type ?? 'entity';
   factory MerchantMerchantEntity.fromJson(Map<String, dynamic> json) => _$MerchantMerchantEntityFromJson(json);
 
  final  String id;
@@ -283,6 +284,7 @@ class MerchantMerchantEntity implements MerchantMerchant {
  final  double? longitude;
  final  double? latitude;
 @override final  String? photo;
+@override final  String? about;
  final  int? balance;
  final  bool? isActive;
  final  bool isOpen;
@@ -304,16 +306,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MerchantMerchantEntity&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.slug, slug) || other.slug == slug)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.merchantCategoryId, merchantCategoryId) || other.merchantCategoryId == merchantCategoryId)&&(identical(other.merchantCategory, merchantCategory) || other.merchantCategory == merchantCategory)&&(identical(other.status, status) || other.status == status)&&(identical(other.statusChangedBy, statusChangedBy) || other.statusChangedBy == statusChangedBy)&&(identical(other.phone, phone) || other.phone == phone)&&(identical(other.isOpenAllDay, isOpenAllDay) || other.isOpenAllDay == isOpenAllDay)&&(identical(other.isOpen24Hours, isOpen24Hours) || other.isOpen24Hours == isOpen24Hours)&&(identical(other.timeOpen, timeOpen) || other.timeOpen == timeOpen)&&(identical(other.timeClose, timeClose) || other.timeClose == timeClose)&&(identical(other.internalCourier, internalCourier) || other.internalCourier == internalCourier)&&(identical(other.internalCourierShippingCost, internalCourierShippingCost) || other.internalCourierShippingCost == internalCourierShippingCost)&&(identical(other.instantCourier, instantCourier) || other.instantCourier == instantCourier)&&(identical(other.pickupAtStore, pickupAtStore) || other.pickupAtStore == pickupAtStore)&&(identical(other.maxDistanceInternalCourier, maxDistanceInternalCourier) || other.maxDistanceInternalCourier == maxDistanceInternalCourier)&&const DeepCollectionEquality().equals(other._courierCodeAvailable, _courierCodeAvailable)&&const DeepCollectionEquality().equals(other._merchantAccounts, _merchantAccounts)&&const DeepCollectionEquality().equals(other._merchantOpens, _merchantOpens)&&(identical(other.address, address) || other.address == address)&&(identical(other.province, province) || other.province == province)&&(identical(other.city, city) || other.city == city)&&(identical(other.district, district) || other.district == district)&&(identical(other.postalCode, postalCode) || other.postalCode == postalCode)&&(identical(other.longitude, longitude) || other.longitude == longitude)&&(identical(other.latitude, latitude) || other.latitude == latitude)&&(identical(other.photo, photo) || other.photo == photo)&&(identical(other.balance, balance) || other.balance == balance)&&(identical(other.isActive, isActive) || other.isActive == isActive)&&(identical(other.isOpen, isOpen) || other.isOpen == isOpen));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MerchantMerchantEntity&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.slug, slug) || other.slug == slug)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.merchantCategoryId, merchantCategoryId) || other.merchantCategoryId == merchantCategoryId)&&(identical(other.merchantCategory, merchantCategory) || other.merchantCategory == merchantCategory)&&(identical(other.status, status) || other.status == status)&&(identical(other.statusChangedBy, statusChangedBy) || other.statusChangedBy == statusChangedBy)&&(identical(other.phone, phone) || other.phone == phone)&&(identical(other.isOpenAllDay, isOpenAllDay) || other.isOpenAllDay == isOpenAllDay)&&(identical(other.isOpen24Hours, isOpen24Hours) || other.isOpen24Hours == isOpen24Hours)&&(identical(other.timeOpen, timeOpen) || other.timeOpen == timeOpen)&&(identical(other.timeClose, timeClose) || other.timeClose == timeClose)&&(identical(other.internalCourier, internalCourier) || other.internalCourier == internalCourier)&&(identical(other.internalCourierShippingCost, internalCourierShippingCost) || other.internalCourierShippingCost == internalCourierShippingCost)&&(identical(other.instantCourier, instantCourier) || other.instantCourier == instantCourier)&&(identical(other.pickupAtStore, pickupAtStore) || other.pickupAtStore == pickupAtStore)&&(identical(other.maxDistanceInternalCourier, maxDistanceInternalCourier) || other.maxDistanceInternalCourier == maxDistanceInternalCourier)&&const DeepCollectionEquality().equals(other._courierCodeAvailable, _courierCodeAvailable)&&const DeepCollectionEquality().equals(other._merchantAccounts, _merchantAccounts)&&const DeepCollectionEquality().equals(other._merchantOpens, _merchantOpens)&&(identical(other.address, address) || other.address == address)&&(identical(other.province, province) || other.province == province)&&(identical(other.city, city) || other.city == city)&&(identical(other.district, district) || other.district == district)&&(identical(other.postalCode, postalCode) || other.postalCode == postalCode)&&(identical(other.longitude, longitude) || other.longitude == longitude)&&(identical(other.latitude, latitude) || other.latitude == latitude)&&(identical(other.photo, photo) || other.photo == photo)&&(identical(other.about, about) || other.about == about)&&(identical(other.balance, balance) || other.balance == balance)&&(identical(other.isActive, isActive) || other.isActive == isActive)&&(identical(other.isOpen, isOpen) || other.isOpen == isOpen));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hashAll([runtimeType,id,name,slug,userId,merchantCategoryId,merchantCategory,status,statusChangedBy,phone,isOpenAllDay,isOpen24Hours,timeOpen,timeClose,internalCourier,internalCourierShippingCost,instantCourier,pickupAtStore,maxDistanceInternalCourier,const DeepCollectionEquality().hash(_courierCodeAvailable),const DeepCollectionEquality().hash(_merchantAccounts),const DeepCollectionEquality().hash(_merchantOpens),address,province,city,district,postalCode,longitude,latitude,photo,balance,isActive,isOpen]);
+int get hashCode => Object.hashAll([runtimeType,id,name,slug,userId,merchantCategoryId,merchantCategory,status,statusChangedBy,phone,isOpenAllDay,isOpen24Hours,timeOpen,timeClose,internalCourier,internalCourierShippingCost,instantCourier,pickupAtStore,maxDistanceInternalCourier,const DeepCollectionEquality().hash(_courierCodeAvailable),const DeepCollectionEquality().hash(_merchantAccounts),const DeepCollectionEquality().hash(_merchantOpens),address,province,city,district,postalCode,longitude,latitude,photo,about,balance,isActive,isOpen]);
 
 @override
 String toString() {
-  return 'MerchantMerchant.entity(id: $id, name: $name, slug: $slug, userId: $userId, merchantCategoryId: $merchantCategoryId, merchantCategory: $merchantCategory, status: $status, statusChangedBy: $statusChangedBy, phone: $phone, isOpenAllDay: $isOpenAllDay, isOpen24Hours: $isOpen24Hours, timeOpen: $timeOpen, timeClose: $timeClose, internalCourier: $internalCourier, internalCourierShippingCost: $internalCourierShippingCost, instantCourier: $instantCourier, pickupAtStore: $pickupAtStore, maxDistanceInternalCourier: $maxDistanceInternalCourier, courierCodeAvailable: $courierCodeAvailable, merchantAccounts: $merchantAccounts, merchantOpens: $merchantOpens, address: $address, province: $province, city: $city, district: $district, postalCode: $postalCode, longitude: $longitude, latitude: $latitude, photo: $photo, balance: $balance, isActive: $isActive, isOpen: $isOpen)';
+  return 'MerchantMerchant.entity(id: $id, name: $name, slug: $slug, userId: $userId, merchantCategoryId: $merchantCategoryId, merchantCategory: $merchantCategory, status: $status, statusChangedBy: $statusChangedBy, phone: $phone, isOpenAllDay: $isOpenAllDay, isOpen24Hours: $isOpen24Hours, timeOpen: $timeOpen, timeClose: $timeClose, internalCourier: $internalCourier, internalCourierShippingCost: $internalCourierShippingCost, instantCourier: $instantCourier, pickupAtStore: $pickupAtStore, maxDistanceInternalCourier: $maxDistanceInternalCourier, courierCodeAvailable: $courierCodeAvailable, merchantAccounts: $merchantAccounts, merchantOpens: $merchantOpens, address: $address, province: $province, city: $city, district: $district, postalCode: $postalCode, longitude: $longitude, latitude: $latitude, photo: $photo, about: $about, balance: $balance, isActive: $isActive, isOpen: $isOpen)';
 }
 
 
@@ -324,7 +326,7 @@ abstract mixin class $MerchantMerchantEntityCopyWith<$Res> implements $MerchantM
   factory $MerchantMerchantEntityCopyWith(MerchantMerchantEntity value, $Res Function(MerchantMerchantEntity) _then) = _$MerchantMerchantEntityCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String name, String slug, int? userId, String? merchantCategoryId, String? merchantCategory, String? status, int? statusChangedBy,@JsonKey(name: 'whatsapp_number') String? phone, bool? isOpenAllDay,@JsonKey(name: 'is_open_24_hours') bool? isOpen24Hours, String? timeOpen, String? timeClose, bool? internalCourier, int? internalCourierShippingCost, bool? instantCourier, bool? pickupAtStore, int? maxDistanceInternalCourier, List<String> courierCodeAvailable, List<MerchantAccountEntity> merchantAccounts, List<MerchantOperationalHourItemEntity> merchantOpens, String? address, String? province, String? city, String? district, String? postalCode, double? longitude, double? latitude, String? photo, int? balance, bool? isActive, bool isOpen
+ String id, String name, String slug, int? userId, String? merchantCategoryId, String? merchantCategory, String? status, int? statusChangedBy,@JsonKey(name: 'whatsapp_number') String? phone, bool? isOpenAllDay,@JsonKey(name: 'is_open_24_hours') bool? isOpen24Hours, String? timeOpen, String? timeClose, bool? internalCourier, int? internalCourierShippingCost, bool? instantCourier, bool? pickupAtStore, int? maxDistanceInternalCourier, List<String> courierCodeAvailable, List<MerchantAccountEntity> merchantAccounts, List<MerchantOperationalHourItemEntity> merchantOpens, String? address, String? province, String? city, String? district, String? postalCode, double? longitude, double? latitude, String? photo, String? about, int? balance, bool? isActive, bool isOpen
 });
 
 
@@ -341,7 +343,7 @@ class _$MerchantMerchantEntityCopyWithImpl<$Res>
 
 /// Create a copy of MerchantMerchant
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? slug = null,Object? userId = freezed,Object? merchantCategoryId = freezed,Object? merchantCategory = freezed,Object? status = freezed,Object? statusChangedBy = freezed,Object? phone = freezed,Object? isOpenAllDay = freezed,Object? isOpen24Hours = freezed,Object? timeOpen = freezed,Object? timeClose = freezed,Object? internalCourier = freezed,Object? internalCourierShippingCost = freezed,Object? instantCourier = freezed,Object? pickupAtStore = freezed,Object? maxDistanceInternalCourier = freezed,Object? courierCodeAvailable = null,Object? merchantAccounts = null,Object? merchantOpens = null,Object? address = freezed,Object? province = freezed,Object? city = freezed,Object? district = freezed,Object? postalCode = freezed,Object? longitude = freezed,Object? latitude = freezed,Object? photo = freezed,Object? balance = freezed,Object? isActive = freezed,Object? isOpen = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? slug = null,Object? userId = freezed,Object? merchantCategoryId = freezed,Object? merchantCategory = freezed,Object? status = freezed,Object? statusChangedBy = freezed,Object? phone = freezed,Object? isOpenAllDay = freezed,Object? isOpen24Hours = freezed,Object? timeOpen = freezed,Object? timeClose = freezed,Object? internalCourier = freezed,Object? internalCourierShippingCost = freezed,Object? instantCourier = freezed,Object? pickupAtStore = freezed,Object? maxDistanceInternalCourier = freezed,Object? courierCodeAvailable = null,Object? merchantAccounts = null,Object? merchantOpens = null,Object? address = freezed,Object? province = freezed,Object? city = freezed,Object? district = freezed,Object? postalCode = freezed,Object? longitude = freezed,Object? latitude = freezed,Object? photo = freezed,Object? about = freezed,Object? balance = freezed,Object? isActive = freezed,Object? isOpen = null,}) {
   return _then(MerchantMerchantEntity(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
@@ -372,6 +374,7 @@ as String?,postalCode: freezed == postalCode ? _self.postalCode : postalCode // 
 as String?,longitude: freezed == longitude ? _self.longitude : longitude // ignore: cast_nullable_to_non_nullable
 as double?,latitude: freezed == latitude ? _self.latitude : latitude // ignore: cast_nullable_to_non_nullable
 as double?,photo: freezed == photo ? _self.photo : photo // ignore: cast_nullable_to_non_nullable
+as String?,about: freezed == about ? _self.about : about // ignore: cast_nullable_to_non_nullable
 as String?,balance: freezed == balance ? _self.balance : balance // ignore: cast_nullable_to_non_nullable
 as int?,isActive: freezed == isActive ? _self.isActive : isActive // ignore: cast_nullable_to_non_nullable
 as bool?,isOpen: null == isOpen ? _self.isOpen : isOpen // ignore: cast_nullable_to_non_nullable
@@ -386,7 +389,7 @@ as bool,
 
 @JsonSerializable(includeIfNull: false)
 class MerchantMerchantUpdateParam implements MerchantMerchant {
-  const MerchantMerchantUpdateParam({@JsonKey(includeFromJson: false, includeToJson: false) this.photo, required this.name, required this.slug, this.merchantCategoryName, this.whatsappNumber, final  String? $type}): $type = $type ?? 'updateParam';
+  const MerchantMerchantUpdateParam({@JsonKey(includeFromJson: false, includeToJson: false) this.photo, required this.name, required this.slug, this.merchantCategoryName, this.whatsappNumber, this.about, final  String? $type}): $type = $type ?? 'updateParam';
   factory MerchantMerchantUpdateParam.fromJson(Map<String, dynamic> json) => _$MerchantMerchantUpdateParamFromJson(json);
 
 @override@JsonKey(includeFromJson: false, includeToJson: false) final  File? photo;
@@ -394,6 +397,7 @@ class MerchantMerchantUpdateParam implements MerchantMerchant {
 @override final  String slug;
  final  String? merchantCategoryName;
  final  String? whatsappNumber;
+@override final  String? about;
 
 @JsonKey(name: 'runtimeType')
 final String $type;
@@ -412,16 +416,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MerchantMerchantUpdateParam&&(identical(other.photo, photo) || other.photo == photo)&&(identical(other.name, name) || other.name == name)&&(identical(other.slug, slug) || other.slug == slug)&&(identical(other.merchantCategoryName, merchantCategoryName) || other.merchantCategoryName == merchantCategoryName)&&(identical(other.whatsappNumber, whatsappNumber) || other.whatsappNumber == whatsappNumber));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MerchantMerchantUpdateParam&&(identical(other.photo, photo) || other.photo == photo)&&(identical(other.name, name) || other.name == name)&&(identical(other.slug, slug) || other.slug == slug)&&(identical(other.merchantCategoryName, merchantCategoryName) || other.merchantCategoryName == merchantCategoryName)&&(identical(other.whatsappNumber, whatsappNumber) || other.whatsappNumber == whatsappNumber)&&(identical(other.about, about) || other.about == about));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,photo,name,slug,merchantCategoryName,whatsappNumber);
+int get hashCode => Object.hash(runtimeType,photo,name,slug,merchantCategoryName,whatsappNumber,about);
 
 @override
 String toString() {
-  return 'MerchantMerchant.updateParam(photo: $photo, name: $name, slug: $slug, merchantCategoryName: $merchantCategoryName, whatsappNumber: $whatsappNumber)';
+  return 'MerchantMerchant.updateParam(photo: $photo, name: $name, slug: $slug, merchantCategoryName: $merchantCategoryName, whatsappNumber: $whatsappNumber, about: $about)';
 }
 
 
@@ -432,7 +436,7 @@ abstract mixin class $MerchantMerchantUpdateParamCopyWith<$Res> implements $Merc
   factory $MerchantMerchantUpdateParamCopyWith(MerchantMerchantUpdateParam value, $Res Function(MerchantMerchantUpdateParam) _then) = _$MerchantMerchantUpdateParamCopyWithImpl;
 @override @useResult
 $Res call({
-@JsonKey(includeFromJson: false, includeToJson: false) File? photo, String name, String slug, String? merchantCategoryName, String? whatsappNumber
+@JsonKey(includeFromJson: false, includeToJson: false) File? photo, String name, String slug, String? merchantCategoryName, String? whatsappNumber, String? about
 });
 
 
@@ -449,13 +453,14 @@ class _$MerchantMerchantUpdateParamCopyWithImpl<$Res>
 
 /// Create a copy of MerchantMerchant
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? photo = freezed,Object? name = null,Object? slug = null,Object? merchantCategoryName = freezed,Object? whatsappNumber = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? photo = freezed,Object? name = null,Object? slug = null,Object? merchantCategoryName = freezed,Object? whatsappNumber = freezed,Object? about = freezed,}) {
   return _then(MerchantMerchantUpdateParam(
 photo: freezed == photo ? _self.photo : photo // ignore: cast_nullable_to_non_nullable
 as File?,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,slug: null == slug ? _self.slug : slug // ignore: cast_nullable_to_non_nullable
 as String,merchantCategoryName: freezed == merchantCategoryName ? _self.merchantCategoryName : merchantCategoryName // ignore: cast_nullable_to_non_nullable
 as String?,whatsappNumber: freezed == whatsappNumber ? _self.whatsappNumber : whatsappNumber // ignore: cast_nullable_to_non_nullable
+as String?,about: freezed == about ? _self.about : about // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }

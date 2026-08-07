@@ -3,6 +3,7 @@ part of 'merchant_edit_profil_bloc.dart';
 class MerchantEditProfilState extends Equatable {
   final String name;
   final String whatsappNumber;
+  final String about;
   final String merchantCategoryId;
   final MerchantCategoryEntity? selectedCategory;
   final List<MerchantCategoryEntity> categories;
@@ -16,6 +17,7 @@ class MerchantEditProfilState extends Equatable {
   const MerchantEditProfilState({
     this.name = '',
     this.whatsappNumber = '',
+    this.about = '',
     this.merchantCategoryId = '',
     this.selectedCategory,
     this.categories = const [],
@@ -30,6 +32,7 @@ class MerchantEditProfilState extends Equatable {
   MerchantEditProfilState copyWith({
     String? name,
     String? whatsappNumber,
+    String? about,
     String? merchantCategoryId,
     MerchantCategoryEntity? selectedCategory,
     List<MerchantCategoryEntity>? categories,
@@ -43,6 +46,7 @@ class MerchantEditProfilState extends Equatable {
     return MerchantEditProfilState(
       name: name ?? this.name,
       whatsappNumber: whatsappNumber ?? this.whatsappNumber,
+      about: about ?? this.about,
       merchantCategoryId: merchantCategoryId ?? this.merchantCategoryId,
       selectedCategory: selectedCategory ?? this.selectedCategory,
       categories: categories ?? this.categories,
@@ -59,6 +63,7 @@ class MerchantEditProfilState extends Equatable {
   List<Object?> get props => [
     name,
     whatsappNumber,
+    about,
     merchantCategoryId,
     selectedCategory,
     categories,

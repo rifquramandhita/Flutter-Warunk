@@ -57,7 +57,7 @@ class MerchantEditProfilScreen extends StatelessWidget {
   }
 
   AppBar _buildAppBar(BuildContext context) {
-    return AppBar(title: Text('Edit Profil'));
+    return AppBar(title: Text('Edit Informasi Toko'));
   }
 
   Widget _bodyBuild(BuildContext context) {
@@ -111,18 +111,27 @@ class MerchantEditProfilScreen extends StatelessWidget {
             decoratorProps: DropDownDecoratorProps(
               decoration: InputDecoration(
                 hintText: "Pilih kategori toko",
-                contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 14,
+                ),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide(color: GlobalHelper.getColorSchema(context).outlineVariant),
+                  borderSide: BorderSide(
+                    color: GlobalHelper.getColorSchema(context).outlineVariant,
+                  ),
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide(color: GlobalHelper.getColorSchema(context).outlineVariant),
+                  borderSide: BorderSide(
+                    color: GlobalHelper.getColorSchema(context).outlineVariant,
+                  ),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide(color: GlobalHelper.getColorSchema(context).primary),
+                  borderSide: BorderSide(
+                    color: GlobalHelper.getColorSchema(context).primary,
+                  ),
                 ),
                 filled: true,
                 fillColor: GlobalHelper.getColorSchema(context).surface,
@@ -136,7 +145,10 @@ class MerchantEditProfilScreen extends StatelessWidget {
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 14,
+                  ),
                 ),
               ),
             ),
@@ -152,6 +164,19 @@ class MerchantEditProfilScreen extends StatelessWidget {
             inputFormatters: [FilteringTextInputFormatter.digitsOnly],
             onChanged: (v) => context.read<MerchantEditProfilBloc>().add(
               MerchantEditProfilEventWhatsappChanged(v),
+            ),
+          ),
+          const SizedBox(height: 20),
+          _fieldLabel(context, 'Tentang Toko'),
+          const SizedBox(height: 8),
+          _editField(
+            context: context,
+            initialValue: state.about,
+            hintText: 'Tuliskan deskripsi singkat tentang toko',
+            keyboardType: TextInputType.multiline,
+            maxLines: 4,
+            onChanged: (v) => context.read<MerchantEditProfilBloc>().add(
+              MerchantEditProfilEventAboutChanged(v),
             ),
           ),
           const SizedBox(height: 32),
@@ -263,6 +288,7 @@ class MerchantEditProfilScreen extends StatelessWidget {
     required TextInputType keyboardType,
     required ValueChanged<String> onChanged,
     List<TextInputFormatter>? inputFormatters,
+    int maxLines = 1,
   }) {
     final bodyStyle = GlobalHelper.getTextTheme(
       context,
@@ -281,6 +307,7 @@ class MerchantEditProfilScreen extends StatelessWidget {
         keyboardType: keyboardType,
         inputFormatters: inputFormatters,
         onChanged: onChanged,
+        maxLines: maxLines,
         style: bodyStyle?.copyWith(color: colorSchema.onSurface),
         decoration: InputDecoration(
           hintText: hintText,

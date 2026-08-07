@@ -58,6 +58,7 @@ MerchantMerchantEntity _$MerchantMerchantEntityFromJson(
   longitude: (json['longitude'] as num?)?.toDouble(),
   latitude: (json['latitude'] as num?)?.toDouble(),
   photo: json['photo'] as String?,
+  about: json['about'] as String?,
   balance: (json['balance'] as num?)?.toInt(),
   isActive: json['is_active'] as bool?,
   isOpen: json['is_open'] as bool,
@@ -96,6 +97,7 @@ Map<String, dynamic> _$MerchantMerchantEntityToJson(
   'longitude': ?instance.longitude,
   'latitude': ?instance.latitude,
   'photo': ?instance.photo,
+  'about': ?instance.about,
   'balance': ?instance.balance,
   'is_active': ?instance.isActive,
   'is_open': instance.isOpen,
@@ -109,6 +111,7 @@ MerchantMerchantUpdateParam _$MerchantMerchantUpdateParamFromJson(
   slug: json['slug'] as String,
   merchantCategoryName: json['merchantCategoryName'] as String?,
   whatsappNumber: json['whatsappNumber'] as String?,
+  about: json['about'] as String?,
   $type: json['runtimeType'] as String?,
 );
 
@@ -119,5 +122,6 @@ Map<String, dynamic> _$MerchantMerchantUpdateParamToJson(
   'slug': instance.slug,
   'merchantCategoryName': ?instance.merchantCategoryName,
   'whatsappNumber': ?instance.whatsappNumber,
+  'about': ?instance.about,
   'runtimeType': instance.$type,
 };

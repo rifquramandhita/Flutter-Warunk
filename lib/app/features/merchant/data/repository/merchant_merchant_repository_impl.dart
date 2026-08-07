@@ -60,6 +60,7 @@ class MerchantMerchantRepositoryImpl implements MerchantMerchantRepository {
         param.slug,
         param.merchantCategoryName,
         param.whatsappNumber,
+        param.about,
       ),
       (responseData) {
         return responseData;
