@@ -60,6 +60,8 @@ class _CustomerCategoryScreenState extends State<CustomerCategoryScreen> {
       children: [
         _buildTopSection(context),
         const SizedBox(height: 16),
+        _buildFooter(context),
+        const SizedBox(height: 16),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20.0),
           child: Row(
@@ -92,18 +94,17 @@ class _CustomerCategoryScreenState extends State<CustomerCategoryScreen> {
             ],
           ),
         ),
-        const SizedBox(height: 16),
         Expanded(
           child: RefreshIndicator(
             onRefresh: () async {
-              context.read<CustomerCategoryBloc>().add(CustomerCategoryStarted());
+              context.read<CustomerCategoryBloc>().add(
+                CustomerCategoryStarted(),
+              );
             },
             child: ListView(
+              padding: EdgeInsets.zero,
               physics: const AlwaysScrollableScrollPhysics(),
-              children: [
-                _buildCategoryList(context),
-                _buildFooter(context),
-              ],
+              children: [_buildCategoryList(context)],
             ),
           ),
         ),
@@ -476,18 +477,16 @@ class _CustomerCategoryScreenState extends State<CustomerCategoryScreen> {
 
   Widget _buildFooter(BuildContext context) {
     return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 20),
       padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
       decoration: BoxDecoration(
         color: Colors.grey.shade100,
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(24),
-          topRight: Radius.circular(24),
-        ),
+        borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.05),
             blurRadius: 10,
-            offset: const Offset(0, -4),
+            offset: const Offset(0, 4),
           ),
         ],
       ),
