@@ -18,7 +18,9 @@ enum OrderStatus {
   @JsonValue('cancelled')
   cancelled,
   @JsonValue('rejected')
-  rejected;
+  rejected,
+  @JsonValue('payment_expired')
+  paymentExpired;
 
   String get label {
     switch (this) {
@@ -40,6 +42,8 @@ enum OrderStatus {
         return 'Dibatalkan';
       case OrderStatus.rejected:
         return 'Ditolak';
+      case OrderStatus.paymentExpired:
+        return 'Pembayaran Kadaluarsa';
     }
   }
 
@@ -63,6 +67,8 @@ enum OrderStatus {
         return 'cancelled';
       case OrderStatus.rejected:
         return 'rejected';
+      case OrderStatus.paymentExpired:
+        return 'payment_expired';
     }
   }
 
