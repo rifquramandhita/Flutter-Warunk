@@ -18,46 +18,38 @@ import 'package:warunk/core/enum/order_status.dart';
 import 'package:warunk/main.dart';
 import 'package:warunk/app/features/merchant/presentation/edit_profil/merchant_edit_profil_screen.dart';
 
-class MerchantDashboardScreen extends StatefulWidget {
+bool _isCheckingPopup = false;
+
+class MerchantDashboardScreen extends StatelessWidget {
   const MerchantDashboardScreen({super.key});
-
-  @override
-  State<MerchantDashboardScreen> createState() =>
-      _MerchantDashboardScreenState();
-}
-
-class _MerchantDashboardScreenState extends State<MerchantDashboardScreen> {
-  bool _hasShownWelcomePopup = false;
-  bool _isCheckingPopup = false;
 
   Future<void> _checkAndShowPopups(
       BuildContext context, MerchantDashboardState state) async {
     _isCheckingPopup = true;
 
-    if (!_hasShownWelcomePopup) {
-      _hasShownWelcomePopup = true;
+    if (state.hasWelcomePopup) {
       await showDialog(
         context: context,
         barrierDismissible: false,
         builder: (dialogContext) => AlertDialog(
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-          title: const Text('Selamat akun Merchant Anda sudah aktif',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+          title: Text('Selamat akun Merchant Anda sudah aktif',
+              style: GlobalHelper.getTextTheme(context, appTextStyle: AppTextStyle.TITLE_MEDIUM)?.copyWith(fontWeight: FontWeight.bold)),
           content: const Text(
               'Anda bisa gunakan akun merchant Anda juga untuk berbelanja sebagai customer.'),
           actions: [
             TextButton(
-              onPressed: () => Navigator.pop(dialogContext),
-              child: const Text('Tutup',
-                  style: TextStyle(fontWeight: FontWeight.bold)),
+              onPressed: () => navigatorKey.currentState?.pop(),
+              child: Text('Tutup',
+                  style: GlobalHelper.getTextTheme(context, appTextStyle: AppTextStyle.LABEL_LARGE)?.copyWith(fontWeight: FontWeight.bold)),
             ),
           ],
         ),
       );
     }
 
-    if (!mounted) return;
+    if (!context.mounted) return;
 
     if (state.merchantName.trim().isEmpty || 
         state.merchantName == 'Warunk Bu Siti' || 
@@ -68,28 +60,27 @@ class _MerchantDashboardScreenState extends State<MerchantDashboardScreen> {
         builder: (dialogContext) => AlertDialog(
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-          title: const Text('Toko Anda berhasil dibuat!',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+          title: Text('Toko Anda berhasil dibuat!',
+              style: GlobalHelper.getTextTheme(context, appTextStyle: AppTextStyle.TITLE_MEDIUM)?.copyWith(fontWeight: FontWeight.bold)),
           content: const Text(
               'Yuk Atur Toko Anda supaya bisa diakses pelanggan'),
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.pop(dialogContext);
+                navigatorKey.currentState?.pop();
               },
-              child: const Text('Nanti saja!',
-                  style: TextStyle(color: Colors.grey)),
+              child: Text('Nanti saja!',
+                  style: GlobalHelper.getTextTheme(context, appTextStyle: AppTextStyle.LABEL_LARGE)?.copyWith(color: Colors.grey)),
             ),
             ElevatedButton(
               onPressed: () {
-                Navigator.pop(dialogContext);
-                Navigator.push(
-                  context,
+                navigatorKey.currentState?.pop();
+                navigatorKey.currentState?.push(
                   MaterialPageRoute(
                     builder: (_) => const MerchantEditProfilScreen(isSetupMode: true),
                   ),
                 ).then((_) {
-                  if (mounted) {
+                  if (context.mounted) {
                     context
                         .read<MerchantDashboardBloc>()
                         .add(MerchantDashboardEventGet());
@@ -102,8 +93,8 @@ class _MerchantDashboardScreenState extends State<MerchantDashboardScreen> {
                   borderRadius: BorderRadius.circular(8),
                 ),
               ),
-              child: const Text('Atur toko sekarang!',
-                  style: TextStyle(
+              child: Text('Atur toko sekarang!',
+                  style: GlobalHelper.getTextTheme(context, appTextStyle: AppTextStyle.LABEL_LARGE)?.copyWith(
                       color: Colors.white, fontWeight: FontWeight.bold)),
             ),
           ],
@@ -113,7 +104,7 @@ class _MerchantDashboardScreenState extends State<MerchantDashboardScreen> {
     
     // Reset checking status so if state changes again (e.g. pull to refresh),
     // it will check if store is still not setup and show popup 2 again.
-    if (mounted) {
+    if (context.mounted) {
       _isCheckingPopup = false;
     }
   }
@@ -277,8 +268,7 @@ class _MerchantDashboardScreenState extends State<MerchantDashboardScreen> {
               ),
               GestureDetector(
                 onTap: () {
-                  Navigator.push(
-                    context,
+                  navigatorKey.currentState?.push(
                     MaterialPageRoute(
                       builder: (context) => const MerchantNotificationScreen(),
                     ),

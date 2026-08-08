@@ -43,6 +43,7 @@ MerchantDashboardEntity _$MerchantDashboardEntityFromJson(
   merchantInfo: MerchantDashboardMerchantInfoEntity.fromJson(
     json['merchant_info'] as Map<String, dynamic>,
   ),
+  hasWelcomePopup: json['has_welcome_popup'] as bool? ?? false,
 );
 
 Map<String, dynamic> _$MerchantDashboardEntityToJson(
@@ -54,6 +55,7 @@ Map<String, dynamic> _$MerchantDashboardEntityToJson(
   'best_products': instance.bestProducts,
   'recent_orders': instance.recentOrders,
   'merchant_info': instance.merchantInfo,
+  'has_welcome_popup': instance.hasWelcomePopup,
 };
 
 MerchantDashboardMetricsEntity _$MerchantDashboardMetricsEntityFromJson(

@@ -14,6 +14,7 @@ sealed class MerchantDashboard with _$MerchantDashboard {
     required List<MerchantDashboardBestProductEntity> bestProducts,
     required List<MerchantDashboardRecentOrderEntity> recentOrders,
     required MerchantDashboardMerchantInfoEntity merchantInfo,
+    @Default(false) bool hasWelcomePopup,
   }) = MerchantDashboardEntity;
 
   factory MerchantDashboard.fromJson(Map<String, dynamic> json) =>

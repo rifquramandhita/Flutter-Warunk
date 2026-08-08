@@ -63,6 +63,7 @@ class MerchantDashboardBloc
           merchantCategory: result.data!.merchantInfo.category,
           merchantTime:
               '${result.data!.merchantInfo.operationalDays} • ${result.data!.merchantInfo.operationalTime}',
+          hasWelcomePopup: data.hasWelcomePopup,
         ),
       );
     } else {

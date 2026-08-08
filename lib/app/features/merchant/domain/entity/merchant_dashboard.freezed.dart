@@ -22,7 +22,7 @@ MerchantDashboard _$MerchantDashboardFromJson(
 /// @nodoc
 mixin _$MerchantDashboard {
 
- MerchantDashboardMetricsEntity get metrics; List<MerchantDashboardSalesSeriesEntity> get salesSeries; List<MerchantDashboardStatusCountEntity> get statusCounts; List<MerchantDashboardBestProductEntity> get bestProducts; List<MerchantDashboardRecentOrderEntity> get recentOrders; MerchantDashboardMerchantInfoEntity get merchantInfo;
+ MerchantDashboardMetricsEntity get metrics; List<MerchantDashboardSalesSeriesEntity> get salesSeries; List<MerchantDashboardStatusCountEntity> get statusCounts; List<MerchantDashboardBestProductEntity> get bestProducts; List<MerchantDashboardRecentOrderEntity> get recentOrders; MerchantDashboardMerchantInfoEntity get merchantInfo; bool get hasWelcomePopup;
 /// Create a copy of MerchantDashboard
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -35,16 +35,16 @@ $MerchantDashboardCopyWith<MerchantDashboard> get copyWith => _$MerchantDashboar
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MerchantDashboard&&const DeepCollectionEquality().equals(other.metrics, metrics)&&const DeepCollectionEquality().equals(other.salesSeries, salesSeries)&&const DeepCollectionEquality().equals(other.statusCounts, statusCounts)&&const DeepCollectionEquality().equals(other.bestProducts, bestProducts)&&const DeepCollectionEquality().equals(other.recentOrders, recentOrders)&&const DeepCollectionEquality().equals(other.merchantInfo, merchantInfo));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MerchantDashboard&&const DeepCollectionEquality().equals(other.metrics, metrics)&&const DeepCollectionEquality().equals(other.salesSeries, salesSeries)&&const DeepCollectionEquality().equals(other.statusCounts, statusCounts)&&const DeepCollectionEquality().equals(other.bestProducts, bestProducts)&&const DeepCollectionEquality().equals(other.recentOrders, recentOrders)&&const DeepCollectionEquality().equals(other.merchantInfo, merchantInfo)&&(identical(other.hasWelcomePopup, hasWelcomePopup) || other.hasWelcomePopup == hasWelcomePopup));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(metrics),const DeepCollectionEquality().hash(salesSeries),const DeepCollectionEquality().hash(statusCounts),const DeepCollectionEquality().hash(bestProducts),const DeepCollectionEquality().hash(recentOrders),const DeepCollectionEquality().hash(merchantInfo));
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(metrics),const DeepCollectionEquality().hash(salesSeries),const DeepCollectionEquality().hash(statusCounts),const DeepCollectionEquality().hash(bestProducts),const DeepCollectionEquality().hash(recentOrders),const DeepCollectionEquality().hash(merchantInfo),hasWelcomePopup);
 
 @override
 String toString() {
-  return 'MerchantDashboard(metrics: $metrics, salesSeries: $salesSeries, statusCounts: $statusCounts, bestProducts: $bestProducts, recentOrders: $recentOrders, merchantInfo: $merchantInfo)';
+  return 'MerchantDashboard(metrics: $metrics, salesSeries: $salesSeries, statusCounts: $statusCounts, bestProducts: $bestProducts, recentOrders: $recentOrders, merchantInfo: $merchantInfo, hasWelcomePopup: $hasWelcomePopup)';
 }
 
 
@@ -55,7 +55,7 @@ abstract mixin class $MerchantDashboardCopyWith<$Res>  {
   factory $MerchantDashboardCopyWith(MerchantDashboard value, $Res Function(MerchantDashboard) _then) = _$MerchantDashboardCopyWithImpl;
 @useResult
 $Res call({
- MerchantDashboardMetricsEntity metrics, List<MerchantDashboardSalesSeriesEntity> salesSeries, List<MerchantDashboardStatusCountEntity> statusCounts, List<MerchantDashboardBestProductEntity> bestProducts, List<MerchantDashboardRecentOrderEntity> recentOrders, MerchantDashboardMerchantInfoEntity merchantInfo
+ MerchantDashboardMetricsEntity metrics, List<MerchantDashboardSalesSeriesEntity> salesSeries, List<MerchantDashboardStatusCountEntity> statusCounts, List<MerchantDashboardBestProductEntity> bestProducts, List<MerchantDashboardRecentOrderEntity> recentOrders, MerchantDashboardMerchantInfoEntity merchantInfo, bool hasWelcomePopup
 });
 
 
@@ -72,7 +72,7 @@ class _$MerchantDashboardCopyWithImpl<$Res>
 
 /// Create a copy of MerchantDashboard
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? metrics = freezed,Object? salesSeries = null,Object? statusCounts = null,Object? bestProducts = null,Object? recentOrders = null,Object? merchantInfo = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? metrics = freezed,Object? salesSeries = null,Object? statusCounts = null,Object? bestProducts = null,Object? recentOrders = null,Object? merchantInfo = freezed,Object? hasWelcomePopup = null,}) {
   return _then(_self.copyWith(
 metrics: freezed == metrics ? _self.metrics : metrics // ignore: cast_nullable_to_non_nullable
 as MerchantDashboardMetricsEntity,salesSeries: null == salesSeries ? _self.salesSeries : salesSeries // ignore: cast_nullable_to_non_nullable
@@ -80,7 +80,8 @@ as List<MerchantDashboardSalesSeriesEntity>,statusCounts: null == statusCounts ?
 as List<MerchantDashboardStatusCountEntity>,bestProducts: null == bestProducts ? _self.bestProducts : bestProducts // ignore: cast_nullable_to_non_nullable
 as List<MerchantDashboardBestProductEntity>,recentOrders: null == recentOrders ? _self.recentOrders : recentOrders // ignore: cast_nullable_to_non_nullable
 as List<MerchantDashboardRecentOrderEntity>,merchantInfo: freezed == merchantInfo ? _self.merchantInfo : merchantInfo // ignore: cast_nullable_to_non_nullable
-as MerchantDashboardMerchantInfoEntity,
+as MerchantDashboardMerchantInfoEntity,hasWelcomePopup: null == hasWelcomePopup ? _self.hasWelcomePopup : hasWelcomePopup // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
 
@@ -162,10 +163,10 @@ return entity(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( MerchantDashboardMetricsEntity metrics,  List<MerchantDashboardSalesSeriesEntity> salesSeries,  List<MerchantDashboardStatusCountEntity> statusCounts,  List<MerchantDashboardBestProductEntity> bestProducts,  List<MerchantDashboardRecentOrderEntity> recentOrders,  MerchantDashboardMerchantInfoEntity merchantInfo)?  entity,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( MerchantDashboardMetricsEntity metrics,  List<MerchantDashboardSalesSeriesEntity> salesSeries,  List<MerchantDashboardStatusCountEntity> statusCounts,  List<MerchantDashboardBestProductEntity> bestProducts,  List<MerchantDashboardRecentOrderEntity> recentOrders,  MerchantDashboardMerchantInfoEntity merchantInfo,  bool hasWelcomePopup)?  entity,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case MerchantDashboardEntity() when entity != null:
-return entity(_that.metrics,_that.salesSeries,_that.statusCounts,_that.bestProducts,_that.recentOrders,_that.merchantInfo);case _:
+return entity(_that.metrics,_that.salesSeries,_that.statusCounts,_that.bestProducts,_that.recentOrders,_that.merchantInfo,_that.hasWelcomePopup);case _:
   return orElse();
 
 }
@@ -183,10 +184,10 @@ return entity(_that.metrics,_that.salesSeries,_that.statusCounts,_that.bestProdu
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( MerchantDashboardMetricsEntity metrics,  List<MerchantDashboardSalesSeriesEntity> salesSeries,  List<MerchantDashboardStatusCountEntity> statusCounts,  List<MerchantDashboardBestProductEntity> bestProducts,  List<MerchantDashboardRecentOrderEntity> recentOrders,  MerchantDashboardMerchantInfoEntity merchantInfo)  entity,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( MerchantDashboardMetricsEntity metrics,  List<MerchantDashboardSalesSeriesEntity> salesSeries,  List<MerchantDashboardStatusCountEntity> statusCounts,  List<MerchantDashboardBestProductEntity> bestProducts,  List<MerchantDashboardRecentOrderEntity> recentOrders,  MerchantDashboardMerchantInfoEntity merchantInfo,  bool hasWelcomePopup)  entity,}) {final _that = this;
 switch (_that) {
 case MerchantDashboardEntity():
-return entity(_that.metrics,_that.salesSeries,_that.statusCounts,_that.bestProducts,_that.recentOrders,_that.merchantInfo);}
+return entity(_that.metrics,_that.salesSeries,_that.statusCounts,_that.bestProducts,_that.recentOrders,_that.merchantInfo,_that.hasWelcomePopup);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -200,10 +201,10 @@ return entity(_that.metrics,_that.salesSeries,_that.statusCounts,_that.bestProdu
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( MerchantDashboardMetricsEntity metrics,  List<MerchantDashboardSalesSeriesEntity> salesSeries,  List<MerchantDashboardStatusCountEntity> statusCounts,  List<MerchantDashboardBestProductEntity> bestProducts,  List<MerchantDashboardRecentOrderEntity> recentOrders,  MerchantDashboardMerchantInfoEntity merchantInfo)?  entity,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( MerchantDashboardMetricsEntity metrics,  List<MerchantDashboardSalesSeriesEntity> salesSeries,  List<MerchantDashboardStatusCountEntity> statusCounts,  List<MerchantDashboardBestProductEntity> bestProducts,  List<MerchantDashboardRecentOrderEntity> recentOrders,  MerchantDashboardMerchantInfoEntity merchantInfo,  bool hasWelcomePopup)?  entity,}) {final _that = this;
 switch (_that) {
 case MerchantDashboardEntity() when entity != null:
-return entity(_that.metrics,_that.salesSeries,_that.statusCounts,_that.bestProducts,_that.recentOrders,_that.merchantInfo);case _:
+return entity(_that.metrics,_that.salesSeries,_that.statusCounts,_that.bestProducts,_that.recentOrders,_that.merchantInfo,_that.hasWelcomePopup);case _:
   return null;
 
 }
@@ -215,7 +216,7 @@ return entity(_that.metrics,_that.salesSeries,_that.statusCounts,_that.bestProdu
 
 @JsonSerializable(fieldRename: FieldRename.snake, includeIfNull: false)
 class MerchantDashboardEntity implements MerchantDashboard {
-  const MerchantDashboardEntity({required this.metrics, required final  List<MerchantDashboardSalesSeriesEntity> salesSeries, required final  List<MerchantDashboardStatusCountEntity> statusCounts, required final  List<MerchantDashboardBestProductEntity> bestProducts, required final  List<MerchantDashboardRecentOrderEntity> recentOrders, required this.merchantInfo}): _salesSeries = salesSeries,_statusCounts = statusCounts,_bestProducts = bestProducts,_recentOrders = recentOrders;
+  const MerchantDashboardEntity({required this.metrics, required final  List<MerchantDashboardSalesSeriesEntity> salesSeries, required final  List<MerchantDashboardStatusCountEntity> statusCounts, required final  List<MerchantDashboardBestProductEntity> bestProducts, required final  List<MerchantDashboardRecentOrderEntity> recentOrders, required this.merchantInfo, this.hasWelcomePopup = false}): _salesSeries = salesSeries,_statusCounts = statusCounts,_bestProducts = bestProducts,_recentOrders = recentOrders;
   factory MerchantDashboardEntity.fromJson(Map<String, dynamic> json) => _$MerchantDashboardEntityFromJson(json);
 
 @override final  MerchantDashboardMetricsEntity metrics;
@@ -248,6 +249,7 @@ class MerchantDashboardEntity implements MerchantDashboard {
 }
 
 @override final  MerchantDashboardMerchantInfoEntity merchantInfo;
+@override@JsonKey() final  bool hasWelcomePopup;
 
 /// Create a copy of MerchantDashboard
 /// with the given fields replaced by the non-null parameter values.
@@ -262,16 +264,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MerchantDashboardEntity&&const DeepCollectionEquality().equals(other.metrics, metrics)&&const DeepCollectionEquality().equals(other._salesSeries, _salesSeries)&&const DeepCollectionEquality().equals(other._statusCounts, _statusCounts)&&const DeepCollectionEquality().equals(other._bestProducts, _bestProducts)&&const DeepCollectionEquality().equals(other._recentOrders, _recentOrders)&&const DeepCollectionEquality().equals(other.merchantInfo, merchantInfo));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MerchantDashboardEntity&&const DeepCollectionEquality().equals(other.metrics, metrics)&&const DeepCollectionEquality().equals(other._salesSeries, _salesSeries)&&const DeepCollectionEquality().equals(other._statusCounts, _statusCounts)&&const DeepCollectionEquality().equals(other._bestProducts, _bestProducts)&&const DeepCollectionEquality().equals(other._recentOrders, _recentOrders)&&const DeepCollectionEquality().equals(other.merchantInfo, merchantInfo)&&(identical(other.hasWelcomePopup, hasWelcomePopup) || other.hasWelcomePopup == hasWelcomePopup));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(metrics),const DeepCollectionEquality().hash(_salesSeries),const DeepCollectionEquality().hash(_statusCounts),const DeepCollectionEquality().hash(_bestProducts),const DeepCollectionEquality().hash(_recentOrders),const DeepCollectionEquality().hash(merchantInfo));
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(metrics),const DeepCollectionEquality().hash(_salesSeries),const DeepCollectionEquality().hash(_statusCounts),const DeepCollectionEquality().hash(_bestProducts),const DeepCollectionEquality().hash(_recentOrders),const DeepCollectionEquality().hash(merchantInfo),hasWelcomePopup);
 
 @override
 String toString() {
-  return 'MerchantDashboard.entity(metrics: $metrics, salesSeries: $salesSeries, statusCounts: $statusCounts, bestProducts: $bestProducts, recentOrders: $recentOrders, merchantInfo: $merchantInfo)';
+  return 'MerchantDashboard.entity(metrics: $metrics, salesSeries: $salesSeries, statusCounts: $statusCounts, bestProducts: $bestProducts, recentOrders: $recentOrders, merchantInfo: $merchantInfo, hasWelcomePopup: $hasWelcomePopup)';
 }
 
 
@@ -282,7 +284,7 @@ abstract mixin class $MerchantDashboardEntityCopyWith<$Res> implements $Merchant
   factory $MerchantDashboardEntityCopyWith(MerchantDashboardEntity value, $Res Function(MerchantDashboardEntity) _then) = _$MerchantDashboardEntityCopyWithImpl;
 @override @useResult
 $Res call({
- MerchantDashboardMetricsEntity metrics, List<MerchantDashboardSalesSeriesEntity> salesSeries, List<MerchantDashboardStatusCountEntity> statusCounts, List<MerchantDashboardBestProductEntity> bestProducts, List<MerchantDashboardRecentOrderEntity> recentOrders, MerchantDashboardMerchantInfoEntity merchantInfo
+ MerchantDashboardMetricsEntity metrics, List<MerchantDashboardSalesSeriesEntity> salesSeries, List<MerchantDashboardStatusCountEntity> statusCounts, List<MerchantDashboardBestProductEntity> bestProducts, List<MerchantDashboardRecentOrderEntity> recentOrders, MerchantDashboardMerchantInfoEntity merchantInfo, bool hasWelcomePopup
 });
 
 
@@ -299,7 +301,7 @@ class _$MerchantDashboardEntityCopyWithImpl<$Res>
 
 /// Create a copy of MerchantDashboard
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? metrics = freezed,Object? salesSeries = null,Object? statusCounts = null,Object? bestProducts = null,Object? recentOrders = null,Object? merchantInfo = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? metrics = freezed,Object? salesSeries = null,Object? statusCounts = null,Object? bestProducts = null,Object? recentOrders = null,Object? merchantInfo = freezed,Object? hasWelcomePopup = null,}) {
   return _then(MerchantDashboardEntity(
 metrics: freezed == metrics ? _self.metrics : metrics // ignore: cast_nullable_to_non_nullable
 as MerchantDashboardMetricsEntity,salesSeries: null == salesSeries ? _self._salesSeries : salesSeries // ignore: cast_nullable_to_non_nullable
@@ -307,7 +309,8 @@ as List<MerchantDashboardSalesSeriesEntity>,statusCounts: null == statusCounts ?
 as List<MerchantDashboardStatusCountEntity>,bestProducts: null == bestProducts ? _self._bestProducts : bestProducts // ignore: cast_nullable_to_non_nullable
 as List<MerchantDashboardBestProductEntity>,recentOrders: null == recentOrders ? _self._recentOrders : recentOrders // ignore: cast_nullable_to_non_nullable
 as List<MerchantDashboardRecentOrderEntity>,merchantInfo: freezed == merchantInfo ? _self.merchantInfo : merchantInfo // ignore: cast_nullable_to_non_nullable
-as MerchantDashboardMerchantInfoEntity,
+as MerchantDashboardMerchantInfoEntity,hasWelcomePopup: null == hasWelcomePopup ? _self.hasWelcomePopup : hasWelcomePopup // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
 
