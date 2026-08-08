@@ -183,30 +183,39 @@ class _MerchantOrderApiService implements MerchantOrderApiService {
   Future<HttpResponse<dynamic>> rejectOrder(
     String id,
     String reason,
-    String customerBank,
-    String customerAccountNumber,
-    String customerAccountName,
-    File refundProof,
+    String? customerBank,
+    String? customerAccountNumber,
+    String? customerAccountName,
+    File? refundProof,
   ) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
+    queryParameters.removeWhere((k, v) => v == null);
     final _headers = <String, dynamic>{};
     final _data = FormData();
     _data.fields.add(MapEntry('reason', reason));
-    _data.fields.add(MapEntry('customer_bank', customerBank));
-    _data.fields.add(
-      MapEntry('customer_account_number', customerAccountNumber),
-    );
-    _data.fields.add(MapEntry('customer_account_name', customerAccountName));
-    _data.files.add(
-      MapEntry(
-        'refund_proof',
-        MultipartFile.fromFileSync(
-          refundProof.path,
-          filename: refundProof.path.split(Platform.pathSeparator).last,
+    if (customerBank != null) {
+      _data.fields.add(MapEntry('customer_bank', customerBank));
+    }
+    if (customerAccountNumber != null) {
+      _data.fields.add(
+        MapEntry('customer_account_number', customerAccountNumber),
+      );
+    }
+    if (customerAccountName != null) {
+      _data.fields.add(MapEntry('customer_account_name', customerAccountName));
+    }
+    if (refundProof != null) {
+      _data.files.add(
+        MapEntry(
+          'refund_proof',
+          MultipartFile.fromFileSync(
+            refundProof.path,
+            filename: refundProof.path.split(Platform.pathSeparator).last,
+          ),
         ),
-      ),
-    );
+      );
+    }
     final _options = _setStreamType<HttpResponse<dynamic>>(
       Options(
             method: 'POST',

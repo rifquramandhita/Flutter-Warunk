@@ -16,9 +16,9 @@ sealed class MerchantOrder with _$MerchantOrder {
   @JsonSerializable(fieldRename: FieldRename.snake, includeIfNull: false)
   const factory MerchantOrder.rejectParam({
     required String reason,
-    required String customerBank,
-    required String customerAccountNumber,
-    required String customerAccountName,
+    String? customerBank,
+    String? customerAccountNumber,
+    String? customerAccountName,
     @JsonKey(includeFromJson: false, includeToJson: false) File? refundProof,
   }) = MerchantOrderRejectParam;
 

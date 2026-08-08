@@ -215,7 +215,10 @@ class MerchantDetailOrderScreen extends StatelessWidget {
       case 'reject_order':
         final result = await navigatorKey.currentState?.push(
           MaterialPageRoute(
-            builder: (context) => MerchantOrderRejectScreen(orderId: order.id!),
+            builder: (context) => MerchantOrderRejectScreen(
+              orderId: order.id!,
+              orderStatus: order.status,
+            ),
           ),
         );
         if (result == true && context.mounted) {

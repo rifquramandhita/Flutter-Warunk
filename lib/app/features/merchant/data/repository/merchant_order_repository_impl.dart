@@ -9,7 +9,7 @@ class MerchantOrderRepositoryImpl implements MerchantOrderRepository {
   final MerchantOrderApiService _apiService;
 
   MerchantOrderRepositoryImpl({required MerchantOrderApiService apiService})
-      : _apiService = apiService;
+    : _apiService = apiService;
 
   @override
   Future<DataState<List<MerchantOrderEntity>>> getOrders() async {
@@ -52,8 +52,13 @@ class MerchantOrderRepositoryImpl implements MerchantOrderRepository {
   }
 
   @override
-  Future<DataState<MerchantOrderEntity>> shipOrder(String id, Map<String, dynamic> body) async {
-    return handleResponse(() => _apiService.shipOrder(id, body), (responseData) {
+  Future<DataState<MerchantOrderEntity>> shipOrder(
+    String id,
+    Map<String, dynamic> body,
+  ) async {
+    return handleResponse(() => _apiService.shipOrder(id, body), (
+      responseData,
+    ) {
       final data = responseData['order'];
       return MerchantOrderEntity.fromJson(data);
     });
@@ -68,39 +73,51 @@ class MerchantOrderRepositoryImpl implements MerchantOrderRepository {
   }
 
   @override
-  Future<DataState<MerchantOrderEntity>> rejectOrder(String id, MerchantOrderRejectParam param) async {
-    return handleResponse(() => _apiService.rejectOrder(
-      id,
-      param.reason,
-      param.customerBank,
-      param.customerAccountNumber,
-      param.customerAccountName,
-      param.refundProof!,
-    ), (responseData) {
-      final data = responseData['order'];
-      return MerchantOrderEntity.fromJson(data);
-    });
+  Future<DataState<MerchantOrderEntity>> rejectOrder(
+    String id,
+    MerchantOrderRejectParam param,
+  ) async {
+    return handleResponse(
+      () => _apiService.rejectOrder(
+        id,
+        param.reason,
+        param.customerBank,
+        param.customerAccountNumber,
+        param.customerAccountName,
+        param.refundProof,
+      ),
+      (responseData) {
+        final data = responseData['order'];
+        return MerchantOrderEntity.fromJson(data);
+      },
+    );
   }
 
   @override
-  Future<DataState<MerchantOrderEntity>> acceptCancelOrder(String id, File refundProof) async {
-    return handleResponse(() => _apiService.acceptCancelOrder(
-      id,
-      refundProof,
-    ), (responseData) {
-      final data = responseData['order'];
-      return MerchantOrderEntity.fromJson(data);
-    });
+  Future<DataState<MerchantOrderEntity>> acceptCancelOrder(
+    String id,
+    File refundProof,
+  ) async {
+    return handleResponse(
+      () => _apiService.acceptCancelOrder(id, refundProof),
+      (responseData) {
+        final data = responseData['order'];
+        return MerchantOrderEntity.fromJson(data);
+      },
+    );
   }
 
   @override
-  Future<DataState<MerchantOrderEntity>> rejectCancelOrder(String id, String reason) async {
-    return handleResponse(() => _apiService.rejectCancelOrder(
-      id,
-      {'reason': reason},
-    ), (responseData) {
-      final data = responseData['order'];
-      return MerchantOrderEntity.fromJson(data);
-    });
+  Future<DataState<MerchantOrderEntity>> rejectCancelOrder(
+    String id,
+    String reason,
+  ) async {
+    return handleResponse(
+      () => _apiService.rejectCancelOrder(id, {'reason': reason}),
+      (responseData) {
+        final data = responseData['order'];
+        return MerchantOrderEntity.fromJson(data);
+      },
+    );
   }
 }

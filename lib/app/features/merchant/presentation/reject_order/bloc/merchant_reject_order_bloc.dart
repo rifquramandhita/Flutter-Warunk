@@ -17,8 +17,8 @@ class MerchantRejectOrderBloc
   MerchantRejectOrderBloc({
     required MerchantOrderRejectUseCase rejectUseCase,
     required this.orderId,
-  })  : _rejectUseCase = rejectUseCase,
-        super(const MerchantRejectOrderState()) {
+  }) : _rejectUseCase = rejectUseCase,
+       super(const MerchantRejectOrderState()) {
     on<MerchantRejectOrderEventReasonChanged>(_onReasonChanged);
     on<MerchantRejectOrderEventBankChanged>(_onBankChanged);
     on<MerchantRejectOrderEventAccountNumberChanged>(_onAccountNumberChanged);
@@ -69,16 +69,17 @@ class MerchantRejectOrderBloc
     emit(state.copyWith(isLoading: true));
     final param = MerchantOrderRejectParam(
       reason: state.reason,
-      customerBank: state.customerBank,
-      customerAccountNumber: state.customerAccountNumber,
-      customerAccountName: state.customerAccountName,
+      customerBank: (state.customerBank.isNotEmpty) ? state.customerBank : null,
+      customerAccountNumber: (state.customerAccountNumber.isNotEmpty)
+          ? state.customerAccountNumber
+          : null,
+      customerAccountName: (state.customerAccountName.isNotEmpty)
+          ? state.customerAccountName
+          : null,
       refundProof: state.refundProof,
     );
-    
-    final response = await _rejectUseCase.call(
-      id: orderId,
-      param: param,
-    );
+
+    final response = await _rejectUseCase.call(id: orderId, param: param);
     if (response is SuccessState) {
       emit(state.copyWith(isSuccess: true, isLoading: false));
     } else {

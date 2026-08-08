@@ -11,11 +11,17 @@ import 'package:warunk/core/widgets/loading_app_widget.dart';
 import 'package:warunk/core/widgets/error_button.dart';
 import 'package:warunk/core/widgets/outline_button_custom.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:warunk/core/enum/order_status.dart';
 
 class MerchantOrderRejectScreen extends StatelessWidget {
   final String orderId;
+  final OrderStatus? orderStatus;
 
-  const MerchantOrderRejectScreen({super.key, required this.orderId});
+  const MerchantOrderRejectScreen({
+    super.key,
+    required this.orderId,
+    this.orderStatus,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -71,6 +77,8 @@ class MerchantOrderRejectScreen extends StatelessWidget {
   }
 
   Widget _bodyLayout(BuildContext context, MerchantRejectOrderState state) {
+    final isWaitingConfirmation = orderStatus == OrderStatus.waitingMerchantConfirmation;
+
     return Column(
       children: [
         Expanded(
@@ -100,94 +108,96 @@ class MerchantOrderRejectScreen extends StatelessWidget {
                         .add(MerchantRejectOrderEventReasonChanged(val)),
                     maxLines: 3,
                   ),
-                  const SizedBox(height: 16),
-                  _buildTextField(
-                    context: context,
-                    label: 'Bank Customer',
-                    onChanged: (val) => context
-                        .read<MerchantRejectOrderBloc>()
-                        .add(MerchantRejectOrderEventBankChanged(val)),
-                  ),
-                  const SizedBox(height: 16),
-                  _buildTextField(
-                    context: context,
-                    label: 'Nomor Rekening',
-                    onChanged: (val) => context
-                        .read<MerchantRejectOrderBloc>()
-                        .add(MerchantRejectOrderEventAccountNumberChanged(val)),
-                    keyboardType: TextInputType.number,
-                  ),
-                  const SizedBox(height: 16),
-                  _buildTextField(
-                    context: context,
-                    label: 'Nama Pemilik Rekening',
-                    onChanged: (val) => context
-                        .read<MerchantRejectOrderBloc>()
-                        .add(MerchantRejectOrderEventAccountNameChanged(val)),
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    'Bukti Refund',
-                    style:
-                        GlobalHelper.getTextTheme(
-                          context,
-                          appTextStyle: AppTextStyle.LABEL_MEDIUM,
-                        )?.copyWith(
-                          color: GlobalHelper.getColorSchema(
-                            context,
-                          ).onSurfaceVariant,
-                        ),
-                  ),
-                  const SizedBox(height: 8),
-                  GestureDetector(
-                    onTap: () => _pickImage(context),
-                    child: Container(
-                      height: 150,
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          color: GlobalHelper.getColorSchema(
-                            context,
-                          ).outlineVariant,
-                        ),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: state.refundProof != null
-                          ? ClipRRect(
-                              borderRadius: BorderRadius.circular(8),
-                              child: Image.file(
-                                state.refundProof!,
-                                fit: BoxFit.cover,
-                              ),
-                            )
-                          : Center(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    Icons.image,
-                                    size: 40,
-                                    color: GlobalHelper.getColorSchema(
-                                      context,
-                                    ).outlineVariant,
-                                  ),
-                                  const SizedBox(height: 8),
-                                  Text(
-                                    'Pilih Gambar',
-                                    style:
-                                        GlobalHelper.getTextTheme(
-                                          context,
-                                          appTextStyle: AppTextStyle.BODY_SMALL,
-                                        )?.copyWith(
-                                          color: GlobalHelper.getColorSchema(
-                                            context,
-                                          ).onSurfaceVariant,
-                                        ),
-                                  ),
-                                ],
-                              ),
-                            ),
+                  if (!isWaitingConfirmation) ...[
+                    const SizedBox(height: 16),
+                    _buildTextField(
+                      context: context,
+                      label: 'Bank Customer',
+                      onChanged: (val) => context
+                          .read<MerchantRejectOrderBloc>()
+                          .add(MerchantRejectOrderEventBankChanged(val)),
                     ),
-                  ),
+                    const SizedBox(height: 16),
+                    _buildTextField(
+                      context: context,
+                      label: 'Nomor Rekening',
+                      onChanged: (val) => context
+                          .read<MerchantRejectOrderBloc>()
+                          .add(MerchantRejectOrderEventAccountNumberChanged(val)),
+                      keyboardType: TextInputType.number,
+                    ),
+                    const SizedBox(height: 16),
+                    _buildTextField(
+                      context: context,
+                      label: 'Nama Pemilik Rekening',
+                      onChanged: (val) => context
+                          .read<MerchantRejectOrderBloc>()
+                          .add(MerchantRejectOrderEventAccountNameChanged(val)),
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      'Bukti Refund',
+                      style:
+                          GlobalHelper.getTextTheme(
+                            context,
+                            appTextStyle: AppTextStyle.LABEL_MEDIUM,
+                          )?.copyWith(
+                            color: GlobalHelper.getColorSchema(
+                              context,
+                            ).onSurfaceVariant,
+                          ),
+                    ),
+                    const SizedBox(height: 8),
+                    GestureDetector(
+                      onTap: () => _pickImage(context),
+                      child: Container(
+                        height: 150,
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: GlobalHelper.getColorSchema(
+                              context,
+                            ).outlineVariant,
+                          ),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: state.refundProof != null
+                            ? ClipRRect(
+                                borderRadius: BorderRadius.circular(8),
+                                child: Image.file(
+                                  state.refundProof!,
+                                  fit: BoxFit.cover,
+                                ),
+                              )
+                            : Center(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      Icons.image,
+                                      size: 40,
+                                      color: GlobalHelper.getColorSchema(
+                                        context,
+                                      ).outlineVariant,
+                                    ),
+                                    const SizedBox(height: 8),
+                                    Text(
+                                      'Pilih Gambar',
+                                      style:
+                                          GlobalHelper.getTextTheme(
+                                            context,
+                                            appTextStyle: AppTextStyle.BODY_SMALL,
+                                          )?.copyWith(
+                                            color: GlobalHelper.getColorSchema(
+                                              context,
+                                            ).onSurfaceVariant,
+                                          ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                      ),
+                    ),
+                  ],
                 ],
               ),
             ),
@@ -285,23 +295,35 @@ class MerchantOrderRejectScreen extends StatelessWidget {
   }
 
   void _submit(BuildContext context, MerchantRejectOrderState state) {
-    if (state.reason.trim().isEmpty ||
-        state.customerBank.trim().isEmpty ||
-        state.customerAccountNumber.trim().isEmpty ||
-        state.customerAccountName.trim().isEmpty) {
-      DialogHelper.showErrorSnackBar(
-        context: context,
-        text: 'Harap isi semua field',
-      );
-      return;
-    }
+    final isWaitingConfirmation = orderStatus == OrderStatus.waitingMerchantConfirmation;
 
-    if (state.refundProof == null) {
-      DialogHelper.showErrorSnackBar(
-        context: context,
-        text: 'Harap upload bukti refund',
-      );
-      return;
+    if (isWaitingConfirmation) {
+      if (state.reason.trim().isEmpty) {
+        DialogHelper.showErrorSnackBar(
+          context: context,
+          text: 'Harap isi alasan penolakan',
+        );
+        return;
+      }
+    } else {
+      if (state.reason.trim().isEmpty ||
+          state.customerBank.trim().isEmpty ||
+          state.customerAccountNumber.trim().isEmpty ||
+          state.customerAccountName.trim().isEmpty) {
+        DialogHelper.showErrorSnackBar(
+          context: context,
+          text: 'Harap isi semua field',
+        );
+        return;
+      }
+
+      if (state.refundProof == null) {
+        DialogHelper.showErrorSnackBar(
+          context: context,
+          text: 'Harap upload bukti refund',
+        );
+        return;
+      }
     }
 
     context.read<MerchantRejectOrderBloc>().add(

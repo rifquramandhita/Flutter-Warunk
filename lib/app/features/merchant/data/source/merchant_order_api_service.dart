@@ -40,10 +40,10 @@ abstract class MerchantOrderApiService {
   Future<HttpResponse<dynamic>> rejectOrder(
     @Path('id') String id,
     @Part(name: 'reason') String reason,
-    @Part(name: 'customer_bank') String customerBank,
-    @Part(name: 'customer_account_number') String customerAccountNumber,
-    @Part(name: 'customer_account_name') String customerAccountName,
-    @Part(name: 'refund_proof') File refundProof,
+    @Part(name: 'customer_bank') String? customerBank,
+    @Part(name: 'customer_account_number') String? customerAccountNumber,
+    @Part(name: 'customer_account_name') String? customerAccountName,
+    @Part(name: 'refund_proof') File? refundProof,
   );
 
   @MultiPart()

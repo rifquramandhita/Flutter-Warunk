@@ -10,9 +10,9 @@ MerchantOrderRejectParam _$MerchantOrderRejectParamFromJson(
   Map<String, dynamic> json,
 ) => MerchantOrderRejectParam(
   reason: json['reason'] as String,
-  customerBank: json['customer_bank'] as String,
-  customerAccountNumber: json['customer_account_number'] as String,
-  customerAccountName: json['customer_account_name'] as String,
+  customerBank: json['customer_bank'] as String?,
+  customerAccountNumber: json['customer_account_number'] as String?,
+  customerAccountName: json['customer_account_name'] as String?,
   $type: json['runtimeType'] as String?,
 );
 
@@ -20,9 +20,9 @@ Map<String, dynamic> _$MerchantOrderRejectParamToJson(
   MerchantOrderRejectParam instance,
 ) => <String, dynamic>{
   'reason': instance.reason,
-  'customer_bank': instance.customerBank,
-  'customer_account_number': instance.customerAccountNumber,
-  'customer_account_name': instance.customerAccountName,
+  'customer_bank': ?instance.customerBank,
+  'customer_account_number': ?instance.customerAccountNumber,
+  'customer_account_name': ?instance.customerAccountName,
   'runtimeType': instance.$type,
 };
 
