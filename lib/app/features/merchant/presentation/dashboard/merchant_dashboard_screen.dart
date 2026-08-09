@@ -24,7 +24,9 @@ class MerchantDashboardScreen extends StatelessWidget {
   const MerchantDashboardScreen({super.key});
 
   Future<void> _checkAndShowPopups(
-      BuildContext context, MerchantDashboardState state) async {
+    BuildContext context,
+    MerchantDashboardState state,
+  ) async {
     _isCheckingPopup = true;
 
     if (state.hasWelcomePopup) {
@@ -32,17 +34,29 @@ class MerchantDashboardScreen extends StatelessWidget {
         context: context,
         barrierDismissible: false,
         builder: (dialogContext) => AlertDialog(
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-          title: Text('Selamat akun Merchant Anda sudah aktif',
-              style: GlobalHelper.getTextTheme(context, appTextStyle: AppTextStyle.TITLE_MEDIUM)?.copyWith(fontWeight: FontWeight.bold)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          title: Text(
+            'Selamat akun Merchant Anda sudah aktif',
+            style: GlobalHelper.getTextTheme(
+              context,
+              appTextStyle: AppTextStyle.TITLE_MEDIUM,
+            )?.copyWith(fontWeight: FontWeight.bold),
+          ),
           content: const Text(
-              'Anda bisa gunakan akun merchant Anda juga untuk berbelanja sebagai customer.'),
+            'Anda bisa gunakan akun merchant Anda juga untuk berbelanja sebagai customer.',
+          ),
           actions: [
             TextButton(
               onPressed: () => navigatorKey.currentState?.pop(),
-              child: Text('Tutup',
-                  style: GlobalHelper.getTextTheme(context, appTextStyle: AppTextStyle.LABEL_LARGE)?.copyWith(fontWeight: FontWeight.bold)),
+              child: Text(
+                'Tutup',
+                style: GlobalHelper.getTextTheme(
+                  context,
+                  appTextStyle: AppTextStyle.LABEL_LARGE,
+                )?.copyWith(fontWeight: FontWeight.bold),
+              ),
             ),
           ],
         ),
@@ -51,41 +65,56 @@ class MerchantDashboardScreen extends StatelessWidget {
 
     if (!context.mounted) return;
 
-    if (state.merchantName.trim().isEmpty || 
-        state.merchantName == 'Warunk Bu Siti' || 
+    if (state.merchantName.trim().isEmpty ||
+        state.merchantName == 'Warunk Bu Siti' ||
         state.merchantCategory.trim().isEmpty) {
       await showDialog(
         context: context,
         barrierDismissible: false,
         builder: (dialogContext) => AlertDialog(
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-          title: Text('Toko Anda berhasil dibuat!',
-              style: GlobalHelper.getTextTheme(context, appTextStyle: AppTextStyle.TITLE_MEDIUM)?.copyWith(fontWeight: FontWeight.bold)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          title: Text(
+            'Toko Anda berhasil dibuat!',
+            style: GlobalHelper.getTextTheme(
+              context,
+              appTextStyle: AppTextStyle.TITLE_MEDIUM,
+            )?.copyWith(fontWeight: FontWeight.bold),
+          ),
           content: const Text(
-              'Yuk Atur Toko Anda supaya bisa diakses pelanggan'),
+            'Yuk Atur Toko Anda supaya bisa diakses pelanggan',
+          ),
           actions: [
             TextButton(
               onPressed: () {
                 navigatorKey.currentState?.pop();
               },
-              child: Text('Nanti saja!',
-                  style: GlobalHelper.getTextTheme(context, appTextStyle: AppTextStyle.LABEL_LARGE)?.copyWith(color: Colors.grey)),
+              child: Text(
+                'Nanti saja!',
+                style: GlobalHelper.getTextTheme(
+                  context,
+                  appTextStyle: AppTextStyle.LABEL_LARGE,
+                )?.copyWith(color: Colors.grey),
+              ),
             ),
             ElevatedButton(
               onPressed: () {
                 navigatorKey.currentState?.pop();
-                navigatorKey.currentState?.push(
-                  MaterialPageRoute(
-                    builder: (_) => const MerchantEditProfilScreen(isSetupMode: true),
-                  ),
-                ).then((_) {
-                  if (context.mounted) {
-                    context
-                        .read<MerchantDashboardBloc>()
-                        .add(MerchantDashboardEventGet());
-                  }
-                });
+                navigatorKey.currentState
+                    ?.push(
+                      MaterialPageRoute(
+                        builder: (_) =>
+                            const MerchantEditProfilScreen(isSetupMode: true),
+                      ),
+                    )
+                    .then((_) {
+                      if (context.mounted) {
+                        context.read<MerchantDashboardBloc>().add(
+                          MerchantDashboardEventGet(),
+                        );
+                      }
+                    });
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: GlobalHelper.getColorSchema(context).primary,
@@ -93,15 +122,19 @@ class MerchantDashboardScreen extends StatelessWidget {
                   borderRadius: BorderRadius.circular(8),
                 ),
               ),
-              child: Text('Atur toko sekarang!',
-                  style: GlobalHelper.getTextTheme(context, appTextStyle: AppTextStyle.LABEL_LARGE)?.copyWith(
-                      color: Colors.white, fontWeight: FontWeight.bold)),
+              child: Text(
+                'Atur toko sekarang!',
+                style: GlobalHelper.getTextTheme(
+                  context,
+                  appTextStyle: AppTextStyle.LABEL_LARGE,
+                )?.copyWith(color: Colors.white, fontWeight: FontWeight.bold),
+              ),
             ),
           ],
         ),
       );
     }
-    
+
     // Reset checking status so if state changes again (e.g. pull to refresh),
     // it will check if store is still not setup and show popup 2 again.
     if (context.mounted) {
@@ -122,7 +155,9 @@ class MerchantDashboardScreen extends StatelessWidget {
               text: state.errorMessage!,
             );
           }
-          if (!state.isLoading && !_isCheckingPopup && state.errorMessage == null) {
+          if (!state.isLoading &&
+              !_isCheckingPopup &&
+              state.errorMessage == null) {
             _checkAndShowPopups(context, state);
           }
         },
@@ -383,10 +418,10 @@ class MerchantDashboardScreen extends StatelessWidget {
                   iconBg: const Color(0xFFF0FDF4),
                   icon: Icons.account_balance_wallet_outlined,
                   iconColor: colorSchema.primary,
-                  label: 'Saldo UANK Masuk',
+                  label: 'Saldo UANK',
                   value: currency.format(state.balance),
                   valueColor: colorSchema.primary,
-                  subtitle: 'Dapat ditarik',
+                  subtitle: '',
                 ),
               ),
             ],
@@ -875,7 +910,9 @@ Widget _statusBadge(BuildContext context, {required OrderStatus? status}) {
     OrderStatus.shipped || OrderStatus.received => colorSchema.primary,
     OrderStatus.completed => const Color(0xFF22C55E),
 
-    OrderStatus.cancelled || OrderStatus.rejected || OrderStatus.paymentExpired => colorSchema.error,
+    OrderStatus.cancelled ||
+    OrderStatus.rejected ||
+    OrderStatus.paymentExpired => colorSchema.error,
   };
 
   return Container(
