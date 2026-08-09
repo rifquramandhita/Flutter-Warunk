@@ -1153,7 +1153,7 @@ MerchantDashboardBestProduct _$MerchantDashboardBestProductFromJson(
 /// @nodoc
 mixin _$MerchantDashboardBestProduct {
 
- String get id; String get name; int get price; int get sold; int get revenue; String get image;
+ String get id; String get name; int get price; int get sold; int get revenue;
 /// Create a copy of MerchantDashboardBestProduct
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -1166,16 +1166,16 @@ $MerchantDashboardBestProductCopyWith<MerchantDashboardBestProduct> get copyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MerchantDashboardBestProduct&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.price, price) || other.price == price)&&(identical(other.sold, sold) || other.sold == sold)&&(identical(other.revenue, revenue) || other.revenue == revenue)&&(identical(other.image, image) || other.image == image));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MerchantDashboardBestProduct&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.price, price) || other.price == price)&&(identical(other.sold, sold) || other.sold == sold)&&(identical(other.revenue, revenue) || other.revenue == revenue));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,name,price,sold,revenue,image);
+int get hashCode => Object.hash(runtimeType,id,name,price,sold,revenue);
 
 @override
 String toString() {
-  return 'MerchantDashboardBestProduct(id: $id, name: $name, price: $price, sold: $sold, revenue: $revenue, image: $image)';
+  return 'MerchantDashboardBestProduct(id: $id, name: $name, price: $price, sold: $sold, revenue: $revenue)';
 }
 
 
@@ -1186,7 +1186,7 @@ abstract mixin class $MerchantDashboardBestProductCopyWith<$Res>  {
   factory $MerchantDashboardBestProductCopyWith(MerchantDashboardBestProduct value, $Res Function(MerchantDashboardBestProduct) _then) = _$MerchantDashboardBestProductCopyWithImpl;
 @useResult
 $Res call({
- String id, String name, int price, int sold, int revenue, String image
+ String id, String name, int price, int sold, int revenue
 });
 
 
@@ -1203,15 +1203,14 @@ class _$MerchantDashboardBestProductCopyWithImpl<$Res>
 
 /// Create a copy of MerchantDashboardBestProduct
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? price = null,Object? sold = null,Object? revenue = null,Object? image = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? price = null,Object? sold = null,Object? revenue = null,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,price: null == price ? _self.price : price // ignore: cast_nullable_to_non_nullable
 as int,sold: null == sold ? _self.sold : sold // ignore: cast_nullable_to_non_nullable
 as int,revenue: null == revenue ? _self.revenue : revenue // ignore: cast_nullable_to_non_nullable
-as int,image: null == image ? _self.image : image // ignore: cast_nullable_to_non_nullable
-as String,
+as int,
   ));
 }
 
@@ -1293,10 +1292,10 @@ return entity(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String id,  String name,  int price,  int sold,  int revenue,  String image)?  entity,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String id,  String name,  int price,  int sold,  int revenue)?  entity,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case MerchantDashboardBestProductEntity() when entity != null:
-return entity(_that.id,_that.name,_that.price,_that.sold,_that.revenue,_that.image);case _:
+return entity(_that.id,_that.name,_that.price,_that.sold,_that.revenue);case _:
   return orElse();
 
 }
@@ -1314,10 +1313,10 @@ return entity(_that.id,_that.name,_that.price,_that.sold,_that.revenue,_that.ima
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String id,  String name,  int price,  int sold,  int revenue,  String image)  entity,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String id,  String name,  int price,  int sold,  int revenue)  entity,}) {final _that = this;
 switch (_that) {
 case MerchantDashboardBestProductEntity():
-return entity(_that.id,_that.name,_that.price,_that.sold,_that.revenue,_that.image);}
+return entity(_that.id,_that.name,_that.price,_that.sold,_that.revenue);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -1331,10 +1330,10 @@ return entity(_that.id,_that.name,_that.price,_that.sold,_that.revenue,_that.ima
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String id,  String name,  int price,  int sold,  int revenue,  String image)?  entity,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String id,  String name,  int price,  int sold,  int revenue)?  entity,}) {final _that = this;
 switch (_that) {
 case MerchantDashboardBestProductEntity() when entity != null:
-return entity(_that.id,_that.name,_that.price,_that.sold,_that.revenue,_that.image);case _:
+return entity(_that.id,_that.name,_that.price,_that.sold,_that.revenue);case _:
   return null;
 
 }
@@ -1346,7 +1345,7 @@ return entity(_that.id,_that.name,_that.price,_that.sold,_that.revenue,_that.ima
 
 @JsonSerializable(fieldRename: FieldRename.snake, includeIfNull: false)
 class MerchantDashboardBestProductEntity implements MerchantDashboardBestProduct {
-  const MerchantDashboardBestProductEntity({required this.id, required this.name, required this.price, required this.sold, required this.revenue, required this.image});
+  const MerchantDashboardBestProductEntity({required this.id, required this.name, required this.price, required this.sold, required this.revenue});
   factory MerchantDashboardBestProductEntity.fromJson(Map<String, dynamic> json) => _$MerchantDashboardBestProductEntityFromJson(json);
 
 @override final  String id;
@@ -1354,7 +1353,6 @@ class MerchantDashboardBestProductEntity implements MerchantDashboardBestProduct
 @override final  int price;
 @override final  int sold;
 @override final  int revenue;
-@override final  String image;
 
 /// Create a copy of MerchantDashboardBestProduct
 /// with the given fields replaced by the non-null parameter values.
@@ -1369,16 +1367,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MerchantDashboardBestProductEntity&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.price, price) || other.price == price)&&(identical(other.sold, sold) || other.sold == sold)&&(identical(other.revenue, revenue) || other.revenue == revenue)&&(identical(other.image, image) || other.image == image));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MerchantDashboardBestProductEntity&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.price, price) || other.price == price)&&(identical(other.sold, sold) || other.sold == sold)&&(identical(other.revenue, revenue) || other.revenue == revenue));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,name,price,sold,revenue,image);
+int get hashCode => Object.hash(runtimeType,id,name,price,sold,revenue);
 
 @override
 String toString() {
-  return 'MerchantDashboardBestProduct.entity(id: $id, name: $name, price: $price, sold: $sold, revenue: $revenue, image: $image)';
+  return 'MerchantDashboardBestProduct.entity(id: $id, name: $name, price: $price, sold: $sold, revenue: $revenue)';
 }
 
 
@@ -1389,7 +1387,7 @@ abstract mixin class $MerchantDashboardBestProductEntityCopyWith<$Res> implement
   factory $MerchantDashboardBestProductEntityCopyWith(MerchantDashboardBestProductEntity value, $Res Function(MerchantDashboardBestProductEntity) _then) = _$MerchantDashboardBestProductEntityCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String name, int price, int sold, int revenue, String image
+ String id, String name, int price, int sold, int revenue
 });
 
 
@@ -1406,15 +1404,14 @@ class _$MerchantDashboardBestProductEntityCopyWithImpl<$Res>
 
 /// Create a copy of MerchantDashboardBestProduct
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? price = null,Object? sold = null,Object? revenue = null,Object? image = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? price = null,Object? sold = null,Object? revenue = null,}) {
   return _then(MerchantDashboardBestProductEntity(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,price: null == price ? _self.price : price // ignore: cast_nullable_to_non_nullable
 as int,sold: null == sold ? _self.sold : sold // ignore: cast_nullable_to_non_nullable
 as int,revenue: null == revenue ? _self.revenue : revenue // ignore: cast_nullable_to_non_nullable
-as int,image: null == image ? _self.image : image // ignore: cast_nullable_to_non_nullable
-as String,
+as int,
   ));
 }
 

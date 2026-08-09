@@ -23,8 +23,9 @@ import 'package:intl/intl.dart';
 // ─────────────────────────────────────────────────────────────────────────────
 class MerchantInputProductScreen extends StatelessWidget {
   final String? id;
+  final bool isSetupMode;
 
-  const MerchantInputProductScreen({super.key, this.id});
+  const MerchantInputProductScreen({super.key, this.id, this.isSetupMode = false});
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +41,7 @@ class MerchantInputProductScreen extends StatelessWidget {
             );
           }
           if (state.isSuccess) {
-            navigatorKey.currentState?.pop();
+            navigatorKey.currentState?.pop(isSetupMode);
           }
         },
         builder: (context, state) {

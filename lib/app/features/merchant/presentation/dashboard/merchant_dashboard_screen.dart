@@ -108,7 +108,41 @@ class MerchantDashboardScreen extends StatelessWidget {
                             const MerchantEditProfilScreen(isSetupMode: true),
                       ),
                     )
-                    .then((_) {
+                    .then((result) {
+                      if (result == true && context.mounted) {
+                        showDialog(
+                          context: context,
+                          builder: (dialogContext) => AlertDialog(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            title: Text(
+                              'Hore!',
+                              style: GlobalHelper.getTextTheme(
+                                context,
+                                appTextStyle: AppTextStyle.TITLE_MEDIUM,
+                              )?.copyWith(fontWeight: FontWeight.bold),
+                            ),
+                            content: const Text(
+                              'Tokomu sudah bisa dibelanjakan oleh customer!',
+                            ),
+                            actions: [
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.pop(dialogContext);
+                                },
+                                child: Text(
+                                  'Tutup',
+                                  style: GlobalHelper.getTextTheme(
+                                    context,
+                                    appTextStyle: AppTextStyle.LABEL_LARGE,
+                                  )?.copyWith(fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      }
                       if (context.mounted) {
                         context.read<MerchantDashboardBloc>().add(
                           MerchantDashboardEventGet(),

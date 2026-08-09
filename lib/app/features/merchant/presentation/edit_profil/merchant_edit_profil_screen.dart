@@ -10,6 +10,7 @@ import 'package:warunk/core/widgets/primary_button.dart';
 import 'package:warunk/main.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:warunk/app/features/merchant/domain/entity/merchant_category.dart';
+import 'package:warunk/app/features/merchant/presentation/input_product/merchant_input_product_screen.dart';
 
 class MerchantEditProfilScreen extends StatefulWidget {
   final bool isSetupMode;
@@ -39,20 +40,39 @@ class _MerchantEditProfilScreenState extends State<MerchantEditProfilScreen> {
           if (state.isSuccess) {
             DialogHelper.showBottomSheetDialog(
               context: context,
-              title: "Success",
+              title: widget.isSetupMode ? "Toko Berhasil Diatur!" : "Success",
               content: Column(
                 children: [
-                  Text("Berhasil memperbarui data merchant"),
+                  Text(widget.isSetupMode 
+                      ? "Langkah selanjutnya, yuk tambahkan produk pertama Anda agar pelanggan bisa mulai berbelanja."
+                      : "Berhasil memperbarui data merchant"),
                   SizedBox(height: 24),
                   PrimaryButton(
-                    label: "Tutup",
-                    onPressed: () {
+                    label: widget.isSetupMode ? "Tambah Produk Sekarang" : "Tutup",
+                    onPressed: () async {
                       navigatorKey.currentState?.pop(); // close dialog
                       if (widget.isSetupMode) {
-                        navigatorKey.currentState?.pop(); // go back to previous screen
+                        final result = await navigatorKey.currentState?.push(
+                          MaterialPageRoute(
+                            builder: (_) => const MerchantInputProductScreen(isSetupMode: true),
+                          ),
+                        );
+                        if (result == true) {
+                          navigatorKey.currentState?.pop(true);
+                        }
                       }
                     },
                   ),
+                  if (widget.isSetupMode) ...[
+                    SizedBox(height: 12),
+                    TextButton(
+                      onPressed: () {
+                        navigatorKey.currentState?.pop(); // close dialog
+                        navigatorKey.currentState?.pop(); // go back to dashboard
+                      },
+                      child: Text('Nanti saja', style: TextStyle(color: Colors.grey)),
+                    ),
+                  ]
                 ],
               ),
             );

@@ -124,7 +124,6 @@ MerchantDashboardBestProductEntity _$MerchantDashboardBestProductEntityFromJson(
   price: (json['price'] as num).toInt(),
   sold: (json['sold'] as num).toInt(),
   revenue: (json['revenue'] as num).toInt(),
-  image: json['image'] as String,
 );
 
 Map<String, dynamic> _$MerchantDashboardBestProductEntityToJson(
@@ -135,7 +134,6 @@ Map<String, dynamic> _$MerchantDashboardBestProductEntityToJson(
   'price': instance.price,
   'sold': instance.sold,
   'revenue': instance.revenue,
-  'image': instance.image,
 };
 
 MerchantDashboardRecentOrderEntity _$MerchantDashboardRecentOrderEntityFromJson(
@@ -174,6 +172,7 @@ const _$OrderStatusEnumMap = {
   OrderStatus.completed: 'completed',
   OrderStatus.cancelled: 'cancelled',
   OrderStatus.rejected: 'rejected',
+  OrderStatus.paymentExpired: 'payment_expired',
 };
 
 MerchantDashboardMerchantInfoEntity

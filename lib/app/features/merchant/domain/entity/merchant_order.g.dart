@@ -185,4 +185,5 @@ const _$OrderStatusEnumMap = {
   OrderStatus.completed: 'completed',
   OrderStatus.cancelled: 'cancelled',
   OrderStatus.rejected: 'rejected',
+  OrderStatus.paymentExpired: 'payment_expired',
 };

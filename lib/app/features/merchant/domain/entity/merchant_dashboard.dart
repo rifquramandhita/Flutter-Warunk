@@ -74,7 +74,6 @@ sealed class MerchantDashboardBestProduct with _$MerchantDashboardBestProduct {
     required int price,
     required int sold,
     required int revenue,
-    required String image,
   }) = MerchantDashboardBestProductEntity;
 
   factory MerchantDashboardBestProduct.fromJson(Map<String, dynamic> json) =>
