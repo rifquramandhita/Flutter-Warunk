@@ -2,6 +2,7 @@ import 'package:warunk/app/features/customer/data/source/customer_merchant_api_s
 import 'package:warunk/app/features/customer/domain/entity/customer_merchant.dart';
 import 'package:warunk/app/features/customer/domain/entity/customer_merchant_category.dart';
 import 'package:warunk/app/features/customer/domain/entity/customer_merchant_quick_category.dart';
+import 'package:warunk/app/features/customer/domain/entity/customer_report_send_param.dart';
 import 'package:warunk/app/features/customer/domain/repository/customer_merchant_repository.dart';
 import 'package:warunk/core/network/data_state.dart';
 
@@ -91,5 +92,26 @@ class CustomerMerchantRepositoryImpl implements CustomerMerchantRepository {
       }
       return <CustomerMerchantEntity>[];
     });
+  }
+
+  @override
+  Future<DataState<List<String>>> getReportCategories() {
+    return handleResponse(() => _apiService.getReportCategories(), (json) {
+      if (json is Map<String, dynamic> && json['categories'] is List) {
+        return (json['categories'] as List).map((e) => e.toString()).toList();
+      }
+      return <String>[];
+    });
+  }
+
+  @override
+  Future<DataState<bool>> sendReport(CustomerReportSendParam param) {
+    return handleResponse(
+      () => _apiService.sendReport(
+        merchantId: param.merchantId,
+        body: param.toJson(),
+      ),
+      (json) => true,
+    );
   }
 }

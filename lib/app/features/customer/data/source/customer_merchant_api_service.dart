@@ -36,4 +36,13 @@ abstract class CustomerMerchantApiService {
     @Query('latitude') required double latitude,
     @Query('longitude') required double longitude,
   });
+
+  @GET('/api/merchant-report-categories')
+  Future<HttpResponse<dynamic>> getReportCategories();
+
+  @POST('/api/merchants/{merchant}/reports')
+  Future<HttpResponse<dynamic>> sendReport({
+    @Path('merchant') required String merchantId,
+    @Body() required Map<String, dynamic> body,
+  });
 }

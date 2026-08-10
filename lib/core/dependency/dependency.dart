@@ -130,6 +130,8 @@ import 'package:warunk/app/features/customer/domain/use_case/customer_merchant_g
 import 'package:warunk/app/features/customer/domain/use_case/customer_merchant_get_quick_category_use_case.dart';
 import 'package:warunk/app/features/customer/domain/use_case/customer_merchant_get_by_quick_filter_use_case.dart';
 import 'package:warunk/app/features/customer/domain/use_case/customer_merchant_get_nearby_use_case.dart';
+import 'package:warunk/app/features/customer/domain/use_case/customer_report_get_category_use_case.dart';
+import 'package:warunk/app/features/customer/domain/use_case/customer_report_send_use_case.dart';
 import 'package:warunk/app/features/customer/data/source/customer_cart_api_service.dart';
 import 'package:warunk/app/features/customer/domain/repository/customer_cart_repository.dart';
 import 'package:warunk/app/features/customer/data/repository/customer_cart_repository_impl.dart';
@@ -182,6 +184,7 @@ import 'package:warunk/app/features/customer/domain/repository/customer_notifica
 import 'package:warunk/app/features/customer/data/repository/customer_notification_repository_impl.dart';
 import 'package:warunk/app/features/customer/domain/use_case/customer_notification_get_use_case.dart';
 import 'package:warunk/app/features/customer/presentation/notification/bloc/customer_notification_bloc.dart';
+import 'package:warunk/app/features/customer/presentation/report_merchant/bloc/customer_report_merchant_bloc.dart';
 import 'package:warunk/app/features/merchant/data/source/merchant_notification_api_service.dart';
 import 'package:warunk/app/features/merchant/domain/repository/merchant_notification_repository.dart';
 import 'package:warunk/app/features/merchant/data/repository/merchant_notification_repository_impl.dart';
@@ -372,6 +375,12 @@ Future<void> initDependency() async {
   );
   sl.registerLazySingleton(
     () => CustomerMerchantGetNearbyUseCase(repository: sl()),
+  );
+  sl.registerLazySingleton(
+    () => CustomerReportGetCategoryUseCase(repository: sl()),
+  );
+  sl.registerLazySingleton(
+    () => CustomerReportSendUseCase(repository: sl()),
   );
   sl.registerLazySingleton(() => CustomerProductGetUseCase(repository: sl()));
   sl.registerLazySingleton(
@@ -586,6 +595,12 @@ Future<void> initDependency() async {
   sl.registerFactory(() => MerchantDashboardBloc(getUseCase: sl()));
   sl.registerFactory(() => CustomerNotificationBloc(getUseCase: sl()));
   sl.registerFactory(() => MerchantNotificationBloc(getUseCase: sl()));
+  sl.registerFactory(
+    () => CustomerReportMerchantBloc(
+      getCategoryUseCase: sl(),
+      sendUseCase: sl(),
+    ),
+  );
   sl.registerFactory(
     () => CustomerMapBloc(
       getNearbyUseCase: sl(),

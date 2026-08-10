@@ -1,6 +1,7 @@
 import 'package:warunk/app/features/customer/domain/entity/customer_merchant.dart';
 import 'package:warunk/app/features/customer/domain/entity/customer_merchant_category.dart';
 import 'package:warunk/app/features/customer/domain/entity/customer_merchant_quick_category.dart';
+import 'package:warunk/app/features/customer/domain/entity/customer_report_send_param.dart';
 import 'package:warunk/core/network/data_state.dart';
 
 abstract class CustomerMerchantRepository {
@@ -10,4 +11,6 @@ abstract class CustomerMerchantRepository {
   Future<DataState<List<CustomerMerchantQuickCategoryEntity>>> getQuickCategories();
   Future<DataState<List<CustomerMerchantEntity>>> getByQuickFilter({required String key, required double latitude, required double longitude});
   Future<DataState<List<CustomerMerchantEntity>>> getNearby({required double latitude, required double longitude});
+  Future<DataState<List<String>>> getReportCategories();
+  Future<DataState<bool>> sendReport(CustomerReportSendParam param);
 }

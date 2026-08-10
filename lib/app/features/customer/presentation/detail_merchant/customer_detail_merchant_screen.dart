@@ -14,6 +14,7 @@ import 'package:warunk/core/helper/number_helper.dart';
 import 'package:warunk/core/widgets/loading_app_widget.dart';
 import 'package:warunk/main.dart';
 import 'package:warunk/app/features/customer/presentation/chat/customer_chat_webview_screen.dart';
+import 'package:warunk/app/features/customer/presentation/report_merchant/customer_report_merchant_screen.dart';
 
 class CustomerDetailMerchantScreen extends StatelessWidget {
   final String storeId;
@@ -64,163 +65,374 @@ class CustomerDetailMerchantScreen extends StatelessWidget {
           RefreshIndicator(
             onRefresh: () async {
               context.read<CustomerDetailMerchantBloc>().add(
-                    CustomerDetailMerchantEventGet(storeId: storeId),
-                  );
+                CustomerDetailMerchantEventGet(storeId: storeId),
+              );
             },
             child: NestedScrollView(
               headerSliverBuilder: (context, innerBoxIsScrolled) => [
-            // ── Hero image ────────────────────────────────────────────────────
-            SliverAppBar(
-              pinned: true,
-              expandedHeight: 240,
-              backgroundColor: GlobalHelper.getColorSchema(context).primary,
-              iconTheme: const IconThemeData(color: Colors.white),
-              flexibleSpace: FlexibleSpaceBar(background: _buildHero(context)),
-              actions: [
-                IconButton(
-                  icon: const Icon(Icons.chat_bubble_outline_rounded),
-                  onPressed: () {
-                    final chatUrl = state.merchantDetail?.chatUrl;
-                    if (chatUrl != null) {
-                      navigatorKey.currentState?.push(
-                        MaterialPageRoute(
-                          builder: (_) => CustomerChatWebviewScreen(chatUrl: chatUrl),
-                        ),
-                      );
-                    }
-                  },
+                // ── Hero image ────────────────────────────────────────────────────
+                SliverAppBar(
+                  pinned: true,
+                  expandedHeight: 240,
+                  backgroundColor: GlobalHelper.getColorSchema(context).primary,
+                  iconTheme: const IconThemeData(color: Colors.white),
+                  flexibleSpace: FlexibleSpaceBar(
+                    background: _buildHero(context),
+                  ),
+                  actions: [
+                    IconButton(
+                      icon: const Icon(Icons.chat_bubble_outline_rounded),
+                      onPressed: () {
+                        final chatUrl = state.merchantDetail?.chatUrl;
+                        if (chatUrl != null) {
+                          navigatorKey.currentState?.push(
+                            MaterialPageRoute(
+                              builder: (_) =>
+                                  CustomerChatWebviewScreen(chatUrl: chatUrl),
+                            ),
+                          );
+                        }
+                      },
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.flag_outlined),
+                      onPressed: () {
+                        navigatorKey.currentState?.push(
+                          MaterialPageRoute(
+                            builder: (_) =>
+                                CustomerReportMerchantScreen(storeId: storeId),
+                          ),
+                        );
+                      },
+                    ),
+                  ],
                 ),
-              ],
-            ),
 
-            // ── Store info card ───────────────────────────────────────────────
-            SliverToBoxAdapter(
-              child: Transform.translate(
-                offset: const Offset(0, -8),
-                child: Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 0),
-                  decoration: BoxDecoration(
-                    color: GlobalHelper.getColorSchema(context).surface,
-                    borderRadius: const BorderRadius.vertical(
-                      top: Radius.circular(24),
+                // ── Store info card ───────────────────────────────────────────────
+                SliverToBoxAdapter(
+                  child: Transform.translate(
+                    offset: const Offset(0, -8),
+                    child: Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 0),
+                      decoration: BoxDecoration(
+                        color: GlobalHelper.getColorSchema(context).surface,
+                        borderRadius: const BorderRadius.vertical(
+                          top: Radius.circular(24),
+                        ),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(16, 20, 16, 0),
+                            child: Row(
+                              children: [
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(14),
+                                  child: Container(
+                                    width: 52,
+                                    height: 52,
+                                    color: GlobalHelper.getColorSchema(
+                                      context,
+                                    ).primary.withValues(alpha: 0.1),
+                                    child:
+                                        (state.merchantDetail?.photo != null &&
+                                            state
+                                                .merchantDetail!
+                                                .photo!
+                                                .isNotEmpty)
+                                        ? Image.network(
+                                            state.merchantDetail!.photo!,
+                                            fit: BoxFit.cover,
+                                            errorBuilder: (_, __, ___) => Icon(
+                                              Icons.storefront_rounded,
+                                              color:
+                                                  GlobalHelper.getColorSchema(
+                                                    context,
+                                                  ).primary,
+                                              size: 30,
+                                            ),
+                                          )
+                                        : Icon(
+                                            Icons.storefront_rounded,
+                                            color: GlobalHelper.getColorSchema(
+                                              context,
+                                            ).primary,
+                                            size: 30,
+                                          ),
+                                  ),
+                                ),
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Text(
+                                            state.storeName,
+                                            style:
+                                                GlobalHelper.getTextTheme(
+                                                  context,
+                                                  appTextStyle:
+                                                      AppTextStyle.BODY_LARGE,
+                                                )?.copyWith(
+                                                  fontWeight: FontWeight.w800,
+                                                  color:
+                                                      GlobalHelper.getColorSchema(
+                                                        context,
+                                                      ).onSurface,
+                                                ),
+                                          ),
+                                          const SizedBox(width: 8),
+                                          Container(
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: 8,
+                                              vertical: 3,
+                                            ),
+                                            decoration: BoxDecoration(
+                                              color:
+                                                  GlobalHelper.getColorSchema(
+                                                    context,
+                                                  ).primary.withValues(
+                                                    alpha: 0.1,
+                                                  ),
+                                              borderRadius:
+                                                  BorderRadius.circular(6),
+                                            ),
+                                            child: Text(
+                                              (state.merchantDetail?.isOpen ??
+                                                      false)
+                                                  ? 'Buka'
+                                                  : 'Tutup',
+                                              style:
+                                                  GlobalHelper.getTextTheme(
+                                                    context,
+                                                    appTextStyle: AppTextStyle
+                                                        .LABEL_SMALL,
+                                                  )?.copyWith(
+                                                    fontWeight: FontWeight.w700,
+                                                    color:
+                                                        GlobalHelper.getColorSchema(
+                                                          context,
+                                                        ).primary,
+                                                  ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      const SizedBox(height: 4),
+
+                                      Row(
+                                        children: [
+                                          Icon(
+                                            Icons.location_on_rounded,
+                                            size: 13,
+                                            color: GlobalHelper.getColorSchema(
+                                              context,
+                                            ).onSurface.withValues(alpha: 0.6),
+                                          ),
+                                          const SizedBox(width: 3),
+                                          Expanded(
+                                            child: Text(
+                                              state.merchantDetail?.address ??
+                                                  '-',
+                                              style:
+                                                  GlobalHelper.getTextTheme(
+                                                    context,
+                                                    appTextStyle:
+                                                        AppTextStyle.BODY_SMALL,
+                                                  )?.copyWith(
+                                                    color:
+                                                        GlobalHelper.getColorSchema(
+                                                          context,
+                                                        ).onSurface.withValues(
+                                                          alpha: 0.6,
+                                                        ),
+                                                  ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(16, 20, 16, 0),
-                        child: Row(
-                          children: [
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(14),
-                              child: Container(
-                                width: 52,
-                                height: 52,
-                                color: GlobalHelper.getColorSchema(
-                                  context,
-                                ).primary.withValues(alpha: 0.1),
-                                child:
-                                    (state.merchantDetail?.photo != null &&
-                                        state.merchantDetail!.photo!.isNotEmpty)
-                                    ? Image.network(
-                                        state.merchantDetail!.photo!,
-                                        fit: BoxFit.cover,
-                                        errorBuilder: (_, __, ___) => Icon(
-                                          Icons.storefront_rounded,
-                                          color: GlobalHelper.getColorSchema(
-                                            context,
-                                          ).primary,
-                                          size: 30,
-                                        ),
-                                      )
-                                    : Icon(
-                                        Icons.storefront_rounded,
-                                        color: GlobalHelper.getColorSchema(
-                                          context,
-                                        ).primary,
-                                        size: 30,
-                                      ),
+                ),
+
+                // ── Main Tab Bar ───────────────────────────────────────────────────
+                SliverPersistentHeader(
+                  pinned: true,
+                  delegate: _SliverTabBarDelegate(
+                    TabBar(
+                      labelStyle: GlobalHelper.getTextTheme(
+                        context,
+                        appTextStyle: AppTextStyle.LABEL_MEDIUM,
+                      )?.copyWith(fontWeight: FontWeight.bold),
+                      unselectedLabelStyle: GlobalHelper.getTextTheme(
+                        context,
+                        appTextStyle: AppTextStyle.LABEL_MEDIUM,
+                      ),
+                      labelColor: GlobalHelper.getColorSchema(context).primary,
+                      unselectedLabelColor: GlobalHelper.getColorSchema(
+                        context,
+                      ).onSurface.withValues(alpha: 0.6),
+                      indicatorColor: GlobalHelper.getColorSchema(
+                        context,
+                      ).primary,
+                      tabs: const [
+                        Tab(text: 'Produk'),
+                        Tab(text: 'Tentang Toko'),
+                        Tab(text: 'Review'),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+              body: TabBarView(
+                children: [
+                  // Tab 1: Produk
+                  CustomScrollView(
+                    slivers: [
+                      // ── Categories Tabs ───────────────────────────────────────────────────
+                      SliverPersistentHeader(
+                        pinned: true,
+                        delegate: _SliverCategoryDelegate(
+                          child: Container(
+                            height: 56,
+                            color: GlobalHelper.getColorSchema(context).surface,
+                            child: SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 16,
                               ),
-                            ),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    children: [
-                                      Text(
-                                        state.storeName,
+                              child: Row(
+                                children: List.generate(state.categories.length, (
+                                  i,
+                                ) {
+                                  final selected = state.selectedCategory == i;
+                                  return GestureDetector(
+                                    onTap: () => context
+                                        .read<CustomerDetailMerchantBloc>()
+                                        .add(
+                                          CustomerDetailMerchantEventSelectCategory(
+                                            i,
+                                          ),
+                                        ),
+                                    child: Container(
+                                      margin: const EdgeInsets.only(right: 10),
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 18,
+                                        vertical: 8,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: selected
+                                            ? GlobalHelper.getColorSchema(
+                                                context,
+                                              ).primary
+                                            : GlobalHelper.getColorSchema(
+                                                context,
+                                              ).surface,
+                                        borderRadius: BorderRadius.circular(20),
+                                        border: selected
+                                            ? null
+                                            : Border.all(
+                                                color:
+                                                    GlobalHelper.getColorSchema(
+                                                      context,
+                                                    ).outlineVariant,
+                                              ),
+                                      ),
+                                      child: Text(
+                                        state.categories[i],
                                         style:
                                             GlobalHelper.getTextTheme(
                                               context,
                                               appTextStyle:
-                                                  AppTextStyle.BODY_LARGE,
+                                                  AppTextStyle.LABEL_MEDIUM,
                                             )?.copyWith(
-                                              fontWeight: FontWeight.w800,
-                                              color:
-                                                  GlobalHelper.getColorSchema(
-                                                    context,
-                                                  ).onSurface,
+                                              fontWeight: selected
+                                                  ? FontWeight.w700
+                                                  : FontWeight.w500,
+                                              color: selected
+                                                  ? GlobalHelper.getColorSchema(
+                                                      context,
+                                                    ).onPrimary
+                                                  : GlobalHelper.getColorSchema(
+                                                      context,
+                                                    ).onSurface.withValues(
+                                                      alpha: 0.6,
+                                                    ),
                                             ),
                                       ),
-                                      const SizedBox(width: 8),
-                                      Container(
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 8,
-                                          vertical: 3,
-                                        ),
-                                        decoration: BoxDecoration(
+                                    ),
+                                  );
+                                }),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+
+                      const SliverToBoxAdapter(child: SizedBox(height: 16)),
+
+                      // ── Product Grid ──────────────────────────────────────────────────────
+                      SliverPadding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        sliver: Builder(
+                          builder: (context) {
+                            final selectedCategoryName =
+                                state.categories.isNotEmpty &&
+                                    state.selectedCategory <
+                                        state.categories.length
+                                ? state.categories[state.selectedCategory]
+                                : 'Semua';
+                            final filteredProducts =
+                                selectedCategoryName == 'Semua'
+                                ? state.products
+                                : state.products
+                                      .where(
+                                        (p) =>
+                                            p.category == selectedCategoryName,
+                                      )
+                                      .toList();
+
+                            if (filteredProducts.isEmpty) {
+                              return SliverToBoxAdapter(
+                                child: Padding(
+                                  padding: const EdgeInsets.only(
+                                    top: 48.0,
+                                    bottom: 48.0,
+                                  ),
+                                  child: Center(
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Icon(
+                                          Icons.inventory_2_outlined,
+                                          size: 64,
                                           color: GlobalHelper.getColorSchema(
                                             context,
-                                          ).primary.withValues(alpha: 0.1),
-                                          borderRadius: BorderRadius.circular(
-                                            6,
-                                          ),
+                                          ).onSurface.withValues(alpha: 0.3),
                                         ),
-                                        child: Text(
-                                          (state.merchantDetail?.isOpen ??
-                                                  false)
-                                              ? 'Buka'
-                                              : 'Tutup',
+                                        const SizedBox(height: 16),
+                                        Text(
+                                          'Tidak ada produk',
                                           style:
                                               GlobalHelper.getTextTheme(
                                                 context,
                                                 appTextStyle:
-                                                    AppTextStyle.LABEL_SMALL,
+                                                    AppTextStyle.BODY_LARGE,
                                               )?.copyWith(
-                                                fontWeight: FontWeight.w700,
-                                                color:
-                                                    GlobalHelper.getColorSchema(
-                                                      context,
-                                                    ).primary,
-                                              ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(height: 4),
-
-                                  Row(
-                                    children: [
-                                      Icon(
-                                        Icons.location_on_rounded,
-                                        size: 13,
-                                        color: GlobalHelper.getColorSchema(
-                                          context,
-                                        ).onSurface.withValues(alpha: 0.6),
-                                      ),
-                                      const SizedBox(width: 3),
-                                      Expanded(
-                                        child: Text(
-                                          state.merchantDetail?.address ?? '-',
-                                          style:
-                                              GlobalHelper.getTextTheme(
-                                                context,
-                                                appTextStyle:
-                                                    AppTextStyle.BODY_SMALL,
-                                              )?.copyWith(
+                                                fontWeight: FontWeight.bold,
                                                 color:
                                                     GlobalHelper.getColorSchema(
                                                       context,
@@ -229,315 +441,174 @@ class CustomerDetailMerchantScreen extends StatelessWidget {
                                                     ),
                                               ),
                                         ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-
-            // ── Main Tab Bar ───────────────────────────────────────────────────
-            SliverPersistentHeader(
-              pinned: true,
-              delegate: _SliverTabBarDelegate(
-                TabBar(
-                  labelStyle: GlobalHelper.getTextTheme(context, appTextStyle: AppTextStyle.LABEL_MEDIUM)?.copyWith(fontWeight: FontWeight.bold),
-                  unselectedLabelStyle: GlobalHelper.getTextTheme(context, appTextStyle: AppTextStyle.LABEL_MEDIUM),
-                  labelColor: GlobalHelper.getColorSchema(context).primary,
-                  unselectedLabelColor: GlobalHelper.getColorSchema(context).onSurface.withValues(alpha: 0.6),
-                  indicatorColor: GlobalHelper.getColorSchema(context).primary,
-                  tabs: const [
-                    Tab(text: 'Produk'),
-                    Tab(text: 'Tentang Toko'),
-                    Tab(text: 'Review'),
-                  ],
-                ),
-              ),
-            ),
-          ],
-          body: TabBarView(
-            children: [
-              // Tab 1: Produk
-              CustomScrollView(
-                slivers: [
-                  // ── Categories Tabs ───────────────────────────────────────────────────
-                  SliverPersistentHeader(
-                    pinned: true,
-                    delegate: _SliverCategoryDelegate(
-                child: Container(
-                  height: 56,
-                  color: GlobalHelper.getColorSchema(context).surface,
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Row(
-                      children: List.generate(state.categories.length, (i) {
-                        final selected = state.selectedCategory == i;
-                        return GestureDetector(
-                          onTap: () =>
-                              context.read<CustomerDetailMerchantBloc>().add(
-                                CustomerDetailMerchantEventSelectCategory(i),
-                              ),
-                          child: Container(
-                            margin: const EdgeInsets.only(right: 10),
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 18,
-                              vertical: 8,
-                            ),
-                            decoration: BoxDecoration(
-                              color: selected
-                                  ? GlobalHelper.getColorSchema(context).primary
-                                  : GlobalHelper.getColorSchema(
-                                      context,
-                                    ).surface,
-                              borderRadius: BorderRadius.circular(20),
-                              border: selected
-                                  ? null
-                                  : Border.all(
-                                      color: GlobalHelper.getColorSchema(
-                                        context,
-                                      ).outlineVariant,
+                                      ],
                                     ),
-                            ),
-                            child: Text(
-                              state.categories[i],
-                              style:
-                                  GlobalHelper.getTextTheme(
-                                    context,
-                                    appTextStyle: AppTextStyle.LABEL_MEDIUM,
-                                  )?.copyWith(
-                                    fontWeight: selected
-                                        ? FontWeight.w700
-                                        : FontWeight.w500,
-                                    color: selected
-                                        ? GlobalHelper.getColorSchema(
-                                            context,
-                                          ).onPrimary
-                                        : GlobalHelper.getColorSchema(
-                                            context,
-                                          ).onSurface.withValues(alpha: 0.6),
                                   ),
-                            ),
-                          ),
-                        );
-                      }),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-
-            const SliverToBoxAdapter(child: SizedBox(height: 16)),
-
-            // ── Product Grid ──────────────────────────────────────────────────────
-            SliverPadding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              sliver: Builder(
-                builder: (context) {
-                  final selectedCategoryName =
-                      state.categories.isNotEmpty &&
-                          state.selectedCategory < state.categories.length
-                      ? state.categories[state.selectedCategory]
-                      : 'Semua';
-                  final filteredProducts = selectedCategoryName == 'Semua'
-                      ? state.products
-                      : state.products
-                            .where((p) => p.category == selectedCategoryName)
-                            .toList();
-
-                  if (filteredProducts.isEmpty) {
-                    return SliverToBoxAdapter(
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 48.0, bottom: 48.0),
-                        child: Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(
-                                Icons.inventory_2_outlined,
-                                size: 64,
-                                color: GlobalHelper.getColorSchema(context).onSurface.withValues(alpha: 0.3),
-                              ),
-                              const SizedBox(height: 16),
-                              Text(
-                                'Tidak ada produk',
-                                style: GlobalHelper.getTextTheme(
-                                  context,
-                                  appTextStyle: AppTextStyle.BODY_LARGE,
-                                )?.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                  color: GlobalHelper.getColorSchema(context).onSurface.withValues(alpha: 0.6),
                                 ),
-                              ),
-                            ],
-                          ),
+                              );
+                            }
+
+                            return SliverGrid(
+                              gridDelegate:
+                                  const SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 2,
+                                    childAspectRatio: 0.72,
+                                    crossAxisSpacing: 16,
+                                    mainAxisSpacing: 16,
+                                  ),
+                              delegate: SliverChildBuilderDelegate((
+                                context,
+                                index,
+                              ) {
+                                final p = filteredProducts[index];
+                                return _productCard(context, p);
+                              }, childCount: filteredProducts.length),
+                            );
+                          },
                         ),
                       ),
-                    );
-                  }
 
-                  return SliverGrid(
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          childAspectRatio: 0.72,
-                          crossAxisSpacing: 16,
-                          mainAxisSpacing: 16,
-                        ),
-                    delegate: SliverChildBuilderDelegate((context, index) {
-                      final p = filteredProducts[index];
-                      return _productCard(context, p);
-                    }, childCount: filteredProducts.length),
-                  );
-                },
-              ),
-            ),
-
-            const SliverToBoxAdapter(
-              child: SizedBox(height: 100), // padding for bottom cart
-            ),
-          ],
-        ),
-
-        // Tab 2: Tentang Toko
-        CustomScrollView(
-          slivers: [
-            SliverToBoxAdapter(child: _buildAboutTab(context)),
-          ],
-        ),
-
-        // Tab 3: Review
-        CustomScrollView(
-          slivers: [
-            SliverToBoxAdapter(child: _buildReviewTab(context)),
-          ],
-        ),
-      ],
-    ),
-  ),
-),
-
-// ── Bottom Cart Bar ───────────────────────────────────────────────────
-        if (state.cartCount > 0)
-          Positioned(
-            left: 0,
-            right: 0,
-            bottom: 0,
-            child: Container(
-              padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
-              decoration: BoxDecoration(
-                color: GlobalHelper.getColorSchema(context).surface,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.05),
-                    offset: const Offset(0, -4),
-                    blurRadius: 10,
-                  ),
-                ],
-              ),
-              child: Row(
-                children: [
-                  Container(
-                    width: 46,
-                    height: 46,
-                    decoration: BoxDecoration(
-                      color: GlobalHelper.getColorSchema(
-                        context,
-                      ).primary.withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Stack(
-                      children: [
-                        Center(
-                          child: Icon(
-                            Icons.shopping_cart_outlined,
-                            color: GlobalHelper.getColorSchema(context).primary,
-                          ),
-                        ),
-                        Positioned(
-                          top: 8,
-                          right: 8,
-                          child: Container(
-                            padding: const EdgeInsets.all(4),
-                            decoration: BoxDecoration(
-                              color: GlobalHelper.getColorSchema(context).error,
-                              shape: BoxShape.circle,
-                            ),
-                            child: Center(
-                              child: Text(
-                                '${state.cartCount}',
-                                style:
-                                    GlobalHelper.getTextTheme(
-                                      context,
-                                      appTextStyle: AppTextStyle.LABEL_SMALL,
-                                    )?.copyWith(
-                                      color: GlobalHelper.getColorSchema(
-                                        context,
-                                      ).onError,
-                                      fontWeight: FontWeight.w700,
-                                    ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        '${state.cartCount} item',
-                        style:
-                            GlobalHelper.getTextTheme(
-                              context,
-                              appTextStyle: AppTextStyle.LABEL_SMALL,
-                            )?.copyWith(
-                              color: GlobalHelper.getColorSchema(
-                                context,
-                              ).onSurface.withValues(alpha: 0.6),
-                            ),
-                      ),
-                      Text(
-                        state.formattedCartTotal,
-                        style:
-                            GlobalHelper.getTextTheme(
-                              context,
-                              appTextStyle: AppTextStyle.BODY_LARGE,
-                            )?.copyWith(
-                              fontWeight: FontWeight.w700,
-                              color: GlobalHelper.getColorSchema(
-                                context,
-                              ).onSurface,
-                            ),
+                      const SliverToBoxAdapter(
+                        child: SizedBox(height: 100), // padding for bottom cart
                       ),
                     ],
                   ),
-                  const Spacer(),
-                  Expanded(
-                    child: PrimaryButton(
-                      onPressed: () => navigatorKey.currentState?.push(
-                        MaterialPageRoute(
-                          builder: (_) => const CustomerCartScreen(),
-                        ),
-                      ),
-                      label: 'Lihat Keranjang',
-                      height: 60,
-                    ),
+
+                  // Tab 2: Tentang Toko
+                  CustomScrollView(
+                    slivers: [
+                      SliverToBoxAdapter(child: _buildAboutTab(context)),
+                    ],
+                  ),
+
+                  // Tab 3: Review
+                  CustomScrollView(
+                    slivers: [
+                      SliverToBoxAdapter(child: _buildReviewTab(context)),
+                    ],
                   ),
                 ],
               ),
             ),
           ),
+
+          // ── Bottom Cart Bar ───────────────────────────────────────────────────
+          if (state.cartCount > 0)
+            Positioned(
+              left: 0,
+              right: 0,
+              bottom: 0,
+              child: Container(
+                padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
+                decoration: BoxDecoration(
+                  color: GlobalHelper.getColorSchema(context).surface,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.05),
+                      offset: const Offset(0, -4),
+                      blurRadius: 10,
+                    ),
+                  ],
+                ),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 46,
+                      height: 46,
+                      decoration: BoxDecoration(
+                        color: GlobalHelper.getColorSchema(
+                          context,
+                        ).primary.withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Stack(
+                        children: [
+                          Center(
+                            child: Icon(
+                              Icons.shopping_cart_outlined,
+                              color: GlobalHelper.getColorSchema(
+                                context,
+                              ).primary,
+                            ),
+                          ),
+                          Positioned(
+                            top: 8,
+                            right: 8,
+                            child: Container(
+                              padding: const EdgeInsets.all(4),
+                              decoration: BoxDecoration(
+                                color: GlobalHelper.getColorSchema(
+                                  context,
+                                ).error,
+                                shape: BoxShape.circle,
+                              ),
+                              child: Center(
+                                child: Text(
+                                  '${state.cartCount}',
+                                  style:
+                                      GlobalHelper.getTextTheme(
+                                        context,
+                                        appTextStyle: AppTextStyle.LABEL_SMALL,
+                                      )?.copyWith(
+                                        color: GlobalHelper.getColorSchema(
+                                          context,
+                                        ).onError,
+                                        fontWeight: FontWeight.w700,
+                                      ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          '${state.cartCount} item',
+                          style:
+                              GlobalHelper.getTextTheme(
+                                context,
+                                appTextStyle: AppTextStyle.LABEL_SMALL,
+                              )?.copyWith(
+                                color: GlobalHelper.getColorSchema(
+                                  context,
+                                ).onSurface.withValues(alpha: 0.6),
+                              ),
+                        ),
+                        Text(
+                          state.formattedCartTotal,
+                          style:
+                              GlobalHelper.getTextTheme(
+                                context,
+                                appTextStyle: AppTextStyle.BODY_LARGE,
+                              )?.copyWith(
+                                fontWeight: FontWeight.w700,
+                                color: GlobalHelper.getColorSchema(
+                                  context,
+                                ).onSurface,
+                              ),
+                        ),
+                      ],
+                    ),
+                    const Spacer(),
+                    Expanded(
+                      child: PrimaryButton(
+                        onPressed: () => navigatorKey.currentState?.push(
+                          MaterialPageRoute(
+                            builder: (_) => const CustomerCartScreen(),
+                          ),
+                        ),
+                        label: 'Lihat Keranjang',
+                        height: 60,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
         ],
       ),
     );
@@ -556,12 +627,18 @@ class CustomerDetailMerchantScreen extends StatelessWidget {
           if (merchant.about != null) ...[
             Text(
               'Deskripsi Toko',
-              style: GlobalHelper.getTextTheme(context, appTextStyle: AppTextStyle.TITLE_SMALL)?.copyWith(fontWeight: FontWeight.bold),
+              style: GlobalHelper.getTextTheme(
+                context,
+                appTextStyle: AppTextStyle.TITLE_SMALL,
+              )?.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
             Text(
               merchant.about!,
-              style: GlobalHelper.getTextTheme(context, appTextStyle: AppTextStyle.BODY_MEDIUM),
+              style: GlobalHelper.getTextTheme(
+                context,
+                appTextStyle: AppTextStyle.BODY_MEDIUM,
+              ),
             ),
             const SizedBox(height: 24),
           ],
@@ -574,12 +651,18 @@ class CustomerDetailMerchantScreen extends StatelessWidget {
                   children: [
                     Text(
                       section.title,
-                      style: GlobalHelper.getTextTheme(context, appTextStyle: AppTextStyle.TITLE_SMALL)?.copyWith(fontWeight: FontWeight.bold),
+                      style: GlobalHelper.getTextTheme(
+                        context,
+                        appTextStyle: AppTextStyle.TITLE_SMALL,
+                      )?.copyWith(fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 8),
                     Text(
                       section.content,
-                      style: GlobalHelper.getTextTheme(context, appTextStyle: AppTextStyle.BODY_MEDIUM),
+                      style: GlobalHelper.getTextTheme(
+                        context,
+                        appTextStyle: AppTextStyle.BODY_MEDIUM,
+                      ),
                     ),
                   ],
                 ),
@@ -599,21 +682,35 @@ class CustomerDetailMerchantScreen extends StatelessWidget {
     final reviewSummary = merchant.reviewSummary;
     final reviewBreakdown = merchant.reviewBreakdown;
 
-    if (reviewSummary == null || reviewBreakdown == null || reviewBreakdown.isEmpty) {
+    if (reviewSummary == null ||
+        reviewBreakdown == null ||
+        reviewBreakdown.isEmpty) {
       return Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             const SizedBox(height: 32),
-            Icon(Icons.star_outline_rounded, size: 64, color: GlobalHelper.getColorSchema(context).primary.withValues(alpha: 0.5)),
+            Icon(
+              Icons.star_outline_rounded,
+              size: 64,
+              color: GlobalHelper.getColorSchema(
+                context,
+              ).primary.withValues(alpha: 0.5),
+            ),
             const SizedBox(height: 16),
             Text(
               merchant.reviewEmptyMessage ?? 'Belum ada ulasan',
-              style: GlobalHelper.getTextTheme(context, appTextStyle: AppTextStyle.BODY_LARGE)?.copyWith(
-                fontWeight: FontWeight.bold,
-                color: GlobalHelper.getColorSchema(context).onSurface.withValues(alpha: 0.6),
-              ),
+              style:
+                  GlobalHelper.getTextTheme(
+                    context,
+                    appTextStyle: AppTextStyle.BODY_LARGE,
+                  )?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: GlobalHelper.getColorSchema(
+                      context,
+                    ).onSurface.withValues(alpha: 0.6),
+                  ),
             ),
             const SizedBox(height: 100),
           ],
@@ -628,7 +725,10 @@ class CustomerDetailMerchantScreen extends StatelessWidget {
         children: [
           Text(
             'Ulasan & Penilaian',
-            style: GlobalHelper.getTextTheme(context, appTextStyle: AppTextStyle.TITLE_SMALL)?.copyWith(fontWeight: FontWeight.bold),
+            style: GlobalHelper.getTextTheme(
+              context,
+              appTextStyle: AppTextStyle.TITLE_SMALL,
+            )?.copyWith(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 16),
           Row(
@@ -639,30 +739,53 @@ class CustomerDetailMerchantScreen extends StatelessWidget {
                 children: [
                   Text(
                     reviewSummary.rating,
-                    style: GlobalHelper.getTextTheme(context, appTextStyle: AppTextStyle.DISPLAY_MEDIUM)?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: GlobalHelper.getColorSchema(context).onSurface,
-                    ),
+                    style:
+                        GlobalHelper.getTextTheme(
+                          context,
+                          appTextStyle: AppTextStyle.DISPLAY_MEDIUM,
+                        )?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: GlobalHelper.getColorSchema(context).onSurface,
+                        ),
                   ),
                   Row(
                     mainAxisSize: MainAxisSize.min,
                     children: List.generate(5, (index) {
-                      final ratingValue = double.tryParse(reviewSummary.rating) ?? 0.0;
+                      final ratingValue =
+                          double.tryParse(reviewSummary.rating) ?? 0.0;
                       if (index < ratingValue.floor()) {
-                        return const Icon(Icons.star_rounded, color: Colors.amber, size: 18);
+                        return const Icon(
+                          Icons.star_rounded,
+                          color: Colors.amber,
+                          size: 18,
+                        );
                       } else if (index < ratingValue && ratingValue % 1 != 0) {
-                        return const Icon(Icons.star_half_rounded, color: Colors.amber, size: 18);
+                        return const Icon(
+                          Icons.star_half_rounded,
+                          color: Colors.amber,
+                          size: 18,
+                        );
                       } else {
-                        return const Icon(Icons.star_outline_rounded, color: Colors.amber, size: 18);
+                        return const Icon(
+                          Icons.star_outline_rounded,
+                          color: Colors.amber,
+                          size: 18,
+                        );
                       }
                     }),
                   ),
                   const SizedBox(height: 8),
                   Text(
                     '${reviewSummary.total} Ulasan',
-                    style: GlobalHelper.getTextTheme(context, appTextStyle: AppTextStyle.BODY_SMALL)?.copyWith(
-                      color: GlobalHelper.getColorSchema(context).onSurface.withValues(alpha: 0.6),
-                    ),
+                    style:
+                        GlobalHelper.getTextTheme(
+                          context,
+                          appTextStyle: AppTextStyle.BODY_SMALL,
+                        )?.copyWith(
+                          color: GlobalHelper.getColorSchema(
+                            context,
+                          ).onSurface.withValues(alpha: 0.6),
+                        ),
                   ),
                 ],
               ),
@@ -671,30 +794,45 @@ class CustomerDetailMerchantScreen extends StatelessWidget {
               Expanded(
                 child: Column(
                   children: List.generate(5, (index) {
-                    final starLabel = (5 - index).toString(); // '5', '4', '3', '2', '1'
-                    final breakdownIndex = reviewBreakdown.indexWhere((b) => b.label == starLabel || b.label.startsWith(starLabel));
-                    final percent = breakdownIndex != -1 ? reviewBreakdown[breakdownIndex].percent : 0;
-                    
+                    final starLabel = (5 - index)
+                        .toString(); // '5', '4', '3', '2', '1'
+                    final breakdownIndex = reviewBreakdown.indexWhere(
+                      (b) =>
+                          b.label == starLabel || b.label.startsWith(starLabel),
+                    );
+                    final percent = breakdownIndex != -1
+                        ? reviewBreakdown[breakdownIndex].percent
+                        : 0;
+
                     return Padding(
                       padding: const EdgeInsets.only(bottom: 4.0),
                       child: Row(
                         children: [
                           Text(
                             starLabel,
-                            style: GlobalHelper.getTextTheme(context, appTextStyle: AppTextStyle.LABEL_MEDIUM)?.copyWith(
-                              fontWeight: FontWeight.bold,
-                            ),
+                            style: GlobalHelper.getTextTheme(
+                              context,
+                              appTextStyle: AppTextStyle.LABEL_MEDIUM,
+                            )?.copyWith(fontWeight: FontWeight.bold),
                           ),
                           const SizedBox(width: 4),
-                          const Icon(Icons.star_rounded, color: Colors.amber, size: 14),
+                          const Icon(
+                            Icons.star_rounded,
+                            color: Colors.amber,
+                            size: 14,
+                          ),
                           const SizedBox(width: 8),
                           Expanded(
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(4),
                               child: LinearProgressIndicator(
                                 value: percent / 100,
-                                backgroundColor: GlobalHelper.getColorSchema(context).outlineVariant.withValues(alpha: 0.3),
-                                valueColor: const AlwaysStoppedAnimation<Color>(Colors.amber),
+                                backgroundColor: GlobalHelper.getColorSchema(
+                                  context,
+                                ).outlineVariant.withValues(alpha: 0.3),
+                                valueColor: const AlwaysStoppedAnimation<Color>(
+                                  Colors.amber,
+                                ),
                                 minHeight: 8,
                               ),
                             ),
@@ -704,9 +842,15 @@ class CustomerDetailMerchantScreen extends StatelessWidget {
                             width: 24,
                             child: Text(
                               '${(percent * reviewSummary.total / 100).round()}',
-                              style: GlobalHelper.getTextTheme(context, appTextStyle: AppTextStyle.BODY_SMALL)?.copyWith(
-                                color: GlobalHelper.getColorSchema(context).onSurface.withValues(alpha: 0.6),
-                              ),
+                              style:
+                                  GlobalHelper.getTextTheme(
+                                    context,
+                                    appTextStyle: AppTextStyle.BODY_SMALL,
+                                  )?.copyWith(
+                                    color: GlobalHelper.getColorSchema(
+                                      context,
+                                    ).onSurface.withValues(alpha: 0.6),
+                                  ),
                               textAlign: TextAlign.right,
                             ),
                           ),
@@ -721,48 +865,72 @@ class CustomerDetailMerchantScreen extends StatelessWidget {
           const SizedBox(height: 32),
           Text(
             'Ulasan Pelanggan',
-            style: GlobalHelper.getTextTheme(context, appTextStyle: AppTextStyle.TITLE_SMALL)?.copyWith(fontWeight: FontWeight.bold),
+            style: GlobalHelper.getTextTheme(
+              context,
+              appTextStyle: AppTextStyle.TITLE_SMALL,
+            )?.copyWith(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 16),
           if (merchant.reviews == null || merchant.reviews!.isEmpty)
             Text(
               'Belum ada ulasan teks',
-              style: GlobalHelper.getTextTheme(context, appTextStyle: AppTextStyle.BODY_MEDIUM)?.copyWith(
-                color: GlobalHelper.getColorSchema(context).onSurface.withValues(alpha: 0.6),
-              ),
+              style:
+                  GlobalHelper.getTextTheme(
+                    context,
+                    appTextStyle: AppTextStyle.BODY_MEDIUM,
+                  )?.copyWith(
+                    color: GlobalHelper.getColorSchema(
+                      context,
+                    ).onSurface.withValues(alpha: 0.6),
+                  ),
             )
           else
             ...merchant.reviews!.map((reviewData) {
               final reviewMap = reviewData as Map<String, dynamic>? ?? {};
-              final rating = double.tryParse(reviewMap['rating']?.toString() ?? '0') ?? 0;
-              final comment = reviewMap['review']?.toString() 
-                  ?? reviewMap['comment']?.toString() 
-                  ?? reviewMap['text']?.toString() 
-                  ?? reviewMap['content']?.toString() 
-                  ?? reviewMap['notes']?.toString() 
-                  ?? '';
+              final rating =
+                  double.tryParse(reviewMap['rating']?.toString() ?? '0') ?? 0;
+              final comment =
+                  reviewMap['review']?.toString() ??
+                  reviewMap['comment']?.toString() ??
+                  reviewMap['text']?.toString() ??
+                  reviewMap['content']?.toString() ??
+                  reviewMap['notes']?.toString() ??
+                  '';
               final dateStr = reviewMap['created_at']?.toString() ?? '';
-              
+
               String name = 'Pelanggan';
               String? photo;
-              
+
               if (reviewMap['user'] != null && reviewMap['user'] is Map) {
-                name = reviewMap['user']['name']?.toString() ?? reviewMap['user']['first_name']?.toString() ?? 'Pelanggan';
-                photo = reviewMap['user']['profile_photo']?.toString() ?? reviewMap['user']['avatar']?.toString();
-              } else if (reviewMap['customer'] != null && reviewMap['customer'] is Map) {
-                name = reviewMap['customer']['name']?.toString() ?? reviewMap['customer']['first_name']?.toString() ?? 'Pelanggan';
-                photo = reviewMap['customer']['profile_photo']?.toString() ?? reviewMap['customer']['avatar']?.toString();
+                name =
+                    reviewMap['user']['name']?.toString() ??
+                    reviewMap['user']['first_name']?.toString() ??
+                    'Pelanggan';
+                photo =
+                    reviewMap['user']['profile_photo']?.toString() ??
+                    reviewMap['user']['avatar']?.toString();
+              } else if (reviewMap['customer'] != null &&
+                  reviewMap['customer'] is Map) {
+                name =
+                    reviewMap['customer']['name']?.toString() ??
+                    reviewMap['customer']['first_name']?.toString() ??
+                    'Pelanggan';
+                photo =
+                    reviewMap['customer']['profile_photo']?.toString() ??
+                    reviewMap['customer']['avatar']?.toString();
               } else {
-                name = reviewMap['name']?.toString() 
-                    ?? reviewMap['customer_name']?.toString() 
-                    ?? reviewMap['user_name']?.toString() 
-                    ?? reviewMap['reviewer_name']?.toString() 
-                    ?? 'Pelanggan';
-                photo = reviewMap['photo']?.toString() 
-                    ?? reviewMap['profile_photo']?.toString() 
-                    ?? reviewMap['avatar']?.toString();
+                name =
+                    reviewMap['name']?.toString() ??
+                    reviewMap['customer_name']?.toString() ??
+                    reviewMap['user_name']?.toString() ??
+                    reviewMap['reviewer_name']?.toString() ??
+                    'Pelanggan';
+                photo =
+                    reviewMap['photo']?.toString() ??
+                    reviewMap['profile_photo']?.toString() ??
+                    reviewMap['avatar']?.toString();
               }
-              
+
               String displayDate = dateStr;
               if (dateStr.length >= 10) displayDate = dateStr.substring(0, 10);
 
@@ -772,7 +940,11 @@ class CustomerDetailMerchantScreen extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: GlobalHelper.getColorSchema(context).surface,
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: GlobalHelper.getColorSchema(context).outlineVariant.withValues(alpha: 0.5)),
+                  border: Border.all(
+                    color: GlobalHelper.getColorSchema(
+                      context,
+                    ).outlineVariant.withValues(alpha: 0.5),
+                  ),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -781,11 +953,21 @@ class CustomerDetailMerchantScreen extends StatelessWidget {
                       children: [
                         CircleAvatar(
                           radius: 16,
-                          backgroundColor: GlobalHelper.getColorSchema(context).primary.withValues(alpha: 0.2),
-                          backgroundImage: (photo != null && photo.isNotEmpty) ? NetworkImage(photo) : null,
-                          child: (photo == null || photo.isEmpty) 
-                            ? Icon(Icons.person, size: 16, color: GlobalHelper.getColorSchema(context).primary)
-                            : null,
+                          backgroundColor: GlobalHelper.getColorSchema(
+                            context,
+                          ).primary.withValues(alpha: 0.2),
+                          backgroundImage: (photo != null && photo.isNotEmpty)
+                              ? NetworkImage(photo)
+                              : null,
+                          child: (photo == null || photo.isEmpty)
+                              ? Icon(
+                                  Icons.person,
+                                  size: 16,
+                                  color: GlobalHelper.getColorSchema(
+                                    context,
+                                  ).primary,
+                                )
+                              : null,
                         ),
                         const SizedBox(width: 8),
                         Expanded(
@@ -794,7 +976,10 @@ class CustomerDetailMerchantScreen extends StatelessWidget {
                             children: [
                               Text(
                                 name,
-                                style: GlobalHelper.getTextTheme(context, appTextStyle: AppTextStyle.LABEL_MEDIUM)?.copyWith(fontWeight: FontWeight.bold),
+                                style: GlobalHelper.getTextTheme(
+                                  context,
+                                  appTextStyle: AppTextStyle.LABEL_MEDIUM,
+                                )?.copyWith(fontWeight: FontWeight.bold),
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                               ),
@@ -804,11 +989,24 @@ class CustomerDetailMerchantScreen extends StatelessWidget {
                                     mainAxisSize: MainAxisSize.min,
                                     children: List.generate(5, (index) {
                                       if (index < rating.floor()) {
-                                        return const Icon(Icons.star_rounded, color: Colors.amber, size: 12);
-                                      } else if (index < rating && rating % 1 != 0) {
-                                        return const Icon(Icons.star_half_rounded, color: Colors.amber, size: 12);
+                                        return const Icon(
+                                          Icons.star_rounded,
+                                          color: Colors.amber,
+                                          size: 12,
+                                        );
+                                      } else if (index < rating &&
+                                          rating % 1 != 0) {
+                                        return const Icon(
+                                          Icons.star_half_rounded,
+                                          color: Colors.amber,
+                                          size: 12,
+                                        );
                                       } else {
-                                        return const Icon(Icons.star_outline_rounded, color: Colors.amber, size: 12);
+                                        return const Icon(
+                                          Icons.star_outline_rounded,
+                                          color: Colors.amber,
+                                          size: 12,
+                                        );
                                       }
                                     }),
                                   ),
@@ -816,9 +1014,16 @@ class CustomerDetailMerchantScreen extends StatelessWidget {
                                     const SizedBox(width: 6),
                                     Text(
                                       displayDate,
-                                      style: GlobalHelper.getTextTheme(context, appTextStyle: AppTextStyle.LABEL_SMALL)?.copyWith(
-                                        color: GlobalHelper.getColorSchema(context).onSurface.withValues(alpha: 0.5),
-                                      ),
+                                      style:
+                                          GlobalHelper.getTextTheme(
+                                            context,
+                                            appTextStyle:
+                                                AppTextStyle.LABEL_SMALL,
+                                          )?.copyWith(
+                                            color: GlobalHelper.getColorSchema(
+                                              context,
+                                            ).onSurface.withValues(alpha: 0.5),
+                                          ),
                                     ),
                                   ],
                                 ],
@@ -832,9 +1037,15 @@ class CustomerDetailMerchantScreen extends StatelessWidget {
                       const SizedBox(height: 12),
                       Text(
                         comment,
-                        style: GlobalHelper.getTextTheme(context, appTextStyle: AppTextStyle.BODY_SMALL)?.copyWith(
-                          color: GlobalHelper.getColorSchema(context).onSurface.withValues(alpha: 0.8),
-                        ),
+                        style:
+                            GlobalHelper.getTextTheme(
+                              context,
+                              appTextStyle: AppTextStyle.BODY_SMALL,
+                            )?.copyWith(
+                              color: GlobalHelper.getColorSchema(
+                                context,
+                              ).onSurface.withValues(alpha: 0.8),
+                            ),
                       ),
                     ],
                   ],
@@ -892,7 +1103,8 @@ class CustomerDetailMerchantScreen extends StatelessWidget {
         ? p.images!.first.url
         : null;
 
-    final isOutOfStock = (p.hasVariant == true && p.variants != null && p.variants!.isNotEmpty)
+    final isOutOfStock =
+        (p.hasVariant == true && p.variants != null && p.variants!.isNotEmpty)
         ? p.variants!.every((v) => v.stock == 0)
         : (p.stock ?? 0) == 0;
 
@@ -937,7 +1149,9 @@ class CustomerDetailMerchantScreen extends StatelessWidget {
                           : Icon(
                               Icons.inventory_2_rounded,
                               size: 48,
-                              color: GlobalHelper.getColorSchema(context).primary,
+                              color: GlobalHelper.getColorSchema(
+                                context,
+                              ).primary,
                             ),
                       if (isOutOfStock)
                         Container(
@@ -950,14 +1164,15 @@ class CustomerDetailMerchantScreen extends StatelessWidget {
                           child: Center(
                             child: Text(
                               'HABIS',
-                              style: GlobalHelper.getTextTheme(
-                                context,
-                                appTextStyle: AppTextStyle.TITLE_MEDIUM,
-                              )?.copyWith(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w900,
-                                letterSpacing: 1.2,
-                              ),
+                              style:
+                                  GlobalHelper.getTextTheme(
+                                    context,
+                                    appTextStyle: AppTextStyle.TITLE_MEDIUM,
+                                  )?.copyWith(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w900,
+                                    letterSpacing: 1.2,
+                                  ),
                             ),
                           ),
                         ),
