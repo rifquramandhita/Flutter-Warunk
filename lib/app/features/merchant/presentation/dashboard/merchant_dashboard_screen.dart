@@ -117,14 +117,14 @@ class MerchantDashboardScreen extends StatelessWidget {
                               borderRadius: BorderRadius.circular(16),
                             ),
                             title: Text(
-                              'Hore!',
+                              'Horeee!',
                               style: GlobalHelper.getTextTheme(
                                 context,
                                 appTextStyle: AppTextStyle.TITLE_MEDIUM,
                               )?.copyWith(fontWeight: FontWeight.bold),
                             ),
                             content: const Text(
-                              'Tokomu sudah bisa dibelanjakan oleh customer!',
+                              'Customer sudah bisa bisa belanja di tokomu!',
                             ),
                             actions: [
                               TextButton(
