@@ -3,6 +3,8 @@ import 'package:equatable/equatable.dart';
 import 'package:warunk/app/features/merchant/domain/entity/merchant_dashboard.dart';
 import 'package:warunk/app/features/merchant/domain/use_case/merchant_dashboard_get_use_case.dart';
 import 'package:warunk/app/features/merchant/domain/use_case/merchant_merchant_get_use_case.dart';
+import 'package:warunk/app/features/merchant/domain/use_case/merchant_setting_get_customer_service_whatsapp_use_case.dart';
+import 'package:warunk/app/features/merchant/domain/use_case/merchant_setting_get_customer_service_chat_url_use_case.dart';
 import 'package:warunk/core/network/data_state.dart';
 
 part 'merchant_dashboard_event.dart';
@@ -12,16 +14,24 @@ class MerchantDashboardBloc
     extends Bloc<MerchantDashboardEvent, MerchantDashboardState> {
   final MerchantDashboardGetUseCase getUseCase;
   final MerchantMerchantGetUseCase getMerchantUseCase;
+  final MerchantSettingGetCustomerServiceWhatsAppUseCase getWhatsAppUseCase;
+  final MerchantSettingGetCustomerServiceChatUrlUseCase getChatUrlUseCase;
 
   MerchantDashboardBloc({
     required this.getUseCase,
     required this.getMerchantUseCase,
+    required this.getWhatsAppUseCase,
+    required this.getChatUrlUseCase,
   })
     : super(const MerchantDashboardState()) {
     on<MerchantDashboardEventGet>(_onGet);
     on<MerchantDashboardEventPeriodChanged>((event, emit) {
       emit(state.copyWith(selectedPeriod: event.period));
     });
+    on<MerchantDashboardEventGetWhatsAppNumber>(_onGetWhatsAppNumber);
+    on<MerchantDashboardEventResetWhatsAppNavigation>(_onResetWhatsAppNavigation);
+    on<MerchantDashboardEventGetChatUrl>(_onGetChatUrl);
+    on<MerchantDashboardEventResetChatUrlNavigation>(_onResetChatUrlNavigation);
   }
 
   Future<void> _onGet(
@@ -85,5 +95,59 @@ class MerchantDashboardBloc
     } else {
       emit(state.copyWith(isLoading: false, errorMessage: dashboardResult.message));
     }
+  }
+
+  Future<void> _onGetWhatsAppNumber(
+    MerchantDashboardEventGetWhatsAppNumber event,
+    Emitter<MerchantDashboardState> emit,
+  ) async {
+    emit(state.copyWith(isLoading: true, errorMessage: null));
+    final result = await getWhatsAppUseCase();
+    if (result is SuccessState && result.data != null) {
+      emit(state.copyWith(
+        isLoading: false,
+        whatsAppNumber: result.data,
+        shouldLaunchWhatsApp: true,
+      ));
+    } else {
+      emit(state.copyWith(
+        isLoading: false,
+        errorMessage: result.message.isNotEmpty ? result.message : 'Gagal mengambil nomor WhatsApp',
+      ));
+    }
+  }
+
+  void _onResetWhatsAppNavigation(
+    MerchantDashboardEventResetWhatsAppNavigation event,
+    Emitter<MerchantDashboardState> emit,
+  ) {
+    emit(state.copyWith(shouldLaunchWhatsApp: false));
+  }
+
+  Future<void> _onGetChatUrl(
+    MerchantDashboardEventGetChatUrl event,
+    Emitter<MerchantDashboardState> emit,
+  ) async {
+    emit(state.copyWith(isLoading: true, errorMessage: null));
+    final result = await getChatUrlUseCase();
+    if (result is SuccessState && result.data != null) {
+      emit(state.copyWith(
+        isLoading: false,
+        chatUrl: result.data,
+        shouldLaunchChatUrl: true,
+      ));
+    } else {
+      emit(state.copyWith(
+        isLoading: false,
+        errorMessage: result.message.isNotEmpty ? result.message : 'Gagal mengambil tautan chat',
+      ));
+    }
+  }
+
+  void _onResetChatUrlNavigation(
+    MerchantDashboardEventResetChatUrlNavigation event,
+    Emitter<MerchantDashboardState> emit,
+  ) {
+    emit(state.copyWith(shouldLaunchChatUrl: false));
   }
 }

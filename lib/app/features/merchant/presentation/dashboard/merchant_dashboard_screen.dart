@@ -4,12 +4,13 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:equatable/equatable.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:warunk/app/features/merchant/domain/entity/merchant_dashboard.dart';
 import 'package:warunk/app/features/merchant/domain/entity/merchant_order_item.dart';
 import 'package:warunk/app/features/merchant/presentation/dashboard/bloc/merchant_dashboard_bloc.dart';
 import 'package:warunk/app/features/merchant/presentation/detail_order/merchant_detail_order_screen.dart';
 import 'package:warunk/app/features/merchant/presentation/notification/merchant_notification_screen.dart';
+import 'package:warunk/app/features/merchant/presentation/chat/merchant_chat_webview_screen.dart';
 import 'package:warunk/core/dependency/dependency.dart';
 import 'package:warunk/core/widgets/loading_app_widget.dart';
 import 'package:warunk/core/helper/global_helper.dart';
@@ -45,9 +46,39 @@ class MerchantDashboardScreen extends StatelessWidget {
             )?.copyWith(fontWeight: FontWeight.bold, color: Colors.red),
           ),
           content: Text(
-            'Toko Anda sedang dalam masa Suspend \nAlasan: ${state.merchantReportReason ?? 'Toko Anda telah dilaporkan'}',
+            'Toko Anda sedang dalam masa Suspend \nAlasan: ${state.merchantReportReason ?? 'Toko Anda telah dilaporkan'}\nSilahkan hubungi Admin untuk info lebih lanjut.\nNote: Selama masa suspend Anda tidak bisa mengakses toko Anda',
           ),
           actions: [
+            TextButton(
+              onPressed: () {
+                navigatorKey.currentState?.pop();
+                context.read<MerchantDashboardBloc>().add(
+                  MerchantDashboardEventGetWhatsAppNumber(),
+                );
+              },
+              child: Text(
+                'Chat Whatsapp Admin',
+                style: GlobalHelper.getTextTheme(
+                  context,
+                  appTextStyle: AppTextStyle.LABEL_LARGE,
+                )?.copyWith(fontWeight: FontWeight.bold),
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                navigatorKey.currentState?.pop();
+                context.read<MerchantDashboardBloc>().add(
+                  MerchantDashboardEventGetChatUrl(),
+                );
+              },
+              child: Text(
+                'Chat Internal Admin',
+                style: GlobalHelper.getTextTheme(
+                  context,
+                  appTextStyle: AppTextStyle.LABEL_LARGE,
+                )?.copyWith(fontWeight: FontWeight.bold),
+              ),
+            ),
             TextButton(
               onPressed: () => navigatorKey.currentState?.pop(),
               child: Text(
@@ -218,11 +249,45 @@ class MerchantDashboardScreen extends StatelessWidget {
       create: (_) =>
           sl<MerchantDashboardBloc>()..add(MerchantDashboardEventGet()),
       child: BlocConsumer<MerchantDashboardBloc, MerchantDashboardState>(
-        listener: (context, state) {
+        listener: (context, state) async {
           if (state.errorMessage != null) {
             DialogHelper.showErrorSnackBar(
               context: context,
               text: state.errorMessage!,
+            );
+          }
+          if (state.shouldLaunchWhatsApp && state.whatsAppNumber != null) {
+            final url = Uri.parse('https://wa.me/${state.whatsAppNumber}');
+            await canLaunchUrl(url).then((canLaunch) {
+              if (canLaunch) {
+                launchUrl(url, mode: LaunchMode.externalApplication);
+              } else {
+                DialogHelper.showErrorSnackBar(
+                  context: context,
+                  text: 'Tidak dapat membuka WhatsApp',
+                );
+              }
+            });
+            context.read<MerchantDashboardBloc>().add(
+              MerchantDashboardEventResetWhatsAppNavigation(),
+            );
+            context.read<MerchantDashboardBloc>().add(
+              MerchantDashboardEventGet(),
+            );
+          }
+          if (state.shouldLaunchChatUrl && state.chatUrl != null) {
+            await Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) =>
+                    MerchantChatWebViewScreen(chatUrl: state.chatUrl),
+              ),
+            );
+            context.read<MerchantDashboardBloc>().add(
+              MerchantDashboardEventResetChatUrlNavigation(),
+            );
+            context.read<MerchantDashboardBloc>().add(
+              MerchantDashboardEventGet(),
             );
           }
           if (!state.isLoading &&

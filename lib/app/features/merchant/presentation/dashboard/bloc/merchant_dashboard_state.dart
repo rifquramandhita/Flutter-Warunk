@@ -20,6 +20,10 @@ class MerchantDashboardState extends Equatable {
   final bool hasWelcomePopup;
   final String? merchantStatus;
   final String? merchantReportReason;
+  final String? whatsAppNumber;
+  final bool shouldLaunchWhatsApp;
+  final String? chatUrl;
+  final bool shouldLaunchChatUrl;
 
   const MerchantDashboardState({
     this.isLoading = false,
@@ -49,6 +53,10 @@ class MerchantDashboardState extends Equatable {
     this.hasWelcomePopup = false,
     this.merchantStatus,
     this.merchantReportReason,
+    this.whatsAppNumber,
+    this.shouldLaunchWhatsApp = false,
+    this.chatUrl,
+    this.shouldLaunchChatUrl = false,
   });
 
   MerchantDashboardState copyWith({
@@ -71,6 +79,10 @@ class MerchantDashboardState extends Equatable {
     bool? hasWelcomePopup,
     String? merchantStatus,
     String? merchantReportReason,
+    String? whatsAppNumber,
+    bool? shouldLaunchWhatsApp,
+    String? chatUrl,
+    bool? shouldLaunchChatUrl,
   }) => MerchantDashboardState(
     isLoading: isLoading ?? this.isLoading,
     errorMessage: errorMessage, // DO NOT use fallback so it can be reset
@@ -91,6 +103,10 @@ class MerchantDashboardState extends Equatable {
     hasWelcomePopup: hasWelcomePopup ?? this.hasWelcomePopup,
     merchantStatus: merchantStatus ?? this.merchantStatus,
     merchantReportReason: merchantReportReason ?? this.merchantReportReason,
+    whatsAppNumber: whatsAppNumber ?? this.whatsAppNumber,
+    shouldLaunchWhatsApp: shouldLaunchWhatsApp ?? this.shouldLaunchWhatsApp,
+    chatUrl: chatUrl ?? this.chatUrl,
+    shouldLaunchChatUrl: shouldLaunchChatUrl ?? this.shouldLaunchChatUrl,
   );
 
   @override
@@ -114,5 +130,9 @@ class MerchantDashboardState extends Equatable {
     hasWelcomePopup,
     merchantStatus,
     merchantReportReason,
+    whatsAppNumber,
+    shouldLaunchWhatsApp,
+    chatUrl,
+    shouldLaunchChatUrl,
   ];
 }
