@@ -29,6 +29,42 @@ class MerchantDashboardScreen extends StatelessWidget {
   ) async {
     _isCheckingPopup = true;
 
+    if (state.merchantStatus == 'reported') {
+      await showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (dialogContext) => AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          title: Text(
+            'Peringatan',
+            style: GlobalHelper.getTextTheme(
+              context,
+              appTextStyle: AppTextStyle.TITLE_MEDIUM,
+            )?.copyWith(fontWeight: FontWeight.bold, color: Colors.red),
+          ),
+          content: Text(
+            state.merchantReportReason ?? 'Toko Anda telah dilaporkan.',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => navigatorKey.currentState?.pop(),
+              child: Text(
+                'Tutup',
+                style: GlobalHelper.getTextTheme(
+                  context,
+                  appTextStyle: AppTextStyle.LABEL_LARGE,
+                )?.copyWith(fontWeight: FontWeight.bold),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    if (!context.mounted) return;
+
     if (state.hasWelcomePopup) {
       await showDialog(
         context: context,

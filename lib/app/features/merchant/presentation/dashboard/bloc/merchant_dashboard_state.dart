@@ -18,6 +18,8 @@ class MerchantDashboardState extends Equatable {
   final String merchantCategory;
   final String merchantTime;
   final bool hasWelcomePopup;
+  final String? merchantStatus;
+  final String? merchantReportReason;
 
   const MerchantDashboardState({
     this.isLoading = false,
@@ -45,6 +47,8 @@ class MerchantDashboardState extends Equatable {
     this.merchantCategory = '',
     this.merchantTime = '',
     this.hasWelcomePopup = false,
+    this.merchantStatus,
+    this.merchantReportReason,
   });
 
   MerchantDashboardState copyWith({
@@ -65,6 +69,8 @@ class MerchantDashboardState extends Equatable {
     String? merchantCategory,
     String? merchantTime,
     bool? hasWelcomePopup,
+    String? merchantStatus,
+    String? merchantReportReason,
   }) => MerchantDashboardState(
     isLoading: isLoading ?? this.isLoading,
     errorMessage: errorMessage, // DO NOT use fallback so it can be reset
@@ -83,6 +89,8 @@ class MerchantDashboardState extends Equatable {
     merchantCategory: merchantCategory ?? this.merchantCategory,
     merchantTime: merchantTime ?? this.merchantTime,
     hasWelcomePopup: hasWelcomePopup ?? this.hasWelcomePopup,
+    merchantStatus: merchantStatus ?? this.merchantStatus,
+    merchantReportReason: merchantReportReason ?? this.merchantReportReason,
   );
 
   @override
@@ -104,5 +112,7 @@ class MerchantDashboardState extends Equatable {
     merchantCategory,
     merchantTime,
     hasWelcomePopup,
+    merchantStatus,
+    merchantReportReason,
   ];
 }

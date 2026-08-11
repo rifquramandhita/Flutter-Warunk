@@ -2,6 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:warunk/app/features/merchant/domain/entity/merchant_dashboard.dart';
 import 'package:warunk/app/features/merchant/domain/use_case/merchant_dashboard_get_use_case.dart';
+import 'package:warunk/app/features/merchant/domain/use_case/merchant_merchant_get_use_case.dart';
 import 'package:warunk/core/network/data_state.dart';
 
 part 'merchant_dashboard_event.dart';
@@ -10,8 +11,12 @@ part 'merchant_dashboard_state.dart';
 class MerchantDashboardBloc
     extends Bloc<MerchantDashboardEvent, MerchantDashboardState> {
   final MerchantDashboardGetUseCase getUseCase;
+  final MerchantMerchantGetUseCase getMerchantUseCase;
 
-  MerchantDashboardBloc({required this.getUseCase})
+  MerchantDashboardBloc({
+    required this.getUseCase,
+    required this.getMerchantUseCase,
+  })
     : super(const MerchantDashboardState()) {
     on<MerchantDashboardEventGet>(_onGet);
     on<MerchantDashboardEventPeriodChanged>((event, emit) {
@@ -24,9 +29,18 @@ class MerchantDashboardBloc
     Emitter<MerchantDashboardState> emit,
   ) async {
     emit(state.copyWith(isLoading: true, errorMessage: null));
-    final result = await getUseCase();
-    if (result is SuccessState) {
-      final data = result.data!;
+    
+    // Fetch both dashboard and merchant data concurrently
+    final results = await Future.wait([
+      getUseCase(),
+      getMerchantUseCase(),
+    ]);
+    
+    final dashboardResult = results[0];
+    final merchantResult = results[1];
+
+    if (dashboardResult is SuccessState) {
+      final data = dashboardResult.data as MerchantDashboard;
       final labels = data.salesSeries.map((e) {
         // e.date example: "2026-06-12", we can take last part or keep as is. Let's just use day.
         final parts = e.date.split('-');
@@ -58,16 +72,18 @@ class MerchantDashboardBloc
           salesGrowth: growth,
           balance: data.merchantInfo.balance.toDouble(),
           recentOrders: data.recentOrders,
-          merchantName: result.data!.merchantInfo.name,
-          merchantPhoto: result.data!.merchantInfo.photo,
-          merchantCategory: result.data!.merchantInfo.category,
+          merchantName: data.merchantInfo.name,
+          merchantPhoto: data.merchantInfo.photo,
+          merchantCategory: data.merchantInfo.category,
           merchantTime:
-              '${result.data!.merchantInfo.operationalDays} • ${result.data!.merchantInfo.operationalTime}',
+              '${data.merchantInfo.operationalDays} • ${data.merchantInfo.operationalTime}',
           hasWelcomePopup: data.hasWelcomePopup,
+          merchantStatus: merchantResult is SuccessState ? (merchantResult.data as dynamic)?.status : null,
+          merchantReportReason: merchantResult is SuccessState ? (merchantResult.data as dynamic)?.reportReason : null,
         ),
       );
     } else {
-      emit(state.copyWith(isLoading: false, errorMessage: result.message));
+      emit(state.copyWith(isLoading: false, errorMessage: dashboardResult.message));
     }
   }
 }

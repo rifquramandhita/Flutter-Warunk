@@ -592,7 +592,12 @@ Future<void> initDependency() async {
       removeWishlistUseCase: sl(),
     ),
   );
-  sl.registerFactory(() => MerchantDashboardBloc(getUseCase: sl()));
+  sl.registerFactory(
+    () => MerchantDashboardBloc(
+      getUseCase: sl(),
+      getMerchantUseCase: sl(),
+    ),
+  );
   sl.registerFactory(() => CustomerNotificationBloc(getUseCase: sl()));
   sl.registerFactory(() => MerchantNotificationBloc(getUseCase: sl()));
   sl.registerFactory(
