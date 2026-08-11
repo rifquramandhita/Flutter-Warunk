@@ -18,7 +18,7 @@ import 'package:warunk/core/helper/global_helper.dart';
 import 'package:warunk/core/helper/dialog_helper.dart';
 import 'package:warunk/core/enum/order_status.dart';
 import 'package:warunk/main.dart';
-import 'package:warunk/app/features/merchant/presentation/edit_profil/merchant_edit_profil_screen.dart';
+import 'package:warunk/app/features/merchant/presentation/setup/merchant_setup_screen.dart';
 
 bool _isCheckingPopup = false;
 
@@ -179,7 +179,7 @@ class MerchantDashboardScreen extends StatelessWidget {
                     ?.push(
                       MaterialPageRoute(
                         builder: (_) =>
-                            const MerchantEditProfilScreen(isSetupMode: true),
+                            const MerchantSetupScreen(),
                       ),
                     )
                     .then((result) {

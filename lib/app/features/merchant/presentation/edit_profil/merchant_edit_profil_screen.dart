@@ -10,11 +10,9 @@ import 'package:warunk/core/widgets/primary_button.dart';
 import 'package:warunk/main.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:warunk/app/features/merchant/domain/entity/merchant_category.dart';
-import 'package:warunk/app/features/merchant/presentation/input_product/merchant_input_product_screen.dart';
 
 class MerchantEditProfilScreen extends StatefulWidget {
-  final bool isSetupMode;
-  const MerchantEditProfilScreen({super.key, this.isSetupMode = false});
+  const MerchantEditProfilScreen({super.key});
 
   @override
   State<MerchantEditProfilScreen> createState() =>
@@ -22,7 +20,6 @@ class MerchantEditProfilScreen extends StatefulWidget {
 }
 
 class _MerchantEditProfilScreenState extends State<MerchantEditProfilScreen> {
-  int _currentStep = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -40,39 +37,17 @@ class _MerchantEditProfilScreenState extends State<MerchantEditProfilScreen> {
           if (state.isSuccess) {
             DialogHelper.showBottomSheetDialog(
               context: context,
-              title: widget.isSetupMode ? "Toko Berhasil Diatur!" : "Success",
+              title: "Success",
               content: Column(
                 children: [
-                  Text(widget.isSetupMode 
-                      ? "Langkah selanjutnya, yuk tambahkan produk pertama Anda agar pelanggan bisa mulai berbelanja."
-                      : "Berhasil memperbarui data merchant"),
+                  Text("Berhasil memperbarui data merchant"),
                   SizedBox(height: 24),
                   PrimaryButton(
-                    label: widget.isSetupMode ? "Tambah Produk Sekarang" : "Tutup",
+                    label: "Tutup",
                     onPressed: () async {
                       navigatorKey.currentState?.pop(); // close dialog
-                      if (widget.isSetupMode) {
-                        final result = await navigatorKey.currentState?.push(
-                          MaterialPageRoute(
-                            builder: (_) => const MerchantInputProductScreen(isSetupMode: true),
-                          ),
-                        );
-                        if (result == true) {
-                          navigatorKey.currentState?.pop(true);
-                        }
-                      }
                     },
                   ),
-                  if (widget.isSetupMode) ...[
-                    SizedBox(height: 12),
-                    TextButton(
-                      onPressed: () {
-                        navigatorKey.currentState?.pop(); // close dialog
-                        navigatorKey.currentState?.pop(); // go back to dashboard
-                      },
-                      child: Text('Nanti saja', style: TextStyle(color: Colors.grey)),
-                    ),
-                  ]
                 ],
               ),
             );
@@ -108,222 +83,9 @@ class _MerchantEditProfilScreenState extends State<MerchantEditProfilScreen> {
   }
 
   Widget _bodyLayout(BuildContext context, MerchantEditProfilState state) {
-    if (widget.isSetupMode) {
-      return _buildWizardForm(context, state);
-    }
     return _buildRegularForm(context, state);
   }
 
-  Widget _buildWizardForm(BuildContext context, MerchantEditProfilState state) {
-    return Theme(
-      data: Theme.of(context).copyWith(
-        colorScheme: Theme.of(context).colorScheme.copyWith(
-              primary: GlobalHelper.getColorSchema(context).primary,
-            ),
-      ),
-      child: Stepper(
-        currentStep: _currentStep,
-        type: StepperType.vertical,
-        physics: const ClampingScrollPhysics(),
-        onStepTapped: (step) => setState(() => _currentStep = step),
-        onStepContinue: () {
-          if (_currentStep < 4) {
-            setState(() => _currentStep += 1);
-          } else {
-            context
-                .read<MerchantEditProfilBloc>()
-                .add(MerchantEditProfilEventSubmit());
-          }
-        },
-        onStepCancel: () {
-          if (_currentStep > 0) {
-            setState(() => _currentStep -= 1);
-          }
-        },
-        controlsBuilder: (context, details) {
-          return Container(
-            margin: const EdgeInsets.only(top: 24),
-            child: Row(
-              children: [
-                if (_currentStep < 4)
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: details.onStepContinue,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor:
-                            GlobalHelper.getColorSchema(context).primary,
-                        padding: const EdgeInsets.symmetric(vertical: 14),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12)),
-                      ),
-                      child: const Text('Selanjutnya',
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold)),
-                    ),
-                  )
-                else
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: details.onStepContinue,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor:
-                            GlobalHelper.getColorSchema(context).primary,
-                        padding: const EdgeInsets.symmetric(vertical: 14),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12)),
-                      ),
-                      child: const Text('Simpan Perubahan',
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold)),
-                    ),
-                  ),
-                if (_currentStep > 0) ...[
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: OutlinedButton(
-                      onPressed: details.onStepCancel,
-                      style: OutlinedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 14),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12)),
-                        side: BorderSide(
-                            color: GlobalHelper.getColorSchema(context).outline),
-                      ),
-                      child: Text('Kembali',
-                          style: TextStyle(
-                              color: GlobalHelper.getColorSchema(context).primary,
-                              fontWeight: FontWeight.bold)),
-                    ),
-                  ),
-                ],
-              ],
-            ),
-          );
-        },
-        steps: [
-          Step(
-            title: _fieldLabel(context, 'Foto Toko'),
-            content: Center(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8),
-                child: _avatarPicker(context, state),
-              ),
-            ),
-            isActive: _currentStep >= 0,
-            state: _currentStep > 0 ? StepState.complete : StepState.indexed,
-          ),
-          Step(
-            title: _fieldLabel(context, 'Nama Toko'),
-            content: _editField(
-              context: context,
-              initialValue: state.name,
-              hintText: 'Masukkan nama toko',
-              keyboardType: TextInputType.text,
-              onChanged: (v) => context.read<MerchantEditProfilBloc>().add(
-                    MerchantEditProfilEventNameChanged(v),
-                  ),
-            ),
-            isActive: _currentStep >= 1,
-            state: _currentStep > 1 ? StepState.complete : StepState.indexed,
-          ),
-          Step(
-            title: _fieldLabel(context, 'Kategori Toko'),
-            content: DropdownSearch<MerchantCategoryEntity>(
-              selectedItem: state.selectedCategory,
-              items: (filter, loadProps) => state.categories,
-              itemAsString: (MerchantCategoryEntity? u) => u?.name ?? '',
-              compareFn: (item1, item2) => item1.id == item2.id,
-              onSelected: (MerchantCategoryEntity? data) {
-                context.read<MerchantEditProfilBloc>().add(
-                      MerchantEditProfilEventCategoryChanged(data),
-                    );
-              },
-              decoratorProps: DropDownDecoratorProps(
-                decoration: InputDecoration(
-                  hintText: "Pilih kategori toko",
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 14,
-                  ),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(
-                      color:
-                          GlobalHelper.getColorSchema(context).outlineVariant,
-                    ),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(
-                      color:
-                          GlobalHelper.getColorSchema(context).outlineVariant,
-                    ),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(
-                      color: GlobalHelper.getColorSchema(context).primary,
-                    ),
-                  ),
-                  filled: true,
-                  fillColor: GlobalHelper.getColorSchema(context).surface,
-                ),
-              ),
-              popupProps: PopupProps.menu(
-                showSearchBox: true,
-                searchFieldProps: TextFieldProps(
-                  decoration: InputDecoration(
-                    hintText: "Cari kategori...",
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 14,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            isActive: _currentStep >= 2,
-            state: _currentStep > 2 ? StepState.complete : StepState.indexed,
-          ),
-          Step(
-            title: _fieldLabel(context, 'No. WhatsApp'),
-            content: _editField(
-              context: context,
-              initialValue: state.whatsappNumber,
-              hintText: 'Masukkan nomor WhatsApp',
-              keyboardType: TextInputType.phone,
-              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-              onChanged: (v) => context.read<MerchantEditProfilBloc>().add(
-                    MerchantEditProfilEventWhatsappChanged(v),
-                  ),
-            ),
-            isActive: _currentStep >= 3,
-            state: _currentStep > 3 ? StepState.complete : StepState.indexed,
-          ),
-          Step(
-            title: _fieldLabel(context, 'Tentang Toko'),
-            content: _editField(
-              context: context,
-              initialValue: state.about,
-              hintText: 'Tuliskan deskripsi singkat tentang toko',
-              keyboardType: TextInputType.multiline,
-              maxLines: 4,
-              onChanged: (v) => context.read<MerchantEditProfilBloc>().add(
-                    MerchantEditProfilEventAboutChanged(v),
-                  ),
-            ),
-            isActive: _currentStep >= 4,
-            state: _currentStep > 4 ? StepState.complete : StepState.indexed,
-          ),
-        ],
-      ),
-    );
-  }
 
   Widget _avatarPicker(BuildContext context, MerchantEditProfilState state) {
     final colorSchema = GlobalHelper.getColorSchema(context);
