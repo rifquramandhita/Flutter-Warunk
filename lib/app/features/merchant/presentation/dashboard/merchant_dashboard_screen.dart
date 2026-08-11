@@ -38,14 +38,14 @@ class MerchantDashboardScreen extends StatelessWidget {
             borderRadius: BorderRadius.circular(16),
           ),
           title: Text(
-            'Peringatan',
+            'PERINGATAN',
             style: GlobalHelper.getTextTheme(
               context,
               appTextStyle: AppTextStyle.TITLE_MEDIUM,
             )?.copyWith(fontWeight: FontWeight.bold, color: Colors.red),
           ),
           content: Text(
-            state.merchantReportReason ?? 'Toko Anda telah dilaporkan.',
+            'Toko Anda sedang dalam masa Suspend \nAlasan: ${state.merchantReportReason ?? 'Toko Anda telah dilaporkan'}',
           ),
           actions: [
             TextButton(
