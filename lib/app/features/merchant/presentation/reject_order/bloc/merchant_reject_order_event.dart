@@ -48,3 +48,7 @@ class MerchantRejectOrderEventRefundProofPicked extends MerchantRejectOrderEvent
 }
 
 class MerchantRejectOrderEventSubmit extends MerchantRejectOrderEvent {}
+
+class MerchantRejectOrderEventGetWhatsAppNumber extends MerchantRejectOrderEvent {}
+
+class MerchantRejectOrderEventResetWhatsAppNavigation extends MerchantRejectOrderEvent {}

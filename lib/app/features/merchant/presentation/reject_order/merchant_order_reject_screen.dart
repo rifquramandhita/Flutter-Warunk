@@ -38,6 +38,22 @@ class MerchantOrderRejectScreen extends StatelessWidget {
           if (state.isSuccess) {
             navigatorKey.currentState?.pop(true);
           }
+          if (state.shouldLaunchWhatsApp && state.whatsAppNumber != null) {
+            final url = Uri.parse('https://wa.me/${state.whatsAppNumber}');
+            canLaunchUrl(url).then((canLaunch) {
+              if (canLaunch) {
+                launchUrl(url, mode: LaunchMode.externalApplication);
+              } else {
+                DialogHelper.showErrorSnackBar(
+                  context: context,
+                  text: 'Tidak dapat membuka WhatsApp',
+                );
+              }
+            });
+            context.read<MerchantRejectOrderBloc>().add(
+              MerchantRejectOrderEventResetWhatsAppNavigation(),
+            );
+          }
         },
         builder: (context, state) {
           return Scaffold(
@@ -214,11 +230,10 @@ class MerchantOrderRejectScreen extends StatelessWidget {
             children: [
               OutlineButtonCustom(
                 label: 'Hubungi Customer Service',
-                onPressed: () async {
-                  final url = Uri.parse('https://wa.me/6281345678900');
-                  if (await canLaunchUrl(url)) {
-                    await launchUrl(url, mode: LaunchMode.externalApplication);
-                  }
+                onPressed: () {
+                  context.read<MerchantRejectOrderBloc>().add(
+                    MerchantRejectOrderEventGetWhatsAppNumber(),
+                  );
                 },
               ),
               const SizedBox(height: 12),

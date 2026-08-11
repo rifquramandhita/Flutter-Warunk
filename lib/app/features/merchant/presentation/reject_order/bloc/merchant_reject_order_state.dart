@@ -9,6 +9,8 @@ class MerchantRejectOrderState extends Equatable {
   final bool isLoading;
   final bool isSuccess;
   final String? errorMessage;
+  final String? whatsAppNumber;
+  final bool shouldLaunchWhatsApp;
 
   const MerchantRejectOrderState({
     this.reason = '',
@@ -19,6 +21,8 @@ class MerchantRejectOrderState extends Equatable {
     this.isLoading = false,
     this.isSuccess = false,
     this.errorMessage,
+    this.whatsAppNumber,
+    this.shouldLaunchWhatsApp = false,
   });
 
   MerchantRejectOrderState copyWith({
@@ -30,6 +34,8 @@ class MerchantRejectOrderState extends Equatable {
     bool? isLoading,
     bool? isSuccess,
     String? errorMessage,
+    String? whatsAppNumber,
+    bool? shouldLaunchWhatsApp,
   }) {
     return MerchantRejectOrderState(
       reason: reason ?? this.reason,
@@ -40,6 +46,8 @@ class MerchantRejectOrderState extends Equatable {
       isLoading: isLoading ?? this.isLoading,
       isSuccess: isSuccess ?? this.isSuccess,
       errorMessage: errorMessage,
+      whatsAppNumber: whatsAppNumber ?? this.whatsAppNumber,
+      shouldLaunchWhatsApp: shouldLaunchWhatsApp ?? this.shouldLaunchWhatsApp,
     );
   }
 
@@ -53,5 +61,7 @@ class MerchantRejectOrderState extends Equatable {
         isLoading,
         isSuccess,
         errorMessage,
+        whatsAppNumber,
+        shouldLaunchWhatsApp,
       ];
 }

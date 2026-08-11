@@ -578,8 +578,11 @@ Future<void> initDependency() async {
     (orderId, _) => MerchantShipOrderBloc(shipUseCase: sl(), orderId: orderId),
   );
   sl.registerFactoryParam<MerchantRejectOrderBloc, String, void>(
-    (orderId, _) =>
-        MerchantRejectOrderBloc(rejectUseCase: sl(), orderId: orderId),
+    (orderId, _) => MerchantRejectOrderBloc(
+      rejectUseCase: sl(),
+      getWhatsAppUseCase: sl(),
+      orderId: orderId,
+    ),
   );
   sl.registerFactoryParam<MerchantRejectCancelOrderBloc, String, void>(
     (orderId, _) => MerchantRejectCancelOrderBloc(
