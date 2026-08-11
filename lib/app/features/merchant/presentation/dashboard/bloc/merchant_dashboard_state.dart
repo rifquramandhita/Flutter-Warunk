@@ -24,6 +24,7 @@ class MerchantDashboardState extends Equatable {
   final bool shouldLaunchWhatsApp;
   final String? chatUrl;
   final bool shouldLaunchChatUrl;
+  final bool isVerified;
 
   const MerchantDashboardState({
     this.isLoading = false,
@@ -57,6 +58,7 @@ class MerchantDashboardState extends Equatable {
     this.shouldLaunchWhatsApp = false,
     this.chatUrl,
     this.shouldLaunchChatUrl = false,
+    this.isVerified = false,
   });
 
   MerchantDashboardState copyWith({
@@ -83,6 +85,7 @@ class MerchantDashboardState extends Equatable {
     bool? shouldLaunchWhatsApp,
     String? chatUrl,
     bool? shouldLaunchChatUrl,
+    bool? isVerified,
   }) => MerchantDashboardState(
     isLoading: isLoading ?? this.isLoading,
     errorMessage: errorMessage, // DO NOT use fallback so it can be reset
@@ -107,6 +110,7 @@ class MerchantDashboardState extends Equatable {
     shouldLaunchWhatsApp: shouldLaunchWhatsApp ?? this.shouldLaunchWhatsApp,
     chatUrl: chatUrl ?? this.chatUrl,
     shouldLaunchChatUrl: shouldLaunchChatUrl ?? this.shouldLaunchChatUrl,
+    isVerified: isVerified ?? this.isVerified,
   );
 
   @override
@@ -134,5 +138,6 @@ class MerchantDashboardState extends Equatable {
     shouldLaunchWhatsApp,
     chatUrl,
     shouldLaunchChatUrl,
+    isVerified,
   ];
 }

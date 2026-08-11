@@ -20,6 +20,7 @@ sealed class MerchantMerchant with _$MerchantMerchant {
     String? status,
     int? statusChangedBy,
     String? reportReason,
+    bool? isVerified,
     @JsonKey(name: 'whatsapp_number') String? phone,
     bool? isOpenAllDay,
     @JsonKey(name: 'is_open_24_hours') bool? isOpen24Hours,

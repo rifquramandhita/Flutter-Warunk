@@ -403,18 +403,34 @@ class MerchantDashboardScreen extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      state.merchantName.isEmpty
-                          ? 'Warunk Bu Siti'
-                          : state.merchantName,
-                      style:
-                          GlobalHelper.getTextTheme(
-                            context,
-                            appTextStyle: AppTextStyle.TITLE_LARGE,
-                          )?.copyWith(
-                            fontWeight: FontWeight.bold,
-                            color: colorSchema.onSurface,
+                    Row(
+                      children: [
+                        Flexible(
+                          child: Text(
+                            state.merchantName.isEmpty
+                                ? 'Warunk Bu Siti'
+                                : state.merchantName,
+                            style:
+                                GlobalHelper.getTextTheme(
+                                  context,
+                                  appTextStyle: AppTextStyle.TITLE_LARGE,
+                                )?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  color: colorSchema.onSurface,
+                                ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                           ),
+                        ),
+                        if (state.isVerified) ...[
+                          const SizedBox(width: 4),
+                          const Icon(
+                            Icons.verified,
+                            color: Colors.blue,
+                            size: 20,
+                          ),
+                        ],
+                      ],
                     ),
                     const SizedBox(height: 4),
                     Container(

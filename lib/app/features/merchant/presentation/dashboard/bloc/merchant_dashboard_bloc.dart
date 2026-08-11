@@ -90,6 +90,7 @@ class MerchantDashboardBloc
           hasWelcomePopup: data.hasWelcomePopup,
           merchantStatus: merchantResult is SuccessState ? (merchantResult.data as dynamic)?.status : null,
           merchantReportReason: merchantResult is SuccessState ? (merchantResult.data as dynamic)?.reportReason : null,
+          isVerified: merchantResult is SuccessState ? ((merchantResult.data as dynamic)?.isVerified ?? false) : false,
         ),
       );
     } else {
