@@ -141,7 +141,7 @@ class MerchantDashboardScreen extends StatelessWidget {
     if (!context.mounted) return;
 
     if (state.merchantName.trim().isEmpty ||
-        state.merchantName == 'Warunk Bu Siti' ||
+        state.merchantName == '' ||
         state.merchantCategory.trim().isEmpty) {
       await showDialog(
         context: context,
@@ -419,7 +419,7 @@ class MerchantDashboardScreen extends StatelessWidget {
                         Flexible(
                           child: Text(
                             state.merchantName.isEmpty
-                                ? 'Warunk Bu Siti'
+                                ? ''
                                 : state.merchantName,
                             style:
                                 GlobalHelper.getTextTheme(
@@ -455,7 +455,7 @@ class MerchantDashboardScreen extends StatelessWidget {
                       ),
                       child: Text(
                         state.merchantCategory.isEmpty
-                            ? 'Merchant'
+                            ? ''
                             : state.merchantCategory,
                         style:
                             GlobalHelper.getTextTheme(
@@ -502,9 +502,7 @@ class MerchantDashboardScreen extends StatelessWidget {
               ),
               const SizedBox(width: 6),
               Text(
-                state.merchantTime.isEmpty
-                    ? 'Toko buka  •  08:00 – 22:00'
-                    : state.merchantTime,
+                state.merchantTime.isEmpty ? '' : state.merchantTime,
                 style:
                     GlobalHelper.getTextTheme(
                       context,
