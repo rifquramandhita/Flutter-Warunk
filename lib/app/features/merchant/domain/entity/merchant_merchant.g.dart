@@ -18,6 +18,9 @@ MerchantMerchantEntity _$MerchantMerchantEntityFromJson(
   status: json['status'] as String?,
   statusChangedBy: (json['status_changed_by'] as num?)?.toInt(),
   reportReason: json['report_reason'] as String?,
+  reportedAt: json['reported_at'] == null
+      ? null
+      : DateTime.parse(json['reported_at'] as String),
   isVerified: json['is_verified'] as bool?,
   phone: json['whatsapp_number'] as String?,
   isOpenAllDay: json['is_open_all_day'] as bool?,
@@ -79,6 +82,7 @@ Map<String, dynamic> _$MerchantMerchantEntityToJson(
   'status': ?instance.status,
   'status_changed_by': ?instance.statusChangedBy,
   'report_reason': ?instance.reportReason,
+  'reported_at': ?instance.reportedAt?.toIso8601String(),
   'is_verified': ?instance.isVerified,
   'whatsapp_number': ?instance.phone,
   'is_open_all_day': ?instance.isOpenAllDay,

@@ -13,6 +13,7 @@ import 'package:warunk/app/features/merchant/presentation/notification/merchant_
 import 'package:warunk/app/features/merchant/presentation/chat/merchant_chat_webview_screen.dart';
 import 'package:warunk/app/features/auth/presentation/logout/auth_logout_screen.dart';
 import 'package:warunk/core/dependency/dependency.dart';
+import 'package:warunk/core/helper/date_time_helper.dart';
 import 'package:warunk/core/widgets/loading_app_widget.dart';
 import 'package:warunk/core/helper/global_helper.dart';
 import 'package:warunk/core/helper/dialog_helper.dart';
@@ -47,7 +48,7 @@ class MerchantDashboardScreen extends StatelessWidget {
             )?.copyWith(fontWeight: FontWeight.bold, color: Colors.red),
           ),
           content: Text(
-            'Toko Anda sedang dalam masa Suspend \nAlasan: ${state.merchantReportReason ?? 'Toko Anda telah dilaporkan'}\nSilahkan hubungi Admin untuk info lebih lanjut.\nNote: Selama masa suspend Anda tidak bisa mengakses toko Anda',
+            'Toko Anda sedang dalam masa Suspend \n\nAlasan: ${state.merchantReportReason ?? 'Toko Anda telah dilaporkan'}\nTanggal: ${DateTimeHelper.formatDateTime(dateTime: state.merchantReportDate, format: 'dd MMMM yyyy HH:mm')}\n\nSilahkan hubungi Admin untuk info lebih lanjut.\n\nNote: Selama masa suspend Anda tidak bisa mengakses toko Anda',
           ),
           actions: [
             TextButton(
@@ -178,8 +179,7 @@ class MerchantDashboardScreen extends StatelessWidget {
                 navigatorKey.currentState
                     ?.push(
                       MaterialPageRoute(
-                        builder: (_) =>
-                            const MerchantSetupScreen(),
+                        builder: (_) => const MerchantSetupScreen(),
                       ),
                     )
                     .then((result) {
@@ -264,7 +264,18 @@ class MerchantDashboardScreen extends StatelessWidget {
             );
           }
           if (state.shouldLaunchWhatsApp && state.whatsAppNumber != null) {
-            final url = Uri.parse('https://wa.me/${state.whatsAppNumber}');
+            final String suspendDate = state.merchantReportDate != null
+                ? DateTimeHelper.formatDateTime(
+                    dateTime: state.merchantReportDate,
+                    format: 'dd MMMM yyyy HH:mm',
+                  )
+                : '-';
+            final String message =
+                'Halo Admin, akun merchant saya atas nama ${state.merchantName} kena suspend sejak $suspendDate Apakah bisa dibantu?';
+            final String encodedMessage = Uri.encodeComponent(message);
+            final url = Uri.parse(
+              'https://wa.me/${state.whatsAppNumber}?text=$encodedMessage',
+            );
             await canLaunchUrl(url).then((canLaunch) {
               if (canLaunch) {
                 launchUrl(url, mode: LaunchMode.externalApplication);
