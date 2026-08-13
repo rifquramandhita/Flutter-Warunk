@@ -166,7 +166,7 @@ class AuthLoginScreen extends StatelessWidget {
           const SizedBox(height: 20),
 
           _emailTextFieldLayout(
-            hintText: 'Email / Nomor HP',
+            hintText: 'Email',
             prefixIcon: Icons.mail_outline_rounded,
             onChanged: (value) =>
                 context.read<AuthLoginBloc>().add(AuthEmailChanged(value)),
@@ -480,7 +480,8 @@ class AuthLoginScreen extends StatelessWidget {
       width: double.infinity,
       height: 52,
       child: OutlinedButton(
-        onPressed: () => context.read<AuthLoginBloc>().add(AuthGoogleLoginSubmitted()),
+        onPressed: () =>
+            context.read<AuthLoginBloc>().add(AuthGoogleLoginSubmitted()),
         style: OutlinedButton.styleFrom(
           side: const BorderSide(color: AppColors.greyBorder, width: 1.5),
           shape: RoundedRectangleBorder(
