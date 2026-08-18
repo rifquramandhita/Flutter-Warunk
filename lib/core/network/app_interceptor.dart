@@ -5,6 +5,8 @@ import 'package:dio/dio.dart';
 import 'package:warunk/core/constants/constant.dart';
 import 'package:warunk/core/helper/shared_preferences_helper.dart';
 import 'package:warunk/main.dart';
+import 'package:warunk/core/bloc/auth/auth_bloc.dart';
+import 'package:warunk/core/dependency/dependency.dart';
 
 class AppInterceptor extends Interceptor {
   dynamic _removeRuntimeType(dynamic data) {
@@ -55,5 +57,22 @@ class AppInterceptor extends Interceptor {
       );
     }
     super.onResponse(response, handler);
+  }
+  @override
+  void onError(DioException err, ErrorInterceptorHandler handler) async {
+    if (err.response?.statusCode == 401) {
+      await SharedPreferencesHelper.clearAll();
+      sl<AuthBloc>().add(AuthEventCheck());
+      
+      // Tunggu sebentar agar AuthBloc selesai mengupdate state (isAuthenticated = false)
+      // Hal ini mencegah race condition di mana halaman yang di-pop masih mendeteksi user login
+      // dan berpotensi memanggil SystemNavigator.pop() yang menutup aplikasi.
+      await Future.delayed(const Duration(milliseconds: 200));
+      
+      if (navigatorKey.currentState?.mounted ?? false) {
+        navigatorKey.currentState?.popUntil((route) => route.isFirst);
+      }
+    }
+    super.onError(err, handler);
   }
 }

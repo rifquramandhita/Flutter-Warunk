@@ -82,7 +82,10 @@ class _CustomerShellContentState extends State<_CustomerShellContent> with Route
       });
     } else {
       if (_selectedCategory == null) {
-        SystemNavigator.pop();
+        // Jangan exit app jika user sebenarnya sedang logout (misal karena error 401)
+        if (mounted && context.read<AuthBloc>().state.isAuthenticated) {
+          SystemNavigator.pop();
+        }
       }
     }
   }
