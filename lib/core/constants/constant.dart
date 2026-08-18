@@ -1,4 +1,4 @@
-const BASE_URL_PROD = 'https://warunk.dewalabs.com';
+const BASE_URL_PROD = 'https://warunk.watuka.com';
 const BASE_URL_DEV = 'https://warunk.dewalabs.com';
 
 const PREF_AUTH = 'pref-auth';
