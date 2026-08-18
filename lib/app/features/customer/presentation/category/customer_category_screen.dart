@@ -47,11 +47,13 @@ class _CustomerCategoryScreenState extends State<CustomerCategoryScreen> {
 
   Widget _bodyBuild(BuildContext context) {
     final state = context.watch<CustomerCategoryBloc>().state;
-    return Stack(
-      children: [
-        _bodyLayout(context),
-        if (state.isLoading) const SafeArea(child: LoadingAppWidget()),
-      ],
+    return SafeArea(
+      child: Stack(
+        children: [
+          _bodyLayout(context),
+          if (state.isLoading) const LoadingAppWidget(),
+        ],
+      ),
     );
   }
 
