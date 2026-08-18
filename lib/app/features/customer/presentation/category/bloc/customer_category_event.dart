@@ -9,6 +9,15 @@ abstract class CustomerCategoryEvent extends Equatable {
 
 class CustomerCategoryStarted extends CustomerCategoryEvent {}
 
+class CustomerCategoryRefreshed extends CustomerCategoryEvent {
+  final Completer<void>? completer;
+  
+  const CustomerCategoryRefreshed({this.completer});
+
+  @override
+  List<Object> get props => [];
+}
+
 class CustomerCategorySearchChanged extends CustomerCategoryEvent {
   final String query;
 

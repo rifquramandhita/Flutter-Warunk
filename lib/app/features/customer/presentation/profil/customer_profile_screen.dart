@@ -5,6 +5,7 @@ import 'package:warunk/app/features/customer/presentation/address/customer_addre
 import 'package:warunk/app/features/customer/presentation/notification/customer_notification_screen.dart';
 import 'package:warunk/app/features/customer/presentation/edit_profil/customer_edit_profile_screen.dart';
 import 'package:warunk/app/features/customer/presentation/wishlist/customer_wishlist_screen.dart';
+import 'package:warunk/app/features/customer/presentation/shell/customer_shell_screen.dart';
 import 'package:warunk/app/features/customer/presentation/shell/bloc/customer_shell_bloc.dart';
 import 'package:warunk/app/features/customer/presentation/profil/bloc/customer_profil_bloc.dart';
 import 'package:warunk/app/features/customer/presentation/profil/bloc/customer_profil_event.dart';
@@ -283,7 +284,8 @@ class CustomerProfileScreen extends StatelessWidget {
                             ),
                           )
                           .then((_) {
-                            if (context.mounted) {
+                            if (context.mounted &&
+                                context.read<AuthBloc>().state.isAuthenticated) {
                               context.read<CustomerProfilBloc>().add(
                                 CustomerLoadProfilData(),
                               );
@@ -384,9 +386,12 @@ class CustomerProfileScreen extends StatelessWidget {
       width: double.infinity,
       height: 52,
       child: OutlinedButton(
-        onPressed: () => navigatorKey.currentState?.push(
-          MaterialPageRoute(builder: (_) => const AuthLogoutScreen()),
-        ),
+        onPressed: () {
+          CustomerShellScreen.ignoreNextPop = true;
+          navigatorKey.currentState?.push(
+            MaterialPageRoute(builder: (_) => const AuthLogoutScreen()),
+          );
+        },
         style: OutlinedButton.styleFrom(
           side: const BorderSide(color: Colors.red, width: 1.5),
           shape: RoundedRectangleBorder(
@@ -474,6 +479,6 @@ class CustomerProfileScreen extends StatelessWidget {
     final isSuccess = await navigatorKey.currentState?.push(
       MaterialPageRoute(builder: (_) => CustomerEditProfileScreen()),
     );
-    if (isSuccess == true) bloc.add(AuthEventCheck());
+    if (isSuccess == true && bloc.state.isAuthenticated) bloc.add(AuthEventCheck());
   }
 }

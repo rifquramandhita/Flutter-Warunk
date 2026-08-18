@@ -110,10 +110,12 @@ class CustomerHomeBloc extends Bloc<CustomerHomeEvent, CustomerHomeState> {
     } else {
       var merchants = result.data ?? [];
       if (event.category != null && event.category!.key != 'all') {
-        merchants = merchants.where((m) => 
-          m.merchantCategory == event.category!.name || 
-          m.merchantCategory == event.category!.key
-        ).toList();
+        final searchSlug = event.category!.key.toLowerCase();
+        final searchName = event.category!.name.toLowerCase();
+        merchants = merchants.where((m) {
+          final cat = (m.merchantCategory ?? '').toLowerCase();
+          return cat.contains(searchSlug) || cat.contains(searchName);
+        }).toList();
       }
       emit(
         state.copyWith(

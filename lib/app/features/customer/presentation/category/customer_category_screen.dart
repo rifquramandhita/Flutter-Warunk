@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:warunk/app/features/customer/presentation/category/bloc/customer_category_bloc.dart';
@@ -97,9 +98,11 @@ class _CustomerCategoryScreenState extends State<CustomerCategoryScreen> {
         Expanded(
           child: RefreshIndicator(
             onRefresh: () async {
+              final completer = Completer<void>();
               context.read<CustomerCategoryBloc>().add(
-                CustomerCategoryStarted(),
+                CustomerCategoryRefreshed(completer: completer),
               );
+              await completer.future;
             },
             child: ListView(
               padding: EdgeInsets.zero,
@@ -361,21 +364,15 @@ class _CustomerCategoryScreenState extends State<CustomerCategoryScreen> {
 
   Widget _buildCategoryCard(BuildContext context, dynamic category) {
     return GestureDetector(
-      onTap: () async {
-        await navigatorKey.currentState?.push(
-          MaterialPageRoute(
-            builder: (_) => CustomerShellScreen(
-              selectedCategory: CustomerMerchantQuickCategoryEntity(
-                key: category.slug,
-                name: category.name,
-                imageUrl: category.iconUrl ?? '',
-              ),
-            ),
+      onTap: () {
+        Navigator.pop(
+          context,
+          CustomerMerchantQuickCategoryEntity(
+            key: category.slug,
+            name: category.name,
+            imageUrl: category.iconUrl ?? '',
           ),
         );
-        if (context.mounted) {
-          context.read<CustomerCategoryBloc>().add(CustomerCategoryStarted());
-        }
       },
       child: Container(
         height: isGridView ? 160 : 180,

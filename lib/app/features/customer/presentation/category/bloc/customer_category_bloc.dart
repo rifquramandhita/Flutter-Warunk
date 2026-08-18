@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:warunk/app/features/customer/domain/entity/customer_merchant_category.dart';
@@ -19,7 +20,42 @@ class CustomerCategoryBloc extends Bloc<CustomerCategoryEvent, CustomerCategoryS
         _getCartUseCase = getCartUseCase,
         super(const CustomerCategoryState()) {
     on<CustomerCategoryStarted>(_onStarted);
+    on<CustomerCategoryRefreshed>(_onRefreshed);
     on<CustomerCategorySearchChanged>(_onSearchChanged);
+  }
+
+  Future<void> _onRefreshed(CustomerCategoryRefreshed event, Emitter<CustomerCategoryState> emit) async {
+    emit(state.copyWith(errorMessage: null)); // Do NOT set isLoading: true
+    
+    final results = await Future.wait([
+      _getCategoryUseCase(),
+      _getCartUseCase(),
+    ]);
+
+    final categoryResult = results[0];
+    final cartResult = results[1];
+
+    int cartCount = 0;
+    if (cartResult is SuccessState && cartResult.data != null) {
+      cartCount = (cartResult.data as List).length;
+    }
+
+    if (categoryResult is SuccessState) {
+      final categories = (categoryResult.data as List<CustomerMerchantCategoryEntity>?)?.toList() ?? [];
+      categories.insert(
+        0,
+        const CustomerMerchantCategoryEntity(
+          id: 'all',
+          name: 'Semua Warung',
+          slug: 'all',
+        ),
+      );
+      emit(state.copyWith(categories: categories, cartCount: cartCount));
+    } else {
+      emit(state.copyWith(errorMessage: categoryResult.message, cartCount: cartCount));
+    }
+
+    event.completer?.complete();
   }
 
   Future<void> _onStarted(CustomerCategoryStarted event, Emitter<CustomerCategoryState> emit) async {

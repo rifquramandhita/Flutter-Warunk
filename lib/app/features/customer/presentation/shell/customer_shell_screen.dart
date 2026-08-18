@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:warunk/app/features/customer/presentation/shell/bloc/customer_shell_bloc.dart';
 import 'package:warunk/app/features/customer/presentation/home/customer_home_screen.dart';
@@ -12,12 +13,14 @@ import 'package:warunk/app/features/customer/presentation/cart/customer_cart_scr
 import 'package:warunk/app/features/customer/presentation/chat/customer_chat_webview_screen.dart';
 import 'package:warunk/core/helper/global_helper.dart';
 import 'package:warunk/core/dependency/dependency.dart';
-
 import 'package:warunk/app/features/customer/domain/entity/customer_merchant_quick_category.dart';
+import 'package:warunk/app/features/customer/presentation/category/customer_category_screen.dart';
+import 'package:warunk/core/bloc/auth/auth_bloc.dart';
 
 /// CustomerShellScreen mengelola bottom navigation dan menampilkan
 /// halaman yang sesuai berdasarkan tab yang dipilih.
 class CustomerShellScreen extends StatelessWidget {
+  static bool ignoreNextPop = false;
   final CustomerMerchantQuickCategoryEntity? selectedCategory;
   const CustomerShellScreen({super.key, this.selectedCategory});
 
@@ -39,18 +42,49 @@ class _CustomerShellContent extends StatefulWidget {
 }
 
 class _CustomerShellContentState extends State<_CustomerShellContent> with RouteAware {
-  late final List<Widget> _pages;
+  CustomerMerchantQuickCategoryEntity? _selectedCategory;
+  late List<Widget> _pages;
 
   @override
   void initState() {
     super.initState();
+    _selectedCategory = widget.selectedCategory;
+    _initPages();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_selectedCategory == null) {
+        _navigateToCategory();
+      }
+    });
+  }
+
+  void _initPages() {
     _pages = [
-      CustomerHomeScreen(selectedCategory: widget.selectedCategory),
+      CustomerHomeScreen(
+        key: ValueKey(_selectedCategory?.key ?? 'all'),
+        selectedCategory: _selectedCategory,
+      ),
       CustomerMapScreen(),
       const CustomerOrderScreen(),
       const CustomerNotificationScreen(),
       const CustomerProfileScreen(),
     ];
+  }
+
+  Future<void> _navigateToCategory() async {
+    final result = await navigatorKey.currentState?.push(
+      MaterialPageRoute(builder: (_) => const CustomerCategoryScreen()),
+    );
+    if (result != null && result is CustomerMerchantQuickCategoryEntity) {
+      setState(() {
+        _selectedCategory = result;
+        _initPages();
+      });
+    } else {
+      if (_selectedCategory == null) {
+        SystemNavigator.pop();
+      }
+    }
   }
 
   static final List<String> _titles = [
@@ -78,7 +112,82 @@ class _CustomerShellContentState extends State<_CustomerShellContent> with Route
 
   @override
   void didPopNext() {
-    context.read<CustomerShellBloc>().add(CustomerShellLoadCartCount());
+    if (CustomerShellScreen.ignoreNextPop) {
+      CustomerShellScreen.ignoreNextPop = false;
+      return;
+    }
+    
+    // Beri sedikit jeda agar AuthBloc selesai memproses event logout (jika ada) sebelum mengecek statusnya.
+    Future.delayed(const Duration(milliseconds: 50), () {
+      if (context.mounted && context.read<AuthBloc>().state.isAuthenticated) {
+        context.read<CustomerShellBloc>().add(CustomerShellLoadCartCount());
+      }
+    });
+  }
+
+  Widget _buildCategoryDropdown(BuildContext context) {
+    return GestureDetector(
+      onTap: _navigateToCategory,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        decoration: BoxDecoration(
+          color: GlobalHelper.getColorSchema(context).primary.withValues(alpha: 0.1),
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (_selectedCategory != null && _selectedCategory!.imageUrl.isNotEmpty)
+              Padding(
+                padding: const EdgeInsets.only(right: 6),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(4),
+                  child: Image.network(
+                    _selectedCategory!.imageUrl,
+                    width: 20,
+                    height: 20,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) => Icon(
+                      Icons.category,
+                      size: 16,
+                      color: GlobalHelper.getColorSchema(context).primary,
+                    ),
+                  ),
+                ),
+              )
+            else
+              Padding(
+                padding: const EdgeInsets.only(right: 6),
+                child: Icon(
+                  Icons.category,
+                  size: 16,
+                  color: GlobalHelper.getColorSchema(context).primary,
+                ),
+              ),
+            Flexible(
+              child: Text(
+                _selectedCategory?.name ?? 'Kategori',
+                style: GlobalHelper.getTextTheme(
+                  context,
+                  appTextStyle: AppTextStyle.LABEL_MEDIUM,
+                )?.copyWith(
+                  color: GlobalHelper.getColorSchema(context).primary,
+                  fontWeight: FontWeight.bold,
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+            const SizedBox(width: 4),
+            Icon(
+              Icons.keyboard_arrow_down_rounded,
+              color: GlobalHelper.getColorSchema(context).primary,
+              size: 20,
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   @override
@@ -87,6 +196,15 @@ class _CustomerShellContentState extends State<_CustomerShellContent> with Route
       builder: (context, state) {
         return Scaffold(
           appBar: AppBar(
+            leadingWidth: state.currentIndex == 0 ? 140 : 56,
+            leading: state.currentIndex == 0
+                ? Padding(
+                    padding: const EdgeInsets.only(left: 16),
+                    child: Center(
+                      child: _buildCategoryDropdown(context),
+                    ),
+                  )
+                : null,
             title: Text(
               _titles[state.currentIndex],
               style: const TextStyle(fontWeight: FontWeight.bold),
