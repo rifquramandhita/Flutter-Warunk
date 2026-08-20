@@ -41,9 +41,17 @@ class MerchantShellScreen extends StatelessWidget {
         builder: (context, state) {
           return Scaffold(
             appBar: AppBar(
+              backgroundColor: state.currentIndex == 4
+                  ? GlobalHelper.getColorSchema(context).primary
+                  : null,
               title: Text(
                 _titles[state.currentIndex],
-                style: const TextStyle(fontWeight: FontWeight.bold),
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: state.currentIndex == 4
+                      ? GlobalHelper.getColorSchema(context).onPrimary
+                      : null,
+                ),
               ),
               actions: [
                 GestureDetector(
@@ -54,7 +62,9 @@ class MerchantShellScreen extends StatelessWidget {
                   ),
                   child: Icon(
                     Icons.chat_bubble_outline_rounded,
-                    color: GlobalHelper.getColorSchema(context).primary,
+                    color: state.currentIndex == 4
+                        ? GlobalHelper.getColorSchema(context).onPrimary
+                        : GlobalHelper.getColorSchema(context).primary,
                     size: 24,
                   ),
                 ),
@@ -67,7 +77,9 @@ class MerchantShellScreen extends StatelessWidget {
                   ),
                   child: Icon(
                     Icons.notifications_outlined,
-                    color: GlobalHelper.getColorSchema(context).primary,
+                    color: state.currentIndex == 4
+                        ? GlobalHelper.getColorSchema(context).onPrimary
+                        : GlobalHelper.getColorSchema(context).primary,
                     size: 24,
                   ),
                 ),
