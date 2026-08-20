@@ -48,7 +48,6 @@ class MerchantPromotionScreen extends StatelessWidget {
         builder: (context, state) {
           return Scaffold(
             backgroundColor: GlobalHelper.getColorSchema(context).surface,
-            appBar: _buildAppBar(context),
             body: _bodyBuild(context),
             floatingActionButton: _buildFab(context),
           );
@@ -229,24 +228,6 @@ class MerchantPromotionScreen extends StatelessWidget {
             ),
           );
         },
-      ),
-    );
-  }
-
-  PreferredSizeWidget _buildAppBar(BuildContext context) {
-    final colors = GlobalHelper.getColorSchema(context);
-    final textTheme = GlobalHelper.getTextTheme(
-      context,
-      appTextStyle: AppTextStyle.TITLE_MEDIUM,
-    );
-
-    return AppBar(
-      backgroundColor: colors.surface,
-      elevation: 0,
-      centerTitle: true,
-      title: Text(
-        'Promo Saya',
-        style: textTheme?.copyWith(fontWeight: FontWeight.bold),
       ),
     );
   }

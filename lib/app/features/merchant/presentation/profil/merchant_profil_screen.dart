@@ -36,7 +36,6 @@ class MerchantProfilScreen extends StatelessWidget {
         },
         builder: (context, state) {
           return Scaffold(
-            appBar: _appBarBuild(context),
             body: _bodyBuild(context),
           );
         },
@@ -44,24 +43,7 @@ class MerchantProfilScreen extends StatelessWidget {
     );
   }
 
-  AppBar _appBarBuild(BuildContext context) {
-    return AppBar(
-      backgroundColor: GlobalHelper.getColorSchema(context).primary,
-      title: Text(
-        "Toko",
-        style: TextStyle(color: GlobalHelper.getColorSchema(context).onPrimary),
-      ),
-      actions: [
-        IconButton(
-          onPressed: () => _onPressEditProfil(context),
-          icon: Icon(
-            Icons.edit,
-            color: GlobalHelper.getColorSchema(context).onPrimary,
-          ),
-        ),
-      ],
-    );
-  }
+
 
   Widget _bodyBuild(BuildContext context) {
     final state = context.watch<MerchantProfilBloc>().state;
@@ -228,6 +210,13 @@ class MerchantProfilScreen extends StatelessWidget {
                           ],
                         ),
                       ],
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: () => _onPressEditProfil(context),
+                    icon: const Icon(
+                      Icons.edit,
+                      color: Colors.white,
                     ),
                   ),
                 ],

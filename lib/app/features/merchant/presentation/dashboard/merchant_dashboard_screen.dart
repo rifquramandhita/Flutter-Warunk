@@ -470,23 +470,6 @@ class MerchantDashboardScreen extends StatelessWidget {
                   ],
                 ),
               ),
-              GestureDetector(
-                onTap: () {
-                  navigatorKey.currentState?.push(
-                    MaterialPageRoute(
-                      builder: (context) => const MerchantNotificationScreen(),
-                    ),
-                  );
-                },
-                child: Stack(
-                  children: [
-                    Icon(
-                      Icons.notifications_rounded,
-                      color: colorSchema.onSurface,
-                    ),
-                  ],
-                ),
-              ),
             ],
           ),
           const SizedBox(height: 10),

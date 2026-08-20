@@ -34,7 +34,6 @@ class MerchantProductScreen extends StatelessWidget {
         builder: (context, state) {
           return Scaffold(
             backgroundColor: AppColors.background,
-            appBar: _buildAppBar(context),
             body: _bodyBuild(context),
             floatingActionButton: _buildFab(context),
           );
@@ -68,9 +67,7 @@ class MerchantProductScreen extends StatelessWidget {
     );
   }
 
-  AppBar _buildAppBar(BuildContext context) {
-    return AppBar(title: const Text('Produk Saya'));
-  }
+
 
   Widget _buildSearchBar(BuildContext context) {
     return Padding(

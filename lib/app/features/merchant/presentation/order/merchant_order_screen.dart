@@ -30,7 +30,6 @@ class MerchantOrderScreen extends StatelessWidget {
         },
         builder: (context, state) {
           return Scaffold(
-            appBar: _buildAppBar(context),
             body: _bodyBuild(context),
           );
         },
@@ -61,9 +60,7 @@ class MerchantOrderScreen extends StatelessWidget {
     );
   }
 
-  AppBar _buildAppBar(BuildContext context) {
-    return AppBar(title: const Text('Order Masuk'));
-  }
+
 
   Widget _tabFilter(BuildContext context) {
     final state = context.watch<MerchantOrderBloc>().state;
