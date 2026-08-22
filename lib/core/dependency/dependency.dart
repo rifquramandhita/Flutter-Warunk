@@ -18,10 +18,17 @@ import 'package:warunk/app/features/auth/domain/repository/auth_repository.dart'
 import 'package:warunk/app/features/auth/domain/use_case/auth_login_use_case.dart';
 import 'package:warunk/app/features/auth/domain/use_case/auth_login_google_use_case.dart';
 import 'package:warunk/app/features/sales/data/source/sales_dashboard_api_service.dart';
+import 'package:warunk/app/features/sales/data/source/sales_merchant_api_service.dart';
 import 'package:warunk/app/features/sales/domain/repository/sales_repository.dart';
+import 'package:warunk/app/features/sales/domain/repository/sales_merchant_repository.dart';
 import 'package:warunk/app/features/sales/data/repository/sales_dashboard_repository_impl.dart';
+import 'package:warunk/app/features/sales/data/repository/sales_merchant_repository_impl.dart';
 import 'package:warunk/app/features/sales/domain/use_case/seller_dashboard_get_use_case.dart';
+import 'package:warunk/app/features/sales/domain/use_case/sales_merchant_get_use_case.dart';
+import 'package:warunk/app/features/sales/domain/use_case/sales_merchant_claim_use_case.dart';
+import 'package:warunk/app/features/sales/domain/use_case/sales_merchant_get_url_web_use_case.dart';
 import 'package:warunk/app/features/sales/presentation/dashboard/bloc/sales_dashboard_bloc.dart';
+import 'package:warunk/app/features/sales/presentation/merchant/bloc/sales_merchant_bloc.dart';
 import 'package:warunk/app/features/sales/presentation/profil/bloc/sales_profil_bloc.dart';
 import 'package:warunk/app/features/customer/presentation/map/bloc/customer_map_bloc.dart';
 import 'package:warunk/app/features/auth/domain/use_case/auth_logout_use_case.dart';
@@ -240,6 +247,7 @@ Future<void> initDependency() async {
   sl.registerLazySingleton(() => MerchantNotificationApiService(dio));
   sl.registerLazySingleton(() => CustomerPromotionInformationApiService(dio));
   sl.registerLazySingleton(() => SalesDashboardApiService(dio));
+  sl.registerLazySingleton(() => SalesMerchantApiService(dio));
   //repository
   sl.registerLazySingleton<MerchantSettingRepository>(
     () => MerchantSettingRepositoryImpl(apiService: sl()),
@@ -298,6 +306,9 @@ Future<void> initDependency() async {
   );
   sl.registerLazySingleton<SalesRepository>(
     () => SalesRepositoryImpl(apiService: sl()),
+  );
+  sl.registerLazySingleton<SalesMerchantRepository>(
+    () => SalesMerchantRepositoryImpl(apiService: sl()),
   );
 
   //usecase
@@ -447,6 +458,9 @@ Future<void> initDependency() async {
     () => CustomerPromotionInformationGetBannerUseCase(repository: sl()),
   );
   sl.registerLazySingleton(() => SellerDashboardGetUseCase(repository: sl()));
+  sl.registerLazySingleton(() => SalesMerchantGetUseCase(repository: sl()));
+  sl.registerLazySingleton(() => SalesMerchantClaimUseCase(repository: sl()));
+  sl.registerLazySingleton(() => SalesMerchantGetUrlWebUseCase(repository: sl()));
   //bloc
   sl.registerLazySingleton(() => AuthBloc());
   sl.registerFactory(
@@ -647,4 +661,11 @@ Future<void> initDependency() async {
   );
   sl.registerFactory(() => SalesDashboardBloc(getDashboardUseCase: sl()));
   sl.registerFactory(() => SalesProfilBloc());
+  sl.registerFactory(
+    () => SalesMerchantBloc(
+      getUseCase: sl(),
+      claimUseCase: sl(),
+      getUrlWebUseCase: sl(),
+    ),
+  );
 }
