@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:warunk/app/features/sales/presentation/dashboard/sales_dashboard_screen.dart';
+import 'package:warunk/app/features/sales/presentation/profil/sales_profil_screen.dart';
 import 'package:warunk/app/features/sales/presentation/shell/bloc/sales_shell_bloc.dart';
 import 'package:warunk/core/helper/global_helper.dart';
 import 'package:warunk/theme/app_colors.dart';
 
 class SalesShellScreen extends StatelessWidget {
+  static bool ignoreNextPop = false;
+
   const SalesShellScreen({super.key});
 
   @override
@@ -33,15 +36,11 @@ class _SalesShellContentState extends State<_SalesShellContent> {
     _pages = [
       const SalesDashboardScreen(),
       const Center(child: Text('Merchant Sales')),
-      const Center(child: Text('Profil Sales')),
+      const SalesProfilScreen(),
     ];
   }
 
-  final List<String> _titles = [
-    'Dashboard',
-    'Merchant',
-    'Profil',
-  ];
+  final List<String> _titles = ['Dashboard', 'Merchant', 'Profil'];
 
   @override
   Widget build(BuildContext context) {
@@ -49,17 +48,9 @@ class _SalesShellContentState extends State<_SalesShellContent> {
       builder: (context, state) {
         return Scaffold(
           appBar: AppBar(
-            backgroundColor: state.currentIndex == 2
-                ? GlobalHelper.getColorSchema(context).primary
-                : null,
             title: Text(
               _titles[state.currentIndex],
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: state.currentIndex == 2
-                    ? GlobalHelper.getColorSchema(context).onPrimary
-                    : null,
-              ),
+              style: TextStyle(fontWeight: FontWeight.bold),
             ),
           ),
           body: _pages[state.currentIndex],
@@ -67,9 +58,8 @@ class _SalesShellContentState extends State<_SalesShellContent> {
             backgroundColor: AppColors.white,
             indicatorColor: AppColors.primary.withValues(alpha: 0.15),
             selectedIndex: state.currentIndex,
-            onDestinationSelected: (index) => context
-                .read<SalesShellBloc>()
-                .add(SalesShellTabChanged(index)),
+            onDestinationSelected: (index) =>
+                context.read<SalesShellBloc>().add(SalesShellTabChanged(index)),
             destinations: const [
               NavigationDestination(
                 selectedIcon: Icon(Icons.dashboard, color: AppColors.primary),

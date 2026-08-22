@@ -22,6 +22,7 @@ import 'package:warunk/app/features/sales/domain/repository/sales_repository.dar
 import 'package:warunk/app/features/sales/data/repository/sales_dashboard_repository_impl.dart';
 import 'package:warunk/app/features/sales/domain/use_case/seller_dashboard_get_use_case.dart';
 import 'package:warunk/app/features/sales/presentation/dashboard/bloc/sales_dashboard_bloc.dart';
+import 'package:warunk/app/features/sales/presentation/profil/bloc/sales_profil_bloc.dart';
 import 'package:warunk/app/features/customer/presentation/map/bloc/customer_map_bloc.dart';
 import 'package:warunk/app/features/auth/domain/use_case/auth_logout_use_case.dart';
 import 'package:warunk/app/features/auth/domain/use_case/auth_register_use_case.dart';
@@ -645,4 +646,5 @@ Future<void> initDependency() async {
     ),
   );
   sl.registerFactory(() => SalesDashboardBloc(getDashboardUseCase: sl()));
+  sl.registerFactory(() => SalesProfilBloc());
 }
