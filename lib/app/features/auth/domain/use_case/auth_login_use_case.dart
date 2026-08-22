@@ -51,7 +51,7 @@ class AuthLoginUseCase {
       password: password,
       fcmToken: fcmToken,
       apkVersion: apkVersion,
-      type: '',
+      type: type,
       firebaseId: await FirebaseInstallations.instance.getId(),
       device: AuthDeviceEntity(brand: brand, model: model, os: os),
       role: role,

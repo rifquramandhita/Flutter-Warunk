@@ -1,6 +1,7 @@
 enum RoleEnum {
   customer,
-  merchant;
+  merchant,
+  sales;
 
   String get value {
     switch (this) {
@@ -8,6 +9,8 @@ enum RoleEnum {
         return 'customer';
       case RoleEnum.merchant:
         return 'merchant';
+      case RoleEnum.sales:
+        return 'sales';
     }
   }
 
@@ -17,6 +20,8 @@ enum RoleEnum {
         return RoleEnum.customer;
       case 'merchant':
         return RoleEnum.merchant;
+      case 'sales':
+        return RoleEnum.sales;
       default:
         return null;
     }

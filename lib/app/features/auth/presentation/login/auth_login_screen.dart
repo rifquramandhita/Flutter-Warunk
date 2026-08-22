@@ -329,6 +329,13 @@ class AuthLoginScreen extends StatelessWidget {
             label: 'Merchant',
             icon: Icons.storefront_outlined,
           ),
+          _itemRoleLayout(
+            context: context,
+            state: state,
+            role: RoleEnum.sales,
+            label: 'Sales',
+            icon: Icons.badge_outlined,
+          ),
         ],
       ),
     );
