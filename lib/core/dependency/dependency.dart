@@ -17,6 +17,11 @@ import 'package:warunk/app/features/customer/domain/use_case/customer_promotion_
 import 'package:warunk/app/features/auth/domain/repository/auth_repository.dart';
 import 'package:warunk/app/features/auth/domain/use_case/auth_login_use_case.dart';
 import 'package:warunk/app/features/auth/domain/use_case/auth_login_google_use_case.dart';
+import 'package:warunk/app/features/sales/data/source/sales_dashboard_api_service.dart';
+import 'package:warunk/app/features/sales/domain/repository/sales_repository.dart';
+import 'package:warunk/app/features/sales/data/repository/sales_dashboard_repository_impl.dart';
+import 'package:warunk/app/features/sales/domain/use_case/seller_dashboard_get_use_case.dart';
+import 'package:warunk/app/features/sales/presentation/dashboard/bloc/sales_dashboard_bloc.dart';
 import 'package:warunk/app/features/customer/presentation/map/bloc/customer_map_bloc.dart';
 import 'package:warunk/app/features/auth/domain/use_case/auth_logout_use_case.dart';
 import 'package:warunk/app/features/auth/domain/use_case/auth_register_use_case.dart';
@@ -233,6 +238,7 @@ Future<void> initDependency() async {
   sl.registerLazySingleton(() => CustomerNotificationApiService(dio));
   sl.registerLazySingleton(() => MerchantNotificationApiService(dio));
   sl.registerLazySingleton(() => CustomerPromotionInformationApiService(dio));
+  sl.registerLazySingleton(() => SalesDashboardApiService(dio));
   //repository
   sl.registerLazySingleton<MerchantSettingRepository>(
     () => MerchantSettingRepositoryImpl(apiService: sl()),
@@ -288,6 +294,9 @@ Future<void> initDependency() async {
   );
   sl.registerLazySingleton<CustomerPromotionInformationRepository>(
     () => CustomerPromotionInformationRepositoryImpl(apiService: sl()),
+  );
+  sl.registerLazySingleton<SalesRepository>(
+    () => SalesRepositoryImpl(apiService: sl()),
   );
 
   //usecase
@@ -436,6 +445,7 @@ Future<void> initDependency() async {
   sl.registerLazySingleton(
     () => CustomerPromotionInformationGetBannerUseCase(repository: sl()),
   );
+  sl.registerLazySingleton(() => SellerDashboardGetUseCase(repository: sl()));
   //bloc
   sl.registerLazySingleton(() => AuthBloc());
   sl.registerFactory(
@@ -634,4 +644,5 @@ Future<void> initDependency() async {
       getCategoryUseCase: sl(),
     ),
   );
+  sl.registerFactory(() => SalesDashboardBloc(getDashboardUseCase: sl()));
 }

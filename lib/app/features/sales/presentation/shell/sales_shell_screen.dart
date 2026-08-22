@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:warunk/app/features/sales/presentation/dashboard/sales_dashboard_screen.dart';
 import 'package:warunk/app/features/sales/presentation/shell/bloc/sales_shell_bloc.dart';
 import 'package:warunk/core/helper/global_helper.dart';
 import 'package:warunk/theme/app_colors.dart';
@@ -30,7 +31,7 @@ class _SalesShellContentState extends State<_SalesShellContent> {
   void initState() {
     super.initState();
     _pages = [
-      const Center(child: Text('Dashboard Sales')),
+      const SalesDashboardScreen(),
       const Center(child: Text('Merchant Sales')),
       const Center(child: Text('Profil Sales')),
     ];

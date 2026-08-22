@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'customer_promotion_information_api_service.dart';
+part of 'sales_dashboard_api_service.dart';
 
 // dart format off
 
@@ -10,15 +10,8 @@ part of 'customer_promotion_information_api_service.dart';
 
 // ignore_for_file: unnecessary_brace_in_string_interps,no_leading_underscores_for_local_identifiers,unused_element,unnecessary_string_interpolations,unused_element_parameter,avoid_unused_constructor_parameters,unreachable_from_main,avoid_redundant_argument_values
 
-class _CustomerPromotionInformationApiService
-    implements CustomerPromotionInformationApiService {
-  _CustomerPromotionInformationApiService(
-    this._dio, {
-    this.baseUrl,
-    this.errorLogger,
-  }) {
-    baseUrl ??= 'https://warunk.watuka.com';
-  }
+class _SalesDashboardApiService implements SalesDashboardApiService {
+  _SalesDashboardApiService(this._dio, {this.baseUrl, this.errorLogger});
 
   final Dio _dio;
 
@@ -27,16 +20,29 @@ class _CustomerPromotionInformationApiService
   final ParseErrorLogger? errorLogger;
 
   @override
-  Future<HttpResponse<dynamic>> get() async {
+  Future<HttpResponse<dynamic>> getDashboard({
+    String? salesScope,
+    int? districtId,
+    String? salesMetric,
+    String? districtMetric,
+    String? merchantMetric,
+  }) async {
     final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{
+      r'sales_scope': salesScope,
+      r'district_id': districtId,
+      r'sales_metric': salesMetric,
+      r'district_metric': districtMetric,
+      r'merchant_metric': merchantMetric,
+    };
+    queryParameters.removeWhere((k, v) => v == null);
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
     final _options = _setStreamType<HttpResponse<dynamic>>(
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/api/promo-informations',
+            '/api/sales/dashboard',
             queryParameters: queryParameters,
             data: _data,
           )
