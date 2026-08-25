@@ -197,8 +197,18 @@ class _CustomerShellContentState extends State<_CustomerShellContent> with Route
   Widget build(BuildContext context) {
     return BlocBuilder<CustomerShellBloc, CustomerShellState>(
       builder: (context, state) {
-        return Scaffold(
-          appBar: AppBar(
+        return PopScope(
+          canPop: state.currentIndex == 0,
+          onPopInvokedWithResult: (didPop, dynamic result) {
+            if (didPop) {
+              return;
+            }
+            if (state.currentIndex != 0) {
+              context.read<CustomerShellBloc>().add(CustomerShellTabChanged(0));
+            }
+          },
+          child: Scaffold(
+            appBar: AppBar(
             leadingWidth: state.currentIndex == 0 ? 140 : 56,
             leading: state.currentIndex == 0
                 ? Padding(
@@ -290,8 +300,9 @@ class _CustomerShellContentState extends State<_CustomerShellContent> with Route
               ),
             ],
           ),
-        );
-      },
+        ),
+      );
+    },
     );
   }
 }

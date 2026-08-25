@@ -47,8 +47,18 @@ class _SalesShellContentState extends State<_SalesShellContent> {
   Widget build(BuildContext context) {
     return BlocBuilder<SalesShellBloc, SalesShellState>(
       builder: (context, state) {
-        return Scaffold(
-          appBar: AppBar(
+        return PopScope(
+          canPop: state.currentIndex == 0,
+          onPopInvokedWithResult: (didPop, dynamic result) {
+            if (didPop) {
+              return;
+            }
+            if (state.currentIndex != 0) {
+              context.read<SalesShellBloc>().add(SalesShellTabChanged(0));
+            }
+          },
+          child: Scaffold(
+            appBar: AppBar(
             title: Text(
               _titles[state.currentIndex],
               style: TextStyle(fontWeight: FontWeight.bold),
@@ -79,8 +89,9 @@ class _SalesShellContentState extends State<_SalesShellContent> {
               ),
             ],
           ),
-        );
-      },
+        ),
+      );
+    },
     );
   }
 }

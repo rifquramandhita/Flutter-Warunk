@@ -39,8 +39,18 @@ class MerchantShellScreen extends StatelessWidget {
       create: (_) => MerchantShellBloc(),
       child: BlocBuilder<MerchantShellBloc, MerchantShellState>(
         builder: (context, state) {
-          return Scaffold(
-            appBar: AppBar(
+          return PopScope(
+            canPop: state.currentIndex == 0,
+            onPopInvokedWithResult: (didPop, dynamic result) {
+              if (didPop) {
+                return;
+              }
+              if (state.currentIndex != 0) {
+                context.read<MerchantShellBloc>().add(MerchantShellEventTabChanged(0));
+              }
+            },
+            child: Scaffold(
+              appBar: AppBar(
               backgroundColor: state.currentIndex == 4
                   ? GlobalHelper.getColorSchema(context).primary
                   : null,
@@ -137,8 +147,9 @@ class MerchantShellScreen extends StatelessWidget {
                 ),
               ],
             ),
-          );
-        },
+          ),
+        );
+      },
       ),
     );
   }
