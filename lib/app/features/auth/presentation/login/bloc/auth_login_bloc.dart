@@ -56,20 +56,24 @@ class AuthLoginBloc extends Bloc<AuthLoginEvent, AuthLoginState> {
     AuthLoginSubmitted event,
     Emitter<AuthLoginState> emit,
   ) async {
-    emit(state.copyWith(isLoading: true));
+    emit(state.copyWith(isLoading: true, errorMessage: null));
 
-    final response = await _useCase(
-      email: state.email,
-      password: state.password,
-      role: state.role.value,
-    );
-    if (response.success) {
-      _authBloc.add(AuthEventCheck());
-    } else {
-      emit(state.copyWith(errorMessage: response.message));
+    try {
+      final response = await _useCase(
+        email: state.email,
+        password: state.password,
+        role: state.role.value,
+      );
+      if (response.success) {
+        _authBloc.add(AuthEventCheck());
+      } else {
+        emit(state.copyWith(errorMessage: response.message));
+      }
+    } catch (e) {
+      emit(state.copyWith(errorMessage: e.toString()));
+    } finally {
+      emit(state.copyWith(isLoading: false));
     }
-
-    emit(state.copyWith(isLoading: false));
   }
 
   Future<void> _onGoogleLoginSubmitted(
@@ -95,7 +99,8 @@ class AuthLoginBloc extends Bloc<AuthLoginEvent, AuthLoginState> {
       }
     } catch (e) {
       emit(state.copyWith(errorMessage: 'Gagal login dengan Google: $e'));
+    } finally {
+      emit(state.copyWith(isLoading: false));
     }
-    emit(state.copyWith(isLoading: false));
   }
 }

@@ -19,43 +19,54 @@ class AuthLoginUseCase {
     String? password,
     required String role,
   }) async {
-    final fcmToken = await FirebaseMessaging.instance.getToken() ?? '';
-
-    final packageInfo = await PackageInfo.fromPlatform();
-    final apkVersion = packageInfo.version;
-
-    final DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
-    String brand = 'Unknown';
-    String model = 'Unknown';
-    String os = 'Unknown';
-    String type = 'Unknown';
-
     try {
-      if (Platform.isAndroid) {
-        final AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
-        brand = androidInfo.brand;
-        model = androidInfo.model;
-        os = 'Android ${androidInfo.version.release}';
-        type = 'android';
-      } else if (Platform.isIOS) {
-        final IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
-        brand = 'Apple';
-        model = iosInfo.utsname.machine;
-        os = '${iosInfo.systemName} ${iosInfo.systemVersion}';
-        type = 'ios';
+      String fcmToken = '';
+      try {
+        fcmToken = await FirebaseMessaging.instance.getToken() ?? '';
+      } catch (e) {
+        // Log error but continue if token is not mandatory, or return error if it is.
+        // For now, let's treat it as non-fatal but log it if possible.
+        // If the server requires FCM token, this should probably return ErrorState.
       }
-    } catch (_) {}
 
-    final param = LoginParam(
-      email: email,
-      password: password,
-      fcmToken: fcmToken,
-      apkVersion: apkVersion,
-      type: type,
-      firebaseId: await FirebaseInstallations.instance.getId(),
-      device: AuthDeviceEntity(brand: brand, model: model, os: os),
-      role: role,
-    );
-    return await _repository.login(param: param);
+      final packageInfo = await PackageInfo.fromPlatform();
+      final apkVersion = packageInfo.version;
+
+      final DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+      String brand = 'Unknown';
+      String model = 'Unknown';
+      String os = 'Unknown';
+      String type = 'Unknown';
+
+      try {
+        if (Platform.isAndroid) {
+          final AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+          brand = androidInfo.brand;
+          model = androidInfo.model;
+          os = 'Android ${androidInfo.version.release}';
+          type = 'android';
+        } else if (Platform.isIOS) {
+          final IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
+          brand = 'Apple';
+          model = iosInfo.utsname.machine;
+          os = '${iosInfo.systemName} ${iosInfo.systemVersion}';
+          type = 'ios';
+        }
+      } catch (_) {}
+
+      final param = LoginParam(
+        email: email,
+        password: password,
+        fcmToken: fcmToken,
+        apkVersion: apkVersion,
+        type: type,
+        firebaseId: await FirebaseInstallations.instance.getId(),
+        device: AuthDeviceEntity(brand: brand, model: model, os: os),
+        role: role,
+      );
+      return await _repository.login(param: param);
+    } catch (e) {
+      return ErrorState(message: e.toString());
+    }
   }
 }
