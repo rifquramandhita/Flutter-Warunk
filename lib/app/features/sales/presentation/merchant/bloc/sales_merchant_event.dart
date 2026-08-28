@@ -17,6 +17,15 @@ class SalesMerchantLoadEvent extends SalesMerchantEvent {
   List<Object?> get props => [page, keyword];
 }
 
+class SalesMerchantKeywordChanged extends SalesMerchantEvent {
+  final String keyword;
+
+  const SalesMerchantKeywordChanged({required this.keyword});
+
+  @override
+  List<Object?> get props => [keyword];
+}
+
 class SalesMerchantClaimEvent extends SalesMerchantEvent {
   final String merchantId;
 

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:warunk/app/features/sales/domain/entity/sales_merchant.dart';
@@ -12,6 +14,7 @@ class SalesMerchantBloc extends Bloc<SalesMerchantEvent, SalesMerchantState> {
   final SalesMerchantGetUseCase _getUseCase;
   final SalesMerchantClaimUseCase _claimUseCase;
   final SalesMerchantGetUrlWebUseCase _getUrlWebUseCase;
+  Timer? _debounce;
 
   SalesMerchantBloc({
     required SalesMerchantGetUseCase getUseCase,
@@ -22,19 +25,39 @@ class SalesMerchantBloc extends Bloc<SalesMerchantEvent, SalesMerchantState> {
         _getUrlWebUseCase = getUrlWebUseCase,
         super(const SalesMerchantState()) {
     on<SalesMerchantLoadEvent>(_onLoad);
+    on<SalesMerchantKeywordChanged>(_onKeywordChanged);
     on<SalesMerchantClaimEvent>(_onClaim);
     on<SalesMerchantOpenWebviewEvent>(_onOpenWebview);
+  }
+
+  void _onKeywordChanged(
+    SalesMerchantKeywordChanged event,
+    Emitter<SalesMerchantState> emit,
+  ) {
+    emit(state.copyWith(keyword: event.keyword));
+    
+    _debounce?.cancel();
+    _debounce = Timer(const Duration(milliseconds: 500), () {
+      add(SalesMerchantLoadEvent(keyword: event.keyword));
+    });
+  }
+
+  @override
+  Future<void> close() {
+    _debounce?.cancel();
+    return super.close();
   }
 
   Future<void> _onLoad(
     SalesMerchantLoadEvent event,
     Emitter<SalesMerchantState> emit,
   ) async {
-    emit(state.copyWith(isLoading: true, errorMessage: null));
+    final keyword = event.keyword ?? state.keyword;
+    emit(state.copyWith(isLoading: true, errorMessage: null, keyword: keyword));
     final result = await _getUseCase(
       params: SalesMerchantGetUseCaseParams(
         page: event.page,
-        keyword: event.keyword,
+        keyword: keyword,
       ),
     );
 

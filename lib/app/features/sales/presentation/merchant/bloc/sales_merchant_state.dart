@@ -5,6 +5,7 @@ class SalesMerchantState extends Equatable {
   final String? errorMessage;
   final List<SalesMerchantEntity>? merchants;
   final bool hasReachedMax;
+  final String keyword;
   
   final bool isClaimLoading;
   final String? claimSuccessMessage;
@@ -19,6 +20,7 @@ class SalesMerchantState extends Equatable {
     this.errorMessage,
     this.merchants,
     this.hasReachedMax = false,
+    this.keyword = '',
     this.isClaimLoading = false,
     this.claimSuccessMessage,
     this.claimErrorMessage,
@@ -32,6 +34,7 @@ class SalesMerchantState extends Equatable {
     String? errorMessage,
     List<SalesMerchantEntity>? merchants,
     bool? hasReachedMax,
+    String? keyword,
     bool? isClaimLoading,
     String? claimSuccessMessage,
     String? claimErrorMessage,
@@ -44,6 +47,7 @@ class SalesMerchantState extends Equatable {
       errorMessage: errorMessage,
       merchants: merchants ?? this.merchants,
       hasReachedMax: hasReachedMax ?? this.hasReachedMax,
+      keyword: keyword ?? this.keyword,
       isClaimLoading: isClaimLoading ?? this.isClaimLoading,
       claimSuccessMessage: claimSuccessMessage,
       claimErrorMessage: claimErrorMessage,
@@ -59,6 +63,7 @@ class SalesMerchantState extends Equatable {
         errorMessage,
         merchants,
         hasReachedMax,
+        keyword,
         isClaimLoading,
         claimSuccessMessage,
         claimErrorMessage,
