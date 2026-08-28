@@ -4,6 +4,7 @@ import 'package:warunk/app/features/sales/presentation/merchant/bloc/sales_merch
 import 'package:warunk/app/features/sales/presentation/merchant/bloc/sales_merchant_event.dart';
 import 'package:warunk/app/features/sales/presentation/merchant/sales_merchant_webview_screen.dart';
 import 'package:warunk/core/dependency/dependency.dart';
+import 'package:warunk/core/helper/date_time_helper.dart';
 import 'package:warunk/core/helper/dialog_helper.dart';
 import 'package:warunk/core/helper/global_helper.dart';
 import 'package:warunk/theme/app_colors.dart';
@@ -148,6 +149,23 @@ class _SalesMerchantContent extends StatelessWidget {
                                       Text('${merchant.district}, ${merchant.city}'),
                                       const SizedBox(height: 4),
                                       Text('Telepon: ${merchant.whatsappNumber ?? "-"}'),
+                                      if (merchant.isClaimed) ...[
+                                        const SizedBox(height: 4),
+                                        Text(
+                                          'Waktu Claim: ${DateTimeHelper.formatDateTimeFromString(dateTimeString: merchant.claimedAt, format: 'dd MMMM yyyy HH:mm')}',
+                                          style: GlobalHelper.getTextTheme(
+                                            context,
+                                            appTextStyle: AppTextStyle.BODY_SMALL,
+                                          )?.copyWith(color: Colors.grey.shade600),
+                                        ),
+                                        Text(
+                                          'Sales: ${merchant.salesName ?? "-"}',
+                                          style: GlobalHelper.getTextTheme(
+                                            context,
+                                            appTextStyle: AppTextStyle.BODY_SMALL,
+                                          )?.copyWith(color: Colors.grey.shade600),
+                                        ),
+                                      ],
                                       const SizedBox(height: 12),
                                       SizedBox(
                                         width: double.infinity,

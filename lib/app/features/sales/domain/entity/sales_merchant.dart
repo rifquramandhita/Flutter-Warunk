@@ -20,6 +20,7 @@ abstract class SalesMerchantEntity with _$SalesMerchantEntity {
     @JsonKey(name: 'sales_name') String? salesName,
     @JsonKey(name: 'is_claimed') required bool isClaimed,
     @JsonKey(name: 'is_claimed_by_me') required bool isClaimedByMe,
+    @JsonKey(name: 'claimed_at') String? claimedAt,
     @JsonKey(name: 'can_login_as_merchant') required bool canLoginAsMerchant,
     @JsonKey(name: 'created_at') required DateTime createdAt,
   }) = _SalesMerchantEntity;

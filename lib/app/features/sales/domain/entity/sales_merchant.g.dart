@@ -22,6 +22,7 @@ _SalesMerchantEntity _$SalesMerchantEntityFromJson(Map<String, dynamic> json) =>
       salesName: json['sales_name'] as String?,
       isClaimed: json['is_claimed'] as bool,
       isClaimedByMe: json['is_claimed_by_me'] as bool,
+      claimedAt: json['claimed_at'] as String?,
       canLoginAsMerchant: json['can_login_as_merchant'] as bool,
       createdAt: DateTime.parse(json['created_at'] as String),
     );
@@ -43,6 +44,7 @@ Map<String, dynamic> _$SalesMerchantEntityToJson(
   'sales_name': instance.salesName,
   'is_claimed': instance.isClaimed,
   'is_claimed_by_me': instance.isClaimedByMe,
+  'claimed_at': instance.claimedAt,
   'can_login_as_merchant': instance.canLoginAsMerchant,
   'created_at': instance.createdAt.toIso8601String(),
 };
