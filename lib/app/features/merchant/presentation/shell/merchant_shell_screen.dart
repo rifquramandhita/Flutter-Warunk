@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:warunk/app/features/merchant/presentation/dashboard/merchant_dashboard_screen.dart';
 import 'package:warunk/app/features/merchant/presentation/order/merchant_order_screen.dart';
@@ -40,15 +41,38 @@ class MerchantShellScreen extends StatelessWidget {
       child: BlocBuilder<MerchantShellBloc, MerchantShellState>(
         builder: (context, state) {
           return PopScope(
-            canPop: state.currentIndex == 0,
-            onPopInvokedWithResult: (didPop, dynamic result) {
-              if (didPop) {
-                return;
-              }
-              if (state.currentIndex != 0) {
-                context.read<MerchantShellBloc>().add(MerchantShellEventTabChanged(0));
-              }
-            },
+            canPop: false,
+              onPopInvokedWithResult: (didPop, dynamic result) async {
+                if (didPop) {
+                  return;
+                }
+                if (state.currentIndex != 0) {
+                  context.read<MerchantShellBloc>().add(MerchantShellEventTabChanged(0));
+                  return;
+                } else{
+                  final shouldExit = await showDialog<bool>(
+                       context: context,
+                       builder: (context) => AlertDialog(
+                         title: const Text('Konfirmasi'),
+                         content: const Text('Apakah Anda yakin ingin keluar dari aplikasi?'),
+                         actions: [
+                           TextButton(
+                             onPressed: () => Navigator.of(context).pop(false),
+                             child: const Text('Tidak'),
+                           ),
+                           TextButton(
+                             onPressed: () => Navigator.of(context).pop(true),
+                             child: const Text('Ya'),
+                           ),
+                         ],
+                       ),
+                     );
+                  if (shouldExit == true && context.mounted) {
+                    SystemNavigator.pop(); // Ini akan menutup aplikasi (Android)
+                  }
+                }
+                // Let WillPopScope handle exit confirmation for system back.
+              },
             child: Scaffold(
               appBar: AppBar(
               backgroundColor: state.currentIndex == 4

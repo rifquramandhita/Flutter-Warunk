@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:warunk/app/features/customer/presentation/category/bloc/customer_category_bloc.dart';
 import 'package:warunk/core/dependency/dependency.dart';
@@ -13,7 +14,8 @@ import 'package:warunk/app/features/customer/presentation/cart/customer_cart_scr
 import 'package:warunk/app/features/customer/presentation/chat/customer_chat_webview_screen.dart';
 
 class CustomerCategoryScreen extends StatefulWidget {
-  const CustomerCategoryScreen({super.key});
+  final bool isExist;
+  const CustomerCategoryScreen({super.key, this.isExist = false});
 
   @override
   State<CustomerCategoryScreen> createState() => _CustomerCategoryScreenState();
@@ -36,9 +38,36 @@ class _CustomerCategoryScreenState extends State<CustomerCategoryScreen> {
           }
         },
         builder: (context, state) {
-          return Scaffold(
-            backgroundColor: GlobalHelper.getColorSchema(context).surface,
-            body: _bodyBuild(context),
+          return PopScope(
+            canPop: !widget.isExist,
+            onPopInvokedWithResult: (didPop, result) async {
+              if (didPop) return;
+
+              final shouldExit = await showDialog<bool>(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: const Text('Konfirmasi'),
+                  content: const Text('Apakah Anda yakin ingin keluar dari aplikasi?'),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.of(context).pop(false),
+                      child: const Text('Tidak'),
+                    ),
+                    TextButton(
+                      onPressed: () => Navigator.of(context).pop(true),
+                      child: const Text('Ya'),
+                    ),
+                  ],
+                ),
+              );
+              if (shouldExit == true && context.mounted) {
+                SystemNavigator.pop();
+              }
+            },
+            child: Scaffold(
+              backgroundColor: GlobalHelper.getColorSchema(context).surface,
+              body: _bodyBuild(context),
+            ),
           );
         },
       ),

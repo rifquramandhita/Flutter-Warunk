@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:warunk/app/features/sales/presentation/dashboard/sales_dashboard_screen.dart';
 import 'package:warunk/app/features/sales/presentation/merchant/sales_merchant_screen.dart';
@@ -48,13 +49,34 @@ class _SalesShellContentState extends State<_SalesShellContent> {
     return BlocBuilder<SalesShellBloc, SalesShellState>(
       builder: (context, state) {
         return PopScope(
-          canPop: state.currentIndex == 0,
-          onPopInvokedWithResult: (didPop, dynamic result) {
+          canPop: false,
+          onPopInvokedWithResult: (didPop, dynamic result) async {
             if (didPop) {
               return;
             }
             if (state.currentIndex != 0) {
               context.read<SalesShellBloc>().add(SalesShellTabChanged(0));
+            } else{
+              final shouldExit = await showDialog<bool>(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: const Text('Konfirmasi'),
+                  content: const Text('Apakah Anda yakin ingin keluar dari aplikasi?'),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.of(context).pop(false),
+                      child: const Text('Tidak'),
+                    ),
+                    TextButton(
+                      onPressed: () => Navigator.of(context).pop(true),
+                      child: const Text('Ya'),
+                    ),
+                  ],
+                ),
+              );
+              if (shouldExit == true && context.mounted) {
+                SystemNavigator.pop();
+              }
             }
           },
           child: Scaffold(

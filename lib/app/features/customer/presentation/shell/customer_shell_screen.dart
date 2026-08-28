@@ -198,13 +198,28 @@ class _CustomerShellContentState extends State<_CustomerShellContent> with Route
     return BlocBuilder<CustomerShellBloc, CustomerShellState>(
       builder: (context, state) {
         return PopScope(
-          canPop: state.currentIndex == 0,
-          onPopInvokedWithResult: (didPop, dynamic result) {
+          canPop: false,
+          onPopInvokedWithResult: (didPop, dynamic result) async {
             if (didPop) {
               return;
             }
             if (state.currentIndex != 0) {
               context.read<CustomerShellBloc>().add(CustomerShellTabChanged(0));
+            } else{
+              final result = await navigatorKey.currentState?.push(MaterialPageRoute(builder: (context) => CustomerCategoryScreen(isExist:true),));
+              if (result != null && result is CustomerMerchantQuickCategoryEntity) {
+                setState(() {
+                  _selectedCategory = result;
+                  _initPages();
+                });
+              } else {
+                if (_selectedCategory == null) {
+                  // Jangan exit app jika user sebenarnya sedang logout (misal karena error 401)
+                  if (mounted && context.read<AuthBloc>().state.isAuthenticated) {
+                    SystemNavigator.pop();
+                  }
+                }
+              }
             }
           },
           child: Scaffold(
