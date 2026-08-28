@@ -4,6 +4,7 @@ import 'package:warunk/app/features/sales/presentation/merchant/bloc/sales_merch
 import 'package:warunk/app/features/sales/presentation/merchant/bloc/sales_merchant_event.dart';
 import 'package:warunk/app/features/sales/presentation/merchant/sales_merchant_webview_screen.dart';
 import 'package:warunk/core/dependency/dependency.dart';
+import 'package:warunk/core/helper/dialog_helper.dart';
 import 'package:warunk/core/helper/global_helper.dart';
 import 'package:warunk/theme/app_colors.dart';
 
@@ -153,13 +154,11 @@ class _SalesMerchantContent extends StatelessWidget {
                                         child: ElevatedButton(
                                           onPressed: (merchant.isClaimed || state.isClaimLoading)
                                               ? null
-                                              : () {
-                                                  context.read<SalesMerchantBloc>().add(
-                                                        SalesMerchantClaimEvent(
-                                                          merchantId: merchant.id,
-                                                        ),
-                                                      );
-                                                },
+                                              : () => _showClaimConfirmation(
+                                                    context,
+                                                    merchant.name,
+                                                    merchant.id,
+                                                  ),
                                           style: ElevatedButton.styleFrom(
                                             backgroundColor: AppColors.primary,
                                             disabledBackgroundColor: Colors.grey[300],
@@ -206,6 +205,85 @@ class _SalesMerchantContent extends StatelessWidget {
                 return const SizedBox.shrink();
               },
             ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showClaimConfirmation(
+    BuildContext context,
+    String merchantName,
+    String merchantId,
+  ) {
+    DialogHelper.showBottomSheetDialog(
+      context: context,
+      title: 'Konfirmasi Claim',
+      content: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            'Apakah Anda yakin ingin mengklaim merchant "$merchantName"?',
+            style: GlobalHelper.getTextTheme(
+              context,
+              appTextStyle: AppTextStyle.BODY_LARGE,
+            )?.copyWith(fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 12),
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: Colors.orange.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: Colors.orange.withValues(alpha: 0.3)),
+            ),
+            child: Text(
+              'Pastikan Anda benar-benar yang mengakuisisi merchant ini. Segala kelalaian dan ketidakjujuran akan ditindak tegas oleh manajemen WARUNK',
+              style: GlobalHelper.getTextTheme(
+                context,
+                appTextStyle: AppTextStyle.BODY_MEDIUM,
+              )?.copyWith(color: Colors.orange[900]),
+            ),
+          ),
+          const SizedBox(height: 24),
+          Row(
+            children: [
+              Expanded(
+                child: OutlinedButton(
+                  onPressed: () => Navigator.pop(context),
+                  style: OutlinedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  child: const Text('Batal'),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                    context.read<SalesMerchantBloc>().add(
+                          SalesMerchantClaimEvent(merchantId: merchantId),
+                        );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.primary,
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  child: const Text(
+                    'Ya, Saya Yakin',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+              ),
+            ],
           ),
         ],
       ),
