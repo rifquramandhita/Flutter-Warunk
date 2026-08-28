@@ -131,7 +131,7 @@ class _SalesDashboardContent extends StatelessWidget {
                 context,
                 'Total Pendapatan',
                 currencyFormatter.format(summary.totalRevenue),
-                Icons.attach_money,
+                Icons.point_of_sale_rounded,
               ),
             ),
           ],
