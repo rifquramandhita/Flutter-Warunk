@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:warunk/main.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:warunk/core/helper/shared_preferences_helper.dart';
 import 'package:warunk/core/constants/constant.dart';
@@ -70,7 +71,7 @@ class _MerchantChatWebViewScreenState extends State<MerchantChatWebViewScreen> {
       final encodedToken = Uri.encodeComponent(cleanToken);
       final url = widget.chatUrl != null
           ? widget.chatUrl!
-          : 'https://warunk.dewalabs.com/webview/auto-login?url=%2Fwebview%2Fchats&bearer=$encodedToken';
+          : '${(isProduction) ? BASE_URL_PROD : BASE_URL_DEV}/webview/auto-login?url=%2Fwebview%2Fchats&bearer=$encodedToken';
       _controller.loadRequest(Uri.parse(url));
     }
   }
