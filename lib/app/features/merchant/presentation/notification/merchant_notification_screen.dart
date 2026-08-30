@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:warunk/app/features/merchant/domain/entity/merchant_notification.dart';
 import 'package:warunk/app/features/merchant/presentation/notification/bloc/merchant_notification_bloc.dart';
+import 'package:warunk/app/features/merchant/presentation/shell/bloc/merchant_shell_bloc.dart';
 import 'package:warunk/core/dependency/dependency.dart';
 import 'package:warunk/core/helper/global_helper.dart';
 import 'package:warunk/core/helper/dialog_helper.dart';
@@ -22,6 +23,11 @@ class MerchantNotificationScreen extends StatelessWidget {
               context: context,
               text: state.errorMessage!,
             );
+          }
+          // Refresh shell badge when notification loads successfully
+          if (!state.isLoading && state.errorMessage == null) {
+            sl<MerchantShellBloc>()
+                .add(MerchantShellEventGetOrderCount());
           }
         },
         builder: (context, state) {

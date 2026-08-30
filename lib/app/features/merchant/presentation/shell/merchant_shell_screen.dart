@@ -7,6 +7,7 @@ import 'package:warunk/app/features/merchant/presentation/product/merchant_produ
 import 'package:warunk/app/features/merchant/presentation/profil/merchant_profil_screen.dart';
 import 'package:warunk/app/features/merchant/presentation/promotion/merchant_promotion_screen.dart';
 import 'package:warunk/app/features/merchant/presentation/shell/bloc/merchant_shell_bloc.dart';
+import 'package:warunk/core/dependency/dependency.dart';
 import 'package:warunk/theme/app_colors.dart';
 import 'package:warunk/app/features/merchant/presentation/chat/merchant_chat_webview_screen.dart';
 import 'package:warunk/app/features/merchant/presentation/notification/merchant_notification_screen.dart';
@@ -36,145 +37,163 @@ class MerchantShellScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => MerchantShellBloc(),
+    return BlocProvider.value(
+      value: sl<MerchantShellBloc>()..add(MerchantShellEventGetOrderCount()),
       child: BlocBuilder<MerchantShellBloc, MerchantShellState>(
         builder: (context, state) {
           return PopScope(
             canPop: false,
-              onPopInvokedWithResult: (didPop, dynamic result) async {
-                if (didPop) {
-                  return;
+            onPopInvokedWithResult: (didPop, dynamic result) async {
+              if (didPop) {
+                return;
+              }
+              if (state.currentIndex != 0) {
+                context
+                    .read<MerchantShellBloc>()
+                    .add(MerchantShellEventTabChanged(0));
+                return;
+              } else {
+                final shouldExit = await showDialog<bool>(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    title: const Text('Konfirmasi'),
+                    content: const Text(
+                      'Apakah Anda yakin ingin keluar dari aplikasi?',
+                    ),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.of(context).pop(false),
+                        child: const Text('Tidak'),
+                      ),
+                      TextButton(
+                        onPressed: () => Navigator.of(context).pop(true),
+                        child: const Text('Ya'),
+                      ),
+                    ],
+                  ),
+                );
+                if (shouldExit == true && context.mounted) {
+                  SystemNavigator.pop(); // Ini akan menutup aplikasi (Android)
                 }
-                if (state.currentIndex != 0) {
-                  context.read<MerchantShellBloc>().add(MerchantShellEventTabChanged(0));
-                  return;
-                } else{
-                  final shouldExit = await showDialog<bool>(
-                       context: context,
-                       builder: (context) => AlertDialog(
-                         title: const Text('Konfirmasi'),
-                         content: const Text('Apakah Anda yakin ingin keluar dari aplikasi?'),
-                         actions: [
-                           TextButton(
-                             onPressed: () => Navigator.of(context).pop(false),
-                             child: const Text('Tidak'),
-                           ),
-                           TextButton(
-                             onPressed: () => Navigator.of(context).pop(true),
-                             child: const Text('Ya'),
-                           ),
-                         ],
-                       ),
-                     );
-                  if (shouldExit == true && context.mounted) {
-                    SystemNavigator.pop(); // Ini akan menutup aplikasi (Android)
-                  }
-                }
-                // Let WillPopScope handle exit confirmation for system back.
-              },
+              }
+              // Let WillPopScope handle exit confirmation for system back.
+            },
             child: Scaffold(
               appBar: AppBar(
-              backgroundColor: state.currentIndex == 4
-                  ? GlobalHelper.getColorSchema(context).primary
-                  : null,
-              title: Text(
-                _titles[state.currentIndex],
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: state.currentIndex == 4
-                      ? GlobalHelper.getColorSchema(context).onPrimary
-                      : null,
+                backgroundColor: state.currentIndex == 4
+                    ? GlobalHelper.getColorSchema(context).primary
+                    : null,
+                title: Text(
+                  _titles[state.currentIndex],
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: state.currentIndex == 4
+                        ? GlobalHelper.getColorSchema(context).onPrimary
+                        : null,
+                  ),
                 ),
+                actions: [
+                  GestureDetector(
+                    onTap: () => navigatorKey.currentState?.push(
+                      MaterialPageRoute(
+                        builder: (_) => const MerchantChatWebViewScreen(),
+                      ),
+                    ),
+                    child: Icon(
+                      Icons.chat_bubble_outline_rounded,
+                      color: state.currentIndex == 4
+                          ? GlobalHelper.getColorSchema(context).onPrimary
+                          : GlobalHelper.getColorSchema(context).primary,
+                      size: 24,
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  GestureDetector(
+                    onTap: () => navigatorKey.currentState?.push(
+                      MaterialPageRoute(
+                        builder: (_) => const MerchantNotificationScreen(),
+                      ),
+                    ),
+                    child: Icon(
+                      Icons.notifications_outlined,
+                      color: state.currentIndex == 4
+                          ? GlobalHelper.getColorSchema(context).onPrimary
+                          : GlobalHelper.getColorSchema(context).primary,
+                      size: 24,
+                    ),
+                  ),
+                  const SizedBox(width: 20),
+                ],
               ),
-              actions: [
-                GestureDetector(
-                  onTap: () => navigatorKey.currentState?.push(
-                    MaterialPageRoute(
-                      builder: (_) => const MerchantChatWebViewScreen(),
+              body: _pages[state.currentIndex],
+              bottomNavigationBar: NavigationBar(
+                backgroundColor: AppColors.white,
+                indicatorColor: AppColors.primary.withValues(alpha: 0.15),
+                selectedIndex: state.currentIndex,
+                onDestinationSelected: (index) => context
+                    .read<MerchantShellBloc>()
+                    .add(MerchantShellEventTabChanged(index)),
+                destinations: [
+                  const NavigationDestination(
+                    icon: Icon(Icons.home_outlined),
+                    selectedIcon: Icon(
+                      Icons.home_rounded,
+                      color: AppColors.primary,
                     ),
+                    label: 'Dashboard',
                   ),
-                  child: Icon(
-                    Icons.chat_bubble_outline_rounded,
-                    color: state.currentIndex == 4
-                        ? GlobalHelper.getColorSchema(context).onPrimary
-                        : GlobalHelper.getColorSchema(context).primary,
-                    size: 24,
-                  ),
-                ),
-                const SizedBox(width: 16),
-                GestureDetector(
-                  onTap: () => navigatorKey.currentState?.push(
-                    MaterialPageRoute(
-                      builder: (_) => const MerchantNotificationScreen(),
+                  const NavigationDestination(
+                    icon: Icon(Icons.inventory_2_outlined),
+                    selectedIcon: Icon(
+                      Icons.inventory_2_rounded,
+                      color: AppColors.primary,
                     ),
+                    label: 'Produk',
                   ),
-                  child: Icon(
-                    Icons.notifications_outlined,
-                    color: state.currentIndex == 4
-                        ? GlobalHelper.getColorSchema(context).onPrimary
-                        : GlobalHelper.getColorSchema(context).primary,
-                    size: 24,
+                  NavigationDestination(
+                    icon: Badge(
+                      label: state.waitingOrderCount > 0
+                          ? Text('${state.waitingOrderCount}')
+                          : null,
+                      isLabelVisible: state.waitingOrderCount > 0,
+                      child: const Icon(Icons.receipt_long_outlined),
+                    ),
+                    selectedIcon: Badge(
+                      label: state.waitingOrderCount > 0
+                          ? Text('${state.waitingOrderCount}')
+                          : null,
+                      isLabelVisible: state.waitingOrderCount > 0,
+                      child: const Icon(
+                        Icons.receipt_long_rounded,
+                        color: AppColors.primary,
+                      ),
+                    ),
+                    label: 'Pesanan',
                   ),
-                ),
-                const SizedBox(width: 20),
-              ],
+                  const NavigationDestination(
+                    icon: Icon(Icons.campaign_outlined),
+                    selectedIcon: Icon(
+                      Icons.campaign_rounded,
+                      color: AppColors.primary,
+                    ),
+                    label: 'Promo',
+                  ),
+                  const NavigationDestination(
+                    icon: Icon(Icons.store_outlined),
+                    selectedIcon: Icon(
+                      Icons.store_rounded,
+                      color: AppColors.primary,
+                    ),
+                    label: 'Toko',
+                  ),
+                ],
+              ),
             ),
-            body: _pages[state.currentIndex],
-            bottomNavigationBar: NavigationBar(
-              backgroundColor: AppColors.white,
-              indicatorColor: AppColors.primary.withValues(alpha: 0.15),
-              selectedIndex: state.currentIndex,
-              onDestinationSelected: (index) => context
-                  .read<MerchantShellBloc>()
-                  .add(MerchantShellEventTabChanged(index)),
-              destinations: const [
-                NavigationDestination(
-                  icon: Icon(Icons.home_outlined),
-                  selectedIcon: Icon(
-                    Icons.home_rounded,
-                    color: AppColors.primary,
-                  ),
-                  label: 'Dashboard',
-                ),
-                NavigationDestination(
-                  icon: Icon(Icons.inventory_2_outlined),
-                  selectedIcon: Icon(
-                    Icons.inventory_2_rounded,
-                    color: AppColors.primary,
-                  ),
-                  label: 'Produk',
-                ),
-                NavigationDestination(
-                  icon: Icon(Icons.receipt_long_outlined),
-                  selectedIcon: Icon(
-                    Icons.receipt_long_rounded,
-                    color: AppColors.primary,
-                  ),
-                  label: 'Pesanan',
-                ),
-                NavigationDestination(
-                  icon: Icon(Icons.campaign_outlined),
-                  selectedIcon: Icon(
-                    Icons.campaign_rounded,
-                    color: AppColors.primary,
-                  ),
-                  label: 'Promo',
-                ),
-                NavigationDestination(
-                  icon: Icon(Icons.store_outlined),
-                  selectedIcon: Icon(
-                    Icons.store_rounded,
-                    color: AppColors.primary,
-                  ),
-                  label: 'Toko',
-                ),
-              ],
-            ),
-          ),
-        );
-      },
+          );
+        },
       ),
     );
   }
 }
+
+

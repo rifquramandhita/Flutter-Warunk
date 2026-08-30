@@ -2,8 +2,19 @@ part of 'merchant_shell_bloc.dart';
 
 class MerchantShellState {
   final int currentIndex;
-  const MerchantShellState({this.currentIndex = 0});
+  final int waitingOrderCount;
 
-  MerchantShellState copyWith({int? currentIndex}) =>
-      MerchantShellState(currentIndex: currentIndex ?? this.currentIndex);
+  const MerchantShellState({
+    this.currentIndex = 0,
+    this.waitingOrderCount = 0,
+  });
+
+  MerchantShellState copyWith({
+    int? currentIndex,
+    int? waitingOrderCount,
+  }) =>
+      MerchantShellState(
+        currentIndex: currentIndex ?? this.currentIndex,
+        waitingOrderCount: waitingOrderCount ?? this.waitingOrderCount,
+      );
 }

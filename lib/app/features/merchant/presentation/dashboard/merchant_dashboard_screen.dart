@@ -8,6 +8,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:warunk/app/features/merchant/domain/entity/merchant_dashboard.dart';
 import 'package:warunk/app/features/merchant/domain/entity/merchant_order_item.dart';
 import 'package:warunk/app/features/merchant/presentation/dashboard/bloc/merchant_dashboard_bloc.dart';
+import 'package:warunk/app/features/merchant/presentation/shell/bloc/merchant_shell_bloc.dart';
 import 'package:warunk/app/features/merchant/presentation/detail_order/merchant_detail_order_screen.dart';
 import 'package:warunk/app/features/merchant/presentation/notification/merchant_notification_screen.dart';
 import 'package:warunk/app/features/merchant/presentation/chat/merchant_chat_webview_screen.dart';
@@ -340,6 +341,8 @@ class MerchantDashboardScreen extends StatelessWidget {
     return RefreshIndicator(
       onRefresh: () async {
         context.read<MerchantDashboardBloc>().add(MerchantDashboardEventGet());
+        sl<MerchantShellBloc>()
+            .add(MerchantShellEventGetOrderCount());
       },
       child: SingleChildScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
@@ -1088,5 +1091,8 @@ void _onPressItemOrder(BuildContext context, String id) async {
       builder: (context) => MerchantDetailOrderScreen(orderId: id),
     ),
   );
-  bloc.add(MerchantDashboardEventGet());
+  if (context.mounted) {
+    bloc.add(MerchantDashboardEventGet());
+    sl<MerchantShellBloc>().add(MerchantShellEventGetOrderCount());
+  }
 }

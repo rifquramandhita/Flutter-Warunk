@@ -6,3 +6,5 @@ class MerchantShellEventTabChanged extends MerchantShellEvent {
   final int index;
   MerchantShellEventTabChanged(this.index);
 }
+
+class MerchantShellEventGetOrderCount extends MerchantShellEvent {}

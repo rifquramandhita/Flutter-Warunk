@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:warunk/app/features/merchant/domain/entity/merchant_order.dart';
 import 'package:warunk/app/features/merchant/presentation/detail_order/merchant_detail_order_screen.dart';
 import 'package:warunk/app/features/merchant/presentation/order/bloc/merchant_order_bloc.dart';
+import 'package:warunk/app/features/merchant/presentation/shell/bloc/merchant_shell_bloc.dart';
 import 'package:warunk/core/dependency/dependency.dart';
 import 'package:warunk/core/helper/dialog_helper.dart';
 import 'package:warunk/core/widgets/loading_app_widget.dart';
@@ -26,6 +27,10 @@ class MerchantOrderScreen extends StatelessWidget {
               context: context,
               text: state.errorMessage!,
             );
+          }
+          // Trigger update shell badge when order list is successfully loaded
+          if (state.isSuccess) {
+            sl<MerchantShellBloc>().add(MerchantShellEventGetOrderCount());
           }
         },
         builder: (context, state) {
@@ -146,6 +151,7 @@ class MerchantOrderScreen extends StatelessWidget {
       return RefreshIndicator(
         onRefresh: () async {
           context.read<MerchantOrderBloc>().add(MerchantOrderEventGet());
+          sl<MerchantShellBloc>().add(MerchantShellEventGetOrderCount());
           await Future.delayed(const Duration(seconds: 1));
         },
         child: ListView(
@@ -189,6 +195,7 @@ class MerchantOrderScreen extends StatelessWidget {
     return RefreshIndicator(
       onRefresh: () async {
         context.read<MerchantOrderBloc>().add(MerchantOrderEventGet());
+        sl<MerchantShellBloc>().add(MerchantShellEventGetOrderCount());
         await Future.delayed(const Duration(seconds: 1));
       },
       child: ListView.separated(
@@ -494,6 +501,9 @@ class MerchantOrderScreen extends StatelessWidget {
         builder: (_) => MerchantDetailOrderScreen(orderId: order.id),
       ),
     );
-    context.read<MerchantOrderBloc>().add(MerchantOrderEventGet());
+    if (context.mounted) {
+      context.read<MerchantOrderBloc>().add(MerchantOrderEventGet());
+      sl<MerchantShellBloc>().add(MerchantShellEventGetOrderCount());
+    }
   }
 }

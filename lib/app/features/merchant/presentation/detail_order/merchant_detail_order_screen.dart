@@ -5,6 +5,7 @@ import 'package:warunk/core/enum/order_status.dart';
 import 'package:warunk/main.dart';
 import 'package:warunk/app/features/merchant/domain/entity/merchant_order.dart';
 import 'package:warunk/app/features/merchant/presentation/detail_order/bloc/merchant_detail_order_bloc.dart';
+import 'package:warunk/app/features/merchant/presentation/shell/bloc/merchant_shell_bloc.dart';
 import 'package:warunk/app/features/merchant/presentation/ship_order/merchant_ship_order_screen.dart';
 import 'package:warunk/app/features/merchant/presentation/reject_order/merchant_order_reject_screen.dart';
 import 'package:warunk/app/features/merchant/presentation/reject_cancel_order/merchant_reject_cancel_order_screen.dart';
@@ -42,6 +43,11 @@ class MerchantDetailOrderScreen extends StatelessWidget {
               context: context,
               text: state.errorMessage!,
             );
+          }
+          // Refresh shell badge when order is loaded or updated
+          if (state.isSuccess) {
+            sl<MerchantShellBloc>()
+                .add(MerchantShellEventGetOrderCount());
           }
         },
         builder: (context, state) {

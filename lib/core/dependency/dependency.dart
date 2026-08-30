@@ -208,6 +208,7 @@ import 'package:warunk/app/features/merchant/domain/repository/merchant_notifica
 import 'package:warunk/app/features/merchant/data/repository/merchant_notification_repository_impl.dart';
 import 'package:warunk/app/features/merchant/domain/use_case/merchant_notification_get_use_case.dart';
 import 'package:warunk/app/features/merchant/presentation/notification/bloc/merchant_notification_bloc.dart';
+import 'package:warunk/app/features/merchant/presentation/shell/bloc/merchant_shell_bloc.dart';
 
 final sl = GetIt.instance;
 
@@ -643,6 +644,7 @@ Future<void> initDependency() async {
       getChatUrlUseCase: sl(),
     ),
   );
+  sl.registerLazySingleton(() => MerchantShellBloc(sl()));
   sl.registerFactory(() => CustomerNotificationBloc(getUseCase: sl()));
   sl.registerFactory(() => MerchantNotificationBloc(getUseCase: sl()));
   sl.registerFactory(
