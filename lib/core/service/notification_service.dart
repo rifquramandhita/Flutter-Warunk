@@ -166,6 +166,42 @@ class NotificationService {
         debugPrint('Error parsing notification data: $e');
       }
     });
+
+    // Menangani notifikasi saat aplikasi dibuka dari kondisi tertutup (TERMINATED)
+    FirebaseMessaging.instance.getInitialMessage().then((RemoteMessage? message) {
+      if (message != null) {
+        print('Aplikasi dibuka dari terminated via FCM: ${message.data}');
+        Future.delayed(const Duration(milliseconds: 1000), () {
+          try {
+            final notification = NotificationEntity.fromJson(message.data);
+            _handleOpenNotification(notification);
+          } catch (e) {
+            debugPrint('Error parsing initial notification data: $e');
+          }
+        });
+      }
+    });
+
+    // Menangani notifikasi lokal saat aplikasi dibuka dari kondisi tertutup (TERMINATED)
+    flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails().then((details) {
+      if (details != null &&
+          details.didNotificationLaunchApp &&
+          details.notificationResponse != null) {
+        final payloadString = details.notificationResponse!.payload;
+        if (payloadString != null && payloadString.isNotEmpty) {
+          print('Aplikasi dibuka dari terminated via Local Notification: $payloadString');
+          Future.delayed(const Duration(milliseconds: 1000), () {
+            try {
+              final payload = jsonDecode(payloadString);
+              final notification = NotificationEntity.fromJson(payload);
+              _handleOpenNotification(notification);
+            } catch (e) {
+              debugPrint('Error parsing initial local notification data: $e');
+            }
+          });
+        }
+      }
+    });
   }
 
   static Future<void> _firebaseMessagingBackgroundHandler(
