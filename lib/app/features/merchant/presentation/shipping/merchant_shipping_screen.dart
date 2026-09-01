@@ -177,7 +177,7 @@ class MerchantShippingScreen extends StatelessWidget {
                         Divider(height: 1, color: colorSchema.outlineVariant),
                         _InternalCourierInput(
                           label: 'Harga Ongkir Kurir Internal',
-                          initialValue: state.internalCourierShippingCost,
+                          initialValue: state.internalCourierShippingCost.toString(),
                           prefixText: 'Rp ',
                           onChanged: (value) {
                             final cost = int.tryParse(value) ?? 0;
@@ -189,10 +189,11 @@ class MerchantShippingScreen extends StatelessWidget {
                         Divider(height: 1, color: colorSchema.outlineVariant),
                         _InternalCourierInput(
                           label: 'Min. Jarak Kurir Internal (km)',
-                          initialValue: state.minDistanceInternalCourier,
+                          initialValue: state.minDistanceInternalCourier.toString(),
                           suffixText: 'KM',
+                          isDecimal: true,
                           onChanged: (value) {
-                            final dist = int.tryParse(value) ?? 0;
+                            final dist = double.tryParse(value) ?? 0.0;
                             context.read<MerchantShippingBloc>().add(
                               MerchantShippingUpdateMinDistance(dist),
                             );
@@ -201,10 +202,11 @@ class MerchantShippingScreen extends StatelessWidget {
                         Divider(height: 1, color: colorSchema.outlineVariant),
                         _InternalCourierInput(
                           label: 'Maks. Jarak Kurir Internal (km)',
-                          initialValue: state.maxDistanceInternalCourier,
+                          initialValue: state.maxDistanceInternalCourier.toString(),
                           suffixText: 'KM',
+                          isDecimal: true,
                           onChanged: (value) {
-                            final dist = int.tryParse(value) ?? 0;
+                            final dist = double.tryParse(value) ?? 0.0;
                             context.read<MerchantShippingBloc>().add(
                               MerchantShippingUpdateMaxDistance(dist),
                             );
@@ -213,7 +215,7 @@ class MerchantShippingScreen extends StatelessWidget {
                         Divider(height: 1, color: colorSchema.outlineVariant),
                         _InternalCourierInput(
                           label: 'Minimal Transaksi Kurir Internal',
-                          initialValue: state.minTransactionInternalCourier,
+                          initialValue: state.minTransactionInternalCourier.toString(),
                           prefixText: 'Rp ',
                           onChanged: (value) {
                             final trans = int.tryParse(value) ?? 0;
@@ -336,9 +338,10 @@ class _MethodItemRow extends StatelessWidget {
 // ─────────────────────────────────────────────────────────────────────────────
 class _InternalCourierInput extends StatefulWidget {
   final String label;
-  final int initialValue;
+  final String initialValue;
   final String? prefixText;
   final String? suffixText;
+  final bool isDecimal;
   final Function(String) onChanged;
 
   const _InternalCourierInput({
@@ -346,6 +349,7 @@ class _InternalCourierInput extends StatefulWidget {
     required this.initialValue,
     this.prefixText,
     this.suffixText,
+    this.isDecimal = false,
     required this.onChanged,
   });
 
@@ -359,8 +363,9 @@ class _InternalCourierInputState extends State<_InternalCourierInput> {
   @override
   void initState() {
     super.initState();
+    final val = double.tryParse(widget.initialValue) ?? 0;
     _controller = TextEditingController(
-      text: widget.initialValue > 0 ? widget.initialValue.toString() : '',
+      text: val > 0 ? widget.initialValue : '',
     );
   }
 
@@ -390,8 +395,15 @@ class _InternalCourierInputState extends State<_InternalCourierInput> {
           const SizedBox(height: 8),
           TextField(
             controller: _controller,
-            keyboardType: TextInputType.number,
-            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+            keyboardType: TextInputType.numberWithOptions(
+              decimal: widget.isDecimal,
+            ),
+            inputFormatters: [
+              if (widget.isDecimal)
+                FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*'))
+              else
+                FilteringTextInputFormatter.digitsOnly,
+            ],
             style: textTheme,
             decoration: InputDecoration(
               hintText: '0',

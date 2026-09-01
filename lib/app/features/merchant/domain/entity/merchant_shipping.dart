@@ -11,8 +11,8 @@ sealed class MerchantShipping with _$MerchantShipping {
     required int internalCourierShippingCost,
     required bool instantCourier,
     required bool pickupAtStore,
-    required int maxDistanceInternalCourier,
-    required int minDistanceInternalCourier,
+    required double maxDistanceInternalCourier,
+    required double minDistanceInternalCourier,
     required int minTransactionInternalCourier,
     required List<String> courierCodeAvailable,
   }) = MerchantShippingUpdateParam;

@@ -10,12 +10,12 @@ class MerchantShippingToggleMethod extends MerchantShippingEvent {
 }
 
 class MerchantShippingUpdateMaxDistance extends MerchantShippingEvent {
-  final int maxDistance;
+  final double maxDistance;
   MerchantShippingUpdateMaxDistance(this.maxDistance);
 }
 
 class MerchantShippingUpdateMinDistance extends MerchantShippingEvent {
-  final int minDistance;
+  final double minDistance;
   MerchantShippingUpdateMinDistance(this.minDistance);
 }
 

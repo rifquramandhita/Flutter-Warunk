@@ -15,9 +15,9 @@ MerchantShippingUpdateParam _$MerchantShippingUpdateParamFromJson(
   instantCourier: json['instant_courier'] as bool,
   pickupAtStore: json['pickup_at_store'] as bool,
   maxDistanceInternalCourier: (json['max_distance_internal_courier'] as num)
-      .toInt(),
+      .toDouble(),
   minDistanceInternalCourier: (json['min_distance_internal_courier'] as num)
-      .toInt(),
+      .toDouble(),
   minTransactionInternalCourier:
       (json['min_transaction_internal_courier'] as num).toInt(),
   courierCodeAvailable: (json['courier_code_available'] as List<dynamic>)

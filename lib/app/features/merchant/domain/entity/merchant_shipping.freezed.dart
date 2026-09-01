@@ -22,7 +22,7 @@ MerchantShipping _$MerchantShippingFromJson(
 /// @nodoc
 mixin _$MerchantShipping {
 
- bool get internalCourier; int get internalCourierShippingCost; bool get instantCourier; bool get pickupAtStore; int get maxDistanceInternalCourier; int get minDistanceInternalCourier; int get minTransactionInternalCourier; List<String> get courierCodeAvailable;
+ bool get internalCourier; int get internalCourierShippingCost; bool get instantCourier; bool get pickupAtStore; double get maxDistanceInternalCourier; double get minDistanceInternalCourier; int get minTransactionInternalCourier; List<String> get courierCodeAvailable;
 /// Create a copy of MerchantShipping
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -55,7 +55,7 @@ abstract mixin class $MerchantShippingCopyWith<$Res>  {
   factory $MerchantShippingCopyWith(MerchantShipping value, $Res Function(MerchantShipping) _then) = _$MerchantShippingCopyWithImpl;
 @useResult
 $Res call({
- bool internalCourier, int internalCourierShippingCost, bool instantCourier, bool pickupAtStore, int maxDistanceInternalCourier, int minDistanceInternalCourier, int minTransactionInternalCourier, List<String> courierCodeAvailable
+ bool internalCourier, int internalCourierShippingCost, bool instantCourier, bool pickupAtStore, double maxDistanceInternalCourier, double minDistanceInternalCourier, int minTransactionInternalCourier, List<String> courierCodeAvailable
 });
 
 
@@ -79,8 +79,8 @@ as bool,internalCourierShippingCost: null == internalCourierShippingCost ? _self
 as int,instantCourier: null == instantCourier ? _self.instantCourier : instantCourier // ignore: cast_nullable_to_non_nullable
 as bool,pickupAtStore: null == pickupAtStore ? _self.pickupAtStore : pickupAtStore // ignore: cast_nullable_to_non_nullable
 as bool,maxDistanceInternalCourier: null == maxDistanceInternalCourier ? _self.maxDistanceInternalCourier : maxDistanceInternalCourier // ignore: cast_nullable_to_non_nullable
-as int,minDistanceInternalCourier: null == minDistanceInternalCourier ? _self.minDistanceInternalCourier : minDistanceInternalCourier // ignore: cast_nullable_to_non_nullable
-as int,minTransactionInternalCourier: null == minTransactionInternalCourier ? _self.minTransactionInternalCourier : minTransactionInternalCourier // ignore: cast_nullable_to_non_nullable
+as double,minDistanceInternalCourier: null == minDistanceInternalCourier ? _self.minDistanceInternalCourier : minDistanceInternalCourier // ignore: cast_nullable_to_non_nullable
+as double,minTransactionInternalCourier: null == minTransactionInternalCourier ? _self.minTransactionInternalCourier : minTransactionInternalCourier // ignore: cast_nullable_to_non_nullable
 as int,courierCodeAvailable: null == courierCodeAvailable ? _self.courierCodeAvailable : courierCodeAvailable // ignore: cast_nullable_to_non_nullable
 as List<String>,
   ));
@@ -164,7 +164,7 @@ return updateParam(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( bool internalCourier,  int internalCourierShippingCost,  bool instantCourier,  bool pickupAtStore,  int maxDistanceInternalCourier,  int minDistanceInternalCourier,  int minTransactionInternalCourier,  List<String> courierCodeAvailable)?  updateParam,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( bool internalCourier,  int internalCourierShippingCost,  bool instantCourier,  bool pickupAtStore,  double maxDistanceInternalCourier,  double minDistanceInternalCourier,  int minTransactionInternalCourier,  List<String> courierCodeAvailable)?  updateParam,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case MerchantShippingUpdateParam() when updateParam != null:
 return updateParam(_that.internalCourier,_that.internalCourierShippingCost,_that.instantCourier,_that.pickupAtStore,_that.maxDistanceInternalCourier,_that.minDistanceInternalCourier,_that.minTransactionInternalCourier,_that.courierCodeAvailable);case _:
@@ -185,7 +185,7 @@ return updateParam(_that.internalCourier,_that.internalCourierShippingCost,_that
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( bool internalCourier,  int internalCourierShippingCost,  bool instantCourier,  bool pickupAtStore,  int maxDistanceInternalCourier,  int minDistanceInternalCourier,  int minTransactionInternalCourier,  List<String> courierCodeAvailable)  updateParam,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( bool internalCourier,  int internalCourierShippingCost,  bool instantCourier,  bool pickupAtStore,  double maxDistanceInternalCourier,  double minDistanceInternalCourier,  int minTransactionInternalCourier,  List<String> courierCodeAvailable)  updateParam,}) {final _that = this;
 switch (_that) {
 case MerchantShippingUpdateParam():
 return updateParam(_that.internalCourier,_that.internalCourierShippingCost,_that.instantCourier,_that.pickupAtStore,_that.maxDistanceInternalCourier,_that.minDistanceInternalCourier,_that.minTransactionInternalCourier,_that.courierCodeAvailable);}
@@ -202,7 +202,7 @@ return updateParam(_that.internalCourier,_that.internalCourierShippingCost,_that
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( bool internalCourier,  int internalCourierShippingCost,  bool instantCourier,  bool pickupAtStore,  int maxDistanceInternalCourier,  int minDistanceInternalCourier,  int minTransactionInternalCourier,  List<String> courierCodeAvailable)?  updateParam,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( bool internalCourier,  int internalCourierShippingCost,  bool instantCourier,  bool pickupAtStore,  double maxDistanceInternalCourier,  double minDistanceInternalCourier,  int minTransactionInternalCourier,  List<String> courierCodeAvailable)?  updateParam,}) {final _that = this;
 switch (_that) {
 case MerchantShippingUpdateParam() when updateParam != null:
 return updateParam(_that.internalCourier,_that.internalCourierShippingCost,_that.instantCourier,_that.pickupAtStore,_that.maxDistanceInternalCourier,_that.minDistanceInternalCourier,_that.minTransactionInternalCourier,_that.courierCodeAvailable);case _:
@@ -224,8 +224,8 @@ class MerchantShippingUpdateParam implements MerchantShipping {
 @override final  int internalCourierShippingCost;
 @override final  bool instantCourier;
 @override final  bool pickupAtStore;
-@override final  int maxDistanceInternalCourier;
-@override final  int minDistanceInternalCourier;
+@override final  double maxDistanceInternalCourier;
+@override final  double minDistanceInternalCourier;
 @override final  int minTransactionInternalCourier;
  final  List<String> _courierCodeAvailable;
 @override List<String> get courierCodeAvailable {
@@ -268,7 +268,7 @@ abstract mixin class $MerchantShippingUpdateParamCopyWith<$Res> implements $Merc
   factory $MerchantShippingUpdateParamCopyWith(MerchantShippingUpdateParam value, $Res Function(MerchantShippingUpdateParam) _then) = _$MerchantShippingUpdateParamCopyWithImpl;
 @override @useResult
 $Res call({
- bool internalCourier, int internalCourierShippingCost, bool instantCourier, bool pickupAtStore, int maxDistanceInternalCourier, int minDistanceInternalCourier, int minTransactionInternalCourier, List<String> courierCodeAvailable
+ bool internalCourier, int internalCourierShippingCost, bool instantCourier, bool pickupAtStore, double maxDistanceInternalCourier, double minDistanceInternalCourier, int minTransactionInternalCourier, List<String> courierCodeAvailable
 });
 
 
@@ -292,8 +292,8 @@ as bool,internalCourierShippingCost: null == internalCourierShippingCost ? _self
 as int,instantCourier: null == instantCourier ? _self.instantCourier : instantCourier // ignore: cast_nullable_to_non_nullable
 as bool,pickupAtStore: null == pickupAtStore ? _self.pickupAtStore : pickupAtStore // ignore: cast_nullable_to_non_nullable
 as bool,maxDistanceInternalCourier: null == maxDistanceInternalCourier ? _self.maxDistanceInternalCourier : maxDistanceInternalCourier // ignore: cast_nullable_to_non_nullable
-as int,minDistanceInternalCourier: null == minDistanceInternalCourier ? _self.minDistanceInternalCourier : minDistanceInternalCourier // ignore: cast_nullable_to_non_nullable
-as int,minTransactionInternalCourier: null == minTransactionInternalCourier ? _self.minTransactionInternalCourier : minTransactionInternalCourier // ignore: cast_nullable_to_non_nullable
+as double,minDistanceInternalCourier: null == minDistanceInternalCourier ? _self.minDistanceInternalCourier : minDistanceInternalCourier // ignore: cast_nullable_to_non_nullable
+as double,minTransactionInternalCourier: null == minTransactionInternalCourier ? _self.minTransactionInternalCourier : minTransactionInternalCourier // ignore: cast_nullable_to_non_nullable
 as int,courierCodeAvailable: null == courierCodeAvailable ? _self._courierCodeAvailable : courierCodeAvailable // ignore: cast_nullable_to_non_nullable
 as List<String>,
   ));

@@ -5,8 +5,8 @@ class MerchantShippingState {
   final bool internalCourier;
   final int internalCourierShippingCost;
   final bool instantCourier;
-  final int maxDistanceInternalCourier;
-  final int minDistanceInternalCourier;
+  final double maxDistanceInternalCourier;
+  final double minDistanceInternalCourier;
   final int minTransactionInternalCourier;
   final List<String> availableCouriers;
   final List<String> selectedCouriers;
@@ -37,8 +37,8 @@ class MerchantShippingState {
     bool? internalCourier,
     int? internalCourierShippingCost,
     bool? instantCourier,
-    int? maxDistanceInternalCourier,
-    int? minDistanceInternalCourier,
+    double? maxDistanceInternalCourier,
+    double? minDistanceInternalCourier,
     int? minTransactionInternalCourier,
     List<String>? availableCouriers,
     List<String>? selectedCouriers,
