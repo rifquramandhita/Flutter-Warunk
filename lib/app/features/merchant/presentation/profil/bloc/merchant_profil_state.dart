@@ -7,6 +7,7 @@ class MerchantProfilState extends Equatable {
   final MerchantMerchantEntity? merchant;
   final bool isLoading;
   final String? errorMessage;
+  final String appVersion;
 
   const MerchantProfilState({
     this.name = '',
@@ -15,6 +16,7 @@ class MerchantProfilState extends Equatable {
     this.merchant,
     this.isLoading = false,
     this.errorMessage,
+    this.appVersion = '',
   });
 
   @override
@@ -25,6 +27,7 @@ class MerchantProfilState extends Equatable {
     merchant,
     isLoading,
     errorMessage,
+    appVersion,
   ];
 
   MerchantProfilState copyWith({
@@ -34,6 +37,7 @@ class MerchantProfilState extends Equatable {
     MerchantMerchantEntity? merchant,
     bool? isLoading,
     String? errorMessage,
+    String? appVersion,
   }) => MerchantProfilState(
     name: name ?? this.name,
     email: email ?? this.email,
@@ -41,5 +45,6 @@ class MerchantProfilState extends Equatable {
     merchant: merchant ?? this.merchant,
     isLoading: isLoading ?? this.isLoading,
     errorMessage: errorMessage,
+    appVersion: appVersion ?? this.appVersion,
   );
 }

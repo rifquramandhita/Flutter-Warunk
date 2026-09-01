@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:warunk/app/features/merchant/domain/entity/merchant_merchant.dart';
 import 'package:warunk/app/features/merchant/domain/use_case/merchant_merchant_get_use_case.dart';
@@ -42,6 +43,8 @@ class MerchantProfilBloc
       final name = await SharedPreferencesHelper.getString(PREF_NAME) ?? '-';
       final email = await SharedPreferencesHelper.getString(PREF_EMAIL) ?? '-';
       final phone = await SharedPreferencesHelper.getString(PREF_PHONE) ?? '-';
+      final packageInfo = await PackageInfo.fromPlatform();
+      final appVersion = packageInfo.version;
 
       if (merchant != null) {
         emit(
@@ -50,6 +53,7 @@ class MerchantProfilBloc
             email: email,
             phone: phone,
             merchant: merchant,
+            appVersion: appVersion,
           ),
         );
       }

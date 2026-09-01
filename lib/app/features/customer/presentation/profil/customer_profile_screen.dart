@@ -53,14 +53,14 @@ class CustomerProfileScreen extends StatelessWidget {
     return SafeArea(
       child: Stack(
         children: [
-          _bodyLayout(context),
+          _bodyLayout(context, state),
           if (state.isLoading) const LoadingAppWidget(),
         ],
       ),
     );
   }
 
-  Widget _bodyLayout(BuildContext context) {
+  Widget _bodyLayout(BuildContext context, CustomerProfilState state) {
     return RefreshIndicator(
       onRefresh: () async {
         context.read<CustomerProfilBloc>().add(CustomerLoadProfilData());
@@ -83,6 +83,23 @@ class CustomerProfileScreen extends StatelessWidget {
             const SizedBox(height: 12),
             _buildInfoMenu(context),
             const SizedBox(height: 24),
+            if (state.appVersion.isNotEmpty)
+              Center(
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 8),
+                  child: Text(
+                    'Versi ${state.appVersion}',
+                    style: GlobalHelper.getTextTheme(
+                      context,
+                      appTextStyle: AppTextStyle.LABEL_SMALL,
+                    )?.copyWith(
+                      color: GlobalHelper.getColorSchema(
+                        context,
+                      ).onSurfaceVariant,
+                    ),
+                  ),
+                ),
+              ),
             _logoutButton(context),
           ],
         ),

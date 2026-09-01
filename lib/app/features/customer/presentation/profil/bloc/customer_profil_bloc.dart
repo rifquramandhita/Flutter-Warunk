@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:warunk/app/features/customer/domain/use_case/customer_order_get_use_case.dart';
 import 'package:warunk/app/features/customer/domain/use_case/customer_wishlists_get_use_case.dart';
@@ -30,6 +31,8 @@ class CustomerProfilBloc
 
     final name = await SharedPreferencesHelper.getString(PREF_NAME) ?? '-';
     final phone = await SharedPreferencesHelper.getString(PREF_PHONE) ?? '-';
+    final packageInfo = await PackageInfo.fromPlatform();
+    final appVersion = packageInfo.version;
 
     int transactionCount = 0;
     int favoriteCount = 0;
@@ -61,6 +64,7 @@ class CustomerProfilBloc
         voucherCount: 0,
         favoriteCount: favoriteCount,
         unreadNotifications: 3,
+        appVersion: appVersion,
       ),
     );
   }

@@ -9,6 +9,7 @@ class CustomerProfilState extends Equatable {
   final int voucherCount;
   final int favoriteCount;
   final int unreadNotifications;
+  final String appVersion;
 
   const CustomerProfilState({
     this.isLoading = false,
@@ -19,6 +20,7 @@ class CustomerProfilState extends Equatable {
     this.voucherCount = 0,
     this.favoriteCount = 0,
     this.unreadNotifications = 0,
+    this.appVersion = '',
   });
 
   CustomerProfilState copyWith({
@@ -30,6 +32,7 @@ class CustomerProfilState extends Equatable {
     int? voucherCount,
     int? favoriteCount,
     int? unreadNotifications,
+    String? appVersion,
   }) {
     return CustomerProfilState(
       isLoading: isLoading ?? this.isLoading,
@@ -40,6 +43,7 @@ class CustomerProfilState extends Equatable {
       voucherCount: voucherCount ?? this.voucherCount,
       favoriteCount: favoriteCount ?? this.favoriteCount,
       unreadNotifications: unreadNotifications ?? this.unreadNotifications,
+      appVersion: appVersion ?? this.appVersion,
     );
   }
 
@@ -53,5 +57,6 @@ class CustomerProfilState extends Equatable {
     voucherCount,
     favoriteCount,
     unreadNotifications,
+    appVersion,
   ];
 }

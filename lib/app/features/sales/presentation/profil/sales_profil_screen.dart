@@ -36,7 +36,7 @@ class SalesProfilScreen extends StatelessWidget {
             body: SafeArea(
               child: Stack(
                 children: [
-                  _buildBody(context),
+                  _buildBody(context, state),
                   if (state.isLoading) const LoadingAppWidget(),
                 ],
               ),
@@ -47,7 +47,7 @@ class SalesProfilScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildBody(BuildContext context) {
+  Widget _buildBody(BuildContext context, SalesProfilState state) {
     return RefreshIndicator(
       onRefresh: () async {
         context.read<SalesProfilBloc>().add(SalesLoadProfilData());
@@ -70,6 +70,23 @@ class SalesProfilScreen extends StatelessWidget {
             const SizedBox(height: 12),
             _buildInfoMenu(context),
             const SizedBox(height: 24),
+            if (state.appVersion.isNotEmpty)
+              Center(
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 8),
+                  child: Text(
+                    'Versi ${state.appVersion}',
+                    style: GlobalHelper.getTextTheme(
+                      context,
+                      appTextStyle: AppTextStyle.LABEL_SMALL,
+                    )?.copyWith(
+                      color: GlobalHelper.getColorSchema(
+                        context,
+                      ).onSurfaceVariant,
+                    ),
+                  ),
+                ),
+              ),
             _logoutButton(context),
           ],
         ),

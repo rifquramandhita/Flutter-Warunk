@@ -74,6 +74,23 @@ class MerchantProfilScreen extends StatelessWidget {
                 const SizedBox(height: 16),
                 _pengaturanCard(context, state),
                 const SizedBox(height: 24),
+                if (state.appVersion.isNotEmpty)
+                  Center(
+                    child: Padding(
+                      padding: const EdgeInsets.only(bottom: 8),
+                      child: Text(
+                        'Versi ${state.appVersion}',
+                        style: GlobalHelper.getTextTheme(
+                          context,
+                          appTextStyle: AppTextStyle.LABEL_SMALL,
+                        )?.copyWith(
+                          color: GlobalHelper.getColorSchema(
+                            context,
+                          ).onSurfaceVariant,
+                        ),
+                      ),
+                    ),
+                  ),
                 _logoutButton(context, state),
                 const SizedBox(height: 32),
               ],

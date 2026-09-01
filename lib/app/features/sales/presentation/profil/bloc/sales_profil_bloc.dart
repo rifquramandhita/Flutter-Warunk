@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'sales_profil_event.dart';
@@ -15,8 +16,10 @@ class SalesProfilBloc extends Bloc<SalesProfilEvent, SalesProfilState> {
     Emitter<SalesProfilState> emit,
   ) async {
     emit(state.copyWith(isLoading: true));
+    final packageInfo = await PackageInfo.fromPlatform();
+    final appVersion = packageInfo.version;
     await Future.delayed(const Duration(milliseconds: 500)); // Simulate loading if needed
-    emit(state.copyWith(isLoading: false));
+    emit(state.copyWith(isLoading: false, appVersion: appVersion));
   }
 
   Future<void> _onLaunchUrl(
