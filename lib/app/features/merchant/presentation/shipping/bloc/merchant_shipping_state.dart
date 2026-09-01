@@ -6,6 +6,8 @@ class MerchantShippingState {
   final int internalCourierShippingCost;
   final bool instantCourier;
   final int maxDistanceInternalCourier;
+  final int minDistanceInternalCourier;
+  final int minTransactionInternalCourier;
   final List<String> availableCouriers;
   final List<String> selectedCouriers;
   
@@ -20,6 +22,8 @@ class MerchantShippingState {
     this.internalCourierShippingCost = 0,
     this.instantCourier = false,
     this.maxDistanceInternalCourier = 0,
+    this.minDistanceInternalCourier = 0,
+    this.minTransactionInternalCourier = 0,
     this.availableCouriers = const [],
     this.selectedCouriers = const [],
     this.isLoadingData = false,
@@ -34,6 +38,8 @@ class MerchantShippingState {
     int? internalCourierShippingCost,
     bool? instantCourier,
     int? maxDistanceInternalCourier,
+    int? minDistanceInternalCourier,
+    int? minTransactionInternalCourier,
     List<String>? availableCouriers,
     List<String>? selectedCouriers,
     bool? isLoadingData,
@@ -47,6 +53,8 @@ class MerchantShippingState {
       internalCourierShippingCost: internalCourierShippingCost ?? this.internalCourierShippingCost,
       instantCourier: instantCourier ?? this.instantCourier,
       maxDistanceInternalCourier: maxDistanceInternalCourier ?? this.maxDistanceInternalCourier,
+      minDistanceInternalCourier: minDistanceInternalCourier ?? this.minDistanceInternalCourier,
+      minTransactionInternalCourier: minTransactionInternalCourier ?? this.minTransactionInternalCourier,
       availableCouriers: availableCouriers ?? this.availableCouriers,
       selectedCouriers: selectedCouriers ?? this.selectedCouriers,
       isLoadingData: isLoadingData ?? this.isLoadingData,

@@ -14,6 +14,16 @@ class MerchantShippingUpdateMaxDistance extends MerchantShippingEvent {
   MerchantShippingUpdateMaxDistance(this.maxDistance);
 }
 
+class MerchantShippingUpdateMinDistance extends MerchantShippingEvent {
+  final int minDistance;
+  MerchantShippingUpdateMinDistance(this.minDistance);
+}
+
+class MerchantShippingUpdateMinTransaction extends MerchantShippingEvent {
+  final int minTransaction;
+  MerchantShippingUpdateMinTransaction(this.minTransaction);
+}
+
 class MerchantShippingUpdateInternalCourierCost extends MerchantShippingEvent {
   final int cost;
   MerchantShippingUpdateInternalCourierCost(this.cost);

@@ -175,12 +175,52 @@ class MerchantShippingScreen extends StatelessWidget {
                       ),
                       if (state.internalCourier) ...[
                         Divider(height: 1, color: colorSchema.outlineVariant),
-                        _MaxDistanceInput(
-                          initialValue: state.maxDistanceInternalCourier,
+                        _InternalCourierInput(
+                          label: 'Harga Ongkir Kurir Internal',
+                          initialValue: state.internalCourierShippingCost,
+                          prefixText: 'Rp ',
+                          onChanged: (value) {
+                            final cost = int.tryParse(value) ?? 0;
+                            context.read<MerchantShippingBloc>().add(
+                              MerchantShippingUpdateInternalCourierCost(cost),
+                            );
+                          },
                         ),
                         Divider(height: 1, color: colorSchema.outlineVariant),
-                        _InternalCourierCostInput(
-                          initialValue: state.internalCourierShippingCost,
+                        _InternalCourierInput(
+                          label: 'Min. Jarak Kurir Internal (km)',
+                          initialValue: state.minDistanceInternalCourier,
+                          suffixText: 'KM',
+                          onChanged: (value) {
+                            final dist = int.tryParse(value) ?? 0;
+                            context.read<MerchantShippingBloc>().add(
+                              MerchantShippingUpdateMinDistance(dist),
+                            );
+                          },
+                        ),
+                        Divider(height: 1, color: colorSchema.outlineVariant),
+                        _InternalCourierInput(
+                          label: 'Maks. Jarak Kurir Internal (km)',
+                          initialValue: state.maxDistanceInternalCourier,
+                          suffixText: 'KM',
+                          onChanged: (value) {
+                            final dist = int.tryParse(value) ?? 0;
+                            context.read<MerchantShippingBloc>().add(
+                              MerchantShippingUpdateMaxDistance(dist),
+                            );
+                          },
+                        ),
+                        Divider(height: 1, color: colorSchema.outlineVariant),
+                        _InternalCourierInput(
+                          label: 'Minimal Transaksi Kurir Internal',
+                          initialValue: state.minTransactionInternalCourier,
+                          prefixText: 'Rp ',
+                          onChanged: (value) {
+                            final trans = int.tryParse(value) ?? 0;
+                            context.read<MerchantShippingBloc>().add(
+                              MerchantShippingUpdateMinTransaction(trans),
+                            );
+                          },
                         ),
                       ],
                     ],
@@ -292,17 +332,28 @@ class _MethodItemRow extends StatelessWidget {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Max Distance Input
+// Internal Courier Input
 // ─────────────────────────────────────────────────────────────────────────────
-class _MaxDistanceInput extends StatefulWidget {
+class _InternalCourierInput extends StatefulWidget {
+  final String label;
   final int initialValue;
-  const _MaxDistanceInput({required this.initialValue});
+  final String? prefixText;
+  final String? suffixText;
+  final Function(String) onChanged;
+
+  const _InternalCourierInput({
+    required this.label,
+    required this.initialValue,
+    this.prefixText,
+    this.suffixText,
+    required this.onChanged,
+  });
 
   @override
-  State<_MaxDistanceInput> createState() => _MaxDistanceInputState();
+  State<_InternalCourierInput> createState() => _InternalCourierInputState();
 }
 
-class _MaxDistanceInputState extends State<_MaxDistanceInput> {
+class _InternalCourierInputState extends State<_InternalCourierInput> {
   late TextEditingController _controller;
 
   @override
@@ -333,7 +384,7 @@ class _MaxDistanceInputState extends State<_MaxDistanceInput> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Jarak Maksimal Pengantaran (KM)',
+            widget.label,
             style: textTheme?.copyWith(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 8),
@@ -343,7 +394,7 @@ class _MaxDistanceInputState extends State<_MaxDistanceInput> {
             inputFormatters: [FilteringTextInputFormatter.digitsOnly],
             style: textTheme,
             decoration: InputDecoration(
-              hintText: 'Misal: 10',
+              hintText: '0',
               hintStyle: textTheme?.copyWith(
                 color: colorSchema.onSurfaceVariant,
               ),
@@ -363,113 +414,18 @@ class _MaxDistanceInputState extends State<_MaxDistanceInput> {
                 borderRadius: BorderRadius.circular(10),
                 borderSide: BorderSide(color: colorSchema.primary),
               ),
-              suffixText: 'KM',
+              prefixText: widget.prefixText,
+              prefixStyle: textTheme,
+              suffixText: widget.suffixText,
               suffixStyle: textTheme,
             ),
-            onChanged: (value) {
-              final distance = int.tryParse(value) ?? 0;
-              context.read<MerchantShippingBloc>().add(
-                MerchantShippingUpdateMaxDistance(distance),
-              );
-            },
+            onChanged: widget.onChanged,
           ),
         ],
       ),
     );
   }
 }
-
-// ─────────────────────────────────────────────────────────────────────────────
-// Internal Courier Cost Input
-// ─────────────────────────────────────────────────────────────────────────────
-class _InternalCourierCostInput extends StatefulWidget {
-  final int initialValue;
-  const _InternalCourierCostInput({required this.initialValue});
-
-  @override
-  State<_InternalCourierCostInput> createState() => _InternalCourierCostInputState();
-}
-
-class _InternalCourierCostInputState extends State<_InternalCourierCostInput> {
-  late TextEditingController _controller;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = TextEditingController(
-      text: widget.initialValue > 0 ? widget.initialValue.toString() : '',
-    );
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final colorSchema = GlobalHelper.getColorSchema(context);
-    final textTheme = GlobalHelper.getTextTheme(
-      context,
-      appTextStyle: AppTextStyle.BODY_SMALL,
-    );
-
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Biaya Ongkir Kurir Toko',
-            style: textTheme?.copyWith(fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 8),
-          TextField(
-            controller: _controller,
-            keyboardType: TextInputType.number,
-            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-            style: textTheme,
-            decoration: InputDecoration(
-              hintText: 'Misal: 10000',
-              hintStyle: textTheme?.copyWith(
-                color: colorSchema.onSurfaceVariant,
-              ),
-              contentPadding: const EdgeInsets.symmetric(
-                horizontal: 16,
-                vertical: 12,
-              ),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-                borderSide: BorderSide(color: colorSchema.outlineVariant),
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-                borderSide: BorderSide(color: colorSchema.outlineVariant),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-                borderSide: BorderSide(color: colorSchema.primary),
-              ),
-              prefixText: 'Rp ',
-              prefixStyle: textTheme,
-            ),
-            onChanged: (value) {
-              final cost = int.tryParse(value) ?? 0;
-              context.read<MerchantShippingBloc>().add(
-                MerchantShippingUpdateInternalCourierCost(cost),
-              );
-            },
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// Couriers Card
-// ─────────────────────────────────────────────────────────────────────────────
 class _CouriersCard extends StatelessWidget {
   const _CouriersCard({required this.state});
   final MerchantShippingState state;

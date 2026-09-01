@@ -39,6 +39,8 @@ class MerchantShippingBloc
             internalCourierShippingCost: merchant.internalCourierShippingCost ?? 0,
             instantCourier: merchant.instantCourier ?? false,
             maxDistanceInternalCourier: merchant.maxDistanceInternalCourier ?? 0,
+            minDistanceInternalCourier: merchant.minDistanceInternalCourier ?? 0,
+            minTransactionInternalCourier: merchant.minTransactionInternalCourier ?? 0,
             selectedCouriers: merchant.courierCodeAvailable,
           ),
         );
@@ -70,6 +72,14 @@ class MerchantShippingBloc
       emit(state.copyWith(maxDistanceInternalCourier: event.maxDistance));
     });
 
+    on<MerchantShippingUpdateMinDistance>((event, emit) {
+      emit(state.copyWith(minDistanceInternalCourier: event.minDistance));
+    });
+
+    on<MerchantShippingUpdateMinTransaction>((event, emit) {
+      emit(state.copyWith(minTransactionInternalCourier: event.minTransaction));
+    });
+
     on<MerchantShippingUpdateInternalCourierCost>((event, emit) {
       emit(state.copyWith(internalCourierShippingCost: event.cost));
     });
@@ -93,6 +103,8 @@ class MerchantShippingBloc
         instantCourier: state.instantCourier,
         pickupAtStore: state.pickupAtStore,
         maxDistanceInternalCourier: state.maxDistanceInternalCourier,
+        minDistanceInternalCourier: state.minDistanceInternalCourier,
+        minTransactionInternalCourier: state.minTransactionInternalCourier,
         courierCodeAvailable: state.selectedCouriers,
       );
 
