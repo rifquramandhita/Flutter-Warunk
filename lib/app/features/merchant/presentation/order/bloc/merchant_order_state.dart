@@ -9,7 +9,7 @@ class MerchantOrderState extends Equatable {
   final String? errorMessage;
 
   const MerchantOrderState({
-    this.selectedTab = '',
+    this.selectedTab = 'waiting_merchant_confirmation',
     this.availableTabs = const [],
     this.allOrders = const [],
     this.isLoading = false,

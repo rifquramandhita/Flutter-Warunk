@@ -32,17 +32,29 @@ class MerchantOrderBloc extends Bloc<MerchantOrderEvent, MerchantOrderState> {
           .where((s) => s.isNotEmpty)
           .toSet()
           .toList();
-      tabs.insert(0, ''); // Add 'Semua' tab
+
+      const waitingStatus = 'waiting_merchant_confirmation';
+      tabs.remove(waitingStatus);
+      tabs.remove('');
+
+      final finalTabs = <String>[
+        waitingStatus,
+        '',
+        ...tabs,
+      ];
+
       String selected = state.selectedTab;
-      if (!tabs.contains(selected) && tabs.isNotEmpty) {
-        selected = tabs.first;
+      // If it's the first time loading or current selection is not in tabs, 
+      // default to 'waiting_merchant_confirmation'
+      if (state.allOrders.isEmpty || !finalTabs.contains(selected)) {
+        selected = waitingStatus;
       }
 
       emit(
         state.copyWith(
           isSuccess: true,
           allOrders: orders,
-          availableTabs: tabs,
+          availableTabs: finalTabs,
           selectedTab: selected,
         ),
       );
