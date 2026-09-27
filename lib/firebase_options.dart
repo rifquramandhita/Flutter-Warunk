@@ -26,10 +26,7 @@ class DefaultFirebaseOptions {
       case TargetPlatform.android:
         return android;
       case TargetPlatform.iOS:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for ios - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return ios;
       case TargetPlatform.macOS:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for macos - '
@@ -53,11 +50,22 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyB1XtuVaUoFl8NJnJHD7ThuabhoskXdh7s',
-    appId: '1:724692728401:android:6981fb577eb621b1f61670',
-    messagingSenderId: '724692728401',
-    projectId: 'warunk-452ab',
-    storageBucket: 'warunk-452ab.firebasestorage.app',
+    apiKey: 'AIzaSyB9gAatuzt7rU4ZVzJWBNAmelpLtRyTrVk',
+    appId: '1:1000828796444:android:97afdb9c9089802e2de9d9',
+    messagingSenderId: '1000828796444',
+    projectId: 'warunk-eb80b',
+    storageBucket: 'warunk-eb80b.firebasestorage.app',
+  );
+
+  static const FirebaseOptions ios = FirebaseOptions(
+    apiKey: 'AIzaSyDrbs_8lYo9ealVepJ7qCV3tn6nrZVRN_8',
+    appId: '1:1000828796444:ios:b8dd6cb8bcf62c6f2de9d9',
+    messagingSenderId: '1000828796444',
+    projectId: 'warunk-eb80b',
+    storageBucket: 'warunk-eb80b.firebasestorage.app',
+    androidClientId: '1000828796444-vbqnchi0fd227f5vspf2eofrg2rfogf1.apps.googleusercontent.com',
+    iosClientId: '1000828796444-uj9b2k2sks8ml1aqnhicrnekvmilbka7.apps.googleusercontent.com',
+    iosBundleId: 'com.watuka.warunk',
   );
 
 }

@@ -1,42 +1,49 @@
 {
   "project_info": {
-    "project_number": "724692728401",
-    "project_id": "warunk-452ab",
-    "storage_bucket": "warunk-452ab.firebasestorage.app"
+    "project_number": "1000828796444",
+    "project_id": "warunk-eb80b",
+    "storage_bucket": "warunk-eb80b.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:724692728401:android:6981fb577eb621b1f61670",
+        "mobilesdk_app_id": "1:1000828796444:android:97afdb9c9089802e2de9d9",
         "android_client_info": {
-          "package_name": "com.example.warunk"
+          "package_name": "com.watuka.warunk"
         }
       },
       "oauth_client": [
         {
-          "client_id": "724692728401-4dbuc1rami6mntq7trsb7lrvidrdohb1.apps.googleusercontent.com",
+          "client_id": "1000828796444-vbqnchi0fd227f5vspf2eofrg2rfogf1.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.example.warunk",
+            "package_name": "com.watuka.warunk",
             "certificate_hash": "f27b399f5b9ced98172c693ff4a680b227c3b7c1"
           }
         },
         {
-          "client_id": "724692728401-4nmkm3lkuhh8c8chv46qtfr79cq9ic66.apps.googleusercontent.com",
+          "client_id": "1000828796444-vro4lta235iafd5j8d5g2e0oscc1edr1.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyB1XtuVaUoFl8NJnJHD7ThuabhoskXdh7s"
+          "current_key": "AIzaSyB9gAatuzt7rU4ZVzJWBNAmelpLtRyTrVk"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "724692728401-4nmkm3lkuhh8c8chv46qtfr79cq9ic66.apps.googleusercontent.com",
+              "client_id": "1000828796444-vro4lta235iafd5j8d5g2e0oscc1edr1.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "1000828796444-uj9b2k2sks8ml1aqnhicrnekvmilbka7.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.watuka.warunk"
+              }
             }
           ]
         }
