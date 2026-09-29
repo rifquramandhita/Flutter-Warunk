@@ -1,4 +1,4 @@
-package com.example.warunk
+package com.watuka.warunk
 
 import io.flutter.embedding.android.FlutterActivity
 
