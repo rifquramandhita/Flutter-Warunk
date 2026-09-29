@@ -14,6 +14,22 @@
       },
       "oauth_client": [
         {
+          "client_id": "1000828796444-bpkv5fqd0mlfpk3nnnbubgt239i0pc04.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.watuka.warunk",
+            "certificate_hash": "908833f23f2b88c3e2ca30143e0a9cb89cd6add7"
+          }
+        },
+        {
+          "client_id": "1000828796444-qdvv5e5fbaq0vdrgbggvhrkeqntqphf1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.watuka.warunk",
+            "certificate_hash": "f2d3c2e7e929385fee4438d6268b3c850486298b"
+          }
+        },
+        {
           "client_id": "1000828796444-vbqnchi0fd227f5vspf2eofrg2rfogf1.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

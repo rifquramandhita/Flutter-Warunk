@@ -63,7 +63,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '1000828796444',
     projectId: 'warunk-eb80b',
     storageBucket: 'warunk-eb80b.firebasestorage.app',
-    androidClientId: '1000828796444-vbqnchi0fd227f5vspf2eofrg2rfogf1.apps.googleusercontent.com',
+    androidClientId: '1000828796444-bpkv5fqd0mlfpk3nnnbubgt239i0pc04.apps.googleusercontent.com',
     iosClientId: '1000828796444-uj9b2k2sks8ml1aqnhicrnekvmilbka7.apps.googleusercontent.com',
     iosBundleId: 'com.watuka.warunk',
   );
