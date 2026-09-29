@@ -19,7 +19,7 @@ if (keystorePropertiesFile.exists()) {
 }
 
 android {
-    namespace = "com.example.warunk"
+    namespace = "com.watuka.warunk"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
