@@ -36,19 +36,21 @@ class MerchantBalanceTopupPaymentScreen extends StatelessWidget {
                 appTextStyle: AppTextStyle.TITLE_LARGE,
               );
 
-              return Scaffold(
-                backgroundColor: Colors.white,
-                appBar: AppBar(
-                  title: const Text('Pembayaran'),
+              return SafeArea(
+                child: Scaffold(
                   backgroundColor: Colors.white,
-                  elevation: 0,
-                  iconTheme: IconThemeData(color: colorSchema.primary),
-                  titleTextStyle: titleLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black87,
+                  appBar: AppBar(
+                    title: const Text('Pembayaran'),
+                    backgroundColor: Colors.white,
+                    elevation: 0,
+                    iconTheme: IconThemeData(color: colorSchema.primary),
+                    titleTextStyle: titleLarge?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black87,
+                    ),
                   ),
+                  body: _bodyBuild(context),
                 ),
-                body: _bodyBuild(context),
               );
             },
           ),
