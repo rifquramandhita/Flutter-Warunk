@@ -19,14 +19,20 @@ class MerchantInputTopupBloc
     MerchantInputTopupEventSubmit event,
     Emitter<MerchantInputTopupState> emit,
   ) async {
-    emit(state.copyWith(isLoading: true, errorMessage: null, paymentUrl: null));
+    emit(state.copyWith(
+      isLoading: true,
+      errorMessage: null,
+      paymentUrl: null,
+      topUpResponse: null,
+    ));
 
     final response = await _useCase.call(event.amount);
 
     if (response is SuccessState) {
       emit(state.copyWith(
         isLoading: false,
-        paymentUrl: response.data,
+        paymentUrl: response.data?.paymentUrl,
+        topUpResponse: response.data,
       ));
     } else {
       emit(state.copyWith(

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:warunk/app/features/merchant/data/source/merchant_merchant_api_service.dart';
 import 'package:warunk/app/features/merchant/domain/entity/merchant_account.dart';
 import 'package:warunk/app/features/merchant/domain/entity/merchant_merchant.dart';
@@ -153,11 +155,52 @@ class MerchantMerchantRepositoryImpl implements MerchantMerchantRepository {
   }
 
   @override
-  Future<DataState<String>> topUpBalance({required int amount}) async {
+  Future<DataState<MerchantBalanceTopUpResponseEntity>> topUpBalance({
+    required int amount,
+  }) async {
     return handleResponse(
       () => _api.topUpBalance({'amount': amount}),
       (responseData) {
-        return responseData['payment_url'] as String;
+        return MerchantBalanceTopUpResponseModel.fromJson(
+          responseData as Map<String, dynamic>,
+        ).toEntity();
+      },
+    );
+  }
+
+  @override
+  Future<DataState<dynamic>> uploadTransferProof({
+    required String id,
+    required File transferProof,
+  }) async {
+    return handleResponse(
+      () => _api.uploadTransferProof(id, transferProof),
+      (responseData) {
+        return responseData;
+      },
+    );
+  }
+
+  @override
+  Future<DataState<MerchantBalanceHistoryItemEntity>> getBalanceHistoryDetail(
+    String id,
+  ) async {
+    return handleResponse(
+      () => _api.getBalanceHistoryDetail(id),
+      (responseData) {
+        final Map<String, dynamic> json;
+        if (responseData is Map<String, dynamic>) {
+          if (responseData['history'] is Map<String, dynamic>) {
+            json = responseData['history'] as Map<String, dynamic>;
+          } else if (responseData['top_up'] is Map<String, dynamic>) {
+            json = responseData['top_up'] as Map<String, dynamic>;
+          } else {
+            json = responseData;
+          }
+        } else {
+          json = {};
+        }
+        return MerchantBalanceHistoryModel.fromJson(json).toEntity();
       },
     );
   }

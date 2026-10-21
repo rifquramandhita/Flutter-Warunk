@@ -278,9 +278,266 @@ as List<MerchantBalanceHistoryItemEntity>,
 }
 
 /// @nodoc
+mixin _$MerchantDestinationBankAccount {
+
+ String get bankName; String get accountNumber; String get accountName;
+/// Create a copy of MerchantDestinationBankAccount
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$MerchantDestinationBankAccountCopyWith<MerchantDestinationBankAccount> get copyWith => _$MerchantDestinationBankAccountCopyWithImpl<MerchantDestinationBankAccount>(this as MerchantDestinationBankAccount, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MerchantDestinationBankAccount&&(identical(other.bankName, bankName) || other.bankName == bankName)&&(identical(other.accountNumber, accountNumber) || other.accountNumber == accountNumber)&&(identical(other.accountName, accountName) || other.accountName == accountName));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,bankName,accountNumber,accountName);
+
+@override
+String toString() {
+  return 'MerchantDestinationBankAccount(bankName: $bankName, accountNumber: $accountNumber, accountName: $accountName)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $MerchantDestinationBankAccountCopyWith<$Res>  {
+  factory $MerchantDestinationBankAccountCopyWith(MerchantDestinationBankAccount value, $Res Function(MerchantDestinationBankAccount) _then) = _$MerchantDestinationBankAccountCopyWithImpl;
+@useResult
+$Res call({
+ String bankName, String accountNumber, String accountName
+});
+
+
+
+
+}
+/// @nodoc
+class _$MerchantDestinationBankAccountCopyWithImpl<$Res>
+    implements $MerchantDestinationBankAccountCopyWith<$Res> {
+  _$MerchantDestinationBankAccountCopyWithImpl(this._self, this._then);
+
+  final MerchantDestinationBankAccount _self;
+  final $Res Function(MerchantDestinationBankAccount) _then;
+
+/// Create a copy of MerchantDestinationBankAccount
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? bankName = null,Object? accountNumber = null,Object? accountName = null,}) {
+  return _then(_self.copyWith(
+bankName: null == bankName ? _self.bankName : bankName // ignore: cast_nullable_to_non_nullable
+as String,accountNumber: null == accountNumber ? _self.accountNumber : accountNumber // ignore: cast_nullable_to_non_nullable
+as String,accountName: null == accountName ? _self.accountName : accountName // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [MerchantDestinationBankAccount].
+extension MerchantDestinationBankAccountPatterns on MerchantDestinationBankAccount {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( MerchantDestinationBankAccountEntity value)?  entity,required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case MerchantDestinationBankAccountEntity() when entity != null:
+return entity(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( MerchantDestinationBankAccountEntity value)  entity,}){
+final _that = this;
+switch (_that) {
+case MerchantDestinationBankAccountEntity():
+return entity(_that);}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( MerchantDestinationBankAccountEntity value)?  entity,}){
+final _that = this;
+switch (_that) {
+case MerchantDestinationBankAccountEntity() when entity != null:
+return entity(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String bankName,  String accountNumber,  String accountName)?  entity,required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case MerchantDestinationBankAccountEntity() when entity != null:
+return entity(_that.bankName,_that.accountNumber,_that.accountName);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String bankName,  String accountNumber,  String accountName)  entity,}) {final _that = this;
+switch (_that) {
+case MerchantDestinationBankAccountEntity():
+return entity(_that.bankName,_that.accountNumber,_that.accountName);}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String bankName,  String accountNumber,  String accountName)?  entity,}) {final _that = this;
+switch (_that) {
+case MerchantDestinationBankAccountEntity() when entity != null:
+return entity(_that.bankName,_that.accountNumber,_that.accountName);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+
+
+class MerchantDestinationBankAccountEntity implements MerchantDestinationBankAccount {
+  const MerchantDestinationBankAccountEntity({this.bankName = '', this.accountNumber = '', this.accountName = ''});
+  
+
+@override@JsonKey() final  String bankName;
+@override@JsonKey() final  String accountNumber;
+@override@JsonKey() final  String accountName;
+
+/// Create a copy of MerchantDestinationBankAccount
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$MerchantDestinationBankAccountEntityCopyWith<MerchantDestinationBankAccountEntity> get copyWith => _$MerchantDestinationBankAccountEntityCopyWithImpl<MerchantDestinationBankAccountEntity>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MerchantDestinationBankAccountEntity&&(identical(other.bankName, bankName) || other.bankName == bankName)&&(identical(other.accountNumber, accountNumber) || other.accountNumber == accountNumber)&&(identical(other.accountName, accountName) || other.accountName == accountName));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,bankName,accountNumber,accountName);
+
+@override
+String toString() {
+  return 'MerchantDestinationBankAccount.entity(bankName: $bankName, accountNumber: $accountNumber, accountName: $accountName)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $MerchantDestinationBankAccountEntityCopyWith<$Res> implements $MerchantDestinationBankAccountCopyWith<$Res> {
+  factory $MerchantDestinationBankAccountEntityCopyWith(MerchantDestinationBankAccountEntity value, $Res Function(MerchantDestinationBankAccountEntity) _then) = _$MerchantDestinationBankAccountEntityCopyWithImpl;
+@override @useResult
+$Res call({
+ String bankName, String accountNumber, String accountName
+});
+
+
+
+
+}
+/// @nodoc
+class _$MerchantDestinationBankAccountEntityCopyWithImpl<$Res>
+    implements $MerchantDestinationBankAccountEntityCopyWith<$Res> {
+  _$MerchantDestinationBankAccountEntityCopyWithImpl(this._self, this._then);
+
+  final MerchantDestinationBankAccountEntity _self;
+  final $Res Function(MerchantDestinationBankAccountEntity) _then;
+
+/// Create a copy of MerchantDestinationBankAccount
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? bankName = null,Object? accountNumber = null,Object? accountName = null,}) {
+  return _then(MerchantDestinationBankAccountEntity(
+bankName: null == bankName ? _self.bankName : bankName // ignore: cast_nullable_to_non_nullable
+as String,accountNumber: null == accountNumber ? _self.accountNumber : accountNumber // ignore: cast_nullable_to_non_nullable
+as String,accountName: null == accountName ? _self.accountName : accountName // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
+
+/// @nodoc
 mixin _$MerchantBalanceHistoryItem {
 
- String get id; String? get status; String? get statusLabel; String? get paymentStatus; String? get paymentStatusLabel; int? get amount; String? get reason; String? get reasonLabel; String? get reference; String? get provider; String? get providerOrderId; String? get providerTransactionId; String? get paymentType; String? get paymentUrl; bool? get isPayable; String? get paidAt; String? get expiredAt; String? get failedAt; String? get createdAt; String? get updatedAt;
+ String get id; String? get status; String? get statusLabel; String? get paymentStatus; String? get paymentStatusLabel; int? get amount; String? get reason; String? get reasonLabel; String? get reference; String? get provider; String? get providerOrderId; String? get providerTransactionId; String? get paymentType; String? get paymentUrl; bool? get isPayable; String? get paymentMethod; bool get isManualTransfer; List<MerchantDestinationBankAccountEntity> get destinationBankAccounts; String? get transferInstructions; String? get transferProofUrl; String? get transferProofUploadedAt; bool get canUploadTransferProof; bool get canCancel; String? get verifiedAt; String? get adminNote; String? get paidAt; String? get expiredAt; String? get failedAt; String? get createdAt; String? get updatedAt;
 /// Create a copy of MerchantBalanceHistoryItem
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -291,16 +548,16 @@ $MerchantBalanceHistoryItemCopyWith<MerchantBalanceHistoryItem> get copyWith => 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MerchantBalanceHistoryItem&&(identical(other.id, id) || other.id == id)&&(identical(other.status, status) || other.status == status)&&(identical(other.statusLabel, statusLabel) || other.statusLabel == statusLabel)&&(identical(other.paymentStatus, paymentStatus) || other.paymentStatus == paymentStatus)&&(identical(other.paymentStatusLabel, paymentStatusLabel) || other.paymentStatusLabel == paymentStatusLabel)&&(identical(other.amount, amount) || other.amount == amount)&&(identical(other.reason, reason) || other.reason == reason)&&(identical(other.reasonLabel, reasonLabel) || other.reasonLabel == reasonLabel)&&(identical(other.reference, reference) || other.reference == reference)&&(identical(other.provider, provider) || other.provider == provider)&&(identical(other.providerOrderId, providerOrderId) || other.providerOrderId == providerOrderId)&&(identical(other.providerTransactionId, providerTransactionId) || other.providerTransactionId == providerTransactionId)&&(identical(other.paymentType, paymentType) || other.paymentType == paymentType)&&(identical(other.paymentUrl, paymentUrl) || other.paymentUrl == paymentUrl)&&(identical(other.isPayable, isPayable) || other.isPayable == isPayable)&&(identical(other.paidAt, paidAt) || other.paidAt == paidAt)&&(identical(other.expiredAt, expiredAt) || other.expiredAt == expiredAt)&&(identical(other.failedAt, failedAt) || other.failedAt == failedAt)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MerchantBalanceHistoryItem&&(identical(other.id, id) || other.id == id)&&(identical(other.status, status) || other.status == status)&&(identical(other.statusLabel, statusLabel) || other.statusLabel == statusLabel)&&(identical(other.paymentStatus, paymentStatus) || other.paymentStatus == paymentStatus)&&(identical(other.paymentStatusLabel, paymentStatusLabel) || other.paymentStatusLabel == paymentStatusLabel)&&(identical(other.amount, amount) || other.amount == amount)&&(identical(other.reason, reason) || other.reason == reason)&&(identical(other.reasonLabel, reasonLabel) || other.reasonLabel == reasonLabel)&&(identical(other.reference, reference) || other.reference == reference)&&(identical(other.provider, provider) || other.provider == provider)&&(identical(other.providerOrderId, providerOrderId) || other.providerOrderId == providerOrderId)&&(identical(other.providerTransactionId, providerTransactionId) || other.providerTransactionId == providerTransactionId)&&(identical(other.paymentType, paymentType) || other.paymentType == paymentType)&&(identical(other.paymentUrl, paymentUrl) || other.paymentUrl == paymentUrl)&&(identical(other.isPayable, isPayable) || other.isPayable == isPayable)&&(identical(other.paymentMethod, paymentMethod) || other.paymentMethod == paymentMethod)&&(identical(other.isManualTransfer, isManualTransfer) || other.isManualTransfer == isManualTransfer)&&const DeepCollectionEquality().equals(other.destinationBankAccounts, destinationBankAccounts)&&(identical(other.transferInstructions, transferInstructions) || other.transferInstructions == transferInstructions)&&(identical(other.transferProofUrl, transferProofUrl) || other.transferProofUrl == transferProofUrl)&&(identical(other.transferProofUploadedAt, transferProofUploadedAt) || other.transferProofUploadedAt == transferProofUploadedAt)&&(identical(other.canUploadTransferProof, canUploadTransferProof) || other.canUploadTransferProof == canUploadTransferProof)&&(identical(other.canCancel, canCancel) || other.canCancel == canCancel)&&(identical(other.verifiedAt, verifiedAt) || other.verifiedAt == verifiedAt)&&(identical(other.adminNote, adminNote) || other.adminNote == adminNote)&&(identical(other.paidAt, paidAt) || other.paidAt == paidAt)&&(identical(other.expiredAt, expiredAt) || other.expiredAt == expiredAt)&&(identical(other.failedAt, failedAt) || other.failedAt == failedAt)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
 }
 
 
 @override
-int get hashCode => Object.hashAll([runtimeType,id,status,statusLabel,paymentStatus,paymentStatusLabel,amount,reason,reasonLabel,reference,provider,providerOrderId,providerTransactionId,paymentType,paymentUrl,isPayable,paidAt,expiredAt,failedAt,createdAt,updatedAt]);
+int get hashCode => Object.hashAll([runtimeType,id,status,statusLabel,paymentStatus,paymentStatusLabel,amount,reason,reasonLabel,reference,provider,providerOrderId,providerTransactionId,paymentType,paymentUrl,isPayable,paymentMethod,isManualTransfer,const DeepCollectionEquality().hash(destinationBankAccounts),transferInstructions,transferProofUrl,transferProofUploadedAt,canUploadTransferProof,canCancel,verifiedAt,adminNote,paidAt,expiredAt,failedAt,createdAt,updatedAt]);
 
 @override
 String toString() {
-  return 'MerchantBalanceHistoryItem(id: $id, status: $status, statusLabel: $statusLabel, paymentStatus: $paymentStatus, paymentStatusLabel: $paymentStatusLabel, amount: $amount, reason: $reason, reasonLabel: $reasonLabel, reference: $reference, provider: $provider, providerOrderId: $providerOrderId, providerTransactionId: $providerTransactionId, paymentType: $paymentType, paymentUrl: $paymentUrl, isPayable: $isPayable, paidAt: $paidAt, expiredAt: $expiredAt, failedAt: $failedAt, createdAt: $createdAt, updatedAt: $updatedAt)';
+  return 'MerchantBalanceHistoryItem(id: $id, status: $status, statusLabel: $statusLabel, paymentStatus: $paymentStatus, paymentStatusLabel: $paymentStatusLabel, amount: $amount, reason: $reason, reasonLabel: $reasonLabel, reference: $reference, provider: $provider, providerOrderId: $providerOrderId, providerTransactionId: $providerTransactionId, paymentType: $paymentType, paymentUrl: $paymentUrl, isPayable: $isPayable, paymentMethod: $paymentMethod, isManualTransfer: $isManualTransfer, destinationBankAccounts: $destinationBankAccounts, transferInstructions: $transferInstructions, transferProofUrl: $transferProofUrl, transferProofUploadedAt: $transferProofUploadedAt, canUploadTransferProof: $canUploadTransferProof, canCancel: $canCancel, verifiedAt: $verifiedAt, adminNote: $adminNote, paidAt: $paidAt, expiredAt: $expiredAt, failedAt: $failedAt, createdAt: $createdAt, updatedAt: $updatedAt)';
 }
 
 
@@ -311,7 +568,7 @@ abstract mixin class $MerchantBalanceHistoryItemCopyWith<$Res>  {
   factory $MerchantBalanceHistoryItemCopyWith(MerchantBalanceHistoryItem value, $Res Function(MerchantBalanceHistoryItem) _then) = _$MerchantBalanceHistoryItemCopyWithImpl;
 @useResult
 $Res call({
- String id, String? status, String? statusLabel, String? paymentStatus, String? paymentStatusLabel, int? amount, String? reason, String? reasonLabel, String? reference, String? provider, String? providerOrderId, String? providerTransactionId, String? paymentType, String? paymentUrl, bool? isPayable, String? paidAt, String? expiredAt, String? failedAt, String? createdAt, String? updatedAt
+ String id, String? status, String? statusLabel, String? paymentStatus, String? paymentStatusLabel, int? amount, String? reason, String? reasonLabel, String? reference, String? provider, String? providerOrderId, String? providerTransactionId, String? paymentType, String? paymentUrl, bool? isPayable, String? paymentMethod, bool isManualTransfer, List<MerchantDestinationBankAccountEntity> destinationBankAccounts, String? transferInstructions, String? transferProofUrl, String? transferProofUploadedAt, bool canUploadTransferProof, bool canCancel, String? verifiedAt, String? adminNote, String? paidAt, String? expiredAt, String? failedAt, String? createdAt, String? updatedAt
 });
 
 
@@ -328,7 +585,7 @@ class _$MerchantBalanceHistoryItemCopyWithImpl<$Res>
 
 /// Create a copy of MerchantBalanceHistoryItem
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? status = freezed,Object? statusLabel = freezed,Object? paymentStatus = freezed,Object? paymentStatusLabel = freezed,Object? amount = freezed,Object? reason = freezed,Object? reasonLabel = freezed,Object? reference = freezed,Object? provider = freezed,Object? providerOrderId = freezed,Object? providerTransactionId = freezed,Object? paymentType = freezed,Object? paymentUrl = freezed,Object? isPayable = freezed,Object? paidAt = freezed,Object? expiredAt = freezed,Object? failedAt = freezed,Object? createdAt = freezed,Object? updatedAt = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? status = freezed,Object? statusLabel = freezed,Object? paymentStatus = freezed,Object? paymentStatusLabel = freezed,Object? amount = freezed,Object? reason = freezed,Object? reasonLabel = freezed,Object? reference = freezed,Object? provider = freezed,Object? providerOrderId = freezed,Object? providerTransactionId = freezed,Object? paymentType = freezed,Object? paymentUrl = freezed,Object? isPayable = freezed,Object? paymentMethod = freezed,Object? isManualTransfer = null,Object? destinationBankAccounts = null,Object? transferInstructions = freezed,Object? transferProofUrl = freezed,Object? transferProofUploadedAt = freezed,Object? canUploadTransferProof = null,Object? canCancel = null,Object? verifiedAt = freezed,Object? adminNote = freezed,Object? paidAt = freezed,Object? expiredAt = freezed,Object? failedAt = freezed,Object? createdAt = freezed,Object? updatedAt = freezed,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,status: freezed == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
@@ -345,7 +602,17 @@ as String?,providerTransactionId: freezed == providerTransactionId ? _self.provi
 as String?,paymentType: freezed == paymentType ? _self.paymentType : paymentType // ignore: cast_nullable_to_non_nullable
 as String?,paymentUrl: freezed == paymentUrl ? _self.paymentUrl : paymentUrl // ignore: cast_nullable_to_non_nullable
 as String?,isPayable: freezed == isPayable ? _self.isPayable : isPayable // ignore: cast_nullable_to_non_nullable
-as bool?,paidAt: freezed == paidAt ? _self.paidAt : paidAt // ignore: cast_nullable_to_non_nullable
+as bool?,paymentMethod: freezed == paymentMethod ? _self.paymentMethod : paymentMethod // ignore: cast_nullable_to_non_nullable
+as String?,isManualTransfer: null == isManualTransfer ? _self.isManualTransfer : isManualTransfer // ignore: cast_nullable_to_non_nullable
+as bool,destinationBankAccounts: null == destinationBankAccounts ? _self.destinationBankAccounts : destinationBankAccounts // ignore: cast_nullable_to_non_nullable
+as List<MerchantDestinationBankAccountEntity>,transferInstructions: freezed == transferInstructions ? _self.transferInstructions : transferInstructions // ignore: cast_nullable_to_non_nullable
+as String?,transferProofUrl: freezed == transferProofUrl ? _self.transferProofUrl : transferProofUrl // ignore: cast_nullable_to_non_nullable
+as String?,transferProofUploadedAt: freezed == transferProofUploadedAt ? _self.transferProofUploadedAt : transferProofUploadedAt // ignore: cast_nullable_to_non_nullable
+as String?,canUploadTransferProof: null == canUploadTransferProof ? _self.canUploadTransferProof : canUploadTransferProof // ignore: cast_nullable_to_non_nullable
+as bool,canCancel: null == canCancel ? _self.canCancel : canCancel // ignore: cast_nullable_to_non_nullable
+as bool,verifiedAt: freezed == verifiedAt ? _self.verifiedAt : verifiedAt // ignore: cast_nullable_to_non_nullable
+as String?,adminNote: freezed == adminNote ? _self.adminNote : adminNote // ignore: cast_nullable_to_non_nullable
+as String?,paidAt: freezed == paidAt ? _self.paidAt : paidAt // ignore: cast_nullable_to_non_nullable
 as String?,expiredAt: freezed == expiredAt ? _self.expiredAt : expiredAt // ignore: cast_nullable_to_non_nullable
 as String?,failedAt: freezed == failedAt ? _self.failedAt : failedAt // ignore: cast_nullable_to_non_nullable
 as String?,createdAt: freezed == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
@@ -432,10 +699,10 @@ return entity(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String id,  String? status,  String? statusLabel,  String? paymentStatus,  String? paymentStatusLabel,  int? amount,  String? reason,  String? reasonLabel,  String? reference,  String? provider,  String? providerOrderId,  String? providerTransactionId,  String? paymentType,  String? paymentUrl,  bool? isPayable,  String? paidAt,  String? expiredAt,  String? failedAt,  String? createdAt,  String? updatedAt)?  entity,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String id,  String? status,  String? statusLabel,  String? paymentStatus,  String? paymentStatusLabel,  int? amount,  String? reason,  String? reasonLabel,  String? reference,  String? provider,  String? providerOrderId,  String? providerTransactionId,  String? paymentType,  String? paymentUrl,  bool? isPayable,  String? paymentMethod,  bool isManualTransfer,  List<MerchantDestinationBankAccountEntity> destinationBankAccounts,  String? transferInstructions,  String? transferProofUrl,  String? transferProofUploadedAt,  bool canUploadTransferProof,  bool canCancel,  String? verifiedAt,  String? adminNote,  String? paidAt,  String? expiredAt,  String? failedAt,  String? createdAt,  String? updatedAt)?  entity,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case MerchantBalanceHistoryItemEntity() when entity != null:
-return entity(_that.id,_that.status,_that.statusLabel,_that.paymentStatus,_that.paymentStatusLabel,_that.amount,_that.reason,_that.reasonLabel,_that.reference,_that.provider,_that.providerOrderId,_that.providerTransactionId,_that.paymentType,_that.paymentUrl,_that.isPayable,_that.paidAt,_that.expiredAt,_that.failedAt,_that.createdAt,_that.updatedAt);case _:
+return entity(_that.id,_that.status,_that.statusLabel,_that.paymentStatus,_that.paymentStatusLabel,_that.amount,_that.reason,_that.reasonLabel,_that.reference,_that.provider,_that.providerOrderId,_that.providerTransactionId,_that.paymentType,_that.paymentUrl,_that.isPayable,_that.paymentMethod,_that.isManualTransfer,_that.destinationBankAccounts,_that.transferInstructions,_that.transferProofUrl,_that.transferProofUploadedAt,_that.canUploadTransferProof,_that.canCancel,_that.verifiedAt,_that.adminNote,_that.paidAt,_that.expiredAt,_that.failedAt,_that.createdAt,_that.updatedAt);case _:
   return orElse();
 
 }
@@ -453,10 +720,10 @@ return entity(_that.id,_that.status,_that.statusLabel,_that.paymentStatus,_that.
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String id,  String? status,  String? statusLabel,  String? paymentStatus,  String? paymentStatusLabel,  int? amount,  String? reason,  String? reasonLabel,  String? reference,  String? provider,  String? providerOrderId,  String? providerTransactionId,  String? paymentType,  String? paymentUrl,  bool? isPayable,  String? paidAt,  String? expiredAt,  String? failedAt,  String? createdAt,  String? updatedAt)  entity,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String id,  String? status,  String? statusLabel,  String? paymentStatus,  String? paymentStatusLabel,  int? amount,  String? reason,  String? reasonLabel,  String? reference,  String? provider,  String? providerOrderId,  String? providerTransactionId,  String? paymentType,  String? paymentUrl,  bool? isPayable,  String? paymentMethod,  bool isManualTransfer,  List<MerchantDestinationBankAccountEntity> destinationBankAccounts,  String? transferInstructions,  String? transferProofUrl,  String? transferProofUploadedAt,  bool canUploadTransferProof,  bool canCancel,  String? verifiedAt,  String? adminNote,  String? paidAt,  String? expiredAt,  String? failedAt,  String? createdAt,  String? updatedAt)  entity,}) {final _that = this;
 switch (_that) {
 case MerchantBalanceHistoryItemEntity():
-return entity(_that.id,_that.status,_that.statusLabel,_that.paymentStatus,_that.paymentStatusLabel,_that.amount,_that.reason,_that.reasonLabel,_that.reference,_that.provider,_that.providerOrderId,_that.providerTransactionId,_that.paymentType,_that.paymentUrl,_that.isPayable,_that.paidAt,_that.expiredAt,_that.failedAt,_that.createdAt,_that.updatedAt);}
+return entity(_that.id,_that.status,_that.statusLabel,_that.paymentStatus,_that.paymentStatusLabel,_that.amount,_that.reason,_that.reasonLabel,_that.reference,_that.provider,_that.providerOrderId,_that.providerTransactionId,_that.paymentType,_that.paymentUrl,_that.isPayable,_that.paymentMethod,_that.isManualTransfer,_that.destinationBankAccounts,_that.transferInstructions,_that.transferProofUrl,_that.transferProofUploadedAt,_that.canUploadTransferProof,_that.canCancel,_that.verifiedAt,_that.adminNote,_that.paidAt,_that.expiredAt,_that.failedAt,_that.createdAt,_that.updatedAt);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -470,10 +737,10 @@ return entity(_that.id,_that.status,_that.statusLabel,_that.paymentStatus,_that.
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String id,  String? status,  String? statusLabel,  String? paymentStatus,  String? paymentStatusLabel,  int? amount,  String? reason,  String? reasonLabel,  String? reference,  String? provider,  String? providerOrderId,  String? providerTransactionId,  String? paymentType,  String? paymentUrl,  bool? isPayable,  String? paidAt,  String? expiredAt,  String? failedAt,  String? createdAt,  String? updatedAt)?  entity,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String id,  String? status,  String? statusLabel,  String? paymentStatus,  String? paymentStatusLabel,  int? amount,  String? reason,  String? reasonLabel,  String? reference,  String? provider,  String? providerOrderId,  String? providerTransactionId,  String? paymentType,  String? paymentUrl,  bool? isPayable,  String? paymentMethod,  bool isManualTransfer,  List<MerchantDestinationBankAccountEntity> destinationBankAccounts,  String? transferInstructions,  String? transferProofUrl,  String? transferProofUploadedAt,  bool canUploadTransferProof,  bool canCancel,  String? verifiedAt,  String? adminNote,  String? paidAt,  String? expiredAt,  String? failedAt,  String? createdAt,  String? updatedAt)?  entity,}) {final _that = this;
 switch (_that) {
 case MerchantBalanceHistoryItemEntity() when entity != null:
-return entity(_that.id,_that.status,_that.statusLabel,_that.paymentStatus,_that.paymentStatusLabel,_that.amount,_that.reason,_that.reasonLabel,_that.reference,_that.provider,_that.providerOrderId,_that.providerTransactionId,_that.paymentType,_that.paymentUrl,_that.isPayable,_that.paidAt,_that.expiredAt,_that.failedAt,_that.createdAt,_that.updatedAt);case _:
+return entity(_that.id,_that.status,_that.statusLabel,_that.paymentStatus,_that.paymentStatusLabel,_that.amount,_that.reason,_that.reasonLabel,_that.reference,_that.provider,_that.providerOrderId,_that.providerTransactionId,_that.paymentType,_that.paymentUrl,_that.isPayable,_that.paymentMethod,_that.isManualTransfer,_that.destinationBankAccounts,_that.transferInstructions,_that.transferProofUrl,_that.transferProofUploadedAt,_that.canUploadTransferProof,_that.canCancel,_that.verifiedAt,_that.adminNote,_that.paidAt,_that.expiredAt,_that.failedAt,_that.createdAt,_that.updatedAt);case _:
   return null;
 
 }
@@ -485,7 +752,7 @@ return entity(_that.id,_that.status,_that.statusLabel,_that.paymentStatus,_that.
 
 
 class MerchantBalanceHistoryItemEntity implements MerchantBalanceHistoryItem {
-  const MerchantBalanceHistoryItemEntity({required this.id, this.status, this.statusLabel, this.paymentStatus, this.paymentStatusLabel, this.amount, this.reason, this.reasonLabel, this.reference, this.provider, this.providerOrderId, this.providerTransactionId, this.paymentType, this.paymentUrl, this.isPayable, this.paidAt, this.expiredAt, this.failedAt, this.createdAt, this.updatedAt});
+  const MerchantBalanceHistoryItemEntity({required this.id, this.status, this.statusLabel, this.paymentStatus, this.paymentStatusLabel, this.amount, this.reason, this.reasonLabel, this.reference, this.provider, this.providerOrderId, this.providerTransactionId, this.paymentType, this.paymentUrl, this.isPayable, this.paymentMethod, this.isManualTransfer = false, final  List<MerchantDestinationBankAccountEntity> destinationBankAccounts = const [], this.transferInstructions, this.transferProofUrl, this.transferProofUploadedAt, this.canUploadTransferProof = false, this.canCancel = false, this.verifiedAt, this.adminNote, this.paidAt, this.expiredAt, this.failedAt, this.createdAt, this.updatedAt}): _destinationBankAccounts = destinationBankAccounts;
   
 
 @override final  String id;
@@ -503,6 +770,22 @@ class MerchantBalanceHistoryItemEntity implements MerchantBalanceHistoryItem {
 @override final  String? paymentType;
 @override final  String? paymentUrl;
 @override final  bool? isPayable;
+@override final  String? paymentMethod;
+@override@JsonKey() final  bool isManualTransfer;
+ final  List<MerchantDestinationBankAccountEntity> _destinationBankAccounts;
+@override@JsonKey() List<MerchantDestinationBankAccountEntity> get destinationBankAccounts {
+  if (_destinationBankAccounts is EqualUnmodifiableListView) return _destinationBankAccounts;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_destinationBankAccounts);
+}
+
+@override final  String? transferInstructions;
+@override final  String? transferProofUrl;
+@override final  String? transferProofUploadedAt;
+@override@JsonKey() final  bool canUploadTransferProof;
+@override@JsonKey() final  bool canCancel;
+@override final  String? verifiedAt;
+@override final  String? adminNote;
 @override final  String? paidAt;
 @override final  String? expiredAt;
 @override final  String? failedAt;
@@ -519,16 +802,16 @@ $MerchantBalanceHistoryItemEntityCopyWith<MerchantBalanceHistoryItemEntity> get 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MerchantBalanceHistoryItemEntity&&(identical(other.id, id) || other.id == id)&&(identical(other.status, status) || other.status == status)&&(identical(other.statusLabel, statusLabel) || other.statusLabel == statusLabel)&&(identical(other.paymentStatus, paymentStatus) || other.paymentStatus == paymentStatus)&&(identical(other.paymentStatusLabel, paymentStatusLabel) || other.paymentStatusLabel == paymentStatusLabel)&&(identical(other.amount, amount) || other.amount == amount)&&(identical(other.reason, reason) || other.reason == reason)&&(identical(other.reasonLabel, reasonLabel) || other.reasonLabel == reasonLabel)&&(identical(other.reference, reference) || other.reference == reference)&&(identical(other.provider, provider) || other.provider == provider)&&(identical(other.providerOrderId, providerOrderId) || other.providerOrderId == providerOrderId)&&(identical(other.providerTransactionId, providerTransactionId) || other.providerTransactionId == providerTransactionId)&&(identical(other.paymentType, paymentType) || other.paymentType == paymentType)&&(identical(other.paymentUrl, paymentUrl) || other.paymentUrl == paymentUrl)&&(identical(other.isPayable, isPayable) || other.isPayable == isPayable)&&(identical(other.paidAt, paidAt) || other.paidAt == paidAt)&&(identical(other.expiredAt, expiredAt) || other.expiredAt == expiredAt)&&(identical(other.failedAt, failedAt) || other.failedAt == failedAt)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MerchantBalanceHistoryItemEntity&&(identical(other.id, id) || other.id == id)&&(identical(other.status, status) || other.status == status)&&(identical(other.statusLabel, statusLabel) || other.statusLabel == statusLabel)&&(identical(other.paymentStatus, paymentStatus) || other.paymentStatus == paymentStatus)&&(identical(other.paymentStatusLabel, paymentStatusLabel) || other.paymentStatusLabel == paymentStatusLabel)&&(identical(other.amount, amount) || other.amount == amount)&&(identical(other.reason, reason) || other.reason == reason)&&(identical(other.reasonLabel, reasonLabel) || other.reasonLabel == reasonLabel)&&(identical(other.reference, reference) || other.reference == reference)&&(identical(other.provider, provider) || other.provider == provider)&&(identical(other.providerOrderId, providerOrderId) || other.providerOrderId == providerOrderId)&&(identical(other.providerTransactionId, providerTransactionId) || other.providerTransactionId == providerTransactionId)&&(identical(other.paymentType, paymentType) || other.paymentType == paymentType)&&(identical(other.paymentUrl, paymentUrl) || other.paymentUrl == paymentUrl)&&(identical(other.isPayable, isPayable) || other.isPayable == isPayable)&&(identical(other.paymentMethod, paymentMethod) || other.paymentMethod == paymentMethod)&&(identical(other.isManualTransfer, isManualTransfer) || other.isManualTransfer == isManualTransfer)&&const DeepCollectionEquality().equals(other._destinationBankAccounts, _destinationBankAccounts)&&(identical(other.transferInstructions, transferInstructions) || other.transferInstructions == transferInstructions)&&(identical(other.transferProofUrl, transferProofUrl) || other.transferProofUrl == transferProofUrl)&&(identical(other.transferProofUploadedAt, transferProofUploadedAt) || other.transferProofUploadedAt == transferProofUploadedAt)&&(identical(other.canUploadTransferProof, canUploadTransferProof) || other.canUploadTransferProof == canUploadTransferProof)&&(identical(other.canCancel, canCancel) || other.canCancel == canCancel)&&(identical(other.verifiedAt, verifiedAt) || other.verifiedAt == verifiedAt)&&(identical(other.adminNote, adminNote) || other.adminNote == adminNote)&&(identical(other.paidAt, paidAt) || other.paidAt == paidAt)&&(identical(other.expiredAt, expiredAt) || other.expiredAt == expiredAt)&&(identical(other.failedAt, failedAt) || other.failedAt == failedAt)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
 }
 
 
 @override
-int get hashCode => Object.hashAll([runtimeType,id,status,statusLabel,paymentStatus,paymentStatusLabel,amount,reason,reasonLabel,reference,provider,providerOrderId,providerTransactionId,paymentType,paymentUrl,isPayable,paidAt,expiredAt,failedAt,createdAt,updatedAt]);
+int get hashCode => Object.hashAll([runtimeType,id,status,statusLabel,paymentStatus,paymentStatusLabel,amount,reason,reasonLabel,reference,provider,providerOrderId,providerTransactionId,paymentType,paymentUrl,isPayable,paymentMethod,isManualTransfer,const DeepCollectionEquality().hash(_destinationBankAccounts),transferInstructions,transferProofUrl,transferProofUploadedAt,canUploadTransferProof,canCancel,verifiedAt,adminNote,paidAt,expiredAt,failedAt,createdAt,updatedAt]);
 
 @override
 String toString() {
-  return 'MerchantBalanceHistoryItem.entity(id: $id, status: $status, statusLabel: $statusLabel, paymentStatus: $paymentStatus, paymentStatusLabel: $paymentStatusLabel, amount: $amount, reason: $reason, reasonLabel: $reasonLabel, reference: $reference, provider: $provider, providerOrderId: $providerOrderId, providerTransactionId: $providerTransactionId, paymentType: $paymentType, paymentUrl: $paymentUrl, isPayable: $isPayable, paidAt: $paidAt, expiredAt: $expiredAt, failedAt: $failedAt, createdAt: $createdAt, updatedAt: $updatedAt)';
+  return 'MerchantBalanceHistoryItem.entity(id: $id, status: $status, statusLabel: $statusLabel, paymentStatus: $paymentStatus, paymentStatusLabel: $paymentStatusLabel, amount: $amount, reason: $reason, reasonLabel: $reasonLabel, reference: $reference, provider: $provider, providerOrderId: $providerOrderId, providerTransactionId: $providerTransactionId, paymentType: $paymentType, paymentUrl: $paymentUrl, isPayable: $isPayable, paymentMethod: $paymentMethod, isManualTransfer: $isManualTransfer, destinationBankAccounts: $destinationBankAccounts, transferInstructions: $transferInstructions, transferProofUrl: $transferProofUrl, transferProofUploadedAt: $transferProofUploadedAt, canUploadTransferProof: $canUploadTransferProof, canCancel: $canCancel, verifiedAt: $verifiedAt, adminNote: $adminNote, paidAt: $paidAt, expiredAt: $expiredAt, failedAt: $failedAt, createdAt: $createdAt, updatedAt: $updatedAt)';
 }
 
 
@@ -539,7 +822,7 @@ abstract mixin class $MerchantBalanceHistoryItemEntityCopyWith<$Res> implements 
   factory $MerchantBalanceHistoryItemEntityCopyWith(MerchantBalanceHistoryItemEntity value, $Res Function(MerchantBalanceHistoryItemEntity) _then) = _$MerchantBalanceHistoryItemEntityCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String? status, String? statusLabel, String? paymentStatus, String? paymentStatusLabel, int? amount, String? reason, String? reasonLabel, String? reference, String? provider, String? providerOrderId, String? providerTransactionId, String? paymentType, String? paymentUrl, bool? isPayable, String? paidAt, String? expiredAt, String? failedAt, String? createdAt, String? updatedAt
+ String id, String? status, String? statusLabel, String? paymentStatus, String? paymentStatusLabel, int? amount, String? reason, String? reasonLabel, String? reference, String? provider, String? providerOrderId, String? providerTransactionId, String? paymentType, String? paymentUrl, bool? isPayable, String? paymentMethod, bool isManualTransfer, List<MerchantDestinationBankAccountEntity> destinationBankAccounts, String? transferInstructions, String? transferProofUrl, String? transferProofUploadedAt, bool canUploadTransferProof, bool canCancel, String? verifiedAt, String? adminNote, String? paidAt, String? expiredAt, String? failedAt, String? createdAt, String? updatedAt
 });
 
 
@@ -556,7 +839,7 @@ class _$MerchantBalanceHistoryItemEntityCopyWithImpl<$Res>
 
 /// Create a copy of MerchantBalanceHistoryItem
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? status = freezed,Object? statusLabel = freezed,Object? paymentStatus = freezed,Object? paymentStatusLabel = freezed,Object? amount = freezed,Object? reason = freezed,Object? reasonLabel = freezed,Object? reference = freezed,Object? provider = freezed,Object? providerOrderId = freezed,Object? providerTransactionId = freezed,Object? paymentType = freezed,Object? paymentUrl = freezed,Object? isPayable = freezed,Object? paidAt = freezed,Object? expiredAt = freezed,Object? failedAt = freezed,Object? createdAt = freezed,Object? updatedAt = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? status = freezed,Object? statusLabel = freezed,Object? paymentStatus = freezed,Object? paymentStatusLabel = freezed,Object? amount = freezed,Object? reason = freezed,Object? reasonLabel = freezed,Object? reference = freezed,Object? provider = freezed,Object? providerOrderId = freezed,Object? providerTransactionId = freezed,Object? paymentType = freezed,Object? paymentUrl = freezed,Object? isPayable = freezed,Object? paymentMethod = freezed,Object? isManualTransfer = null,Object? destinationBankAccounts = null,Object? transferInstructions = freezed,Object? transferProofUrl = freezed,Object? transferProofUploadedAt = freezed,Object? canUploadTransferProof = null,Object? canCancel = null,Object? verifiedAt = freezed,Object? adminNote = freezed,Object? paidAt = freezed,Object? expiredAt = freezed,Object? failedAt = freezed,Object? createdAt = freezed,Object? updatedAt = freezed,}) {
   return _then(MerchantBalanceHistoryItemEntity(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,status: freezed == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
@@ -573,12 +856,288 @@ as String?,providerTransactionId: freezed == providerTransactionId ? _self.provi
 as String?,paymentType: freezed == paymentType ? _self.paymentType : paymentType // ignore: cast_nullable_to_non_nullable
 as String?,paymentUrl: freezed == paymentUrl ? _self.paymentUrl : paymentUrl // ignore: cast_nullable_to_non_nullable
 as String?,isPayable: freezed == isPayable ? _self.isPayable : isPayable // ignore: cast_nullable_to_non_nullable
-as bool?,paidAt: freezed == paidAt ? _self.paidAt : paidAt // ignore: cast_nullable_to_non_nullable
+as bool?,paymentMethod: freezed == paymentMethod ? _self.paymentMethod : paymentMethod // ignore: cast_nullable_to_non_nullable
+as String?,isManualTransfer: null == isManualTransfer ? _self.isManualTransfer : isManualTransfer // ignore: cast_nullable_to_non_nullable
+as bool,destinationBankAccounts: null == destinationBankAccounts ? _self._destinationBankAccounts : destinationBankAccounts // ignore: cast_nullable_to_non_nullable
+as List<MerchantDestinationBankAccountEntity>,transferInstructions: freezed == transferInstructions ? _self.transferInstructions : transferInstructions // ignore: cast_nullable_to_non_nullable
+as String?,transferProofUrl: freezed == transferProofUrl ? _self.transferProofUrl : transferProofUrl // ignore: cast_nullable_to_non_nullable
+as String?,transferProofUploadedAt: freezed == transferProofUploadedAt ? _self.transferProofUploadedAt : transferProofUploadedAt // ignore: cast_nullable_to_non_nullable
+as String?,canUploadTransferProof: null == canUploadTransferProof ? _self.canUploadTransferProof : canUploadTransferProof // ignore: cast_nullable_to_non_nullable
+as bool,canCancel: null == canCancel ? _self.canCancel : canCancel // ignore: cast_nullable_to_non_nullable
+as bool,verifiedAt: freezed == verifiedAt ? _self.verifiedAt : verifiedAt // ignore: cast_nullable_to_non_nullable
+as String?,adminNote: freezed == adminNote ? _self.adminNote : adminNote // ignore: cast_nullable_to_non_nullable
+as String?,paidAt: freezed == paidAt ? _self.paidAt : paidAt // ignore: cast_nullable_to_non_nullable
 as String?,expiredAt: freezed == expiredAt ? _self.expiredAt : expiredAt // ignore: cast_nullable_to_non_nullable
 as String?,failedAt: freezed == failedAt ? _self.failedAt : failedAt // ignore: cast_nullable_to_non_nullable
 as String?,createdAt: freezed == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as String?,updatedAt: freezed == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
 as String?,
+  ));
+}
+
+
+}
+
+/// @nodoc
+mixin _$MerchantBalanceTopUpResponse {
+
+ int? get currentBalance; int? get minimumBalanceForOrders; bool? get isActive; String? get paymentUrl; int? get waitingProofCount; MerchantBalanceHistoryItemEntity? get topUp;
+/// Create a copy of MerchantBalanceTopUpResponse
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$MerchantBalanceTopUpResponseCopyWith<MerchantBalanceTopUpResponse> get copyWith => _$MerchantBalanceTopUpResponseCopyWithImpl<MerchantBalanceTopUpResponse>(this as MerchantBalanceTopUpResponse, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MerchantBalanceTopUpResponse&&(identical(other.currentBalance, currentBalance) || other.currentBalance == currentBalance)&&(identical(other.minimumBalanceForOrders, minimumBalanceForOrders) || other.minimumBalanceForOrders == minimumBalanceForOrders)&&(identical(other.isActive, isActive) || other.isActive == isActive)&&(identical(other.paymentUrl, paymentUrl) || other.paymentUrl == paymentUrl)&&(identical(other.waitingProofCount, waitingProofCount) || other.waitingProofCount == waitingProofCount)&&const DeepCollectionEquality().equals(other.topUp, topUp));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,currentBalance,minimumBalanceForOrders,isActive,paymentUrl,waitingProofCount,const DeepCollectionEquality().hash(topUp));
+
+@override
+String toString() {
+  return 'MerchantBalanceTopUpResponse(currentBalance: $currentBalance, minimumBalanceForOrders: $minimumBalanceForOrders, isActive: $isActive, paymentUrl: $paymentUrl, waitingProofCount: $waitingProofCount, topUp: $topUp)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $MerchantBalanceTopUpResponseCopyWith<$Res>  {
+  factory $MerchantBalanceTopUpResponseCopyWith(MerchantBalanceTopUpResponse value, $Res Function(MerchantBalanceTopUpResponse) _then) = _$MerchantBalanceTopUpResponseCopyWithImpl;
+@useResult
+$Res call({
+ int? currentBalance, int? minimumBalanceForOrders, bool? isActive, String? paymentUrl, int? waitingProofCount, MerchantBalanceHistoryItemEntity? topUp
+});
+
+
+
+
+}
+/// @nodoc
+class _$MerchantBalanceTopUpResponseCopyWithImpl<$Res>
+    implements $MerchantBalanceTopUpResponseCopyWith<$Res> {
+  _$MerchantBalanceTopUpResponseCopyWithImpl(this._self, this._then);
+
+  final MerchantBalanceTopUpResponse _self;
+  final $Res Function(MerchantBalanceTopUpResponse) _then;
+
+/// Create a copy of MerchantBalanceTopUpResponse
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? currentBalance = freezed,Object? minimumBalanceForOrders = freezed,Object? isActive = freezed,Object? paymentUrl = freezed,Object? waitingProofCount = freezed,Object? topUp = freezed,}) {
+  return _then(_self.copyWith(
+currentBalance: freezed == currentBalance ? _self.currentBalance : currentBalance // ignore: cast_nullable_to_non_nullable
+as int?,minimumBalanceForOrders: freezed == minimumBalanceForOrders ? _self.minimumBalanceForOrders : minimumBalanceForOrders // ignore: cast_nullable_to_non_nullable
+as int?,isActive: freezed == isActive ? _self.isActive : isActive // ignore: cast_nullable_to_non_nullable
+as bool?,paymentUrl: freezed == paymentUrl ? _self.paymentUrl : paymentUrl // ignore: cast_nullable_to_non_nullable
+as String?,waitingProofCount: freezed == waitingProofCount ? _self.waitingProofCount : waitingProofCount // ignore: cast_nullable_to_non_nullable
+as int?,topUp: freezed == topUp ? _self.topUp : topUp // ignore: cast_nullable_to_non_nullable
+as MerchantBalanceHistoryItemEntity?,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [MerchantBalanceTopUpResponse].
+extension MerchantBalanceTopUpResponsePatterns on MerchantBalanceTopUpResponse {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( MerchantBalanceTopUpResponseEntity value)?  entity,required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case MerchantBalanceTopUpResponseEntity() when entity != null:
+return entity(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( MerchantBalanceTopUpResponseEntity value)  entity,}){
+final _that = this;
+switch (_that) {
+case MerchantBalanceTopUpResponseEntity():
+return entity(_that);}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( MerchantBalanceTopUpResponseEntity value)?  entity,}){
+final _that = this;
+switch (_that) {
+case MerchantBalanceTopUpResponseEntity() when entity != null:
+return entity(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( int? currentBalance,  int? minimumBalanceForOrders,  bool? isActive,  String? paymentUrl,  int? waitingProofCount,  MerchantBalanceHistoryItemEntity? topUp)?  entity,required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case MerchantBalanceTopUpResponseEntity() when entity != null:
+return entity(_that.currentBalance,_that.minimumBalanceForOrders,_that.isActive,_that.paymentUrl,_that.waitingProofCount,_that.topUp);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( int? currentBalance,  int? minimumBalanceForOrders,  bool? isActive,  String? paymentUrl,  int? waitingProofCount,  MerchantBalanceHistoryItemEntity? topUp)  entity,}) {final _that = this;
+switch (_that) {
+case MerchantBalanceTopUpResponseEntity():
+return entity(_that.currentBalance,_that.minimumBalanceForOrders,_that.isActive,_that.paymentUrl,_that.waitingProofCount,_that.topUp);}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( int? currentBalance,  int? minimumBalanceForOrders,  bool? isActive,  String? paymentUrl,  int? waitingProofCount,  MerchantBalanceHistoryItemEntity? topUp)?  entity,}) {final _that = this;
+switch (_that) {
+case MerchantBalanceTopUpResponseEntity() when entity != null:
+return entity(_that.currentBalance,_that.minimumBalanceForOrders,_that.isActive,_that.paymentUrl,_that.waitingProofCount,_that.topUp);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+
+
+class MerchantBalanceTopUpResponseEntity extends MerchantBalanceTopUpResponse {
+  const MerchantBalanceTopUpResponseEntity({this.currentBalance, this.minimumBalanceForOrders, this.isActive, this.paymentUrl, this.waitingProofCount, this.topUp}): super._();
+  
+
+@override final  int? currentBalance;
+@override final  int? minimumBalanceForOrders;
+@override final  bool? isActive;
+@override final  String? paymentUrl;
+@override final  int? waitingProofCount;
+@override final  MerchantBalanceHistoryItemEntity? topUp;
+
+/// Create a copy of MerchantBalanceTopUpResponse
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$MerchantBalanceTopUpResponseEntityCopyWith<MerchantBalanceTopUpResponseEntity> get copyWith => _$MerchantBalanceTopUpResponseEntityCopyWithImpl<MerchantBalanceTopUpResponseEntity>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MerchantBalanceTopUpResponseEntity&&(identical(other.currentBalance, currentBalance) || other.currentBalance == currentBalance)&&(identical(other.minimumBalanceForOrders, minimumBalanceForOrders) || other.minimumBalanceForOrders == minimumBalanceForOrders)&&(identical(other.isActive, isActive) || other.isActive == isActive)&&(identical(other.paymentUrl, paymentUrl) || other.paymentUrl == paymentUrl)&&(identical(other.waitingProofCount, waitingProofCount) || other.waitingProofCount == waitingProofCount)&&const DeepCollectionEquality().equals(other.topUp, topUp));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,currentBalance,minimumBalanceForOrders,isActive,paymentUrl,waitingProofCount,const DeepCollectionEquality().hash(topUp));
+
+@override
+String toString() {
+  return 'MerchantBalanceTopUpResponse.entity(currentBalance: $currentBalance, minimumBalanceForOrders: $minimumBalanceForOrders, isActive: $isActive, paymentUrl: $paymentUrl, waitingProofCount: $waitingProofCount, topUp: $topUp)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $MerchantBalanceTopUpResponseEntityCopyWith<$Res> implements $MerchantBalanceTopUpResponseCopyWith<$Res> {
+  factory $MerchantBalanceTopUpResponseEntityCopyWith(MerchantBalanceTopUpResponseEntity value, $Res Function(MerchantBalanceTopUpResponseEntity) _then) = _$MerchantBalanceTopUpResponseEntityCopyWithImpl;
+@override @useResult
+$Res call({
+ int? currentBalance, int? minimumBalanceForOrders, bool? isActive, String? paymentUrl, int? waitingProofCount, MerchantBalanceHistoryItemEntity? topUp
+});
+
+
+
+
+}
+/// @nodoc
+class _$MerchantBalanceTopUpResponseEntityCopyWithImpl<$Res>
+    implements $MerchantBalanceTopUpResponseEntityCopyWith<$Res> {
+  _$MerchantBalanceTopUpResponseEntityCopyWithImpl(this._self, this._then);
+
+  final MerchantBalanceTopUpResponseEntity _self;
+  final $Res Function(MerchantBalanceTopUpResponseEntity) _then;
+
+/// Create a copy of MerchantBalanceTopUpResponse
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? currentBalance = freezed,Object? minimumBalanceForOrders = freezed,Object? isActive = freezed,Object? paymentUrl = freezed,Object? waitingProofCount = freezed,Object? topUp = freezed,}) {
+  return _then(MerchantBalanceTopUpResponseEntity(
+currentBalance: freezed == currentBalance ? _self.currentBalance : currentBalance // ignore: cast_nullable_to_non_nullable
+as int?,minimumBalanceForOrders: freezed == minimumBalanceForOrders ? _self.minimumBalanceForOrders : minimumBalanceForOrders // ignore: cast_nullable_to_non_nullable
+as int?,isActive: freezed == isActive ? _self.isActive : isActive // ignore: cast_nullable_to_non_nullable
+as bool?,paymentUrl: freezed == paymentUrl ? _self.paymentUrl : paymentUrl // ignore: cast_nullable_to_non_nullable
+as String?,waitingProofCount: freezed == waitingProofCount ? _self.waitingProofCount : waitingProofCount // ignore: cast_nullable_to_non_nullable
+as int?,topUp: freezed == topUp ? _self.topUp : topUp // ignore: cast_nullable_to_non_nullable
+as MerchantBalanceHistoryItemEntity?,
   ));
 }
 

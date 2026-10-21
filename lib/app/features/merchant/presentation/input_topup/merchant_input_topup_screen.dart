@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:warunk/app/features/merchant/presentation/balance_topup_payment/merchant_balance_topup_payment_screen.dart';
+import 'package:warunk/app/features/merchant/presentation/manual_transfer/merchant_balance_manual_transfer_screen.dart';
 import 'package:warunk/app/features/merchant/presentation/input_topup/bloc/merchant_input_topup_bloc.dart';
 import 'package:warunk/app/features/merchant/presentation/input_topup/bloc/merchant_input_topup_event.dart';
 import 'package:warunk/app/features/merchant/presentation/input_topup/bloc/merchant_input_topup_state.dart';
@@ -44,7 +44,28 @@ class _MerchantInputTopupScreenState extends State<MerchantInputTopupScreen> {
             );
           }
 
-          if (state.paymentUrl != null) {
+          if (state.topUpResponse != null) {
+            final topUpRes = state.topUpResponse!;
+            if (topUpRes.isManualTransfer && topUpRes.topUp != null) {
+              await navigatorKey.currentState?.push(
+                MaterialPageRoute(
+                  builder: (context) => MerchantBalanceManualTransferScreen(
+                    topUpItem: topUpRes.topUp!,
+                  ),
+                ),
+              );
+              navigatorKey.currentState?.pop();
+            } else if (topUpRes.paymentUrl != null) {
+              await navigatorKey.currentState?.push(
+                MaterialPageRoute(
+                  builder: (context) => MerchantBalanceTopupPaymentScreen(
+                    paymentUrl: topUpRes.paymentUrl!,
+                  ),
+                ),
+              );
+              navigatorKey.currentState?.pop();
+            }
+          } else if (state.paymentUrl != null) {
             await navigatorKey.currentState?.push(
               MaterialPageRoute(
                 builder: (context) => MerchantBalanceTopupPaymentScreen(

@@ -64,4 +64,16 @@ abstract class MerchantMerchantApiService {
   Future<HttpResponse<dynamic>> topUpBalance(
     @Body() Map<String, dynamic> body,
   );
+
+  @MultiPart()
+  @POST('/api/seller/merchant/balance-histories/{id}/transfer-proof')
+  Future<HttpResponse<dynamic>> uploadTransferProof(
+    @Path('id') String id,
+    @Part(name: 'transfer_proof') File transferProof,
+  );
+
+  @GET('/api/seller/merchant/balance-histories/{id}')
+  Future<HttpResponse<dynamic>> getBalanceHistoryDetail(
+    @Path('id') String id,
+  );
 }

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:warunk/app/features/merchant/domain/entity/merchant_account.dart';
 import 'package:warunk/app/features/merchant/domain/entity/merchant_merchant.dart';
 import 'package:warunk/app/features/merchant/domain/entity/merchant_operational_hour.dart';
@@ -31,5 +33,14 @@ abstract class MerchantMerchantRepository {
       {required MerchantShippingUpdateParam param});
   Future<DataState<dynamic>> open();
   Future<DataState<dynamic>> close();
-  Future<DataState<String>> topUpBalance({required int amount});
+  Future<DataState<MerchantBalanceTopUpResponseEntity>> topUpBalance({
+    required int amount,
+  });
+  Future<DataState<dynamic>> uploadTransferProof({
+    required String id,
+    required File transferProof,
+  });
+  Future<DataState<MerchantBalanceHistoryItemEntity>> getBalanceHistoryDetail(
+    String id,
+  );
 }

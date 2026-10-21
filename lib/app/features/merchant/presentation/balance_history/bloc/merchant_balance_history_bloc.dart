@@ -16,6 +16,14 @@ class MerchantBalanceHistoryBloc
   })  : _useCase = useCase,
         super(const MerchantBalanceHistoryState()) {
     on<MerchantBalanceHistoryEventFetch>(_onFetch);
+    on<MerchantBalanceHistoryEventChangeFilter>(_onChangeFilter);
+  }
+
+  void _onChangeFilter(
+    MerchantBalanceHistoryEventChangeFilter event,
+    Emitter<MerchantBalanceHistoryState> emit,
+  ) {
+    emit(state.copyWith(selectedStatusFilter: event.status));
   }
 
   Future<void> _onFetch(

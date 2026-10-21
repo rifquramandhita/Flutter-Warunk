@@ -124,6 +124,9 @@ import 'package:warunk/app/features/merchant/domain/use_case/merchant_order_rece
 import 'package:warunk/app/features/merchant/domain/use_case/merchant_order_reject_use_case.dart';
 import 'package:warunk/app/features/merchant/domain/use_case/merchant_order_accept_cancel_use_case.dart';
 import 'package:warunk/app/features/merchant/domain/use_case/merchant_order_reject_cancel_use_case.dart';
+import 'package:warunk/app/features/merchant/domain/use_case/merchant_merchant_upload_transfer_proof_use_case.dart';
+import 'package:warunk/app/features/merchant/domain/use_case/merchant_merchant_get_balance_history_detail_use_case.dart';
+import 'package:warunk/app/features/merchant/presentation/manual_transfer/bloc/merchant_balance_manual_transfer_bloc.dart';
 import 'package:warunk/app/features/merchant/data/source/merchant_promotion_api_service.dart';
 import 'package:warunk/app/features/merchant/domain/repository/merchant_promotion_repository.dart';
 import 'package:warunk/app/features/merchant/data/repository/merchant_promotion_repository_impl.dart';
@@ -369,6 +372,12 @@ Future<void> initDependency() async {
   );
   sl.registerLazySingleton(() => MerchantMerchantTopUpBalanceUseCase(sl()));
   sl.registerLazySingleton(
+    () => MerchantMerchantUploadTransferProofUseCase(sl()),
+  );
+  sl.registerLazySingleton(
+    () => MerchantMerchantGetBalanceHistoryDetailUseCase(sl()),
+  );
+  sl.registerLazySingleton(
     () => MerchantMerchantUpdateShippingUseCase(repository: sl()),
   );
   sl.registerLazySingleton(() => MerchantOrderGetUseCase(sl()));
@@ -483,6 +492,12 @@ Future<void> initDependency() async {
   );
   sl.registerFactory(() => MerchantBalanceHistoryBloc(useCase: sl()));
   sl.registerFactory(() => MerchantBalanceTopupPaymentBloc());
+  sl.registerFactory(
+    () => MerchantBalanceManualTransferBloc(
+      uploadTransferProofUseCase: sl(),
+      getBalanceHistoryDetailUseCase: sl(),
+    ),
+  );
   sl.registerFactory(() => MerchantInputTopupBloc(useCase: sl()));
   sl.registerFactory(() => AuthRegisterBloc(useCase: sl()));
   sl.registerFactory(() => AuthResetPasswordBloc(useCase: sl()));

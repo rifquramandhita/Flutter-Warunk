@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:warunk/app/features/merchant/presentation/balance_history/bloc/merchant_balance_history_bloc.dart';
 import 'package:warunk/core/dependency/dependency.dart';
+import 'package:warunk/app/features/merchant/presentation/manual_transfer/merchant_balance_manual_transfer_screen.dart';
 import 'package:warunk/app/features/merchant/presentation/balance_topup_payment/merchant_balance_topup_payment_screen.dart';
 import 'package:warunk/app/features/merchant/presentation/input_topup/merchant_input_topup_screen.dart';
 import 'package:warunk/main.dart';
@@ -88,13 +89,107 @@ class MerchantBalanceHistoryScreen extends StatelessWidget {
         physics: const AlwaysScrollableScrollPhysics(),
         slivers: [
           _headerLayout(context),
-          if (!state.isLoading && state.histories.isEmpty)
-            const SliverFillRemaining(
-              child: Center(child: Text('Belum ada riwayat transaksi')),
+          _filterLayout(context),
+          if (!state.isLoading && state.filteredHistories.isEmpty)
+            SliverFillRemaining(
+              hasScrollBody: false,
+              child: Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(32.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.receipt_long_outlined,
+                        size: 56,
+                        color: Colors.grey.shade400,
+                      ),
+                      const SizedBox(height: 12),
+                      Text(
+                        state.selectedStatusFilter == 'all'
+                            ? 'Belum ada riwayat transaksi'
+                            : 'Tidak ada transaksi dengan status ini',
+                        style: TextStyle(
+                          color: Colors.grey.shade600,
+                          fontSize: 14,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
             )
           else
             _listLayout(context),
         ],
+      ),
+    );
+  }
+
+  Widget _filterLayout(BuildContext context) {
+    final state = context.watch<MerchantBalanceHistoryBloc>().state;
+    final colorSchema = GlobalHelper.getColorSchema(context);
+
+    final filters = [
+      {'key': 'all', 'label': 'Semua'},
+      {'key': 'success', 'label': 'Berhasil'},
+      {'key': 'pending', 'label': 'Menunggu Pembayaran'},
+      {'key': 'waiting_proof', 'label': 'Menunggu Bukti Transfer'},
+      {'key': 'failed', 'label': 'Gagal'},
+    ];
+
+    return SliverToBoxAdapter(
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 8),
+        height: 38,
+        child: ListView.separated(
+          scrollDirection: Axis.horizontal,
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          itemCount: filters.length,
+          separatorBuilder: (_, __) => const SizedBox(width: 8),
+          itemBuilder: (context, index) {
+            final filter = filters[index];
+            final isSelected = state.selectedStatusFilter == filter['key'];
+
+            return InkWell(
+              onTap: () {
+                context.read<MerchantBalanceHistoryBloc>().add(
+                      MerchantBalanceHistoryEventChangeFilter(
+                        filter['key']!,
+                      ),
+                    );
+              },
+              borderRadius: BorderRadius.circular(20),
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 200),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 14,
+                  vertical: 8,
+                ),
+                decoration: BoxDecoration(
+                  color: isSelected ? colorSchema.primary : Colors.white,
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(
+                    color: isSelected
+                        ? colorSchema.primary
+                        : Colors.grey.shade300,
+                  ),
+                ),
+                child: Center(
+                  child: Text(
+                    filter['label']!,
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight:
+                          isSelected ? FontWeight.bold : FontWeight.w500,
+                      color: isSelected ? Colors.white : Colors.black87,
+                    ),
+                  ),
+                ),
+              ),
+            );
+          },
+        ),
       ),
     );
   }
@@ -192,9 +287,11 @@ class MerchantBalanceHistoryScreen extends StatelessWidget {
     );
     final colorSchema = GlobalHelper.getColorSchema(context);
 
+    final filteredList = state.filteredHistories;
+
     return SliverList(
       delegate: SliverChildBuilderDelegate((context, index) {
-        final item = state.histories[index];
+        final item = filteredList[index];
         final isIncoming = item.status == 'incoming';
         final icon = isIncoming ? Icons.arrow_downward : Icons.arrow_upward;
         final iconColor = isIncoming ? Colors.green : Colors.red;
@@ -299,9 +396,11 @@ class MerchantBalanceHistoryScreen extends StatelessWidget {
                                 ),
                           ),
                         );
-                        context.read<MerchantBalanceHistoryBloc>().add(
-                          MerchantBalanceHistoryEventFetch(),
-                        );
+                        if (context.mounted) {
+                          context.read<MerchantBalanceHistoryBloc>().add(
+                            MerchantBalanceHistoryEventFetch(),
+                          );
+                        }
                       },
                       child: Container(
                         padding: const EdgeInsets.symmetric(
@@ -322,12 +421,53 @@ class MerchantBalanceHistoryScreen extends StatelessWidget {
                         ),
                       ),
                     ),
+                  )
+                else if (item.paymentStatus == 'waiting_proof' ||
+                    (item.paymentStatus == 'pending' &&
+                        item.paymentType == 'manual_transfer'))
+                  Padding(
+                    padding: const EdgeInsets.only(top: 2),
+                    child: InkWell(
+                      onTap: () async {
+                        await navigatorKey.currentState?.push(
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                MerchantBalanceManualTransferScreen(
+                                  topUpItem: item,
+                                ),
+                          ),
+                        );
+                        if (context.mounted) {
+                          context.read<MerchantBalanceHistoryBloc>().add(
+                            MerchantBalanceHistoryEventFetch(),
+                          );
+                        }
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 4,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.orange.shade700,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: const Text(
+                          'Unggah Bukti',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
                   ),
               ],
             ),
           ),
         );
-      }, childCount: state.histories.length),
+      }, childCount: filteredList.length),
     );
   }
 }
