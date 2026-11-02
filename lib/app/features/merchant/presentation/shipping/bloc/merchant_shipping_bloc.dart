@@ -2,8 +2,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:warunk/app/features/merchant/domain/entity/merchant_shipping.dart';
 import 'package:warunk/app/features/merchant/domain/use_case/merchant_merchant_get_courier_use_case.dart';
 import 'package:warunk/app/features/merchant/domain/use_case/merchant_merchant_update_shipping_use_case.dart';
-
 import 'package:warunk/app/features/merchant/domain/use_case/merchant_merchant_get_use_case.dart';
+import 'package:warunk/core/network/data_state.dart';
 
 part 'merchant_shipping_event.dart';
 part 'merchant_shipping_state.dart';
@@ -110,7 +110,7 @@ class MerchantShippingBloc
 
       final result = await _updateShippingUseCase(param: param);
 
-      if (result.data != null) {
+      if (result is SuccessState || result.success) {
         emit(state.copyWith(isSaving: false, isSaved: true));
       } else {
         emit(state.copyWith(isSaving: false, errorMessage: result.message));

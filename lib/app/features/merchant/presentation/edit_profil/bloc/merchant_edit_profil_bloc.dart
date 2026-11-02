@@ -142,12 +142,10 @@ class MerchantEditProfilBloc
 
     final response = await _updateUseCase.call(param: param);
 
-    if (response is SuccessState) {
-      emit(state.copyWith(isSuccess: true));
+    if (response is SuccessState || response.success) {
+      emit(state.copyWith(isLoading: false, isSuccess: true));
     } else {
-      emit(state.copyWith(errorMessage: response.message));
+      emit(state.copyWith(isLoading: false, errorMessage: response.message));
     }
-
-    emit(state.copyWith(isLoading: false));
   }
 }

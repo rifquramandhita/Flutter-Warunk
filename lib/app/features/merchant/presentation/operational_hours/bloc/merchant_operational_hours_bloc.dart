@@ -279,7 +279,7 @@ class MerchantOperationalHoursBloc
       result = await _closeUseCase();
     }
 
-    if (result is SuccessState) {
+    if (result is SuccessState || result.success) {
       emit(state.copyWith(isSaving: false, isSaved: true));
     } else {
       emit(state.copyWith(isSaving: false, errorMessage: result.message));

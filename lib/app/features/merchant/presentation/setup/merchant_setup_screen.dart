@@ -50,8 +50,130 @@ class _MerchantSetupScreenState extends State<MerchantSetupScreen> {
   }
 
   void _submitAll(BuildContext context) {
+    final addressBloc = context.read<MerchantInputAddressBloc>();
+    if (addressBloc.state.province != _provinceCtrl.text && _provinceCtrl.text.isNotEmpty) {
+      addressBloc.add(MerchantInputAddressEventProvinceChanged(_provinceCtrl.text));
+    }
+    if (addressBloc.state.city != _cityCtrl.text && _cityCtrl.text.isNotEmpty) {
+      addressBloc.add(MerchantInputAddressEventCityChanged(_cityCtrl.text));
+    }
+    if (addressBloc.state.district != _districtCtrl.text && _districtCtrl.text.isNotEmpty) {
+      addressBloc.add(MerchantInputAddressEventDistrictChanged(_districtCtrl.text));
+    }
+    if (addressBloc.state.postalCode != _postalCodeCtrl.text && _postalCodeCtrl.text.isNotEmpty) {
+      addressBloc.add(MerchantInputAddressEventPostalCodeChanged(_postalCodeCtrl.text));
+    }
+    if (addressBloc.state.address != _addressCtrl.text && _addressCtrl.text.isNotEmpty) {
+      addressBloc.add(MerchantInputAddressEventAddressChanged(_addressCtrl.text));
+    }
+
     setState(() => _saveState = SetupSaveState.savingProfile);
     context.read<MerchantEditProfilBloc>().add(MerchantEditProfilEventSubmit());
+  }
+
+  bool _validateStep(
+    int step,
+    BuildContext context,
+    MerchantEditProfilState profileState,
+    MerchantInputAddressState addressState,
+  ) {
+    switch (step) {
+      case 1:
+        if (profileState.name.trim().isEmpty) {
+          DialogHelper.showErrorSnackBar(context: context, text: 'Nama toko wajib diisi.');
+          return false;
+        }
+        return true;
+      case 2:
+        if (profileState.selectedCategory == null && profileState.merchantCategoryId.isEmpty) {
+          DialogHelper.showErrorSnackBar(context: context, text: 'Kategori toko wajib dipilih.');
+          return false;
+        }
+        return true;
+      case 3:
+        if (profileState.whatsappNumber.trim().isEmpty) {
+          DialogHelper.showErrorSnackBar(context: context, text: 'Nomor WhatsApp toko wajib diisi.');
+          return false;
+        }
+        return true;
+      case 4:
+        if (profileState.about.trim().isEmpty) {
+          DialogHelper.showErrorSnackBar(context: context, text: 'Deskripsi tentang toko wajib diisi.');
+          return false;
+        }
+        return true;
+      case 5:
+        final prov = _provinceCtrl.text.trim().isNotEmpty ? _provinceCtrl.text.trim() : addressState.province.trim();
+        final city = _cityCtrl.text.trim().isNotEmpty ? _cityCtrl.text.trim() : addressState.city.trim();
+        final dist = _districtCtrl.text.trim().isNotEmpty ? _districtCtrl.text.trim() : addressState.district.trim();
+        final postal = _postalCodeCtrl.text.trim().isNotEmpty ? _postalCodeCtrl.text.trim() : addressState.postalCode.trim();
+        final addr = _addressCtrl.text.trim().isNotEmpty ? _addressCtrl.text.trim() : addressState.address.trim();
+
+        if (addressState.latitude == 0.0 || addressState.longitude == 0.0) {
+          DialogHelper.showErrorSnackBar(context: context, text: 'Silakan tentukan titik lokasi toko pada peta terlebih dahulu.');
+          return false;
+        }
+        if (prov.isEmpty || city.isEmpty || dist.isEmpty || postal.isEmpty || addr.isEmpty) {
+          DialogHelper.showErrorSnackBar(context: context, text: 'Silakan lengkapi seluruh rincian alamat toko.');
+          return false;
+        }
+
+        // Sync controllers to Bloc
+        final addressBloc = context.read<MerchantInputAddressBloc>();
+        if (addressBloc.state.province != _provinceCtrl.text) addressBloc.add(MerchantInputAddressEventProvinceChanged(_provinceCtrl.text));
+        if (addressBloc.state.city != _cityCtrl.text) addressBloc.add(MerchantInputAddressEventCityChanged(_cityCtrl.text));
+        if (addressBloc.state.district != _districtCtrl.text) addressBloc.add(MerchantInputAddressEventDistrictChanged(_districtCtrl.text));
+        if (addressBloc.state.postalCode != _postalCodeCtrl.text) addressBloc.add(MerchantInputAddressEventPostalCodeChanged(_postalCodeCtrl.text));
+        if (addressBloc.state.address != _addressCtrl.text) addressBloc.add(MerchantInputAddressEventAddressChanged(_addressCtrl.text));
+        return true;
+      default:
+        return true;
+    }
+  }
+
+  bool _validateAll(
+    BuildContext context,
+    MerchantEditProfilState profileState,
+    MerchantInputAddressState addressState,
+  ) {
+    if (profileState.name.trim().isEmpty) {
+      setState(() => _currentStep = 1);
+      DialogHelper.showErrorSnackBar(context: context, text: 'Nama toko wajib diisi.');
+      return false;
+    }
+    if (profileState.selectedCategory == null && profileState.merchantCategoryId.isEmpty) {
+      setState(() => _currentStep = 2);
+      DialogHelper.showErrorSnackBar(context: context, text: 'Kategori toko wajib dipilih.');
+      return false;
+    }
+    if (profileState.whatsappNumber.trim().isEmpty) {
+      setState(() => _currentStep = 3);
+      DialogHelper.showErrorSnackBar(context: context, text: 'Nomor WhatsApp toko wajib diisi.');
+      return false;
+    }
+    if (profileState.about.trim().isEmpty) {
+      setState(() => _currentStep = 4);
+      DialogHelper.showErrorSnackBar(context: context, text: 'Deskripsi tentang toko wajib diisi.');
+      return false;
+    }
+
+    final prov = _provinceCtrl.text.trim().isNotEmpty ? _provinceCtrl.text.trim() : addressState.province.trim();
+    final city = _cityCtrl.text.trim().isNotEmpty ? _cityCtrl.text.trim() : addressState.city.trim();
+    final dist = _districtCtrl.text.trim().isNotEmpty ? _districtCtrl.text.trim() : addressState.district.trim();
+    final postal = _postalCodeCtrl.text.trim().isNotEmpty ? _postalCodeCtrl.text.trim() : addressState.postalCode.trim();
+    final addr = _addressCtrl.text.trim().isNotEmpty ? _addressCtrl.text.trim() : addressState.address.trim();
+
+    if (addressState.latitude == 0.0 || addressState.longitude == 0.0) {
+      setState(() => _currentStep = 5);
+      DialogHelper.showErrorSnackBar(context: context, text: 'Silakan tentukan titik lokasi toko pada peta terlebih dahulu.');
+      return false;
+    }
+    if (prov.isEmpty || city.isEmpty || dist.isEmpty || postal.isEmpty || addr.isEmpty) {
+      setState(() => _currentStep = 5);
+      DialogHelper.showErrorSnackBar(context: context, text: 'Silakan lengkapi seluruh rincian alamat toko.');
+      return false;
+    }
+    return true;
   }
 
   void _showSuccessDialog() {
@@ -211,9 +333,13 @@ class _MerchantSetupScreenState extends State<MerchantSetupScreen> {
         onStepTapped: (step) => setState(() => _currentStep = step),
         onStepContinue: () {
           if (_currentStep < 7) {
-            setState(() => _currentStep += 1);
+            if (_validateStep(_currentStep, context, profileState, addressState)) {
+              setState(() => _currentStep += 1);
+            }
           } else {
-            _submitAll(context);
+            if (_validateAll(context, profileState, addressState)) {
+              _submitAll(context);
+            }
           }
         },
         onStepCancel: () {
@@ -222,9 +348,6 @@ class _MerchantSetupScreenState extends State<MerchantSetupScreen> {
           }
         },
         controlsBuilder: (context, details) {
-          final isLocationSet = addressState.latitude != 0.0 && addressState.longitude != 0.0;
-          final isAddressStepValid = _currentStep != 5 || isLocationSet;
-
           return Container(
             margin: const EdgeInsets.only(top: 24, bottom: 24),
             child: Row(
@@ -232,9 +355,9 @@ class _MerchantSetupScreenState extends State<MerchantSetupScreen> {
                 if (_currentStep < 7)
                   Expanded(
                     child: ElevatedButton(
-                      onPressed: isAddressStepValid ? details.onStepContinue : null,
+                      onPressed: details.onStepContinue,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: isAddressStepValid ? GlobalHelper.getColorSchema(context).primary : Colors.grey.shade400,
+                        backgroundColor: GlobalHelper.getColorSchema(context).primary,
                         padding: const EdgeInsets.symmetric(vertical: 14),
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                       ),
@@ -520,6 +643,7 @@ class _MerchantSetupScreenState extends State<MerchantSetupScreen> {
 
   // --- Address UI Helpers ---
   Widget _addressForm(BuildContext context, MerchantInputAddressState state) {
+    final colorSchema = GlobalHelper.getColorSchema(context);
     final isLocationSet = state.latitude != 0.0 && state.longitude != 0.0;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -545,6 +669,33 @@ class _MerchantSetupScreenState extends State<MerchantSetupScreen> {
             }
           },
         ),
+        if (!isLocationSet) ...[
+          const SizedBox(height: 12),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+            decoration: BoxDecoration(
+              color: colorSchema.primary.withValues(alpha: 0.08),
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(color: colorSchema.primary.withValues(alpha: 0.2)),
+            ),
+            child: Row(
+              children: [
+                Icon(Icons.info_outline, size: 20, color: colorSchema.primary),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Text(
+                    'Silakan ketuk peta di atas untuk menentukan titik lokasi toko Anda terlebih dahulu.',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: colorSchema.primary,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
         if (isLocationSet) ...[
           const SizedBox(height: 20),
           _fieldLabel(context, 'Provinsi'),
@@ -552,7 +703,7 @@ class _MerchantSetupScreenState extends State<MerchantSetupScreen> {
           _editField(
             context: context,
             controller: _provinceCtrl,
-            hintText: '',
+            hintText: 'Contoh: Jawa Timur',
             keyboardType: TextInputType.text,
             enabled: isLocationSet,
             onChanged: (v) => context.read<MerchantInputAddressBloc>().add(MerchantInputAddressEventProvinceChanged(v)),
@@ -563,7 +714,7 @@ class _MerchantSetupScreenState extends State<MerchantSetupScreen> {
           _editField(
             context: context,
             controller: _cityCtrl,
-            hintText: '',
+            hintText: 'Contoh: Surabaya',
             keyboardType: TextInputType.text,
             enabled: isLocationSet,
             onChanged: (v) => context.read<MerchantInputAddressBloc>().add(MerchantInputAddressEventCityChanged(v)),
@@ -574,7 +725,7 @@ class _MerchantSetupScreenState extends State<MerchantSetupScreen> {
           _editField(
             context: context,
             controller: _districtCtrl,
-            hintText: '',
+            hintText: 'Contoh: Wonokromo',
             keyboardType: TextInputType.text,
             enabled: isLocationSet,
             onChanged: (v) => context.read<MerchantInputAddressBloc>().add(MerchantInputAddressEventDistrictChanged(v)),
@@ -585,7 +736,7 @@ class _MerchantSetupScreenState extends State<MerchantSetupScreen> {
           _editField(
             context: context,
             controller: _postalCodeCtrl,
-            hintText: '',
+            hintText: 'Contoh: 60241',
             keyboardType: TextInputType.number,
             inputFormatters: [FilteringTextInputFormatter.digitsOnly],
             enabled: isLocationSet,
@@ -597,7 +748,7 @@ class _MerchantSetupScreenState extends State<MerchantSetupScreen> {
           _editField(
             context: context,
             controller: _addressCtrl,
-            hintText: '',
+            hintText: 'Masukkan alamat lengkap (jalan, nomor, RT/RW, patokan)',
             keyboardType: TextInputType.text,
             maxLines: 3,
             enabled: isLocationSet,
@@ -1218,61 +1369,65 @@ class _CouriersCard extends StatelessWidget {
     final textTheme = GlobalHelper.getTextTheme(context, appTextStyle: AppTextStyle.BODY_SMALL);
     final labelTheme = GlobalHelper.getTextTheme(context, appTextStyle: AppTextStyle.LABEL_SMALL);
 
-    return Container(
-      decoration: BoxDecoration(
-        color: colorSchema.surface,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: colorSchema.outlineVariant.withValues(alpha: 0.5)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: Row(
-              children: [
-                Container(
-                  width: 44,
-                  height: 44,
-                  decoration: BoxDecoration(color: const Color(0xFFEFF6FF), borderRadius: BorderRadius.circular(12)),
-                  child: const Icon(Icons.local_shipping, color: Color(0xFF3B82F6)),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('Kurir Ekspedisi', style: textTheme?.copyWith(fontWeight: FontWeight.bold)),
-                      const SizedBox(height: 4),
-                      Text('Pilih kurir yang tersedia', style: labelTheme?.copyWith(color: colorSchema.onSurfaceVariant)),
-                    ],
+    return Material(
+      color: colorSchema.surface,
+      borderRadius: BorderRadius.circular(16),
+      clipBehavior: Clip.antiAlias,
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: colorSchema.outlineVariant.withValues(alpha: 0.5)),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Row(
+                children: [
+                  Container(
+                    width: 44,
+                    height: 44,
+                    decoration: BoxDecoration(color: const Color(0xFFEFF6FF), borderRadius: BorderRadius.circular(12)),
+                    child: const Icon(Icons.local_shipping, color: Color(0xFF3B82F6)),
                   ),
-                ),
-              ],
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('Kurir Ekspedisi', style: textTheme?.copyWith(fontWeight: FontWeight.bold)),
+                        const SizedBox(height: 4),
+                        Text('Pilih kurir yang tersedia', style: labelTheme?.copyWith(color: colorSchema.onSurfaceVariant)),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-          Divider(height: 1, color: colorSchema.outlineVariant),
-          ListView.separated(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: state.availableCouriers.length,
-            separatorBuilder: (context, index) => Divider(height: 1, color: colorSchema.outlineVariant),
-            itemBuilder: (context, index) {
-              final courierCode = state.availableCouriers[index];
-              final isSelected = state.selectedCouriers.contains(courierCode);
-              return CheckboxListTile(
-                title: Text(courierCode.toUpperCase(), style: textTheme),
-                value: isSelected,
-                activeColor: colorSchema.primary,
-                contentPadding: const EdgeInsets.symmetric(horizontal: 16),
-                controlAffinity: ListTileControlAffinity.trailing,
-                onChanged: (bool? value) {
-                  context.read<MerchantShippingBloc>().add(MerchantShippingToggleCourier(courierCode));
-                },
-              );
-            },
-          ),
-        ],
+            Divider(height: 1, color: colorSchema.outlineVariant),
+            ListView.separated(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: state.availableCouriers.length,
+              separatorBuilder: (context, index) => Divider(height: 1, color: colorSchema.outlineVariant),
+              itemBuilder: (context, index) {
+                final courierCode = state.availableCouriers[index];
+                final isSelected = state.selectedCouriers.contains(courierCode);
+                return CheckboxListTile(
+                  title: Text(courierCode.toUpperCase(), style: textTheme),
+                  value: isSelected,
+                  activeColor: colorSchema.primary,
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+                  controlAffinity: ListTileControlAffinity.trailing,
+                  onChanged: (bool? value) {
+                    context.read<MerchantShippingBloc>().add(MerchantShippingToggleCourier(courierCode));
+                  },
+                );
+              },
+            ),
+          ],
+        ),
       ),
     );
   }

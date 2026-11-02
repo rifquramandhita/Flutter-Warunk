@@ -454,80 +454,84 @@ class _CouriersCard extends StatelessWidget {
       appTextStyle: AppTextStyle.LABEL_SMALL,
     );
 
-    return Container(
-      decoration: BoxDecoration(
-        color: colorSchema.surface,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: colorSchema.outlineVariant.withValues(alpha: 0.5),
+    return Material(
+      color: colorSchema.surface,
+      borderRadius: BorderRadius.circular(16),
+      clipBehavior: Clip.antiAlias,
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(
+            color: colorSchema.outlineVariant.withValues(alpha: 0.5),
+          ),
         ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: Row(
-              children: [
-                Container(
-                  width: 44,
-                  height: 44,
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFEFF6FF),
-                    borderRadius: BorderRadius.circular(12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Row(
+                children: [
+                  Container(
+                    width: 44,
+                    height: 44,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFEFF6FF),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: const Icon(
+                      Icons.local_shipping,
+                      color: Color(0xFF3B82F6),
+                    ),
                   ),
-                  child: const Icon(
-                    Icons.local_shipping,
-                    color: Color(0xFF3B82F6),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Kurir Ekspedisi',
-                        style: textTheme?.copyWith(fontWeight: FontWeight.bold),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        'Pilih kurir yang tersedia',
-                        style: labelTheme?.copyWith(
-                          color: colorSchema.onSurfaceVariant,
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Kurir Ekspedisi',
+                          style: textTheme?.copyWith(fontWeight: FontWeight.bold),
                         ),
-                      ),
-                    ],
+                        const SizedBox(height: 4),
+                        Text(
+                          'Pilih kurir yang tersedia',
+                          style: labelTheme?.copyWith(
+                            color: colorSchema.onSurfaceVariant,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-          Divider(height: 1, color: colorSchema.outlineVariant),
-          ListView.separated(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: state.availableCouriers.length,
-            separatorBuilder: (context, index) =>
-                Divider(height: 1, color: colorSchema.outlineVariant),
-            itemBuilder: (context, index) {
-              final courierCode = state.availableCouriers[index];
-              final isSelected = state.selectedCouriers.contains(courierCode);
-              return CheckboxListTile(
-                title: Text(courierCode.toUpperCase(), style: textTheme),
-                value: isSelected,
-                activeColor: colorSchema.primary,
-                contentPadding: const EdgeInsets.symmetric(horizontal: 16),
-                controlAffinity: ListTileControlAffinity.trailing,
-                onChanged: (bool? value) {
-                  context.read<MerchantShippingBloc>().add(
-                    MerchantShippingToggleCourier(courierCode),
-                  );
-                },
-              );
-            },
-          ),
-        ],
+            Divider(height: 1, color: colorSchema.outlineVariant),
+            ListView.separated(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: state.availableCouriers.length,
+              separatorBuilder: (context, index) =>
+                  Divider(height: 1, color: colorSchema.outlineVariant),
+              itemBuilder: (context, index) {
+                final courierCode = state.availableCouriers[index];
+                final isSelected = state.selectedCouriers.contains(courierCode);
+                return CheckboxListTile(
+                  title: Text(courierCode.toUpperCase(), style: textTheme),
+                  value: isSelected,
+                  activeColor: colorSchema.primary,
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+                  controlAffinity: ListTileControlAffinity.trailing,
+                  onChanged: (bool? value) {
+                    context.read<MerchantShippingBloc>().add(
+                      MerchantShippingToggleCourier(courierCode),
+                    );
+                  },
+                );
+              },
+            ),
+          ],
+        ),
       ),
     );
   }

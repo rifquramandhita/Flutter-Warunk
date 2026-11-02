@@ -3,6 +3,7 @@ import 'package:warunk/app/features/merchant/domain/use_case/merchant_merchant_g
 import 'package:warunk/app/features/merchant/domain/use_case/merchant_merchant_update_location_use_case.dart';
 import 'package:equatable/equatable.dart';
 import 'package:warunk/app/features/merchant/domain/use_case/merchant_location_get_placemark_use_case.dart';
+import 'package:warunk/core/network/data_state.dart';
 
 part 'merchant_input_address_event.dart';
 part 'merchant_input_address_state.dart';
@@ -128,7 +129,12 @@ class MerchantInputAddressBloc
     MerchantInputAddressEventSaved event,
     Emitter<MerchantInputAddressState> emit,
   ) async {
-    if (!state.isValid) return;
+    if (!state.isValid) {
+      emit(state.copyWith(
+        errorMessage: 'Data alamat toko belum lengkap. Pastikan titik lokasi dan semua kolom alamat telah terisi.',
+      ));
+      return;
+    }
 
     emit(state.copyWith(isLoading: true));
 
@@ -142,12 +148,10 @@ class MerchantInputAddressBloc
       latitude: state.latitude,
     );
 
-    if (response.success) {
-      emit(state.copyWith(isSuccess: true));
+    if (response.success || response is SuccessState) {
+      emit(state.copyWith(isLoading: false, isSuccess: true));
     } else {
-      emit(state.copyWith(errorMessage: response.message));
+      emit(state.copyWith(isLoading: false, errorMessage: response.message));
     }
-
-    emit(state.copyWith(isLoading: false));
   }
 }
