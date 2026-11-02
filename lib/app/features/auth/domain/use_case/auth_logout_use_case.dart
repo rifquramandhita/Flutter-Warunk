@@ -1,3 +1,5 @@
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:flutter/foundation.dart';
 import 'package:warunk/app/features/auth/domain/repository/auth_repository.dart';
 import 'package:warunk/core/constants/constant.dart';
 import 'package:warunk/core/helper/shared_preferences_helper.dart';
@@ -18,6 +20,10 @@ class AuthLogoutUseCase {
     await SharedPreferencesHelper.remove(PREF_PHONE);
     await SharedPreferencesHelper.remove(PREF_PHOTO);
     await SharedPreferencesHelper.remove(PREF_ROLE);
+
+    if (!kDebugMode) {
+      await FirebaseCrashlytics.instance.setUserIdentifier('');
+    }
     
     return response;
   }
