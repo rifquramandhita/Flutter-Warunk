@@ -8,3 +8,5 @@ class MerchantShellEventTabChanged extends MerchantShellEvent {
 }
 
 class MerchantShellEventGetOrderCount extends MerchantShellEvent {}
+
+class MerchantShellEventReset extends MerchantShellEvent {}

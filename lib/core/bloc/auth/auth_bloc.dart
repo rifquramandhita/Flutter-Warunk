@@ -1,6 +1,8 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:warunk/app/features/merchant/presentation/shell/bloc/merchant_shell_bloc.dart';
 import 'package:warunk/core/constants/constant.dart';
+import 'package:warunk/core/dependency/dependency.dart';
 import 'package:warunk/core/enum/role.dart';
 import 'package:warunk/core/helper/shared_preferences_helper.dart';
 
@@ -41,7 +43,16 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         ),
       );
     } else {
-      emit(state.copyWith(isAuthenticated: false, isLoading: false));
+      if (sl.isRegistered<MerchantShellBloc>()) {
+        sl<MerchantShellBloc>().add(MerchantShellEventReset());
+      }
+      emit(
+        state.copyWith(
+          isAuthenticated: false,
+          isLoading: false,
+          role: RoleEnum.customer,
+        ),
+      );
     }
   }
 }

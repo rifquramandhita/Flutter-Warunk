@@ -15,6 +15,10 @@ class MerchantShellBloc extends Bloc<MerchantShellEvent, MerchantShellState> {
     });
 
     on<MerchantShellEventGetOrderCount>(_onGetOrderCount);
+
+    on<MerchantShellEventReset>((event, emit) {
+      emit(const MerchantShellState());
+    });
   }
 
   Future<void> _onGetOrderCount(

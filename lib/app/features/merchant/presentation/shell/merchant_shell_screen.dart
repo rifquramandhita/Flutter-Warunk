@@ -16,9 +16,15 @@ import 'package:warunk/main.dart';
 
 /// MerchantShell mengelola bottom navigation khusus merchant
 /// dan menampilkan halaman yang sesuai berdasarkan tab yang dipilih.
-class MerchantShellScreen extends StatelessWidget {
+class MerchantShellScreen extends StatefulWidget {
   const MerchantShellScreen({super.key});
 
+  @override
+  State<MerchantShellScreen> createState() => _MerchantShellScreenState();
+}
+
+class _MerchantShellScreenState extends State<MerchantShellScreen>
+    with RouteAware {
   static final List<Widget> _pages = [
     const MerchantDashboardScreen(),
     const MerchantProductScreen(),
@@ -36,9 +42,37 @@ class MerchantShellScreen extends StatelessWidget {
   ];
 
   @override
+  void initState() {
+    super.initState();
+    sl<MerchantShellBloc>().add(MerchantShellEventTabChanged(0));
+    sl<MerchantShellBloc>().add(MerchantShellEventGetOrderCount());
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final route = ModalRoute.of(context);
+    if (route is PageRoute) {
+      routeObserver.subscribe(this, route);
+    }
+  }
+
+  @override
+  void dispose() {
+    routeObserver.unsubscribe(this);
+    sl<MerchantShellBloc>().add(MerchantShellEventReset());
+    super.dispose();
+  }
+
+  @override
+  void didPopNext() {
+    sl<MerchantShellBloc>().add(MerchantShellEventGetOrderCount());
+  }
+
+  @override
   Widget build(BuildContext context) {
     return BlocProvider.value(
-      value: sl<MerchantShellBloc>()..add(MerchantShellEventGetOrderCount()),
+      value: sl<MerchantShellBloc>(),
       child: BlocBuilder<MerchantShellBloc, MerchantShellState>(
         builder: (context, state) {
           return PopScope(

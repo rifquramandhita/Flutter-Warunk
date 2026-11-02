@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:warunk/app/features/merchant/presentation/shell/bloc/merchant_shell_bloc.dart';
 import 'package:warunk/core/constants/constant.dart';
 import 'package:warunk/core/helper/shared_preferences_helper.dart';
 import 'package:warunk/main.dart';
@@ -62,6 +63,9 @@ class AppInterceptor extends Interceptor {
   void onError(DioException err, ErrorInterceptorHandler handler) async {
     if (err.response?.statusCode == 401) {
       await SharedPreferencesHelper.clearAll();
+      if (sl.isRegistered<MerchantShellBloc>()) {
+        sl<MerchantShellBloc>().add(MerchantShellEventReset());
+      }
       sl<AuthBloc>().add(AuthEventCheck());
       
       // Tunggu sebentar agar AuthBloc selesai mengupdate state (isAuthenticated = false)

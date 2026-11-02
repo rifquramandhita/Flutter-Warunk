@@ -1,7 +1,9 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:warunk/app/features/auth/domain/use_case/auth_logout_use_case.dart';
+import 'package:warunk/app/features/merchant/presentation/shell/bloc/merchant_shell_bloc.dart';
 import 'package:warunk/core/bloc/auth/auth_bloc.dart';
+import 'package:warunk/core/dependency/dependency.dart';
 import 'auth_logout_event.dart';
 import 'auth_logout_state.dart';
 
@@ -30,6 +32,8 @@ class AuthLogoutBloc extends Bloc<AuthLogoutEvent, AuthLogoutState> {
     } catch (_) {}
 
     final response = await _useCase();
+
+    sl<MerchantShellBloc>().add(MerchantShellEventReset());
 
     // Selalu paksa isSuccess = true agar user tetap bisa logout meskipun hit API gagal (token expired, masalah koneksi, dsb)
     emit(state.copyWith(isLoading: false, isSuccess: true));
