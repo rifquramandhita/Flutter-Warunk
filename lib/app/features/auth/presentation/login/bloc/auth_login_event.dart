@@ -22,3 +22,5 @@ class AuthRoleSelected extends AuthLoginEvent {
 class AuthLoginSubmitted extends AuthLoginEvent {}
 
 class AuthGoogleLoginSubmitted extends AuthLoginEvent {}
+
+class AuthAppleLoginSubmitted extends AuthLoginEvent {}

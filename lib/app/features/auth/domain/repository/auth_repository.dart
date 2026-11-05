@@ -1,6 +1,7 @@
 import 'package:warunk/app/features/auth/data/source/auth_api_service.dart';
 import 'package:warunk/app/features/auth/domain/entity/auth.dart';
 import 'package:warunk/app/features/auth/domain/entity/login.dart';
+import 'package:warunk/app/features/auth/domain/entity/login_apple.dart';
 import 'package:warunk/app/features/auth/domain/entity/register.dart';
 import 'package:warunk/app/features/auth/domain/entity/forgot_password.dart';
 import 'package:warunk/app/features/auth/domain/entity/reset_password.dart';
@@ -43,6 +44,33 @@ class AuthRepository {
 
   Future<DataState> loginGoogle({required LoginGoogleParam param}) async {
     return handleResponse(() => _api.loginGoogle(body: param.toJson()), (
+      responseData,
+    ) async {
+      final auth = AuthEntity.fromJson(responseData);
+      await SharedPreferencesHelper.setString(
+        PREF_AUTH,
+        '${auth.tokenType} ${auth.token}',
+      );
+      await SharedPreferencesHelper.setString(PREF_NAME, auth.user.name);
+      await SharedPreferencesHelper.setString(PREF_EMAIL, auth.user.email);
+      await SharedPreferencesHelper.setString(
+        PREF_PHONE,
+        auth.user.phone ?? '',
+      );
+      if (auth.user.profilePhoto != null &&
+          auth.user.profilePhoto!.isNotEmpty) {
+        await SharedPreferencesHelper.setString(
+          PREF_PHOTO,
+          auth.user.profilePhoto!,
+        );
+      }
+      await SharedPreferencesHelper.setString(PREF_ROLE, param.role);
+      return null;
+    });
+  }
+
+  Future<DataState> loginApple({required LoginAppleParam param}) async {
+    return handleResponse(() => _api.loginApple(body: param.toJson()), (
       responseData,
     ) async {
       final auth = AuthEntity.fromJson(responseData);

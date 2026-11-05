@@ -1,9 +1,11 @@
 import 'dart:io';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:warunk/firebase_options.dart';
 import 'package:warunk/app/features/auth/domain/use_case/auth_login_use_case.dart';
 import 'package:warunk/app/features/auth/domain/use_case/auth_login_google_use_case.dart';
+import 'package:warunk/app/features/auth/domain/use_case/auth_login_apple_use_case.dart';
 import 'package:warunk/core/bloc/auth/auth_bloc.dart';
 import 'package:warunk/core/constants/constant.dart';
 import 'package:warunk/core/helper/shared_preferences_helper.dart';
@@ -15,14 +17,17 @@ class AuthLoginBloc extends Bloc<AuthLoginEvent, AuthLoginState> {
   final AuthBloc _authBloc;
   final AuthLoginUseCase _useCase;
   final AuthLoginGoogleUseCase _googleUseCase;
+  final AuthLoginAppleUseCase _appleUseCase;
 
   AuthLoginBloc({
     required AuthBloc authBloc,
     required AuthLoginUseCase useCase,
     required AuthLoginGoogleUseCase googleUseCase,
+    required AuthLoginAppleUseCase appleUseCase,
   })  : _authBloc = authBloc,
         _useCase = useCase,
         _googleUseCase = googleUseCase,
+        _appleUseCase = appleUseCase,
         super(const AuthLoginState()) {
     on<AuthEmailChanged>(_onEmailChanged);
     on<AuthPasswordChanged>(_onPasswordChanged);
@@ -30,6 +35,7 @@ class AuthLoginBloc extends Bloc<AuthLoginEvent, AuthLoginState> {
     on<AuthRoleSelected>(_onRoleSelected);
     on<AuthLoginSubmitted>(_onLoginSubmitted);
     on<AuthGoogleLoginSubmitted>(_onGoogleLoginSubmitted);
+    on<AuthAppleLoginSubmitted>(_onAppleLoginSubmitted);
   }
 
   void _onEmailChanged(AuthEmailChanged event, Emitter<AuthLoginState> emit) {
@@ -105,6 +111,75 @@ class AuthLoginBloc extends Bloc<AuthLoginEvent, AuthLoginState> {
       }
     } catch (e) {
       emit(state.copyWith(errorMessage: 'Gagal login dengan Google: $e'));
+    } finally {
+      emit(state.copyWith(isLoading: false));
+    }
+  }
+
+  Future<void> _onAppleLoginSubmitted(
+    AuthAppleLoginSubmitted event,
+    Emitter<AuthLoginState> emit,
+  ) async {
+    emit(state.copyWith(isLoading: true, errorMessage: null));
+    try {
+      final credential = await SignInWithApple.getAppleIDCredential(
+        scopes: [
+          AppleIDAuthorizationScopes.email,
+          AppleIDAuthorizationScopes.fullName,
+        ],
+      );
+
+      String? email = credential.email;
+      String fullName = [credential.givenName, credential.familyName]
+          .where((name) => name != null && name.trim().isNotEmpty)
+          .join(' ')
+          .trim();
+
+      final appleUserId = credential.userIdentifier;
+      if (appleUserId != null && appleUserId.isNotEmpty) {
+        if (email != null && email.isNotEmpty) {
+          await SharedPreferencesHelper.setString(
+            'apple_email_$appleUserId',
+            email,
+          );
+        } else {
+          email = await SharedPreferencesHelper.getString(
+            'apple_email_$appleUserId',
+          );
+        }
+
+        if (fullName.isNotEmpty) {
+          await SharedPreferencesHelper.setString(
+            'apple_name_$appleUserId',
+            fullName,
+          );
+        } else {
+          fullName =
+              (await SharedPreferencesHelper.getString(
+                'apple_name_$appleUserId',
+              )) ??
+              'Apple User';
+        }
+      }
+
+      final response = await _appleUseCase(
+        email: email ?? '',
+        name: fullName.isEmpty ? 'Apple User' : fullName,
+        role: state.role.value,
+        appleId: appleUserId,
+      );
+
+      if (response.success) {
+        _authBloc.add(AuthEventCheck());
+      } else {
+        emit(state.copyWith(errorMessage: response.message));
+      }
+    } on SignInWithAppleAuthorizationException catch (e) {
+      if (e.code != AuthorizationErrorCode.canceled) {
+        emit(state.copyWith(errorMessage: 'Gagal login dengan Apple: ${e.message}'));
+      }
+    } catch (e) {
+      emit(state.copyWith(errorMessage: 'Gagal login dengan Apple: $e'));
     } finally {
       emit(state.copyWith(isLoading: false));
     }

@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
@@ -209,6 +210,10 @@ class AuthLoginScreen extends StatelessWidget {
           const SizedBox(height: 16),
 
           _googleButtonLayout(context),
+          if (Platform.isIOS) ...[
+            const SizedBox(height: 12),
+            _appleButtonLayout(context),
+          ],
           const SizedBox(height: 28),
 
           _registerLayout(context),
@@ -507,6 +512,40 @@ class AuthLoginScreen extends StatelessWidget {
                 fontSize: 14,
                 fontWeight: FontWeight.w600,
                 color: AppColors.textDark,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _appleButtonLayout(BuildContext context) {
+    return SizedBox(
+      width: double.infinity,
+      height: 52,
+      child: ElevatedButton(
+        onPressed: () =>
+            context.read<AuthLoginBloc>().add(AuthAppleLoginSubmitted()),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.black,
+          foregroundColor: Colors.white,
+          elevation: 0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(14),
+          ),
+        ),
+        child: const Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.apple, size: 24, color: Colors.white),
+            SizedBox(width: 10),
+            Text(
+              'Masuk dengan Apple',
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: Colors.white,
               ),
             ),
           ],
