@@ -27,15 +27,31 @@ class CustomerLocationRepositoryImpl implements CustomerLocationRepository {
         return ErrorState(message: 'Mohon nyalakan GPS Anda.');
       }
 
-      Position position = await Geolocator.getCurrentPosition(
-        locationSettings: const LocationSettings(accuracy: LocationAccuracy.high),
-      );
+      Position? position;
+      try {
+        position = await Geolocator.getCurrentPosition(
+          locationSettings: const LocationSettings(
+            accuracy: LocationAccuracy.high,
+            timeLimit: Duration(seconds: 5),
+          ),
+        );
+      } catch (_) {
+        position = await Geolocator.getLastKnownPosition();
+      }
 
-      return SuccessState(
-        data: CustomerLocationPositionEntity(
-          latitude: position.latitude,
-          longitude: position.longitude,
-        ),
+      position ??= await Geolocator.getLastKnownPosition();
+
+      if (position != null) {
+        return SuccessState(
+          data: CustomerLocationPositionEntity(
+            latitude: position.latitude,
+            longitude: position.longitude,
+          ),
+        );
+      }
+
+      return ErrorState(
+        message: 'Tidak dapat mendapatkan lokasi saat ini. Silakan tentukan lokasi di peta.',
       );
     } catch (e) {
       return ErrorState(message: e.toString().replaceAll('Exception: ', ''));

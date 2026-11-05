@@ -6,10 +6,12 @@ import 'package:warunk/app/features/customer/domain/use_case/customer_location_g
 part 'customer_address_maps_event.dart';
 part 'customer_address_maps_state.dart';
 
-class CustomerAddressMapsBloc extends Bloc<CustomerAddressMapsEvent, CustomerAddressMapsState> {
+class CustomerAddressMapsBloc
+    extends Bloc<CustomerAddressMapsEvent, CustomerAddressMapsState> {
   final CustomerLocationGetCurrentUseCase _getCurrentLocationUseCase;
 
-  CustomerAddressMapsBloc(this._getCurrentLocationUseCase) : super(const CustomerAddressMapsState()) {
+  CustomerAddressMapsBloc(this._getCurrentLocationUseCase)
+    : super(const CustomerAddressMapsState()) {
     on<CustomerAddressMapsEventInit>(_onInit);
     on<CustomerAddressMapsEventLocationChanged>(_onLocationChanged);
     on<CustomerAddressMapsEventGetMyLocation>(_onGetMyLocation);
@@ -21,33 +23,45 @@ class CustomerAddressMapsBloc extends Bloc<CustomerAddressMapsEvent, CustomerAdd
     CustomerAddressMapsEventInit event,
     Emitter<CustomerAddressMapsState> emit,
   ) async {
+    // Fallback to initial if already provided
+    if (event.initialLatitude != null &&
+        event.initialLongitude != null &&
+        event.initialLatitude != 0.0 &&
+        event.initialLongitude != 0.0) {
+      emit(
+        state.copyWith(
+          latitude: event.initialLatitude,
+          longitude: event.initialLongitude,
+          moveCameraToCurrentLocation: true,
+          isLoadingLocation: false,
+        ),
+      );
+      return;
+    }
+
     emit(state.copyWith(isLoadingLocation: true));
 
     final result = await _getCurrentLocationUseCase.call();
-    
+
     if (result.success && result.data != null) {
-      emit(state.copyWith(
-        latitude: result.data!.latitude,
-        longitude: result.data!.longitude,
-        isLoadingLocation: false,
-      ));
-    } else {
-      // Fallback to initial if GPS fails
-      if (event.initialLatitude != null &&
-          event.initialLongitude != null &&
-          event.initialLatitude != 0.0 &&
-          event.initialLongitude != 0.0) {
-        emit(state.copyWith(
-          latitude: event.initialLatitude,
-          longitude: event.initialLongitude,
+      emit(
+        state.copyWith(
+          latitude: result.data!.latitude,
+          longitude: result.data!.longitude,
+          moveCameraToCurrentLocation: true,
           isLoadingLocation: false,
-        ));
-      } else {
-        emit(state.copyWith(
+        ),
+      );
+    } else {
+      // Fallback to default position so map is ready to use even if GPS failed
+      emit(
+        state.copyWith(
+          latitude: -6.1753924,
+          longitude: 106.8271528,
           errorMessage: result.message,
           isLoadingLocation: false,
-        ));
-      }
+        ),
+      );
     }
   }
 
@@ -55,28 +69,29 @@ class CustomerAddressMapsBloc extends Bloc<CustomerAddressMapsEvent, CustomerAdd
     CustomerAddressMapsEventLocationChanged event,
     Emitter<CustomerAddressMapsState> emit,
   ) {
-    emit(state.copyWith(
-      latitude: event.latitude,
-      longitude: event.longitude,
-    ));
+    emit(state.copyWith(latitude: event.latitude, longitude: event.longitude));
   }
 
   Future<void> _onGetMyLocation(
     CustomerAddressMapsEventGetMyLocation event,
     Emitter<CustomerAddressMapsState> emit,
   ) async {
+    emit(state.copyWith(isLoadingLocation: true));
     final result = await _getCurrentLocationUseCase.call();
-    
+
     if (result.success && result.data != null) {
-      emit(state.copyWith(
-        latitude: result.data!.latitude,
-        longitude: result.data!.longitude,
-        moveCameraToCurrentLocation: true,
-      ));
+      emit(
+        state.copyWith(
+          latitude: result.data!.latitude,
+          longitude: result.data!.longitude,
+          moveCameraToCurrentLocation: true,
+          isLoadingLocation: false,
+        ),
+      );
     } else {
-      emit(state.copyWith(
-        errorMessage: result.message,
-      ));
+      emit(
+        state.copyWith(errorMessage: result.message, isLoadingLocation: false),
+      );
     }
   }
 
@@ -92,23 +107,29 @@ class CustomerAddressMapsBloc extends Bloc<CustomerAddressMapsEvent, CustomerAdd
       List<Location> locations = await locationFromAddress(event.query);
       if (locations.isNotEmpty) {
         final location = locations.first;
-        emit(state.copyWith(
-          latitude: location.latitude,
-          longitude: location.longitude,
-          moveCameraToCurrentLocation: true,
-          isSearchingLocation: false,
-        ));
+        emit(
+          state.copyWith(
+            latitude: location.latitude,
+            longitude: location.longitude,
+            moveCameraToCurrentLocation: true,
+            isSearchingLocation: false,
+          ),
+        );
       } else {
-        emit(state.copyWith(
-          errorMessage: 'Lokasi tidak ditemukan',
-          isSearchingLocation: false,
-        ));
+        emit(
+          state.copyWith(
+            errorMessage: 'Lokasi tidak ditemukan',
+            isSearchingLocation: false,
+          ),
+        );
       }
     } catch (e) {
-      emit(state.copyWith(
-        errorMessage: 'Gagal mencari lokasi',
-        isSearchingLocation: false,
-      ));
+      emit(
+        state.copyWith(
+          errorMessage: 'Gagal mencari lokasi',
+          isSearchingLocation: false,
+        ),
+      );
     }
   }
 
@@ -116,10 +137,12 @@ class CustomerAddressMapsBloc extends Bloc<CustomerAddressMapsEvent, CustomerAdd
     CustomerAddressMapsEventMoveCamera event,
     Emitter<CustomerAddressMapsState> emit,
   ) {
-    emit(state.copyWith(
-      latitude: event.latitude,
-      longitude: event.longitude,
-      moveCameraToCurrentLocation: true,
-    ));
+    emit(
+      state.copyWith(
+        latitude: event.latitude,
+        longitude: event.longitude,
+        moveCameraToCurrentLocation: true,
+      ),
+    );
   }
 }

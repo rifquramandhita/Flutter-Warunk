@@ -10,14 +10,19 @@ import 'package:warunk/app/features/customer/presentation/address_map/bloc/custo
 import 'package:warunk/main.dart';
 import 'package:dio/dio.dart';
 
-class CustomerAddressMapsScreen extends StatelessWidget {
+class CustomerAddressMapsScreen extends StatefulWidget {
   final double? initialLatitude;
   final double? initialLongitude;
 
+  const CustomerAddressMapsScreen({super.key, this.initialLatitude, this.initialLongitude});
+
+  @override
+  State<CustomerAddressMapsScreen> createState() => _CustomerAddressMapsScreenState();
+}
+
+class _CustomerAddressMapsScreenState extends State<CustomerAddressMapsScreen> {
   // We keep the Completer here to control the map camera
   final Completer<GoogleMapController> _controller = Completer();
-
-  CustomerAddressMapsScreen({super.key, this.initialLatitude, this.initialLongitude});
 
   // Default coordinate (Monas, Jakarta)
   static const CameraPosition _kDefaultPosition = CameraPosition(
@@ -31,8 +36,8 @@ class CustomerAddressMapsScreen extends StatelessWidget {
       create: (context) => sl<CustomerAddressMapsBloc>()
         ..add(
           CustomerAddressMapsEventInit(
-            initialLatitude: initialLatitude,
-            initialLongitude: initialLongitude,
+            initialLatitude: widget.initialLatitude,
+            initialLongitude: widget.initialLongitude,
           ),
         ),
       child: BlocConsumer<CustomerAddressMapsBloc, CustomerAddressMapsState>(
@@ -69,10 +74,6 @@ class CustomerAddressMapsScreen extends StatelessWidget {
   Widget _bodyBuild(BuildContext context) {
     final state = context.watch<CustomerAddressMapsBloc>().state;
 
-    if (state.isLoadingLocation) {
-      return const Center(child: CircularProgressIndicator());
-    }
-
     return Stack(
       children: [
         _mapLayout(context),
@@ -80,6 +81,39 @@ class CustomerAddressMapsScreen extends StatelessWidget {
         _centerMarkerLayout(context),
         _myLocationButtonLayout(context),
         _bottomPanelLayout(context),
+        if (state.isLoadingLocation)
+          Positioned(
+            top: 75,
+            left: 20,
+            right: 20,
+            child: SafeArea(
+              child: Center(
+                child: Material(
+                  elevation: 4,
+                  borderRadius: BorderRadius.circular(20),
+                  color: Theme.of(context).colorScheme.surface,
+                  child: const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        SizedBox(
+                          width: 14,
+                          height: 14,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        ),
+                        SizedBox(width: 10),
+                        Text(
+                          'Mendeteksi lokasi...',
+                          style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
       ],
     );
   }

@@ -10,14 +10,19 @@ import 'package:warunk/app/features/merchant/presentation/maps/bloc/merchant_map
 import 'package:warunk/main.dart';
 import 'package:dio/dio.dart';
 
-class MerchantMapsScreen extends StatelessWidget {
+class MerchantMapsScreen extends StatefulWidget {
   final double? initialLatitude;
   final double? initialLongitude;
 
+  const MerchantMapsScreen({super.key, this.initialLatitude, this.initialLongitude});
+
+  @override
+  State<MerchantMapsScreen> createState() => _MerchantMapsScreenState();
+}
+
+class _MerchantMapsScreenState extends State<MerchantMapsScreen> {
   // We keep the Completer here to control the map camera
   final Completer<GoogleMapController> _controller = Completer();
-
-  MerchantMapsScreen({super.key, this.initialLatitude, this.initialLongitude});
 
   // Default coordinate (Monas, Jakarta)
   static const CameraPosition _kDefaultPosition = CameraPosition(
@@ -31,8 +36,8 @@ class MerchantMapsScreen extends StatelessWidget {
       create: (context) => sl<MerchantMapsBloc>()
         ..add(
           MerchantMapsEventInit(
-            initialLatitude: initialLatitude,
-            initialLongitude: initialLongitude,
+            initialLatitude: widget.initialLatitude,
+            initialLongitude: widget.initialLongitude,
           ),
         ),
       child: BlocConsumer<MerchantMapsBloc, MerchantMapsState>(
@@ -69,10 +74,6 @@ class MerchantMapsScreen extends StatelessWidget {
   Widget _bodyBuild(BuildContext context) {
     final state = context.watch<MerchantMapsBloc>().state;
 
-    if (state.isLoadingLocation) {
-      return const Center(child: CircularProgressIndicator());
-    }
-
     return Stack(
       children: [
         _mapLayout(context),
@@ -80,6 +81,39 @@ class MerchantMapsScreen extends StatelessWidget {
         _centerMarkerLayout(context),
         _myLocationButtonLayout(context),
         _bottomPanelLayout(context),
+        if (state.isLoadingLocation)
+          Positioned(
+            top: 75,
+            left: 20,
+            right: 20,
+            child: SafeArea(
+              child: Center(
+                child: Material(
+                  elevation: 4,
+                  borderRadius: BorderRadius.circular(20),
+                  color: Theme.of(context).colorScheme.surface,
+                  child: const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        SizedBox(
+                          width: 14,
+                          height: 14,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        ),
+                        SizedBox(width: 10),
+                        Text(
+                          'Mendeteksi lokasi...',
+                          style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
       ],
     );
   }

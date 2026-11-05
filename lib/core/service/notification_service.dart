@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:warunk/app/features/customer/presentation/cart/customer_cart_screen.dart';
@@ -20,6 +21,7 @@ import 'package:warunk/core/enum/role.dart';
 import 'package:warunk/core/helper/shared_preferences_helper.dart';
 import 'package:warunk/main.dart';
 import 'package:warunk/core/enum/notification_indicator_entity.dart';
+
 // import 'package:mimicici_cake/app/presentation/detail_order_online/detail_order_online_screen.dart';
 
 class NotificationService {
@@ -98,11 +100,48 @@ class NotificationService {
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
     try {
-      final fcmToken = await FirebaseMessaging.instance.getToken();
-      print(fcmToken);
+      if (defaultTargetPlatform == TargetPlatform.iOS) {
+        // Pada iOS, Firebase memerlukan APNs token terlebih dahulu
+        String? apnsToken;
+        try {
+          apnsToken = await FirebaseMessaging.instance.getAPNSToken();
+        } catch (_) {
+          // getAPNSToken() dapat melempar exception apns-token-not-set jika belum siap
+        }
+
+        int retry = 0;
+        while (apnsToken == null && retry < 3) {
+          await Future.delayed(const Duration(seconds: 1));
+          try {
+            apnsToken = await FirebaseMessaging.instance.getAPNSToken();
+          } catch (_) {}
+          retry++;
+        }
+
+        if (apnsToken != null) {
+          try {
+            final fcmToken = await FirebaseMessaging.instance.getToken();
+            debugPrint('FCM Token: $fcmToken');
+          } catch (e) {
+            debugPrint('FCM Token belum dapat diambil di iOS: $e');
+          }
+        } else {
+          debugPrint(
+            'Info: APNS token belum tersedia. Ini normal terjadi pada iOS Simulator '
+            'atau jika Push Notification Capability belum diaktifkan di Xcode.',
+          );
+        }
+      } else {
+        final fcmToken = await FirebaseMessaging.instance.getToken();
+        debugPrint('FCM Token: $fcmToken');
+      }
     } catch (e) {
-      print('Failed to get FCM token: $e');
+      debugPrint('Failed to get FCM token: $e');
     }
+
+    FirebaseMessaging.instance.onTokenRefresh.listen((fcmToken) {
+      debugPrint('FCM Token refreshed: $fcmToken');
+    });
 
     FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
       RemoteNotification? notification = message.notification;
@@ -168,7 +207,9 @@ class NotificationService {
     });
 
     // Menangani notifikasi saat aplikasi dibuka dari kondisi tertutup (TERMINATED)
-    FirebaseMessaging.instance.getInitialMessage().then((RemoteMessage? message) {
+    FirebaseMessaging.instance.getInitialMessage().then((
+      RemoteMessage? message,
+    ) {
       if (message != null) {
         print('Aplikasi dibuka dari terminated via FCM: ${message.data}');
         Future.delayed(const Duration(milliseconds: 1000), () {
@@ -183,13 +224,17 @@ class NotificationService {
     });
 
     // Menangani notifikasi lokal saat aplikasi dibuka dari kondisi tertutup (TERMINATED)
-    flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails().then((details) {
+    flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails().then((
+      details,
+    ) {
       if (details != null &&
           details.didNotificationLaunchApp &&
           details.notificationResponse != null) {
         final payloadString = details.notificationResponse!.payload;
         if (payloadString != null && payloadString.isNotEmpty) {
-          print('Aplikasi dibuka dari terminated via Local Notification: $payloadString');
+          print(
+            'Aplikasi dibuka dari terminated via Local Notification: $payloadString',
+          );
           Future.delayed(const Duration(milliseconds: 1000), () {
             try {
               final payload = jsonDecode(payloadString);

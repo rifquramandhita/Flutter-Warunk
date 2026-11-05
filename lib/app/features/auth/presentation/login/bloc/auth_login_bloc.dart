@@ -1,5 +1,7 @@
+import 'dart:io';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:warunk/firebase_options.dart';
 import 'package:warunk/app/features/auth/domain/use_case/auth_login_use_case.dart';
 import 'package:warunk/app/features/auth/domain/use_case/auth_login_google_use_case.dart';
 import 'package:warunk/core/bloc/auth/auth_bloc.dart';
@@ -82,7 +84,11 @@ class AuthLoginBloc extends Bloc<AuthLoginEvent, AuthLoginState> {
   ) async {
     emit(state.copyWith(isLoading: true, errorMessage: null));
     try {
-      final googleSignIn = GoogleSignIn();
+      final googleSignIn = GoogleSignIn(
+        clientId: Platform.isIOS
+            ? DefaultFirebaseOptions.currentPlatform.iosClientId
+            : null,
+      );
       final googleUser = await googleSignIn.signIn();
 
       if (googleUser != null) {

@@ -1,5 +1,7 @@
+import 'dart:io';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:warunk/firebase_options.dart';
 import 'package:warunk/app/features/auth/domain/use_case/auth_logout_use_case.dart';
 import 'package:warunk/app/features/merchant/presentation/shell/bloc/merchant_shell_bloc.dart';
 import 'package:warunk/core/bloc/auth/auth_bloc.dart';
@@ -27,7 +29,11 @@ class AuthLogoutBloc extends Bloc<AuthLogoutEvent, AuthLogoutState> {
     emit(state.copyWith(isLoading: true));
 
     try {
-      final googleSignIn = GoogleSignIn();
+      final googleSignIn = GoogleSignIn(
+        clientId: Platform.isIOS
+            ? DefaultFirebaseOptions.currentPlatform.iosClientId
+            : null,
+      );
       await googleSignIn.signOut();
     } catch (_) {}
 
