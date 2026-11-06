@@ -16,6 +16,9 @@ class MerchantDashboardState extends Equatable {
   final String merchantName;
   final String merchantPhoto;
   final String merchantCategory;
+  final String merchantAddress;
+  final bool hasAddress;
+  final bool hasOperationalHours;
   final String merchantTime;
   final bool hasWelcomePopup;
   final String? merchantStatus;
@@ -51,6 +54,9 @@ class MerchantDashboardState extends Equatable {
     this.merchantName = '',
     this.merchantPhoto = '',
     this.merchantCategory = '',
+    this.merchantAddress = '',
+    this.hasAddress = false,
+    this.hasOperationalHours = false,
     this.merchantTime = '',
     this.hasWelcomePopup = false,
     this.merchantStatus,
@@ -79,6 +85,9 @@ class MerchantDashboardState extends Equatable {
     String? merchantName,
     String? merchantPhoto,
     String? merchantCategory,
+    String? merchantAddress,
+    bool? hasAddress,
+    bool? hasOperationalHours,
     String? merchantTime,
     bool? hasWelcomePopup,
     String? merchantStatus,
@@ -105,6 +114,9 @@ class MerchantDashboardState extends Equatable {
     merchantName: merchantName ?? this.merchantName,
     merchantPhoto: merchantPhoto ?? this.merchantPhoto,
     merchantCategory: merchantCategory ?? this.merchantCategory,
+    merchantAddress: merchantAddress ?? this.merchantAddress,
+    hasAddress: hasAddress ?? this.hasAddress,
+    hasOperationalHours: hasOperationalHours ?? this.hasOperationalHours,
     merchantTime: merchantTime ?? this.merchantTime,
     hasWelcomePopup: hasWelcomePopup ?? this.hasWelcomePopup,
     merchantStatus: merchantStatus ?? this.merchantStatus,
@@ -134,6 +146,9 @@ class MerchantDashboardState extends Equatable {
     merchantName,
     merchantPhoto,
     merchantCategory,
+    merchantAddress,
+    hasAddress,
+    hasOperationalHours,
     merchantTime,
     hasWelcomePopup,
     merchantStatus,

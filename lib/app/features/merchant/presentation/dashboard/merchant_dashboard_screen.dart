@@ -143,7 +143,9 @@ class MerchantDashboardScreen extends StatelessWidget {
 
     if (state.merchantName.trim().isEmpty ||
         state.merchantName == '' ||
-        state.merchantCategory.trim().isEmpty) {
+        state.merchantCategory.trim().isEmpty ||
+        !state.hasAddress ||
+        !state.hasOperationalHours) {
       await showDialog(
         context: context,
         barrierDismissible: false,

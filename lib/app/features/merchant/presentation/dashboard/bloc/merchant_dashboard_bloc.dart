@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:warunk/app/features/merchant/domain/entity/merchant_dashboard.dart';
+import 'package:warunk/app/features/merchant/domain/entity/merchant_merchant.dart';
 import 'package:warunk/app/features/merchant/domain/use_case/merchant_dashboard_get_use_case.dart';
 import 'package:warunk/app/features/merchant/domain/use_case/merchant_merchant_get_use_case.dart';
 import 'package:warunk/app/features/merchant/domain/use_case/merchant_setting_get_customer_service_whatsapp_use_case.dart';
@@ -70,6 +71,43 @@ class MerchantDashboardBloc
         growth = ((todaySales - yesterdaySales) / yesterdaySales) * 100;
       }
 
+      final merchant = merchantResult is SuccessState
+          ? (merchantResult.data as MerchantMerchantEntity?)
+          : null;
+
+      final merchantAddress = (merchant?.address?.trim().isNotEmpty ?? false)
+          ? merchant!.address!.trim()
+          : (merchant?.city?.trim().isNotEmpty ?? false)
+              ? merchant!.city!.trim()
+              : '';
+      final hasAddress = merchantAddress.isNotEmpty;
+
+      final opDays = data.merchantInfo.operationalDays.trim();
+      final opTime = data.merchantInfo.operationalTime.trim();
+
+      final hasOperationalHours = (merchant != null &&
+              ((merchant.isOpenAllDay ?? false) ||
+                  (merchant.isOpen24Hours ?? false) ||
+                  merchant.merchantOpens.isNotEmpty ||
+                  (merchant.timeOpen != null &&
+                      merchant.timeOpen!.trim().isNotEmpty))) ||
+          (opDays.isNotEmpty &&
+              opDays != '-' &&
+              opTime.isNotEmpty &&
+              opTime != '-');
+
+      String merchantTime = '';
+      if (opDays.isNotEmpty &&
+          opTime.isNotEmpty &&
+          opDays != '-' &&
+          opTime != '-') {
+        merchantTime = '$opDays • $opTime';
+      } else if (opDays.isNotEmpty && opDays != '-') {
+        merchantTime = opDays;
+      } else if (opTime.isNotEmpty && opTime != '-') {
+        merchantTime = opTime;
+      }
+
       emit(
         state.copyWith(
           isLoading: false,
@@ -85,13 +123,15 @@ class MerchantDashboardBloc
           merchantName: data.merchantInfo.name,
           merchantPhoto: data.merchantInfo.photo,
           merchantCategory: data.merchantInfo.category,
-          merchantTime:
-              '${data.merchantInfo.operationalDays} • ${data.merchantInfo.operationalTime}',
+          merchantAddress: merchantAddress,
+          hasAddress: hasAddress,
+          hasOperationalHours: hasOperationalHours,
+          merchantTime: merchantTime,
           hasWelcomePopup: data.hasWelcomePopup,
-          merchantStatus: merchantResult is SuccessState ? (merchantResult.data as dynamic)?.status : null,
-          merchantReportReason: merchantResult is SuccessState ? (merchantResult.data as dynamic)?.reportReason : null,
-          merchantReportDate: merchantResult is SuccessState ? (merchantResult.data as dynamic)?.reportedAt : null,
-          isVerified: merchantResult is SuccessState ? ((merchantResult.data as dynamic)?.isVerified ?? false) : false,
+          merchantStatus: merchant?.status,
+          merchantReportReason: merchant?.reportReason,
+          merchantReportDate: merchant?.reportedAt,
+          isVerified: merchant?.isVerified ?? false,
         ),
       );
     } else {
