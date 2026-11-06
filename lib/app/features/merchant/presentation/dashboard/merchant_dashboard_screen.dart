@@ -141,11 +141,25 @@ class MerchantDashboardScreen extends StatelessWidget {
 
     if (!context.mounted) return;
 
-    if (state.merchantName.trim().isEmpty ||
+    final bool isAddressOrHoursMissing =
+        !state.hasAddress || !state.hasOperationalHours;
+    final bool isNameOrCategoryMissing =
+        state.merchantName.trim().isEmpty ||
         state.merchantName == '' ||
-        state.merchantCategory.trim().isEmpty ||
-        !state.hasAddress ||
-        !state.hasOperationalHours) {
+        state.merchantCategory.trim().isEmpty;
+
+    if (isNameOrCategoryMissing || isAddressOrHoursMissing) {
+      final String dialogTitle = isAddressOrHoursMissing
+          ? 'Toko Anda berhasil dibuat.'
+          : 'Toko Anda berhasil dibuat!';
+      final String dialogContent = isAddressOrHoursMissing
+          ? 'Namun sayangnya data toko Anda belum lengkap! Segera pelanggan bisa belanja!'
+          : 'Yuk Atur Toko Anda supaya bisa diakses pelanggan';
+      final String cancelBtnText =
+          isAddressOrHoursMissing ? 'Nanti Saja' : 'Nanti saja!';
+      final String confirmBtnText =
+          isAddressOrHoursMissing ? 'Lengkapi Sekarang!' : 'Atur toko sekarang!';
+
       await showDialog(
         context: context,
         barrierDismissible: false,
@@ -154,14 +168,14 @@ class MerchantDashboardScreen extends StatelessWidget {
             borderRadius: BorderRadius.circular(16),
           ),
           title: Text(
-            'Toko Anda berhasil dibuat!',
+            dialogTitle,
             style: GlobalHelper.getTextTheme(
               context,
               appTextStyle: AppTextStyle.TITLE_MEDIUM,
             )?.copyWith(fontWeight: FontWeight.bold),
           ),
-          content: const Text(
-            'Yuk Atur Toko Anda supaya bisa diakses pelanggan',
+          content: Text(
+            dialogContent,
           ),
           actions: [
             TextButton(
@@ -169,7 +183,7 @@ class MerchantDashboardScreen extends StatelessWidget {
                 navigatorKey.currentState?.pop();
               },
               child: Text(
-                'Nanti saja!',
+                cancelBtnText,
                 style: GlobalHelper.getTextTheme(
                   context,
                   appTextStyle: AppTextStyle.LABEL_LARGE,
@@ -234,7 +248,7 @@ class MerchantDashboardScreen extends StatelessWidget {
                 ),
               ),
               child: Text(
-                'Atur toko sekarang!',
+                confirmBtnText,
                 style: GlobalHelper.getTextTheme(
                   context,
                   appTextStyle: AppTextStyle.LABEL_LARGE,
