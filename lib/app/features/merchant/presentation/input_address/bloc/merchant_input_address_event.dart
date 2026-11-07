@@ -10,17 +10,22 @@ class MerchantInputAddressEventAddressChanged extends MerchantInputAddressEvent 
 }
 
 class MerchantInputAddressEventProvinceChanged extends MerchantInputAddressEvent {
-  final String province;
+  final MerchantProvinceEntity? province;
   MerchantInputAddressEventProvinceChanged(this.province);
 }
 
+class MerchantInputAddressEventRegencyChanged extends MerchantInputAddressEvent {
+  final MerchantRegencyEntity? regency;
+  MerchantInputAddressEventRegencyChanged(this.regency);
+}
+
 class MerchantInputAddressEventCityChanged extends MerchantInputAddressEvent {
-  final String city;
-  MerchantInputAddressEventCityChanged(this.city);
+  final MerchantRegencyEntity? regency;
+  MerchantInputAddressEventCityChanged(this.regency);
 }
 
 class MerchantInputAddressEventDistrictChanged extends MerchantInputAddressEvent {
-  final String district;
+  final MerchantDistrictEntity? district;
   MerchantInputAddressEventDistrictChanged(this.district);
 }
 

@@ -5,8 +5,14 @@ import 'package:warunk/app/features/customer/presentation/payment_proof/bloc/cus
 import 'package:get_it/get_it.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import 'package:warunk/app/features/merchant/data/source/merchant_setting_api_service.dart';
+import 'package:warunk/app/features/merchant/data/source/merchant_region_api_service.dart';
 import 'package:warunk/app/features/merchant/domain/repository/merchant_setting_repository.dart';
+import 'package:warunk/app/features/merchant/domain/repository/merchant_region_repository.dart';
 import 'package:warunk/app/features/merchant/data/repository/merchant_setting_repository_impl.dart';
+import 'package:warunk/app/features/merchant/data/repository/merchant_region_repository_impl.dart';
+import 'package:warunk/app/features/merchant/domain/use_case/merchant_region_get_province_use_case.dart';
+import 'package:warunk/app/features/merchant/domain/use_case/merchant_region_get_regency_use_case.dart';
+import 'package:warunk/app/features/merchant/domain/use_case/merchant_region_get_district_use_case.dart';
 import 'package:warunk/app/features/merchant/domain/use_case/merchant_setting_get_customer_service_whatsapp_use_case.dart';
 import 'package:warunk/app/features/merchant/domain/use_case/merchant_setting_get_customer_service_chat_url_use_case.dart';
 import 'package:warunk/app/features/auth/data/source/auth_api_service.dart';
@@ -253,6 +259,7 @@ Future<void> initDependency() async {
   sl.registerLazySingleton(() => CustomerPromotionInformationApiService(dio));
   sl.registerLazySingleton(() => SalesDashboardApiService(dio));
   sl.registerLazySingleton(() => SalesMerchantApiService(dio));
+  sl.registerLazySingleton(() => MerchantRegionApiService(dio));
   //repository
   sl.registerLazySingleton<MerchantSettingRepository>(
     () => MerchantSettingRepositoryImpl(apiService: sl()),
@@ -315,8 +322,14 @@ Future<void> initDependency() async {
   sl.registerLazySingleton<SalesMerchantRepository>(
     () => SalesMerchantRepositoryImpl(apiService: sl()),
   );
+  sl.registerLazySingleton<MerchantRegionRepository>(
+    () => MerchantRegionRepositoryImpl(apiService: sl()),
+  );
 
   //usecase
+  sl.registerLazySingleton(() => MerchantRegionGetProvinceUseCase(sl()));
+  sl.registerLazySingleton(() => MerchantRegionGetRegencyUseCase(sl()));
+  sl.registerLazySingleton(() => MerchantRegionGetDistrictUseCase(sl()));
   sl.registerLazySingleton(
     () => MerchantSettingGetCustomerServiceWhatsAppUseCase(sl()),
   );
@@ -579,7 +592,9 @@ Future<void> initDependency() async {
       getCategoryUseCase: sl(),
     ),
   );
-  sl.registerFactory(() => MerchantInputAddressBloc(sl(), sl(), sl()));
+  sl.registerFactory(
+    () => MerchantInputAddressBloc(sl(), sl(), sl(), sl(), sl(), sl()),
+  );
   sl.registerFactory(() => MerchantInputAccountBloc(sl(), sl()));
   sl.registerFactory(() => MerchantMapsBloc(sl()));
   sl.registerFactory(

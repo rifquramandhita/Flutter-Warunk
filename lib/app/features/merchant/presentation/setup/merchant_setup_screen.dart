@@ -5,6 +5,9 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 
 import 'package:warunk/app/features/merchant/domain/entity/merchant_category.dart';
+import 'package:warunk/app/features/merchant/domain/entity/merchant_district.dart';
+import 'package:warunk/app/features/merchant/domain/entity/merchant_province.dart';
+import 'package:warunk/app/features/merchant/domain/entity/merchant_regency.dart';
 import 'package:warunk/app/features/merchant/presentation/edit_profil/bloc/merchant_edit_profil_bloc.dart';
 import 'package:warunk/app/features/merchant/presentation/input_address/bloc/merchant_input_address_bloc.dart';
 import 'package:warunk/app/features/merchant/presentation/operational_hours/bloc/merchant_operational_hours_bloc.dart';
@@ -33,17 +36,11 @@ class _MerchantSetupScreenState extends State<MerchantSetupScreen> {
   SetupSaveState _saveState = SetupSaveState.idle;
 
   // Controllers for address
-  final TextEditingController _provinceCtrl = TextEditingController();
-  final TextEditingController _cityCtrl = TextEditingController();
-  final TextEditingController _districtCtrl = TextEditingController();
   final TextEditingController _postalCodeCtrl = TextEditingController();
   final TextEditingController _addressCtrl = TextEditingController();
 
   @override
   void dispose() {
-    _provinceCtrl.dispose();
-    _cityCtrl.dispose();
-    _districtCtrl.dispose();
     _postalCodeCtrl.dispose();
     _addressCtrl.dispose();
     super.dispose();
@@ -51,15 +48,6 @@ class _MerchantSetupScreenState extends State<MerchantSetupScreen> {
 
   void _submitAll(BuildContext context) {
     final addressBloc = context.read<MerchantInputAddressBloc>();
-    if (addressBloc.state.province != _provinceCtrl.text && _provinceCtrl.text.isNotEmpty) {
-      addressBloc.add(MerchantInputAddressEventProvinceChanged(_provinceCtrl.text));
-    }
-    if (addressBloc.state.city != _cityCtrl.text && _cityCtrl.text.isNotEmpty) {
-      addressBloc.add(MerchantInputAddressEventCityChanged(_cityCtrl.text));
-    }
-    if (addressBloc.state.district != _districtCtrl.text && _districtCtrl.text.isNotEmpty) {
-      addressBloc.add(MerchantInputAddressEventDistrictChanged(_districtCtrl.text));
-    }
     if (addressBloc.state.postalCode != _postalCodeCtrl.text && _postalCodeCtrl.text.isNotEmpty) {
       addressBloc.add(MerchantInputAddressEventPostalCodeChanged(_postalCodeCtrl.text));
     }
@@ -103,9 +91,9 @@ class _MerchantSetupScreenState extends State<MerchantSetupScreen> {
         }
         return true;
       case 5:
-        final prov = _provinceCtrl.text.trim().isNotEmpty ? _provinceCtrl.text.trim() : addressState.province.trim();
-        final city = _cityCtrl.text.trim().isNotEmpty ? _cityCtrl.text.trim() : addressState.city.trim();
-        final dist = _districtCtrl.text.trim().isNotEmpty ? _districtCtrl.text.trim() : addressState.district.trim();
+        final prov = addressState.province.trim();
+        final city = addressState.city.trim();
+        final dist = addressState.district.trim();
         final postal = _postalCodeCtrl.text.trim().isNotEmpty ? _postalCodeCtrl.text.trim() : addressState.postalCode.trim();
         final addr = _addressCtrl.text.trim().isNotEmpty ? _addressCtrl.text.trim() : addressState.address.trim();
 
@@ -120,9 +108,6 @@ class _MerchantSetupScreenState extends State<MerchantSetupScreen> {
 
         // Sync controllers to Bloc
         final addressBloc = context.read<MerchantInputAddressBloc>();
-        if (addressBloc.state.province != _provinceCtrl.text) addressBloc.add(MerchantInputAddressEventProvinceChanged(_provinceCtrl.text));
-        if (addressBloc.state.city != _cityCtrl.text) addressBloc.add(MerchantInputAddressEventCityChanged(_cityCtrl.text));
-        if (addressBloc.state.district != _districtCtrl.text) addressBloc.add(MerchantInputAddressEventDistrictChanged(_districtCtrl.text));
         if (addressBloc.state.postalCode != _postalCodeCtrl.text) addressBloc.add(MerchantInputAddressEventPostalCodeChanged(_postalCodeCtrl.text));
         if (addressBloc.state.address != _addressCtrl.text) addressBloc.add(MerchantInputAddressEventAddressChanged(_addressCtrl.text));
         return true;
@@ -157,9 +142,9 @@ class _MerchantSetupScreenState extends State<MerchantSetupScreen> {
       return false;
     }
 
-    final prov = _provinceCtrl.text.trim().isNotEmpty ? _provinceCtrl.text.trim() : addressState.province.trim();
-    final city = _cityCtrl.text.trim().isNotEmpty ? _cityCtrl.text.trim() : addressState.city.trim();
-    final dist = _districtCtrl.text.trim().isNotEmpty ? _districtCtrl.text.trim() : addressState.district.trim();
+    final prov = addressState.province.trim();
+    final city = addressState.city.trim();
+    final dist = addressState.district.trim();
     final postal = _postalCodeCtrl.text.trim().isNotEmpty ? _postalCodeCtrl.text.trim() : addressState.postalCode.trim();
     final addr = _addressCtrl.text.trim().isNotEmpty ? _addressCtrl.text.trim() : addressState.address.trim();
 
@@ -237,9 +222,6 @@ class _MerchantSetupScreenState extends State<MerchantSetupScreen> {
           ),
           BlocListener<MerchantInputAddressBloc, MerchantInputAddressState>(
             listener: (context, state) {
-              if (_provinceCtrl.text != state.province) _provinceCtrl.text = state.province;
-              if (_cityCtrl.text != state.city) _cityCtrl.text = state.city;
-              if (_districtCtrl.text != state.district) _districtCtrl.text = state.district;
               if (_postalCodeCtrl.text != state.postalCode) _postalCodeCtrl.text = state.postalCode;
               if (_addressCtrl.text != state.address) _addressCtrl.text = state.address;
 
@@ -641,6 +623,80 @@ class _MerchantSetupScreenState extends State<MerchantSetupScreen> {
     );
   }
 
+  Widget _dropdownField<T>({
+    required BuildContext context,
+    required String hintText,
+    required T? selectedItem,
+    required List<T> items,
+    required String Function(T?) itemAsString,
+    required bool Function(T, T) compareFn,
+    required ValueChanged<T?> onSelected,
+    bool enabled = true,
+    String? searchHint,
+  }) {
+    final colorSchema = GlobalHelper.getColorSchema(context);
+    final bodyStyle = GlobalHelper.getTextTheme(
+      context,
+      appTextStyle: AppTextStyle.BODY_SMALL,
+    );
+
+    return DropdownSearch<T>(
+      enabled: enabled,
+      selectedItem: selectedItem,
+      items: (filter, loadProps) => items,
+      itemAsString: itemAsString,
+      compareFn: compareFn,
+      onSelected: onSelected,
+      decoratorProps: DropDownDecoratorProps(
+        decoration: InputDecoration(
+          hintText: hintText,
+          hintStyle: bodyStyle?.copyWith(color: colorSchema.onSurfaceVariant),
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: 14,
+          ),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: colorSchema.outlineVariant),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: colorSchema.outlineVariant),
+          ),
+          disabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(
+              color: colorSchema.outlineVariant.withValues(alpha: 0.5),
+            ),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: colorSchema.primary),
+          ),
+          filled: true,
+          fillColor: enabled
+              ? colorSchema.surface
+              : colorSchema.surfaceContainerHighest.withValues(alpha: 0.5),
+        ),
+      ),
+      popupProps: PopupProps.menu(
+        showSearchBox: true,
+        searchFieldProps: TextFieldProps(
+          decoration: InputDecoration(
+            hintText: searchHint ?? 'Cari...',
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 14,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   // --- Address UI Helpers ---
   Widget _addressForm(BuildContext context, MerchantInputAddressState state) {
     final colorSchema = GlobalHelper.getColorSchema(context);
@@ -700,35 +756,63 @@ class _MerchantSetupScreenState extends State<MerchantSetupScreen> {
           const SizedBox(height: 20),
           _fieldLabel(context, 'Provinsi'),
           const SizedBox(height: 8),
-          _editField(
+          _dropdownField<MerchantProvinceEntity>(
             context: context,
-            controller: _provinceCtrl,
-            hintText: 'Contoh: Jawa Timur',
-            keyboardType: TextInputType.text,
-            enabled: isLocationSet,
-            onChanged: (v) => context.read<MerchantInputAddressBloc>().add(MerchantInputAddressEventProvinceChanged(v)),
+            hintText: 'Pilih provinsi',
+            searchHint: 'Cari provinsi...',
+            selectedItem: state.selectedProvince,
+            items: state.provinces,
+            itemAsString: (item) => item?.name ?? '',
+            compareFn: (item1, item2) => item1.id == item2.id,
+            onSelected: (data) {
+              context.read<MerchantInputAddressBloc>().add(
+                MerchantInputAddressEventProvinceChanged(data),
+              );
+            },
           ),
           const SizedBox(height: 20),
-          _fieldLabel(context, 'Kota'),
+          _fieldLabel(context, 'Kabupaten / Kota'),
           const SizedBox(height: 8),
-          _editField(
+          _dropdownField<MerchantRegencyEntity>(
             context: context,
-            controller: _cityCtrl,
-            hintText: 'Contoh: Surabaya',
-            keyboardType: TextInputType.text,
-            enabled: isLocationSet,
-            onChanged: (v) => context.read<MerchantInputAddressBloc>().add(MerchantInputAddressEventCityChanged(v)),
+            enabled: state.selectedProvince != null && !state.isLoadingRegencies,
+            hintText: state.selectedProvince == null
+                ? 'Pilih provinsi terlebih dahulu'
+                : state.isLoadingRegencies
+                    ? 'Memuat kabupaten/kota...'
+                    : 'Pilih kabupaten/kota',
+            searchHint: 'Cari kabupaten/kota...',
+            selectedItem: state.selectedRegency,
+            items: state.regencies,
+            itemAsString: (item) => item?.name ?? '',
+            compareFn: (item1, item2) => item1.id == item2.id,
+            onSelected: (data) {
+              context.read<MerchantInputAddressBloc>().add(
+                MerchantInputAddressEventRegencyChanged(data),
+              );
+            },
           ),
           const SizedBox(height: 20),
           _fieldLabel(context, 'Kecamatan'),
           const SizedBox(height: 8),
-          _editField(
+          _dropdownField<MerchantDistrictEntity>(
             context: context,
-            controller: _districtCtrl,
-            hintText: 'Contoh: Wonokromo',
-            keyboardType: TextInputType.text,
-            enabled: isLocationSet,
-            onChanged: (v) => context.read<MerchantInputAddressBloc>().add(MerchantInputAddressEventDistrictChanged(v)),
+            enabled: state.selectedRegency != null && !state.isLoadingDistricts,
+            hintText: state.selectedRegency == null
+                ? 'Pilih kabupaten/kota terlebih dahulu'
+                : state.isLoadingDistricts
+                    ? 'Memuat kecamatan...'
+                    : 'Pilih kecamatan',
+            searchHint: 'Cari kecamatan...',
+            selectedItem: state.selectedDistrict,
+            items: state.districts,
+            itemAsString: (item) => item?.name ?? '',
+            compareFn: (item1, item2) => item1.id == item2.id,
+            onSelected: (data) {
+              context.read<MerchantInputAddressBloc>().add(
+                MerchantInputAddressEventDistrictChanged(data),
+              );
+            },
           ),
           const SizedBox(height: 20),
           _fieldLabel(context, 'Kode Pos'),

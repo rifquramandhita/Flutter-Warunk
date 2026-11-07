@@ -17,9 +17,7 @@ abstract class MerchantMerchantRepository {
       {required MerchantMerchantUpdateParam param});
   Future<DataState<dynamic>> updateLocation({
     required String address,
-    required String province,
-    required String city,
-    required String district,
+    required int districtId,
     required String postalCode,
     required double longitude,
     required double latitude,

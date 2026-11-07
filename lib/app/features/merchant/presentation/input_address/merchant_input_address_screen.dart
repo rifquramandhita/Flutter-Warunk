@@ -1,19 +1,20 @@
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:warunk/app/features/merchant/domain/entity/merchant_district.dart';
+import 'package:warunk/app/features/merchant/domain/entity/merchant_province.dart';
+import 'package:warunk/app/features/merchant/domain/entity/merchant_regency.dart';
 import 'package:warunk/app/features/merchant/presentation/input_address/bloc/merchant_input_address_bloc.dart';
+import 'package:warunk/app/features/merchant/presentation/maps/merchant_maps_screen.dart';
 import 'package:warunk/core/dependency/dependency.dart';
-import 'package:warunk/core/helper/global_helper.dart';
 import 'package:warunk/core/helper/dialog_helper.dart';
+import 'package:warunk/core/helper/global_helper.dart';
 import 'package:warunk/core/widgets/loading_app_widget.dart';
 import 'package:warunk/main.dart';
-import 'package:warunk/app/features/merchant/presentation/maps/merchant_maps_screen.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class MerchantInputAddressScreen extends StatelessWidget {
-  final TextEditingController _provinceCtrl = TextEditingController();
-  final TextEditingController _cityCtrl = TextEditingController();
-  final TextEditingController _districtCtrl = TextEditingController();
   final TextEditingController _postalCodeCtrl = TextEditingController();
   final TextEditingController _addressCtrl = TextEditingController();
 
@@ -58,15 +59,12 @@ class MerchantInputAddressScreen extends StatelessWidget {
           ),
           BlocListener<MerchantInputAddressBloc, MerchantInputAddressState>(
             listener: (context, state) {
-              if (_provinceCtrl.text != state.province)
-                _provinceCtrl.text = state.province;
-              if (_cityCtrl.text != state.city) _cityCtrl.text = state.city;
-              if (_districtCtrl.text != state.district)
-                _districtCtrl.text = state.district;
-              if (_postalCodeCtrl.text != state.postalCode)
+              if (_postalCodeCtrl.text != state.postalCode) {
                 _postalCodeCtrl.text = state.postalCode;
-              if (_addressCtrl.text != state.address)
+              }
+              if (_addressCtrl.text != state.address) {
                 _addressCtrl.text = state.address;
+              }
 
               if (state.errorMessage != null) {
                 DialogHelper.showErrorSnackBar(
@@ -87,8 +85,7 @@ class MerchantInputAddressScreen extends StatelessWidget {
                         height: 52,
                         child: ElevatedButton(
                           onPressed: () {
-                            navigatorKey.currentState
-                                ?.pop(); // close bottom sheet
+                            navigatorKey.currentState?.pop(); // close bottom sheet
                             navigatorKey.currentState?.pop(); // close screen
                           },
                           style: ElevatedButton.styleFrom(
@@ -102,14 +99,13 @@ class MerchantInputAddressScreen extends StatelessWidget {
                           ),
                           child: Text(
                             "Kembali",
-                            style:
-                                GlobalHelper.getTextTheme(
-                                  context,
-                                  appTextStyle: AppTextStyle.TITLE_SMALL,
-                                )?.copyWith(
-                                  fontWeight: FontWeight.w700,
-                                  color: Colors.white,
-                                ),
+                            style: GlobalHelper.getTextTheme(
+                              context,
+                              appTextStyle: AppTextStyle.TITLE_SMALL,
+                            )?.copyWith(
+                              fontWeight: FontWeight.w700,
+                              color: Colors.white,
+                            ),
                           ),
                         ),
                       ),
@@ -186,75 +182,168 @@ class MerchantInputAddressScreen extends StatelessWidget {
           ),
           const SizedBox(height: 20),
           _fieldLabel(context, 'Provinsi'),
-
           const SizedBox(height: 8),
-          _editField(
+          _dropdownField<MerchantProvinceEntity>(
             context: context,
-            controller: _provinceCtrl,
-            hintText: '',
-            keyboardType: TextInputType.text,
-            onChanged: (v) => context.read<MerchantInputAddressBloc>().add(
-              MerchantInputAddressEventProvinceChanged(v),
-            ),
+            hintText: 'Pilih provinsi',
+            searchHint: 'Cari provinsi...',
+            selectedItem: state.selectedProvince,
+            items: state.provinces,
+            itemAsString: (item) => item?.name ?? '',
+            compareFn: (item1, item2) => item1.id == item2.id,
+            onSelected: (data) {
+              context.read<MerchantInputAddressBloc>().add(
+                MerchantInputAddressEventProvinceChanged(data),
+              );
+            },
           ),
-
           const SizedBox(height: 20),
-          _fieldLabel(context, 'Kota'),
+          _fieldLabel(context, 'Kabupaten / Kota'),
           const SizedBox(height: 8),
-          _editField(
+          _dropdownField<MerchantRegencyEntity>(
             context: context,
-            controller: _cityCtrl,
-            hintText: '',
-            keyboardType: TextInputType.text,
-            onChanged: (v) => context.read<MerchantInputAddressBloc>().add(
-              MerchantInputAddressEventCityChanged(v),
-            ),
+            enabled: state.selectedProvince != null && !state.isLoadingRegencies,
+            hintText: state.selectedProvince == null
+                ? 'Pilih provinsi terlebih dahulu'
+                : state.isLoadingRegencies
+                    ? 'Memuat kabupaten/kota...'
+                    : 'Pilih kabupaten/kota',
+            searchHint: 'Cari kabupaten/kota...',
+            selectedItem: state.selectedRegency,
+            items: state.regencies,
+            itemAsString: (item) => item?.name ?? '',
+            compareFn: (item1, item2) => item1.id == item2.id,
+            onSelected: (data) {
+              context.read<MerchantInputAddressBloc>().add(
+                MerchantInputAddressEventRegencyChanged(data),
+              );
+            },
           ),
-
           const SizedBox(height: 20),
           _fieldLabel(context, 'Kecamatan'),
           const SizedBox(height: 8),
-          _editField(
+          _dropdownField<MerchantDistrictEntity>(
             context: context,
-            controller: _districtCtrl,
-            hintText: '',
-            keyboardType: TextInputType.text,
-            onChanged: (v) => context.read<MerchantInputAddressBloc>().add(
-              MerchantInputAddressEventDistrictChanged(v),
-            ),
+            enabled: state.selectedRegency != null && !state.isLoadingDistricts,
+            hintText: state.selectedRegency == null
+                ? 'Pilih kabupaten/kota terlebih dahulu'
+                : state.isLoadingDistricts
+                    ? 'Memuat kecamatan...'
+                    : 'Pilih kecamatan',
+            searchHint: 'Cari kecamatan...',
+            selectedItem: state.selectedDistrict,
+            items: state.districts,
+            itemAsString: (item) => item?.name ?? '',
+            compareFn: (item1, item2) => item1.id == item2.id,
+            onSelected: (data) {
+              context.read<MerchantInputAddressBloc>().add(
+                MerchantInputAddressEventDistrictChanged(data),
+              );
+            },
           ),
-
           const SizedBox(height: 20),
           _fieldLabel(context, 'Kode Pos'),
           const SizedBox(height: 8),
           _editField(
             context: context,
             controller: _postalCodeCtrl,
-            hintText: '',
+            hintText: 'Masukkan kode pos',
             keyboardType: TextInputType.number,
             inputFormatters: [FilteringTextInputFormatter.digitsOnly],
             onChanged: (v) => context.read<MerchantInputAddressBloc>().add(
               MerchantInputAddressEventPostalCodeChanged(v),
             ),
           ),
-
           const SizedBox(height: 20),
           _fieldLabel(context, 'Alamat Detail'),
           const SizedBox(height: 8),
           _editField(
             context: context,
             controller: _addressCtrl,
-            hintText: '',
+            hintText: 'Masukkan alamat lengkap toko',
             keyboardType: TextInputType.text,
             maxLines: 3,
             onChanged: (v) => context.read<MerchantInputAddressBloc>().add(
               MerchantInputAddressEventAddressChanged(v),
             ),
           ),
-
           const SizedBox(height: 32),
           _saveButton(context, state),
         ],
+      ),
+    );
+  }
+
+  Widget _dropdownField<T>({
+    required BuildContext context,
+    required String hintText,
+    required T? selectedItem,
+    required List<T> items,
+    required String Function(T?) itemAsString,
+    required bool Function(T, T) compareFn,
+    required ValueChanged<T?> onSelected,
+    bool enabled = true,
+    String? searchHint,
+  }) {
+    final colorSchema = GlobalHelper.getColorSchema(context);
+    final bodyStyle = GlobalHelper.getTextTheme(
+      context,
+      appTextStyle: AppTextStyle.BODY_SMALL,
+    );
+
+    return DropdownSearch<T>(
+      enabled: enabled,
+      selectedItem: selectedItem,
+      items: (filter, loadProps) => items,
+      itemAsString: itemAsString,
+      compareFn: compareFn,
+      onSelected: onSelected,
+      decoratorProps: DropDownDecoratorProps(
+        decoration: InputDecoration(
+          hintText: hintText,
+          hintStyle: bodyStyle?.copyWith(color: colorSchema.onSurfaceVariant),
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: 14,
+          ),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: colorSchema.outlineVariant),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: colorSchema.outlineVariant),
+          ),
+          disabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(
+              color: colorSchema.outlineVariant.withValues(alpha: 0.5),
+            ),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: colorSchema.primary),
+          ),
+          filled: true,
+          fillColor: enabled
+              ? colorSchema.surface
+              : colorSchema.surfaceContainerHighest.withValues(alpha: 0.5),
+        ),
+      ),
+      popupProps: PopupProps.menu(
+        showSearchBox: true,
+        searchFieldProps: TextFieldProps(
+          decoration: InputDecoration(
+            hintText: searchHint ?? 'Cari...',
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 14,
+            ),
+          ),
+        ),
       ),
     );
   }

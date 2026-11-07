@@ -76,7 +76,9 @@ class MerchantLocationRepositoryImpl implements MerchantLocationRepository {
           data: MerchantLocationPlacemarkEntity(
             province: place.administrativeArea ?? '',
             city: place.subAdministrativeArea ?? '',
-            district: place.locality ?? '',
+            district: (place.locality?.isNotEmpty ?? false)
+                ? '${place.locality} ${place.subLocality ?? ''}'.trim()
+                : (place.subLocality ?? ''),
             postalCode: place.postalCode ?? '',
             address: newAddress,
           ),

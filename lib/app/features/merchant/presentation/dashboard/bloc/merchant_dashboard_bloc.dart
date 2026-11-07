@@ -75,12 +75,29 @@ class MerchantDashboardBloc
           ? (merchantResult.data as MerchantMerchantEntity?)
           : null;
 
-      final merchantAddress = (merchant?.address?.trim().isNotEmpty ?? false)
-          ? merchant!.address!.trim()
-          : (merchant?.city?.trim().isNotEmpty ?? false)
-              ? merchant!.city!.trim()
-              : '';
-      final hasAddress = merchantAddress.isNotEmpty;
+      final hasProvince = merchant?.province?.trim().isNotEmpty ?? false;
+      final hasCity = merchant?.city?.trim().isNotEmpty ?? false;
+      final hasDistrict = merchant?.district?.trim().isNotEmpty ?? false;
+      final hasAddressDetail =
+          merchant?.address?.trim().isNotEmpty ?? false;
+      final hasPostalCode =
+          merchant?.postalCode?.trim().isNotEmpty ?? false;
+
+      final hasAddress = hasProvince &&
+          hasCity &&
+          hasDistrict &&
+          hasAddressDetail &&
+          hasPostalCode;
+
+      final addressParts = [
+        if (hasAddressDetail) merchant!.address!.trim(),
+        if (hasDistrict) merchant!.district!.trim(),
+        if (hasCity) merchant!.city!.trim(),
+        if (hasProvince) merchant!.province!.trim(),
+        if (hasPostalCode) merchant!.postalCode!.trim(),
+      ];
+      final merchantAddress =
+          addressParts.isNotEmpty ? addressParts.join(', ') : '';
 
       final opDays = data.merchantInfo.operationalDays.trim();
       final opTime = data.merchantInfo.operationalTime.trim();

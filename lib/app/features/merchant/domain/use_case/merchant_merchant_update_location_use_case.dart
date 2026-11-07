@@ -8,18 +8,14 @@ class MerchantMerchantUpdateLocationUseCase {
 
   Future<DataState<dynamic>> call({
     required String address,
-    required String province,
-    required String city,
-    required String district,
+    required int districtId,
     required String postalCode,
     required double longitude,
     required double latitude,
   }) async {
     return _repository.updateLocation(
       address: address,
-      province: province,
-      city: city,
-      district: district,
+      districtId: districtId,
       postalCode: postalCode,
       longitude: longitude,
       latitude: latitude,

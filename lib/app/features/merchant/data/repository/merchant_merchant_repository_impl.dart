@@ -73,9 +73,7 @@ class MerchantMerchantRepositoryImpl implements MerchantMerchantRepository {
   @override
   Future<DataState<dynamic>> updateLocation({
     required String address,
-    required String province,
-    required String city,
-    required String district,
+    required int districtId,
     required String postalCode,
     required double longitude,
     required double latitude,
@@ -83,9 +81,7 @@ class MerchantMerchantRepositoryImpl implements MerchantMerchantRepository {
     return handleResponse(
       () => _api.updateLocation({
         'address': address,
-        'province': province,
-        'city': city,
-        'district': district,
+        'district_id': districtId,
         'postal_code': postalCode,
         'longitude': longitude,
         'latitude': latitude,
